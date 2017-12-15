@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+ASDF_SCRIPT=$HOME/.asdf/asdf.sh
+if [ -f $ASDF_SCRIPT ]; then
+    source $ASDF_SCRIPT
+else
+    true
+fi
+if mix format --check-formatted; then
+    true
+else
+    mix format --check-equivalent
+    false
+fi
+mix credo --strict
+env MIX_ENV=test mix do compile --force --warnings-as-errors, test
+mix dialyzer --halt-exit-status
