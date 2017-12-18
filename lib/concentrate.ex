@@ -1,18 +1,10 @@
 defmodule Concentrate do
   @moduledoc """
-  Documentation for Concentrate.
+  Application entry point for Concentrate
   """
+  use Application
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Concentrate.hello
-      :world
-
-  """
-  def hello do
-    :world
+  def start(_type, _args) do
+    Concentrate.Supervisor.start_link()
   end
 end

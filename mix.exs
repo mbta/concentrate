@@ -14,21 +14,23 @@ defmodule Concentrate.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {Concentrate, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:credo, "~> 0.8", only: :dev},
+      {:bypass, "~> 0.8", only: :test},
+      {:dialyxir, "~> 0.5", only: :dev},
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:exprotobuf, "~> 1.2"},
       {:gen_stage, "~> 0.12"},
       {:httpoison, "~> 0.13"},
-      {:poison, "~> 3.1"},
-      {:dialyxir, "~> 0.5", only: :dev},
-      {:credo, "~> 0.8", only: :dev}
+      {:poison, "~> 3.1"}
     ]
   end
 end
