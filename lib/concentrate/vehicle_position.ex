@@ -27,4 +27,16 @@ defmodule Concentrate.VehiclePosition do
   def new(opts) when is_list(opts) do
     struct!(__MODULE__, opts)
   end
+
+  defimpl Concentrate.Mergeable do
+    def key(%{id: id}), do: id
+
+    @doc """
+    Merging VehiclePositions takes the latest position for a given vehicle.
+    """
+    def merge(first, second) do
+      positions = [first, second]
+      Enum.min_by(positions, &DateTime.to_unix(&1.last_updated))
+    end
+  end
 end

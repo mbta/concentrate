@@ -9,7 +9,8 @@ defmodule Concentrate.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [coveralls: :test, "coveralls.html": :test, "coveralls.json": :test]
+      preferred_cli_env: [coveralls: :test, "coveralls.html": :test, "coveralls.json": :test],
+      dialyzer: [ignore_warnings: ".dialyzer.ignore-warnings"]
     ]
   end
 
