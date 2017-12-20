@@ -23,6 +23,26 @@ defmodule Concentrate.StopTimeUpdate do
     struct!(__MODULE__, opts)
   end
 
+  @doc false
+  def trip_id(%__MODULE__{trip_id: trip_id}), do: trip_id
+
+  @doc false
+  def stop_id(%__MODULE__{stop_id: stop_id}), do: stop_id
+
+  @doc false
+  def arrival_time(%__MODULE__{arrival_time: arrival_time}), do: arrival_time
+
+  @doc false
+  def departure_time(%__MODULE__{departure_time: departure_time}), do: departure_time
+
+  @doc false
+  def stop_sequence(%__MODULE__{stop_sequence: stop_sequence}), do: stop_sequence
+
+  @doc false
+  def schedule_relationship(%__MODULE__{schedule_relationship: schedule_relationship}) do
+    schedule_relationship
+  end
+
   defimpl Concentrate.Mergeable do
     def key(%{trip_id: trip_id, stop_id: stop_id, stop_sequence: stop_sequence}) do
       {trip_id, stop_id, stop_sequence}

@@ -66,6 +66,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
     stop_updates =
       for stu <- trip_update.stop_time_update do
         StopTimeUpdate.new(
+          trip_id: trip_update.trip.trip_id,
           stop_id: stu.stop_id,
           stop_sequence: stu.stop_sequence,
           schedule_relationship: stu.schedule_relationship,
@@ -74,9 +75,9 @@ defmodule Concentrate.Parser.GTFSRealtime do
         )
       end
 
-    [tu] ++ stop_updates
+    [tu | stop_updates]
   end
 
-  defp time_from_event(%{time: time}), do: time
+  defp time_from_event(%{time: time}), do: DateTime.from_unix!(time)
   defp time_from_event(nil), do: nil
 end
