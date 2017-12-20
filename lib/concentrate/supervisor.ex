@@ -4,9 +4,9 @@ defmodule Concentrate.Supervisor do
 
   Children:
   * one per file we're fetching
-  * one per type of output file (currently 2 TripUpdates and 2 VehiclePositions)
-  * one per uploaded/saved file
   * one to merge multiple files into a single output stream
+  * one to build output files (currently TripUpdates.pb and VehiclePositions.pb)
+  * one to save files
   """
   import Supervisor, only: [child_spec: 2]
 
