@@ -1,6 +1,7 @@
 defmodule Concentrate.Parser.GTFSRealtimeTest do
   @moduledoc false
   use ExUnit.Case, async: true
+  import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtime
   alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate}
 
@@ -24,10 +25,5 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         assert update.__struct__ in [StopTimeUpdate, TripUpdate]
       end
     end
-  end
-
-  defp fixture_path(path) do
-    fixture_path = Path.expand("../../fixtures", __DIR__)
-    Path.expand(path, fixture_path)
   end
 end
