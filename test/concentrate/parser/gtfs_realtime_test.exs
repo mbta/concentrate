@@ -29,6 +29,32 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
   end
 
   describe "decode_trip_update/1" do
+    test "parses the trip descriptor" do
+      update = %GTFSRealtime.TripUpdate{
+        trip: %GTFSRealtime.TripDescriptor{
+          trip_id: "trip",
+          route_id: "route",
+          direction_id: 1,
+          start_date: "20171220",
+          start_time: "26:15:09",
+          schedule_relationship: :ADDED
+        },
+        stop_time_update: []
+      }
+
+      [tu] = decode_trip_update(update)
+
+      assert tu ==
+               TripUpdate.new(
+                 trip_id: "trip",
+                 route_id: "route",
+                 direction_id: 1,
+                 start_date: "20171220",
+                 start_time: "26:15:09",
+                 schedule_relationship: :ADDED
+               )
+    end
+
     test "test can handle nil times as well as nil events" do
       update = %GTFSRealtime.TripUpdate{
         trip: %GTFSRealtime.TripDescriptor{},

@@ -73,6 +73,8 @@ defmodule Concentrate.Parser.GTFSRealtime do
       trip_id: trip.trip_id,
       route_id: trip.route_id,
       direction_id: trip.direction_id,
+      start_date: trip.start_date,
+      start_time: trip.start_time,
       schedule_relationship: trip.schedule_relationship
     )
   end
