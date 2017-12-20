@@ -3,6 +3,7 @@ defmodule Concentrate.Producer.HTTP do
   GenStage Producer which fulfills demand by fetching from an HTTP Server.
   """
   use GenStage
+  require Logger
   @start_link_opts [:name]
 
   defmodule State do
@@ -55,6 +56,10 @@ defmodule Concentrate.Producer.HTTP do
   end
 
   def handle_info(%HTTPoison.AsyncStatus{code: 304}, state) do
+    Logger.info(fn ->
+      "#{__MODULE__}: #{inspect(state.url)} not modified"
+    end)
+
     {:noreply, [], %{state | body: :halt}}
   end
 
@@ -95,7 +100,13 @@ defmodule Concentrate.Producer.HTTP do
       if state.body == :halt do
         []
       else
-        [state.parser.(IO.iodata_to_binary(state.body))]
+        parsed = state.parser.(IO.iodata_to_binary(state.body))
+
+        Logger.info(fn ->
+          "#{__MODULE__}: #{inspect(state.url)} got #{length(parsed)} records"
+        end)
+
+        [parsed]
       end
 
     state = %{state | body: [], demand: state.demand - 1}
