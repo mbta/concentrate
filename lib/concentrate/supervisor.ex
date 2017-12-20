@@ -8,50 +8,50 @@ defmodule Concentrate.Supervisor do
   * one per uploaded/saved file
   * one to merge multiple files into a single output stream
   """
+  import Supervisor, only: [child_spec: 2]
+
   def start_link do
     Supervisor.start_link(children(), strategy: :one_for_one)
   end
 
   def children do
-    _ =
-      Enum.concat([
-        fetch_children(),
-        [
-          {Concentrate.Merge.ProducerConsumer, [
-            subscribe_to: [:vehicle_positions, :trip_updates]
-          ]}
-        ],
-        output_children(),
-        upload_children()
-      ])
-
-    []
-  end
-
-  defp fetch_children do
     [
-      {Concentrate.Producer.HTTP, [
-        "http://developer.mbta.com/lib/GTRTFS/Alerts/VehiclePositions.pb",
-        [
-          name: :vehicle_positions,
-          parser: Concentrate.Parser.GTFSRealtime
-        ]
+      child_spec(
+        {
+          Concentrate.Producer.HTTP,
+          {
+            "http://developer.mbta.com/lib/GTRTFS/Alerts/VehiclePositions.pb",
+            name: :vehicle_positions, parser: Concentrate.Parser.GTFSRealtime
+          }
+        },
+        id: :vehicle_positions
+      ),
+      child_spec(
+        {
+          Concentrate.Producer.HTTP,
+          {
+            "http://developer.mbta.com/lib/GTRTFS/Alerts/TripUpdates.pb",
+            name: :trip_updates, parser: Concentrate.Parser.GTFSRealtime
+          }
+        },
+        id: :trip_updates
+      ),
+      {Concentrate.Merge.ProducerConsumer, [
+        name: :merge,
+        subscribe_to: [:vehicle_positions, :trip_updates]
       ]},
-      {Concentrate.Producer.HTTP, [
-        "http://developer.mbta.com/lib/GTRTFS/Alerts/TripUpdates.pb",
-        [
-          name: :trip_updates,
-          parser: Concentrate.Parser.GTFSRealtime
-        ]
+      {Concentrate.Encoder.ProducerConsumer, [
+        name: :file_output,
+        files: [
+          {"TripUpdates.pb", Concentrate.Encoder.TripUpdates},
+          {"VehiclePositions.pb", Concentrate.Encoder.VehiclePositions}
+        ],
+        subscribe_to: [:merge]
+      ]},
+      {Concentrate.Sink.Filesystem, [
+        directory: "/tmp",
+        subscribe_to: [:file_output]
       ]}
     ]
-  end
-
-  defp output_children do
-    []
-  end
-
-  defp upload_children do
-    []
   end
 end
