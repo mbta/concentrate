@@ -3,6 +3,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
   use ExUnit.Case, async: true
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtime
+  alias Concentrate.Parser.GTFSRealtime
   alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate}
 
   describe "parse/1" do
@@ -24,6 +25,24 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       for update <- parsed do
         assert update.__struct__ in [StopTimeUpdate, TripUpdate]
       end
+    end
+  end
+
+  describe "decode_trip_update/1" do
+    test "test can handle nil times as well as nil events" do
+      update = %GTFSRealtime.TripUpdate{
+        trip: %GTFSRealtime.TripDescriptor{},
+        stop_time_update: [
+          %GTFSRealtime.TripUpdate.StopTimeUpdate{
+            arrival: nil,
+            departure: %GTFSRealtime.TripUpdate.StopTimeEvent{}
+          }
+        ]
+      }
+
+      [_tu, stop_update] = decode_trip_update(update)
+      refute StopTimeUpdate.arrival_time(stop_update)
+      refute StopTimeUpdate.departure_time(stop_update)
     end
   end
 end

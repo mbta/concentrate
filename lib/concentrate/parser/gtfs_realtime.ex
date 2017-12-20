@@ -50,11 +50,11 @@ defmodule Concentrate.Parser.GTFSRealtime do
     ]
   end
 
-  defp decode_trip_update(nil) do
+  def decode_trip_update(nil) do
     []
   end
 
-  defp decode_trip_update(trip_update) do
+  def decode_trip_update(trip_update) do
     tu =
       TripUpdate.new(
         trip_id: trip_update.trip.trip_id,
@@ -78,6 +78,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
     [tu | stop_updates]
   end
 
-  defp time_from_event(%{time: time}), do: DateTime.from_unix!(time)
   defp time_from_event(nil), do: nil
+  defp time_from_event(%{time: nil}), do: nil
+  defp time_from_event(%{time: time}), do: DateTime.from_unix!(time)
 end
