@@ -34,6 +34,8 @@ defmodule Concentrate.StructHelpers do
       def new(opts) when is_list(opts) do
         struct!(__MODULE__, opts)
       end
+
+      defoverridable new: 1
     end
   end
 

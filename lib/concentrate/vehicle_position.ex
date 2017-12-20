@@ -22,6 +22,13 @@ defmodule Concentrate.VehiclePosition do
 
   @opaque t :: %__MODULE__{}
 
+  def new(opts) do
+    # required fields
+    _ = Keyword.fetch!(opts, :latitude)
+    _ = Keyword.fetch!(opts, :longitude)
+    super(opts)
+  end
+
   defimpl Concentrate.Mergeable do
     def key(%{id: id}), do: id
 

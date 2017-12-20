@@ -3,7 +3,7 @@ defmodule Concentrate.MergeTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
   import Concentrate.Merge
-  alias Concentrate.{TestMergeable, VehiclePosition}
+  alias Concentrate.{TestMergeable, TripUpdate}
 
   describe "merge/1" do
     test "base cases" do
@@ -58,8 +58,8 @@ defmodule Concentrate.MergeTest do
 
     test "can handle multiple types of Mergeable" do
       expected = [
-        TestMergeable.new("vehicle", 0),
-        VehiclePosition.new(id: "vehicle")
+        TestMergeable.new("trip", 0),
+        TripUpdate.new(trip_id: "trip")
       ]
 
       actual = merge(expected)
