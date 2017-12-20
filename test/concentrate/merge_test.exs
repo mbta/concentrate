@@ -78,7 +78,7 @@ defmodule Concentrate.MergeTest do
     end
 
     property "keys always appear in the original order" do
-      check all mergeables <- mergeables() do
+      check all mergeables <- TestMergeable.mergeables() do
         expected =
           mergeables
           |> Enum.map(& &1.key)
@@ -94,7 +94,7 @@ defmodule Concentrate.MergeTest do
     end
 
     property "all values are present at the end" do
-      check all mergeables <- mergeables() do
+      check all mergeables <- TestMergeable.mergeables() do
         expected =
           mergeables
           |> Enum.flat_map(& &1.value)
@@ -109,28 +109,6 @@ defmodule Concentrate.MergeTest do
           |> Enum.sort()
 
         assert actual == expected
-      end
-    end
-
-    defp mergeables do
-      # generates a list of possible keys, then random mergeables with keys from that list
-      ExUnitProperties.gen all keys <-
-                                 StreamData.list_of(StreamData.atom(:alphanumeric), min_length: 1),
-                               mergeables <- mergeables_from_keys(keys) do
-        mergeables
-      end
-    end
-
-    defp mergeables_from_keys(keys) do
-      ExUnitProperties.gen all key <- StreamData.member_of(keys),
-                               mergeables <- StreamData.list_of(mergeable(key)) do
-        mergeables
-      end
-    end
-
-    defp mergeable(key) do
-      ExUnitProperties.gen all value <- StreamData.integer() do
-        TestMergeable.new(key, value)
       end
     end
   end

@@ -17,8 +17,8 @@ defmodule Concentrate.Supervisor do
       Enum.concat([
         fetch_children(),
         [
-          {Concentrate.MergeProducerConsumer, [
-            producers: [:vehicle_positions, :trip_updates]
+          {Concentrate.Merge.ProducerConsumer, [
+            subscribe_to: [:vehicle_positions, :trip_updates]
           ]}
         ],
         output_children(),
