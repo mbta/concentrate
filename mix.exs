@@ -10,9 +10,13 @@ defmodule Concentrate.MixProject do
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [coveralls: :test, "coveralls.html": :test, "coveralls.json": :test],
-      dialyzer: [ignore_warnings: ".dialyzer.ignore-warnings"]
+      dialyzer: [ignore_warnings: ".dialyzer.ignore-warnings"],
+      elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help compile.app" to learn about applications.
   def application do
@@ -34,7 +38,8 @@ defmodule Concentrate.MixProject do
       {:exprotobuf, "~> 1.2"},
       {:gen_stage, "~> 0.12"},
       {:httpoison, "~> 0.13"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:stream_data, "~> 0.4", only: :test}
     ]
   end
 end
