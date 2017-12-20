@@ -58,7 +58,7 @@ defmodule Concentrate.MergeTest do
 
     test "can handle multiple types of Mergeable" do
       expected = [
-        TestMergeable.new(:key, 0),
+        TestMergeable.new("vehicle", 0),
         VehiclePosition.new(id: "vehicle")
       ]
 

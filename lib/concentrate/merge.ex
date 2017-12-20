@@ -29,7 +29,7 @@ defmodule Concentrate.Merge do
   end
 
   defp merge_item(item, acc) do
-    key = Mergeable.key(item)
+    key = {Mergeable.impl_for!(item), Mergeable.key(item)}
 
     value =
       case Map.fetch(acc, key) do
