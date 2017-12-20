@@ -2,7 +2,7 @@ defmodule Concentrate.Encoder.ProducerConsumerTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.Encoder.ProducerConsumer
-  alias Concentrate.TripUpdate
+  alias Concentrate.{TripUpdate, StopTimeUpdate}
   alias Concentrate.Encoder.{TripUpdates, VehiclePositions}
 
   describe "handle_events/3" do
@@ -10,7 +10,7 @@ defmodule Concentrate.Encoder.ProducerConsumerTest do
       {_, state, _} =
         init(files: [{"TripUpdates.pb", TripUpdates}, {"VehiclePositions.pb", VehiclePositions}])
 
-      data = [TripUpdate.new(trip_id: "trip")]
+      data = [TripUpdate.new(trip_id: "trip"), StopTimeUpdate.new(trip_id: "trip")]
       {:noreply, events, _state} = handle_events([[], data], :from, state)
 
       assert [{"TripUpdates.pb", trip_update}, {"VehiclePositions.pb", vehicle_positions}] =
