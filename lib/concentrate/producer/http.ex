@@ -3,6 +3,7 @@ defmodule Concentrate.Producer.HTTP do
   GenStage Producer which fulfills demand by fetching from an HTTP Server.
   """
   use GenStage
+  @start_link_opts [:name]
 
   defmodule State do
     @moduledoc """
@@ -18,8 +19,10 @@ defmodule Concentrate.Producer.HTTP do
 
   alias __MODULE__.State
 
-  def start_link(url, opts) when is_list(opts) do
-    GenStage.start_link(__MODULE__, {url, opts})
+  def start_link({url, opts}) when is_list(opts) do
+    start_link_opts = Keyword.take(opts, @start_link_opts)
+    opts = Keyword.drop(opts, @start_link_opts)
+    GenStage.start_link(__MODULE__, {url, opts}, start_link_opts)
   end
 
   @impl GenStage

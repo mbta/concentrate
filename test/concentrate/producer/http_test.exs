@@ -99,7 +99,7 @@ defmodule Concentrate.Producer.HTTPTest do
       url = "http://127.0.0.1:#{bypass.port}/"
       opts = Keyword.put_new(opts, :parser, fn body -> [body] end)
 
-      start_link(url, opts)
+      start_link({url, opts})
     end
 
     defp take_events(producer, event_count) do

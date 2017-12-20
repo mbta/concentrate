@@ -4,9 +4,12 @@ defmodule Concentrate.Merge.ProducerConsumer do
   """
   use GenStage
   alias Concentrate.Merge
+  @start_link_opts [:name]
 
   def start_link(opts \\ []) do
-    GenStage.start_link(__MODULE__, opts)
+    start_link_opts = Keyword.take(opts, @start_link_opts)
+    opts = Keyword.drop(opts, @start_link_opts)
+    GenStage.start_link(__MODULE__, opts, start_link_opts)
   end
 
   @impl GenStage
