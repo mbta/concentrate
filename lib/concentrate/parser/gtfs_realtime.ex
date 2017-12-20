@@ -45,7 +45,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
         odometer: vp.position.odometer,
         status: vp.current_status,
         stop_sequence: vp.current_stop_sequence,
-        last_updated: DateTime.from_unix!(vp.timestamp)
+        last_updated: if(vp.timestamp, do: DateTime.from_unix!(vp.timestamp))
       )
     ]
   end
