@@ -20,7 +20,7 @@ defmodule Concentrate.Merge.ProducerConsumer do
 
   @impl GenStage
   def handle_events(events, from, state) do
-    latest_data = Merge.merge(List.last(events))
+    latest_data = List.last(events)
     state = Map.put(state, from, latest_data)
 
     merged =
