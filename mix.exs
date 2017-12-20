@@ -11,12 +11,17 @@ defmodule Concentrate.MixProject do
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [coveralls: :test, "coveralls.html": :test, "coveralls.json": :test],
       dialyzer: [ignore_warnings: ".dialyzer.ignore-warnings"],
-      elixirc_paths: elixirc_paths(Mix.env())
+      elixirc_paths: elixirc_paths(Mix.env()),
+      aliases: aliases()
     ]
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
+
+  defp aliases do
+    [test: "test --no-start"]
+  end
 
   # Run "mix help compile.app" to learn about applications.
   def application do
