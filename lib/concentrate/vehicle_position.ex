@@ -15,9 +15,9 @@ defmodule Concentrate.VehiclePosition do
     :bearing,
     :speed,
     :odometer,
-    :status,
     :stop_sequence,
-    :last_updated
+    :last_updated,
+    status: :IN_TRANSIT_TO
   ])
 
   @opaque t :: %__MODULE__{}

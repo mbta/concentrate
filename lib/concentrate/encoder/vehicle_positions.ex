@@ -59,10 +59,10 @@ defmodule Concentrate.Encoder.VehiclePositions do
     [entity | acc]
   end
 
-  defp build_entity(%VehiclePosition{} = vp, [update_entity | acc]) do
+  defp build_entity(%VehiclePosition{} = vp, acc) do
     # make sure we're updating the right trip
-    trip_id = update_entity.vehicle.trip.trip_id
-    ^trip_id = VehiclePosition.trip_id(vp)
+    trip_id = VehiclePosition.trip_id(vp)
+    {update_entity, prefix, suffix} = find_entity(acc, trip_id)
 
     descriptor = %VehicleDescriptor{
       id: VehiclePosition.id(vp),
@@ -88,7 +88,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
     }
 
     update_entity = put_in(update_entity.vehicle, vehicle)
-    [update_entity | acc]
+    prefix ++ [update_entity | suffix]
   end
 
   defp build_entity(_, acc) do
@@ -101,5 +101,15 @@ defmodule Concentrate.Encoder.VehiclePositions do
 
   def time(%DateTime{} = dt) do
     DateTime.to_unix(dt)
+  end
+
+  defp find_entity(list, trip_id, prefix \\ [])
+
+  defp find_entity([head | tail], trip_id, prefix) do
+    if head.vehicle.trip.trip_id == trip_id do
+      {head, Enum.reverse(prefix), tail}
+    else
+      find_entity(tail, trip_id, [head | prefix])
+    end
   end
 end

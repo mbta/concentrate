@@ -17,9 +17,49 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
 
       assert [%TripUpdate{}, %VehiclePosition{}] = GTFSRealtime.parse(encode(data))
     end
-  end
 
-  describe "encode/1 round trip" do
+    test "order of trip updates doesn't matter" do
+      initial = [
+        TripUpdate.new(trip_id: "1"),
+        TripUpdate.new(trip_id: "2"),
+        VehiclePosition.new(trip_id: "1", latitude: 1.0, longitude: 1.0)
+      ]
+
+      decoded = GTFSRealtime.parse(encode(initial))
+
+      assert [
+               TripUpdate.new(trip_id: "1"),
+               VehiclePosition.new(trip_id: "1", latitude: 1.0, longitude: 1.0)
+             ] == decoded
+    end
+
+    test "trips appear in their order, regardless of VehiclePosition order" do
+      trip_updates = [
+        TripUpdate.new(trip_id: "1"),
+        TripUpdate.new(trip_id: "2"),
+        TripUpdate.new(trip_id: "3")
+      ]
+
+      stop_time_updates =
+        Enum.shuffle([
+          VehiclePosition.new(trip_id: "1", latitude: 1.0, longitude: 1.0),
+          VehiclePosition.new(trip_id: "2", latitude: 1.0, longitude: 1.0),
+          VehiclePosition.new(trip_id: "3", latitude: 1.0, longitude: 1.0)
+        ])
+
+      initial = trip_updates ++ stop_time_updates
+      decoded = GTFSRealtime.parse(encode(initial))
+
+      assert [
+               TripUpdate.new(trip_id: "1"),
+               VehiclePosition.new(trip_id: "1", latitude: 1.0, longitude: 1.0),
+               TripUpdate.new(trip_id: "2"),
+               VehiclePosition.new(trip_id: "2", latitude: 1.0, longitude: 1.0),
+               TripUpdate.new(trip_id: "3"),
+               VehiclePosition.new(trip_id: "3", latitude: 1.0, longitude: 1.0)
+             ] == decoded
+    end
+
     test "decoding and re-encoding vehiclepositions.pb is a no-op" do
       decoded = GTFSRealtime.parse(File.read!(fixture_path("vehiclepositions.pb")))
       round_tripped = GTFSRealtime.parse(encode(decoded))

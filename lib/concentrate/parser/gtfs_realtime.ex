@@ -27,11 +27,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
   def decode_vehicle(vp) do
     [
-      TripUpdate.new(
-        trip_id: vp.trip.trip_id,
-        route_id: vp.trip.route_id,
-        direction_id: vp.trip.direction_id
-      ),
+      decode_trip_descriptor(vp.trip),
       VehiclePosition.new(
         id: vp.vehicle.id,
         trip_id: vp.trip.trip_id,
@@ -55,13 +51,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
   end
 
   def decode_trip_update(trip_update) do
-    tu =
-      TripUpdate.new(
-        trip_id: trip_update.trip.trip_id,
-        route_id: trip_update.trip.route_id,
-        direction_id: trip_update.trip.direction_id,
-        schedule_relationship: trip_update.trip.schedule_relationship
-      )
+    tu = decode_trip_descriptor(trip_update.trip)
 
     stop_updates =
       for stu <- trip_update.stop_time_update do
@@ -76,6 +66,15 @@ defmodule Concentrate.Parser.GTFSRealtime do
       end
 
     [tu | stop_updates]
+  end
+
+  defp decode_trip_descriptor(trip) do
+    TripUpdate.new(
+      trip_id: trip.trip_id,
+      route_id: trip.route_id,
+      direction_id: trip.direction_id,
+      schedule_relationship: trip.schedule_relationship
+    )
   end
 
   defp time_from_event(nil), do: nil

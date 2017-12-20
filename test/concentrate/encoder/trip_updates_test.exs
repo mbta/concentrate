@@ -3,10 +3,48 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
   use ExUnit.Case, async: true
   import Concentrate.TestHelpers
   import Concentrate.Encoder.TripUpdates
-  alias Concentrate.VehiclePosition
+  alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
   alias Concentrate.Parser.GTFSRealtime
 
-  describe "encode/1 round trip" do
+  describe "encode/1" do
+    test "order of trip updates doesn't matter" do
+      initial = [
+        TripUpdate.new(trip_id: "1"),
+        TripUpdate.new(trip_id: "2"),
+        StopTimeUpdate.new(trip_id: "1")
+      ]
+
+      decoded = GTFSRealtime.parse(encode(initial))
+      assert [TripUpdate.new(trip_id: "1"), StopTimeUpdate.new(trip_id: "1")] == decoded
+    end
+
+    test "trips appear in their order, regardless of StopTimeUpdate order" do
+      trip_updates = [
+        TripUpdate.new(trip_id: "1"),
+        TripUpdate.new(trip_id: "2"),
+        TripUpdate.new(trip_id: "3")
+      ]
+
+      stop_time_updates =
+        Enum.shuffle([
+          StopTimeUpdate.new(trip_id: "1"),
+          StopTimeUpdate.new(trip_id: "2"),
+          StopTimeUpdate.new(trip_id: "3")
+        ])
+
+      initial = trip_updates ++ stop_time_updates
+      decoded = GTFSRealtime.parse(encode(initial))
+
+      assert [
+               TripUpdate.new(trip_id: "1"),
+               StopTimeUpdate.new(trip_id: "1"),
+               TripUpdate.new(trip_id: "2"),
+               StopTimeUpdate.new(trip_id: "2"),
+               TripUpdate.new(trip_id: "3"),
+               StopTimeUpdate.new(trip_id: "3")
+             ] == decoded
+    end
+
     test "decoding and re-encoding tripupdates.pb is a no-op" do
       decoded = GTFSRealtime.parse(File.read!(fixture_path("tripupdates.pb")))
       round_tripped = GTFSRealtime.parse(encode(decoded))

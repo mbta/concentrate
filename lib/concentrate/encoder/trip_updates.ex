@@ -29,6 +29,7 @@ defmodule Concentrate.Encoder.TripUpdates do
   def feed_entity(list) do
     list
     |> Enum.reduce([], &build_entity/2)
+    |> Enum.reject(&(&1.trip_update.stop_time_update == []))
     |> reverse_entity
   end
 
@@ -51,10 +52,10 @@ defmodule Concentrate.Encoder.TripUpdates do
     [entity | acc]
   end
 
-  defp build_entity(%StopTimeUpdate{} = update, [update_entity | acc]) do
+  defp build_entity(%StopTimeUpdate{} = update, acc) do
     # make sure we're updating the right trip
-    trip_id = update_entity.trip_update.trip.trip_id
-    ^trip_id = StopTimeUpdate.trip_id(update)
+    trip_id = StopTimeUpdate.trip_id(update)
+    {update_entity, prefix, suffix} = find_entity(acc, trip_id)
 
     stu = %GTFSRealtime.TripUpdate.StopTimeUpdate{
       stop_id: StopTimeUpdate.stop_id(update),
@@ -67,7 +68,7 @@ defmodule Concentrate.Encoder.TripUpdates do
     stop_time_update = [stu | update_entity.trip_update.stop_time_update]
     update_entity = put_in(update_entity.trip_update.stop_time_update, stop_time_update)
 
-    [update_entity | acc]
+    prefix ++ [update_entity | suffix]
   end
 
   defp build_entity(_, acc) do
@@ -91,5 +92,15 @@ defmodule Concentrate.Encoder.TripUpdates do
     %GTFSRealtime.TripUpdate.StopTimeEvent{
       time: DateTime.to_unix(dt)
     }
+  end
+
+  defp find_entity(list, trip_id, prefix \\ [])
+
+  defp find_entity([head | tail], trip_id, prefix) do
+    if head.trip_update.trip.trip_id == trip_id do
+      {head, Enum.reverse(prefix), tail}
+    else
+      find_entity(tail, trip_id, [head | prefix])
+    end
   end
 end
