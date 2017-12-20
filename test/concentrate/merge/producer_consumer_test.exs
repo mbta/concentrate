@@ -26,11 +26,13 @@ defmodule Concentrate.Merge.ProducerConsumerTest do
 
         acc = {:noreply, [], state}
 
-        assert {:noreply, [^expected], _state} =
-                 Enum.reduce(multi_source_mergeables, acc, fn mergeables, {_, _, state} ->
-                   from = make_ref()
-                   handle_events([mergeables], from, state)
-                 end)
+        {:noreply, [actual], _state} =
+          Enum.reduce(multi_source_mergeables, acc, fn mergeables, {_, _, state} ->
+            from = make_ref()
+            handle_events([mergeables], from, state)
+          end)
+
+        assert Enum.sort(actual) == Enum.sort(expected)
       end
     end
 

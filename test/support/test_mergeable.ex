@@ -18,12 +18,7 @@ defmodule Concentrate.TestMergeable do
   """
   @spec mergeables :: StreamData.t()
   def mergeables do
-    # generates a list of possible keys, then random mergeables with keys from that list
-    ExUnitProperties.gen all keys <-
-                               StreamData.list_of(StreamData.atom(:alphanumeric), min_length: 1),
-                             mergeables <- mergeables_from_keys(keys) do
-      mergeables
-    end
+    mergeables_from_keys(~w(a b c)a)
   end
 
   defp mergeables_from_keys(keys) do
