@@ -29,11 +29,11 @@ defmodule Concentrate.Parser.GTFSRealtime do
     decode_trip_descriptor(vp.trip) ++
       [
         VehiclePosition.new(
-          id: vp.vehicle.id,
-          trip_id: if(vp.trip, do: vp.trip.trip_id),
-          stop_id: vp.stop_id,
-          label: vp.vehicle.label,
-          license_plate: vp.vehicle.license_plate,
+          id: optional_copy(vp.vehicle.id),
+          trip_id: if(vp.trip, do: optional_copy(vp.trip.trip_id)),
+          stop_id: optional_copy(vp.stop_id),
+          label: optional_copy(vp.vehicle.label),
+          license_plate: optional_copy(vp.vehicle.license_plate),
           latitude: vp.position.latitude,
           longitude: vp.position.longitude,
           bearing: vp.position.bearing,
@@ -56,8 +56,8 @@ defmodule Concentrate.Parser.GTFSRealtime do
     stop_updates =
       for stu <- trip_update.stop_time_update do
         StopTimeUpdate.new(
-          trip_id: trip_update.trip.trip_id,
-          stop_id: stu.stop_id,
+          trip_id: optional_copy(trip_update.trip.trip_id),
+          stop_id: optional_copy(stu.stop_id),
           stop_sequence: stu.stop_sequence,
           schedule_relationship: stu.schedule_relationship,
           arrival_time: time_from_event(stu.arrival),
@@ -68,6 +68,9 @@ defmodule Concentrate.Parser.GTFSRealtime do
     tu ++ stop_updates
   end
 
+  defp optional_copy(binary) when is_binary(binary), do: :binary.copy(binary)
+  defp optional_copy(nil), do: nil
+
   defp decode_trip_descriptor(nil) do
     []
   end
@@ -75,11 +78,11 @@ defmodule Concentrate.Parser.GTFSRealtime do
   defp decode_trip_descriptor(trip) do
     [
       TripUpdate.new(
-        trip_id: trip.trip_id,
-        route_id: trip.route_id,
+        trip_id: optional_copy(trip.trip_id),
+        route_id: optional_copy(trip.route_id),
         direction_id: trip.direction_id,
-        start_date: trip.start_date,
-        start_time: trip.start_time,
+        start_date: optional_copy(trip.start_date),
+        start_time: optional_copy(trip.start_time),
         schedule_relationship: trip.schedule_relationship
       )
     ]
