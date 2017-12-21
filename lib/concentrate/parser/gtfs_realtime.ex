@@ -26,24 +26,24 @@ defmodule Concentrate.Parser.GTFSRealtime do
   end
 
   def decode_vehicle(vp) do
-    [
-      decode_trip_descriptor(vp.trip),
-      VehiclePosition.new(
-        id: vp.vehicle.id,
-        trip_id: vp.trip.trip_id,
-        stop_id: vp.stop_id,
-        label: vp.vehicle.label,
-        license_plate: vp.vehicle.license_plate,
-        latitude: vp.position.latitude,
-        longitude: vp.position.longitude,
-        bearing: vp.position.bearing,
-        speed: vp.position.speed,
-        odometer: vp.position.odometer,
-        status: vp.current_status,
-        stop_sequence: vp.current_stop_sequence,
-        last_updated: if(vp.timestamp, do: DateTime.from_unix!(vp.timestamp))
-      )
-    ]
+    decode_trip_descriptor(vp.trip) ++
+      [
+        VehiclePosition.new(
+          id: vp.vehicle.id,
+          trip_id: if(vp.trip, do: vp.trip.trip_id),
+          stop_id: vp.stop_id,
+          label: vp.vehicle.label,
+          license_plate: vp.vehicle.license_plate,
+          latitude: vp.position.latitude,
+          longitude: vp.position.longitude,
+          bearing: vp.position.bearing,
+          speed: vp.position.speed,
+          odometer: vp.position.odometer,
+          status: vp.current_status,
+          stop_sequence: vp.current_stop_sequence,
+          last_updated: if(vp.timestamp, do: DateTime.from_unix!(vp.timestamp))
+        )
+      ]
   end
 
   def decode_trip_update(nil) do
@@ -65,18 +65,24 @@ defmodule Concentrate.Parser.GTFSRealtime do
         )
       end
 
-    [tu | stop_updates]
+    tu ++ stop_updates
+  end
+
+  defp decode_trip_descriptor(nil) do
+    []
   end
 
   defp decode_trip_descriptor(trip) do
-    TripUpdate.new(
-      trip_id: trip.trip_id,
-      route_id: trip.route_id,
-      direction_id: trip.direction_id,
-      start_date: trip.start_date,
-      start_time: trip.start_time,
-      schedule_relationship: trip.schedule_relationship
-    )
+    [
+      TripUpdate.new(
+        trip_id: trip.trip_id,
+        route_id: trip.route_id,
+        direction_id: trip.direction_id,
+        start_date: trip.start_date,
+        start_time: trip.start_time,
+        schedule_relationship: trip.schedule_relationship
+      )
+    ]
   end
 
   defp time_from_event(nil), do: nil

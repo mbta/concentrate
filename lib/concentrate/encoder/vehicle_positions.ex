@@ -62,7 +62,19 @@ defmodule Concentrate.Encoder.VehiclePositions do
   defp build_entity(%VehiclePosition{} = vp, acc) do
     # make sure we're updating the right trip
     trip_id = VehiclePosition.trip_id(vp)
-    {update_entity, prefix, suffix} = find_entity(acc, trip_id)
+
+    {update_entity, prefix, suffix} =
+      case find_entity(acc, trip_id) do
+        nil ->
+          {
+            %FeedEntity{id: "#{:erlang.phash2(vp)}", vehicle: %GTFSRealtime.VehiclePosition{}},
+            [],
+            acc
+          }
+
+        other ->
+          other
+      end
 
     descriptor = %VehicleDescriptor{
       id: VehiclePosition.id(vp),
@@ -105,11 +117,17 @@ defmodule Concentrate.Encoder.VehiclePositions do
 
   defp find_entity(list, trip_id, prefix \\ [])
 
+  defp find_entity(_, nil, _) do
+    nil
+  end
+
   defp find_entity([head | tail], trip_id, prefix) do
-    if head.vehicle.trip.trip_id == trip_id do
-      {head, Enum.reverse(prefix), tail}
-    else
-      find_entity(tail, trip_id, [head | prefix])
+    case head.vehicle do
+      %{trip: %{trip_id: ^trip_id}} ->
+        {head, Enum.reverse(prefix), tail}
+
+      _ ->
+        find_entity(tail, trip_id, [head | prefix])
     end
   end
 end
