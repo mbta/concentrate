@@ -95,6 +95,47 @@ defmodule Concentrate.Producer.HTTPTest do
       assert take_events(producer, 3) == [["first"], ["second"], ["agent"]]
     end
 
+    test "if there's a redirect, fetches from the new URL", %{bypass: bypass} do
+      # fetches are:
+      # 1. bypass (immediate)
+      # 2. temp redirect (immediate)
+      # 3. bypass (after timeout)
+      # 4. permanent redirect (immediate)
+      # 5. permanent redirect (after timeout)
+      temp_redirect = Bypass.open()
+      permanent_redirect = Bypass.open()
+      {:ok, agent} = response_agent()
+
+      agent
+      |> add_response(fn conn ->
+        conn
+        |> put_resp_header("location", "http://127.0.0.1:#{temp_redirect.port}/temp")
+        |> send_resp(302, "should have temp redirected")
+      end)
+      |> add_response(fn conn ->
+        conn
+        |> put_resp_header("location", "http://127.0.0.1:#{permanent_redirect.port}/perm")
+        |> send_resp(301, "should have permanently redirect")
+      end)
+
+      Bypass.expect_once(temp_redirect, fn conn ->
+        send_resp(conn, 200, "in temp redirect")
+      end)
+
+      Bypass.expect(permanent_redirect, fn conn ->
+        send_resp(conn, 200, "in permanent redirect")
+      end)
+
+      Bypass.expect(bypass, fn conn -> agent_response(agent, conn) end)
+      {:ok, producer} = start_producer(bypass, fetch_after: 10)
+
+      assert take_events(producer, 3) == [
+               ["in temp redirect"],
+               ["in permanent redirect"],
+               ["in permanent redirect"]
+             ]
+    end
+
     defp start_producer(bypass, opts \\ []) do
       url = "http://127.0.0.1:#{bypass.port}/"
       opts = Keyword.put_new(opts, :parser, fn body -> [body] end)

@@ -47,12 +47,25 @@ defmodule Concentrate.Producer.HTTP do
 
   @impl GenStage
   def handle_info(:fetch, state) do
-    {:ok, _} = HTTPoison.get(state.url, state.headers, stream_to: self())
+    send(self(), {:fetch, state.url})
+    {:noreply, [], state}
+  end
+
+  def handle_info({:fetch, url}, state) do
+    {:ok, _} = HTTPoison.get(url, state.headers, stream_to: self())
     {:noreply, [], state}
   end
 
   def handle_info(%HTTPoison.AsyncStatus{code: 200}, state) do
     {:noreply, [], state}
+  end
+
+  def handle_info(%HTTPoison.AsyncStatus{code: 301}, state) do
+    {:noreply, [], %{state | body: {:redirect, :permanent}}}
+  end
+
+  def handle_info(%HTTPoison.AsyncStatus{code: 302}, state) do
+    {:noreply, [], %{state | body: {:redirect, :temporary}}}
   end
 
   def handle_info(%HTTPoison.AsyncStatus{code: 304}, state) do
@@ -63,8 +76,23 @@ defmodule Concentrate.Producer.HTTP do
     {:noreply, [], %{state | body: :halt}}
   end
 
+  def handle_info(%HTTPoison.AsyncStatus{code: code}, state) do
+    Logger.warn(fn ->
+      "#{__MODULE__}: #{inspect(state.url)} unexpected code #{inspect(code)}"
+    end)
+
+    {:noreply, [], %{state | body: :halt}}
+  end
+
   def handle_info(%HTTPoison.AsyncHeaders{}, %{body: :halt} = state) do
     {:noreply, [], state}
+  end
+
+  def handle_info(%HTTPoison.AsyncHeaders{headers: headers}, %{body: {:redirect, type}} = state) do
+    {_, new_location} =
+      Enum.find(headers, fn {header, _} -> String.downcase(header) == "location" end)
+
+    {:noreply, [], %{state | body: {:redirect, type, new_location}}}
   end
 
   def handle_info(%HTTPoison.AsyncHeaders{headers: resp_headers}, state) do
@@ -87,34 +115,27 @@ defmodule Concentrate.Producer.HTTP do
     {:noreply, [], state}
   end
 
-  def handle_info(%HTTPoison.AsyncChunk{}, %{body: :halt} = state) do
+  def handle_info(%HTTPoison.AsyncChunk{chunk: chunk}, %{body: iolist} = state)
+      when is_list(iolist) do
+    {:noreply, [], %{state | body: [iolist, chunk]}}
+  end
+
+  def handle_info(%HTTPoison.AsyncChunk{}, state) do
     {:noreply, [], state}
   end
 
-  def handle_info(%HTTPoison.AsyncChunk{chunk: chunk}, state) do
-    {:noreply, [], %{state | body: [state.body, chunk]}}
-  end
-
   def handle_info(%HTTPoison.AsyncEnd{}, state) do
-    events =
-      if state.body == :halt do
-        []
-      else
-        parsed = state.parser.(IO.iodata_to_binary(state.body))
+    events = parse_body(state)
 
-        Logger.info(fn ->
-          "#{__MODULE__}: #{inspect(state.url)} got #{length(parsed)} records"
-        end)
+    case next_message_after_fetch(state) do
+      {message, after_time} ->
+        Process.send_after(self(), message, after_time)
 
-        [parsed]
-      end
-
-    state = %{state | body: [], demand: state.demand - 1}
-
-    if events == [] or state.demand > 0 do
-      # if there's more demand or we got a cached response, try again later
-      Process.send_after(self(), :fetch, state.fetch_after)
+      _ ->
+        :ok
     end
+
+    state = update_state(state)
 
     {:noreply, events, state}
   end
@@ -127,5 +148,45 @@ defmodule Concentrate.Producer.HTTP do
   def handle_demand(new_demand, %{demand: existing_demand} = state) do
     send(self(), :fetch)
     {:noreply, [], %{state | demand: new_demand + existing_demand}}
+  end
+
+  defp parse_body(%{body: iolist} = state) when is_list(iolist) do
+    parsed = state.parser.(IO.iodata_to_binary(iolist))
+
+    Logger.info(fn ->
+      "#{__MODULE__}: #{inspect(state.url)} got #{length(parsed)} records"
+    end)
+
+    [parsed]
+  end
+
+  defp parse_body(_state) do
+    []
+  end
+
+  defp next_message_after_fetch(%{body: {:redirect, _, url}}) do
+    # refetch immediately if we got redirected
+    {{:fetch, url}, 0}
+  end
+
+  defp next_message_after_fetch(%{body: iolist, demand: demand})
+       when is_list(iolist) and demand < 2 do
+    # if we got data and there's no future demand, don't do anything for now
+    nil
+  end
+
+  defp next_message_after_fetch(%{fetch_after: fetch_after}) do
+    # otherwise, schedule a fetch
+    {:fetch, fetch_after}
+  end
+
+  defp update_state(%{body: {:redirect, :permanent, url}} = state) do
+    # update our URL if we got permanemtly redirected
+    update_state(%{state | url: url, body: []})
+  end
+
+  defp update_state(state) do
+    # decrease demand by one
+    %{state | body: [], demand: state.demand - 1}
   end
 end
