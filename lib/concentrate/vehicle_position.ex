@@ -35,9 +35,20 @@ defmodule Concentrate.VehiclePosition do
     @doc """
     Merging VehiclePositions takes the latest position for a given vehicle.
     """
+    def merge(first, %{last_updated: nil}) do
+      first
+    end
+
+    def merge(%{last_updated: nil}, second) do
+      second
+    end
+
     def merge(first, second) do
-      positions = [first, second]
-      Enum.min_by(positions, &DateTime.to_unix(&1.last_updated))
+      if DateTime.compare(first.last_updated, second.last_updated) == :lt do
+        second
+      else
+        first
+      end
     end
   end
 end
