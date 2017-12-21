@@ -33,6 +33,36 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
              ]
     end
 
+    test "uses the vehicle's ID as the entity ID, or the trip ID, or unique data" do
+      data = [
+        TripUpdate.new(trip_id: "trip"),
+        VehiclePosition.new(id: "1234", trip_id: "trip", latitude: 1, longitude: 1),
+        TripUpdate.new(trip_id: "5678"),
+        VehiclePosition.new(trip_id: "5678", latitude: 1, longitude: 1),
+        VehiclePosition.new(latitude: 1, longitude: 1)
+      ]
+
+      encoded = encode(data)
+      proto = GTFSRealtime.FeedMessage.decode(encoded)
+
+      assert %{
+               entity: [
+                 %{id: "1234"},
+                 %{id: "5678"},
+                 %{id: binary_id}
+               ]
+             } = proto
+
+      assert is_binary(binary_id)
+    end
+
+    test "vehicles with a non-matching trip ID generate a fake TripUpdate" do
+      data = [VehiclePosition.new(trip_id: "trip", latitude: 1.0, longitude: 1.0)]
+
+      assert round_trip(data) ==
+               [TripUpdate.new(trip_id: "trip", schedule_relationship: :UNSCHEDULED)] ++ data
+    end
+
     test "order of trip updates doesn't matter" do
       initial = [
         TripUpdate.new(trip_id: "1"),

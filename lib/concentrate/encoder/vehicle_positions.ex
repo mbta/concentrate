@@ -43,7 +43,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
 
   defp build_entity(%TripUpdate{} = update, acc) do
     entity = %FeedEntity{
-      id: "#{:erlang.phash2(update)}",
+      id: TripUpdate.trip_id(update) || "#{:erlang.phash2(update)}",
       vehicle: %GTFSRealtime.VehiclePosition{
         trip: %TripDescriptor{
           trip_id: TripUpdate.trip_id(update),
@@ -66,8 +66,10 @@ defmodule Concentrate.Encoder.VehiclePositions do
     {update_entity, prefix, suffix} =
       case find_entity(acc, trip_id) do
         nil ->
+          id = "#{:erlang.phash2(vp)}"
+
           {
-            %FeedEntity{id: "#{:erlang.phash2(vp)}", vehicle: %GTFSRealtime.VehiclePosition{}},
+            %FeedEntity{id: id, vehicle: %GTFSRealtime.VehiclePosition{}},
             [],
             acc
           }
@@ -99,7 +101,12 @@ defmodule Concentrate.Encoder.VehiclePositions do
         timestamp: time(VehiclePosition.last_updated(vp))
     }
 
-    update_entity = put_in(update_entity.vehicle, vehicle)
+    update_entity = %{
+      update_entity
+      | id: vehicle.vehicle.id || update_entity.id,
+        vehicle: vehicle
+    }
+
     prefix ++ [update_entity | suffix]
   end
 
@@ -119,6 +126,17 @@ defmodule Concentrate.Encoder.VehiclePositions do
 
   defp find_entity(_, nil, _) do
     nil
+  end
+
+  defp find_entity([], trip_id, prefix) do
+    entity = %FeedEntity{
+      id: trip_id,
+      vehicle: %GTFSRealtime.VehiclePosition{
+        trip: %GTFSRealtime.TripDescriptor{trip_id: trip_id, schedule_relationship: :UNSCHEDULED}
+      }
+    }
+
+    {entity, [], Enum.reverse(prefix)}
   end
 
   defp find_entity([head | tail], trip_id, prefix) do
