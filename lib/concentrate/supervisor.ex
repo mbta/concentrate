@@ -11,47 +11,65 @@ defmodule Concentrate.Supervisor do
   import Supervisor, only: [child_spec: 2]
 
   def start_link do
-    Supervisor.start_link(children(), strategy: :one_for_one)
+    config = Application.get_all_env(:concentrate)
+
+    Supervisor.start_link(children(config), strategy: :one_for_one)
   end
 
-  def children do
+  def children(config) do
+    {source_names, source_children} = sources(config[:sources])
+    {output_names, output_children} = encoders(config[:encoders])
+    merge = merge(source_names)
+    sinks = sinks(config[:sinks], output_names)
+    Enum.concat([source_children, merge, output_children, sinks])
+  end
+
+  def sources(config) do
+    children =
+      for {source, url} <- config[:gtfs_realtime] do
+        child_spec(
+          {
+            Concentrate.Producer.HTTP,
+            {url, name: source, parser: Concentrate.Parser.GTFSRealtime}
+          },
+          id: source
+        )
+      end
+
+    {child_ids(children), children}
+  end
+
+  def merge(source_names) do
     [
-      child_spec(
-        {
-          Concentrate.Producer.HTTP,
+      {Concentrate.Merge.ProducerConsumer, name: :merge, subscribe_to: source_names}
+    ]
+  end
+
+  def encoders(config) do
+    children =
+      for {filename, encoder} <- config[:files] do
+        child_spec(
           {
-            "http://developer.mbta.com/lib/GTRTFS/Alerts/VehiclePositions.pb",
-            name: :vehicle_positions, parser: Concentrate.Parser.GTFSRealtime
-          }
-        },
-        id: :vehicle_positions
-      ),
-      child_spec(
-        {
-          Concentrate.Producer.HTTP,
-          {
-            "http://developer.mbta.com/lib/GTRTFS/Alerts/TripUpdates.pb",
-            name: :trip_updates, parser: Concentrate.Parser.GTFSRealtime
-          }
-        },
-        id: :trip_updates
-      ),
-      {Concentrate.Merge.ProducerConsumer, [
-        name: :merge,
-        subscribe_to: [:vehicle_positions, :trip_updates]
-      ]},
-      {Concentrate.Encoder.ProducerConsumer, [
-        name: :file_output,
-        files: [
-          {"TripUpdates.pb", Concentrate.Encoder.TripUpdates},
-          {"VehiclePositions.pb", Concentrate.Encoder.VehiclePositions}
-        ],
-        subscribe_to: [:merge]
-      ]},
+            Concentrate.Encoder.ProducerConsumer,
+            name: encoder, files: [{filename, encoder}], subscribe_to: [:merge]
+          },
+          id: encoder
+        )
+      end
+
+    {child_ids(children), children}
+  end
+
+  def sinks(config, output_names) do
+    [
       {Concentrate.Sink.Filesystem, [
-        directory: "/tmp",
-        subscribe_to: [:file_output]
+        directory: config[:filesystem][:directory],
+        subscribe_to: output_names
       ]}
     ]
+  end
+
+  defp child_ids(children) do
+    for child <- children, do: child.id
   end
 end

@@ -9,3 +9,20 @@ log_level =
   end
 
 config :logger, level: log_level
+
+config :concentrate,
+  sources: [
+    gtfs_realtime: [
+      vehicle_positions: "http://developer.mbta.com/lib/GTRTFS/Alerts/VehiclePositions.pb",
+      trip_updates: "http://developer.mbta.com/lib/GTRTFS/Alerts/TripUpdates.pb"
+    ]
+  ],
+  encoders: [
+    files: [
+      {"TripUpdates.pb", Concentrate.Encoder.TripUpdates},
+      {"VehiclePositions.pb", Concentrate.Encoder.VehiclePositions}
+    ]
+  ],
+  sinks: [
+    filesystem: [directory: "/tmp"]
+  ]
