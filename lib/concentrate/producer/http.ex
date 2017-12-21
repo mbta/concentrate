@@ -127,7 +127,7 @@ defmodule Concentrate.Producer.HTTP do
   def handle_info(%HTTPoison.AsyncEnd{}, state) do
     events = parse_body(state)
 
-    case next_message_after_fetch(state) do
+    case next_message_after_fetch(state, events) do
       {message, after_time} ->
         Process.send_after(self(), message, after_time)
 
@@ -158,24 +158,31 @@ defmodule Concentrate.Producer.HTTP do
     end)
 
     [parsed]
+  catch
+    error ->
+      Logger.error(fn ->
+        "#{__MODULE__}: #{inspect(state.url)} parse error: #{inspect(error)}"
+      end)
+
+      []
   end
 
   defp parse_body(_state) do
     []
   end
 
-  defp next_message_after_fetch(%{body: {:redirect, _, url}}) do
+  defp next_message_after_fetch(%{body: {:redirect, _, url}}, _) do
     # refetch immediately if we got redirected
     {{:fetch, url}, 0}
   end
 
-  defp next_message_after_fetch(%{body: iolist, demand: demand})
-       when is_list(iolist) and demand < 2 do
+  defp next_message_after_fetch(%{demand: demand}, [_ | _])
+       when demand < 2 do
     # if we got data and there's no future demand, don't do anything for now
     nil
   end
 
-  defp next_message_after_fetch(%{fetch_after: fetch_after}) do
+  defp next_message_after_fetch(%{fetch_after: fetch_after}, _) do
     # otherwise, schedule a fetch
     {:fetch, fetch_after}
   end
