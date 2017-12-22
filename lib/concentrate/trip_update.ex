@@ -13,8 +13,6 @@ defmodule Concentrate.TripUpdate do
     schedule_relationship: :SCHEDULED
   ])
 
-  @opaque t :: %__MODULE__{}
-
   defimpl Concentrate.Mergeable do
     def key(%{trip_id: trip_id}), do: trip_id
 

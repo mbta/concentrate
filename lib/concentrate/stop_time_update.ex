@@ -15,8 +15,6 @@ defmodule Concentrate.StopTimeUpdate do
     schedule_relationship: :SCHEDULED
   ])
 
-  @opaque t :: %__MODULE__{}
-
   defimpl Concentrate.Mergeable do
     def key(%{trip_id: trip_id, stop_id: stop_id, stop_sequence: stop_sequence}) do
       {trip_id, stop_id, stop_sequence}

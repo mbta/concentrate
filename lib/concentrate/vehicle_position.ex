@@ -20,8 +20,6 @@ defmodule Concentrate.VehiclePosition do
     status: :IN_TRANSIT_TO
   ])
 
-  @opaque t :: %__MODULE__{}
-
   def new(opts) do
     # required fields
     _ = Keyword.fetch!(opts, :latitude)

@@ -16,7 +16,8 @@ defmodule Concentrate.StructHelpers do
   defmacro defstruct_accessors(fields) do
     [
       define_struct(fields),
-      define_new()
+      define_new(),
+      define_update()
     ] ++ for field <- fields, do: define_accessor(field)
   end
 
@@ -24,6 +25,7 @@ defmodule Concentrate.StructHelpers do
   def define_struct(fields) do
     quote do
       defstruct unquote(fields)
+      @opaque t :: %__MODULE__{}
     end
   end
 
@@ -40,6 +42,16 @@ defmodule Concentrate.StructHelpers do
   end
 
   @doc false
+  def define_update do
+    quote do
+      @spec update(%__MODULE__{}, Enumerable.t()) :: t
+      def update(%__MODULE__{} = existing, opts) do
+        Map.merge(existing, Map.new(opts))
+      end
+    end
+  end
+
+  @doc false
   def define_accessor({field, _default}) do
     define_accessor(field)
   end
@@ -47,6 +59,7 @@ defmodule Concentrate.StructHelpers do
   def define_accessor(field) do
     quote do
       @doc false
+      @spec unquote(field)(%__MODULE__{}) :: any
       def unquote(field)(%__MODULE__{} = struct), do: Map.get(struct, unquote(field))
       defoverridable [{unquote(field), 1}]
     end
