@@ -22,3 +22,5 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 concentrate-*.tar
 
+# Ignore any local configuration
+/config/*.local.exs

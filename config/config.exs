@@ -26,3 +26,5 @@ config :concentrate,
   sinks: [
     filesystem: [directory: "/tmp"]
   ]
+
+import_config "*.local.exs"
