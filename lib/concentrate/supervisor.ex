@@ -20,8 +20,9 @@ defmodule Concentrate.Supervisor do
     {source_names, source_children} = sources(config[:sources])
     {output_names, output_children} = encoders(config[:encoders])
     merge = merge(source_names)
+    filter = filter(config[:filters])
     sinks = sinks(config[:sinks], output_names)
-    Enum.concat([source_children, merge, output_children, sinks])
+    Enum.concat([source_children, merge, filter, output_children, sinks])
   end
 
   def sources(config) do
@@ -45,13 +46,22 @@ defmodule Concentrate.Supervisor do
     ]
   end
 
+  def filter(config) do
+    [
+      {
+        Concentrate.Filter.ProducerConsumer,
+        name: :filter, filters: config, subscribe_to: [:merge]
+      }
+    ]
+  end
+
   def encoders(config) do
     children =
       for {filename, encoder} <- config[:files] do
         child_spec(
           {
             Concentrate.Encoder.ProducerConsumer,
-            name: encoder, files: [{filename, encoder}], subscribe_to: [:merge]
+            name: encoder, files: [{filename, encoder}], subscribe_to: [:filter]
           },
           id: encoder
         )

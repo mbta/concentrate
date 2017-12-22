@@ -11,7 +11,7 @@ defmodule Concentrate.SupervisorTest do
 
   describe "children/1" do
     test "builds the right number of children" do
-      # currently, the right number is (number of sources + number of files + 2)
+      # currently, the right number is (number of sources + number of files + 3)
       config = [
         sources: [
           gtfs_realtime: [
@@ -25,8 +25,8 @@ defmodule Concentrate.SupervisorTest do
 
       actual = children(config)
 
-      # six children
-      assert [_, _, _, _, _, _] = actual
+      # seven children
+      assert [_, _, _, _, _, _, _] = actual
     end
   end
 end
