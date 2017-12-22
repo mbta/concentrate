@@ -11,6 +11,7 @@ defmodule Concentrate.Producer.HTTP do
     Module for keeping track of the state for an HTTP producer.
     """
     defstruct url: "",
+              get_opts: [],
               body: [],
               headers: [],
               parser: nil,
@@ -42,6 +43,9 @@ defmodule Concentrate.Producer.HTTP do
 
       {:fetch_after, fetch_after} ->
         %{state | fetch_after: fetch_after}
+
+      {:get_opts, opts} ->
+        %{state | get_opts: opts}
     end
   end
 
@@ -52,7 +56,7 @@ defmodule Concentrate.Producer.HTTP do
   end
 
   def handle_info({:fetch, url}, state) do
-    {:ok, _} = HTTPoison.get(url, state.headers, stream_to: self())
+    {:ok, _} = HTTPoison.get(url, state.headers, [stream_to: self()] ++ state.get_opts)
     {:noreply, [], state}
   end
 
@@ -121,6 +125,16 @@ defmodule Concentrate.Producer.HTTP do
   end
 
   def handle_info(%HTTPoison.AsyncChunk{}, state) do
+    {:noreply, [], state}
+  end
+
+  def handle_info(%HTTPoison.Error{reason: reason}, state) do
+    Logger.error(fn ->
+      "#{__MODULE__}: #{inspect(state.url)} error: #{inspect(reason)}"
+    end)
+
+    Process.send_after(self(), :fetch, state.fetch_after)
+    state = update_state(state)
     {:noreply, [], state}
   end
 
