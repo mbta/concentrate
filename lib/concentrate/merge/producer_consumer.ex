@@ -25,8 +25,7 @@ defmodule Concentrate.Merge.ProducerConsumer do
 
     merged =
       state
-      |> Map.values()
-      |> Stream.concat()
+      |> Stream.flat_map(fn {_from, data} -> data end)
       |> Merge.merge()
 
     {:noreply, [merged], state}
