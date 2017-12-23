@@ -24,3 +24,16 @@ mix credo
 mix test
 mix dialyzer
 ```
+
+## Docker
+
+Concentrate comes with a Dockerfile, allowing you to build an image that can
+be run anywhere Docker works. It's a [multi-stage](https://docs.docker.com/engine/userguide/eng-image/multistage-build/) build, so it requires at least Docker 17.05.
+
+```
+# build
+docker build -t concentrate:latest .
+
+# run
+docker run concentrate:latest
+```

@@ -37,6 +37,7 @@ defmodule Concentrate.MixProject do
       {:credo, "~> 0.8", only: :dev},
       {:bypass, "~> 0.8", only: :test},
       {:dialyxir, "~> 0.5", only: :dev},
+      {:distillery, "~> 1.4", runtime: false},
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:excoveralls, "~> 0.7", only: :test},
