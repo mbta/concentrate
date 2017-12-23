@@ -34,8 +34,9 @@ defmodule Concentrate.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:credo, "~> 0.8", only: :dev},
       {:bypass, "~> 0.8", only: :test},
+      {:credo, "~> 0.8", only: :dev},
+      {:csv, "~> 2.1"},
       {:dialyxir, "~> 0.5", only: :dev},
       {:distillery, "~> 1.4", runtime: false},
       {:ex_aws, "~> 2.0"},

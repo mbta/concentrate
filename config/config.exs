@@ -17,9 +17,13 @@ config :concentrate,
       trip_updates: "http://developer.mbta.com/lib/GTRTFS/Alerts/TripUpdates.pb"
     ]
   ],
+  gtfs: [
+    url: "https://www.mbta.com/uploadedfiles/MBTA_GTFS.zip"
+  ],
   filters: [
     Concentrate.Filter.VehicleWithNoTrip,
-    Concentrate.Filter.RoundSpeedToInteger
+    Concentrate.Filter.RoundSpeedToInteger,
+    Concentrate.Filter.IncludeRouteDirection
   ],
   encoders: [
     files: [

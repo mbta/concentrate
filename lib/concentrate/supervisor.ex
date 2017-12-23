@@ -13,16 +13,17 @@ defmodule Concentrate.Supervisor do
   def start_link do
     config = Application.get_all_env(:concentrate)
 
-    Supervisor.start_link(children(config), strategy: :one_for_one)
+    Supervisor.start_link(children(config), strategy: :rest_for_one)
   end
 
   def children(config) do
     {source_names, source_children} = sources(config[:sources])
     {output_names, output_children} = encoders(config[:encoders])
     merge = merge(source_names)
+    gtfs = gtfs(config[:gtfs])
     filter = filter(config[:filters])
     sinks = sinks(config[:sinks], output_names)
-    Enum.concat([source_children, merge, filter, output_children, sinks])
+    Enum.concat([source_children, merge, gtfs, filter, output_children, sinks])
   end
 
   def sources(config) do
@@ -43,6 +44,12 @@ defmodule Concentrate.Supervisor do
   def merge(source_names) do
     [
       {Concentrate.Merge.ProducerConsumer, name: :merge, subscribe_to: source_names}
+    ]
+  end
+
+  def gtfs(config) do
+    [
+      {Concentrate.Filter.GTFS.Supervisor, config}
     ]
   end
 
