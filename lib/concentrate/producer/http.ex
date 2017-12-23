@@ -172,16 +172,21 @@ defmodule Concentrate.Producer.HTTP do
     end)
 
     [parsed]
+  rescue
+    error -> parse_error(error, state)
   catch
-    error ->
-      Logger.error(fn ->
-        "#{__MODULE__}: #{inspect(state.url)} parse error: #{inspect(error)}"
-      end)
-
-      []
+    error -> parse_error(error, state)
   end
 
   defp parse_body(_state) do
+    []
+  end
+
+  defp parse_error(error, state) do
+    Logger.error(fn ->
+      "#{__MODULE__}: #{inspect(state.url)} parse error: #{inspect(error)}"
+    end)
+
     []
   end
 

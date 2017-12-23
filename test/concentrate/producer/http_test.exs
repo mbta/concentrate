@@ -184,6 +184,27 @@ defmodule Concentrate.Producer.HTTPTest do
       assert take_events(producer, 1) == [["agent"]]
     end
 
+    @tag :capture_log
+    test "a FunctionClauseError error in parsing isn't fatal", %{bypass: bypass} do
+      {:ok, agent} = response_agent()
+
+      agent
+      |> add_response(fn conn ->
+        send_resp(conn, 200, "failure")
+      end)
+
+      Bypass.expect(bypass, fn conn -> agent_response(agent, conn) end)
+
+      {:ok, producer} =
+        start_producer(
+          bypass,
+          fetch_after: 10,
+          parser: fn "agent" -> ["agent"] end
+        )
+
+      assert take_events(producer, 1) == [["agent"]]
+    end
+
     defp start_producer(bypass, opts \\ []) do
       url = "http://127.0.0.1:#{bypass.port}/"
       opts = Keyword.put_new(opts, :parser, fn body -> [body] end)
