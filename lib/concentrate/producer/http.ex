@@ -55,8 +55,13 @@ defmodule Concentrate.Producer.HTTP do
     {:noreply, [], state}
   end
 
+  @impl GenStage
   def handle_info({:fetch, url}, state) do
-    {:ok, _} = HTTPoison.get(url, state.headers, [stream_to: self()] ++ state.get_opts)
+    case HTTPoison.get(url, state.headers, [stream_to: self()] ++ state.get_opts) do
+      {:ok, _} -> :ok
+      {:error, error} -> log_error_and_retry(error, {:fetch, url}, state)
+    end
+
     {:noreply, [], state}
   end
 
@@ -214,5 +219,13 @@ defmodule Concentrate.Producer.HTTP do
   defp update_state(state) do
     # decrease demand by one
     %{state | body: [], demand: state.demand - 1}
+  end
+
+  defp log_error_and_retry(error, msg, state) do
+    Logger.error(fn ->
+      "#{__MODULE__}: #{inspect(state.url)} fetch error: #{inspect(error)}"
+    end)
+
+    Process.send_after(self(), msg, state.fetch_after)
   end
 end
