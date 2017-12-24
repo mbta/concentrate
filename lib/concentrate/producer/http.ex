@@ -3,6 +3,7 @@ defmodule Concentrate.Producer.HTTP do
   GenStage Producer which fulfills demand by fetching from an HTTP Server.
   """
   use GenStage
+  alias Concentrate.Producer.HTTP.StateMachine, as: SM
   require Logger
   @start_link_opts [:name]
 
@@ -10,13 +11,7 @@ defmodule Concentrate.Producer.HTTP do
     @moduledoc """
     Module for keeping track of the state for an HTTP producer.
     """
-    defstruct url: "",
-              get_opts: [],
-              body: [],
-              headers: [],
-              parser: nil,
-              fetch_after: 5_000,
-              demand: 0
+    defstruct [:machine, :parser, demand: 0]
   end
 
   alias __MODULE__.State
@@ -29,151 +24,49 @@ defmodule Concentrate.Producer.HTTP do
 
   @impl GenStage
   def init({url, opts}) do
-    state = Enum.reduce(opts, %State{url: url}, &update_state_opt(&2, &1))
-    {:producer, state}
-  end
+    parser =
+      case Keyword.get(opts, :parser) do
+        module when is_atom(module) ->
+          &module.parse/1
 
-  defp update_state_opt(state, key_value) do
-    case key_value do
-      {:parser, module} when is_atom(module) ->
-        %{state | parser: &module.parse/1}
+        fun when is_function(fun, 1) ->
+          fun
+      end
 
-      {:parser, fun} when is_function(fun, 1) ->
-        %{state | parser: fun}
-
-      {:fetch_after, fetch_after} ->
-        %{state | fetch_after: fetch_after}
-
-      {:get_opts, opts} ->
-        %{state | get_opts: opts}
-    end
+    opts = Keyword.drop(opts, [:parser])
+    machine = SM.init(url, opts)
+    {:producer, %State{machine: machine, parser: parser}}
   end
 
   @impl GenStage
-  def handle_info(:fetch, state) do
-    send(self(), {:fetch, state.url})
-    {:noreply, [], state}
+  def handle_info(message, %{machine: machine, demand: demand} = state) do
+    {machine, bodies, outgoing_messages} = SM.message(machine, message)
+    events = parse_bodies(bodies, state)
+    new_demand = demand - length(events)
+
+    if demand > 0 do
+      send_outgoing_messages(outgoing_messages)
+    end
+
+    {:noreply, events, %{state | machine: machine, demand: new_demand}}
   end
 
   @impl GenStage
-  def handle_info({:fetch, url}, state) do
-    case HTTPoison.get(url, state.headers, [stream_to: self()] ++ state.get_opts) do
-      {:ok, _} -> :ok
-      {:error, error} -> log_error_and_retry(error, {:fetch, url}, state)
-    end
-
-    {:noreply, [], state}
+  def handle_demand(new_demand, %{machine: machine, demand: existing_demand} = state) do
+    {machine, [], outgoing_messages} = SM.fetch(machine)
+    send_outgoing_messages(outgoing_messages)
+    {:noreply, [], %{state | machine: machine, demand: new_demand + existing_demand}}
   end
 
-  def handle_info(%HTTPoison.AsyncStatus{code: 200}, state) do
-    {:noreply, [], state}
+  defp parse_bodies([], _state) do
+    []
   end
 
-  def handle_info(%HTTPoison.AsyncStatus{code: 301}, state) do
-    {:noreply, [], %{state | body: {:redirect, :permanent}}}
-  end
-
-  def handle_info(%HTTPoison.AsyncStatus{code: 302}, state) do
-    {:noreply, [], %{state | body: {:redirect, :temporary}}}
-  end
-
-  def handle_info(%HTTPoison.AsyncStatus{code: 304}, state) do
-    Logger.info(fn ->
-      "#{__MODULE__}: #{inspect(state.url)} not modified"
-    end)
-
-    {:noreply, [], %{state | body: :halt}}
-  end
-
-  def handle_info(%HTTPoison.AsyncStatus{code: code}, state) do
-    Logger.warn(fn ->
-      "#{__MODULE__}: #{inspect(state.url)} unexpected code #{inspect(code)}"
-    end)
-
-    {:noreply, [], %{state | body: :halt}}
-  end
-
-  def handle_info(%HTTPoison.AsyncHeaders{}, %{body: :halt} = state) do
-    {:noreply, [], state}
-  end
-
-  def handle_info(%HTTPoison.AsyncHeaders{headers: headers}, %{body: {:redirect, type}} = state) do
-    {_, new_location} =
-      Enum.find(headers, fn {header, _} -> String.downcase(header) == "location" end)
-
-    {:noreply, [], %{state | body: {:redirect, type, new_location}}}
-  end
-
-  def handle_info(%HTTPoison.AsyncHeaders{headers: resp_headers}, state) do
-    # grab the cache headers
-    headers =
-      Enum.reduce(resp_headers, [], fn {header, value}, acc ->
-        cond do
-          String.downcase(header) == "last-modified" ->
-            [{"if-modified-since", value} | acc]
-
-          String.downcase(header) == "etag" ->
-            [{"if-none-match", value} | acc]
-
-          true ->
-            acc
-        end
-      end)
-
-    state = %{state | headers: headers}
-    {:noreply, [], state}
-  end
-
-  def handle_info(%HTTPoison.AsyncChunk{chunk: chunk}, %{body: iolist} = state)
-      when is_list(iolist) do
-    {:noreply, [], %{state | body: [iolist, chunk]}}
-  end
-
-  def handle_info(%HTTPoison.AsyncChunk{}, state) do
-    {:noreply, [], state}
-  end
-
-  def handle_info(%HTTPoison.Error{reason: reason}, state) do
-    Logger.error(fn ->
-      "#{__MODULE__}: #{inspect(state.url)} error: #{inspect(reason)}"
-    end)
-
-    Process.send_after(self(), :fetch, state.fetch_after)
-    state = update_state(state)
-    {:noreply, [], state}
-  end
-
-  def handle_info(%HTTPoison.AsyncEnd{}, state) do
-    events = parse_body(state)
-
-    case next_message_after_fetch(state, events) do
-      {message, after_time} ->
-        Process.send_after(self(), message, after_time)
-
-      _ ->
-        :ok
-    end
-
-    state = update_state(state)
-
-    {:noreply, events, state}
-  end
-
-  def handle_info(message, state) do
-    super(message, state)
-  end
-
-  @impl GenStage
-  def handle_demand(new_demand, %{demand: existing_demand} = state) do
-    send(self(), :fetch)
-    {:noreply, [], %{state | demand: new_demand + existing_demand}}
-  end
-
-  defp parse_body(%{body: iolist} = state) when is_list(iolist) do
-    parsed = state.parser.(IO.iodata_to_binary(iolist))
+  defp parse_bodies([binary], state) do
+    parsed = state.parser.(binary)
 
     Logger.info(fn ->
-      "#{__MODULE__}: #{inspect(state.url)} got #{length(parsed)} records"
+      "#{__MODULE__}: #{inspect(state.machine.url)} got #{length(parsed)} records"
     end)
 
     [parsed]
@@ -183,49 +76,17 @@ defmodule Concentrate.Producer.HTTP do
     error -> parse_error(error, state)
   end
 
-  defp parse_body(_state) do
-    []
-  end
-
   defp parse_error(error, state) do
     Logger.error(fn ->
-      "#{__MODULE__}: #{inspect(state.url)} parse error: #{inspect(error)}"
+      "#{__MODULE__}: #{inspect(state.machine.url)} parse error: #{inspect(error)}"
     end)
 
     []
   end
 
-  defp next_message_after_fetch(%{body: {:redirect, _, url}}, _) do
-    # refetch immediately if we got redirected
-    {{:fetch, url}, 0}
-  end
-
-  defp next_message_after_fetch(%{demand: demand}, [_ | _])
-       when demand < 2 do
-    # if we got data and there's no future demand, don't do anything for now
-    nil
-  end
-
-  defp next_message_after_fetch(%{fetch_after: fetch_after}, _) do
-    # otherwise, schedule a fetch
-    {:fetch, fetch_after}
-  end
-
-  defp update_state(%{body: {:redirect, :permanent, url}} = state) do
-    # update our URL if we got permanemtly redirected
-    update_state(%{state | url: url, body: []})
-  end
-
-  defp update_state(state) do
-    # decrease demand by one
-    %{state | body: [], demand: state.demand - 1}
-  end
-
-  defp log_error_and_retry(error, msg, state) do
-    Logger.error(fn ->
-      "#{__MODULE__}: #{inspect(state.url)} fetch error: #{inspect(error)}"
-    end)
-
-    Process.send_after(self(), msg, state.fetch_after)
+  defp send_outgoing_messages(outgoing_messages) do
+    for {message, send_after} <- outgoing_messages do
+      Process.send_after(self(), message, send_after)
+    end
   end
 end

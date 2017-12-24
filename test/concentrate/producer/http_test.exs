@@ -2,6 +2,7 @@ defmodule Concentrate.Producer.HTTPTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.Producer.HTTP
+  alias Concentrate.Producer.HTTP.StateMachine
   import Plug.Conn, only: [get_req_header: 2, put_resp_header: 3, send_resp: 3]
 
   describe "init/1" do
@@ -19,7 +20,8 @@ defmodule Concentrate.Producer.HTTPTest do
   describe "handle_info/2" do
     @tag :capture_log
     test "ignores unknown messages" do
-      state = %Concentrate.Producer.HTTP.State{}
+      machine = StateMachine.init("url", [])
+      state = %Concentrate.Producer.HTTP.State{machine: machine}
       assert {:noreply, [], ^state} = handle_info(:unknown, state)
     end
   end
