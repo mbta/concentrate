@@ -5,6 +5,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
   @behaviour Concentrate.Encoder
   alias Concentrate.{TripUpdate, VehiclePosition}
   alias Concentrate.Parser.GTFSRealtime
+  import Concentrate.Encoder.GTFSRealtimeGroup
 
   alias GTFSRealtime.{
     FeedMessage,
@@ -36,48 +37,40 @@ defmodule Concentrate.Encoder.VehiclePositions do
 
   def feed_entity(list) do
     list
-    |> Enum.reduce([], &build_entity/2)
-    |> Enum.reject(&is_nil(&1.vehicle.vehicle))
-    |> Enum.reverse()
+    |> group
+    |> Enum.flat_map(&build_entity/1)
   end
 
-  defp build_entity(%TripUpdate{} = update, acc) do
-    entity = %FeedEntity{
-      id: TripUpdate.trip_id(update) || "#{:erlang.phash2(update)}",
-      vehicle: %GTFSRealtime.VehiclePosition{
-        trip: %TripDescriptor{
-          trip_id: TripUpdate.trip_id(update),
-          route_id: TripUpdate.route_id(update),
-          direction_id: TripUpdate.direction_id(update),
-          start_time: TripUpdate.start_time(update),
-          start_date: TripUpdate.start_date(update),
-          schedule_relationship: TripUpdate.schedule_relationship(update)
-        }
+  defp build_entity({%TripUpdate{} = update, vps, _stus}) do
+    trip = trip_descriptor(update)
+
+    for vp <- vps do
+      %FeedEntity{
+        id: entity_id(vp),
+        vehicle: build_vehicle(vp, trip)
       }
-    }
-
-    [entity | acc]
+    end
   end
 
-  defp build_entity(%VehiclePosition{} = vp, acc) do
-    # make sure we're updating the right trip
-    trip_id = VehiclePosition.trip_id(vp)
-
-    {update_entity, prefix, suffix} =
-      case find_entity(acc, trip_id) do
-        nil ->
-          id = "#{:erlang.phash2(vp)}"
-
-          {
-            %FeedEntity{id: id, vehicle: %GTFSRealtime.VehiclePosition{}},
-            [],
-            acc
+  defp build_entity({nil, vps, _stus}) do
+    # vehicles without a trip
+    for vp <- vps do
+      trip =
+        if trip_id = VehiclePosition.trip_id(vp) do
+          %TripDescriptor{
+            trip_id: trip_id,
+            schedule_relationship: :UNSCHEDULED
           }
+        end
 
-        other ->
-          other
-      end
+      %FeedEntity{
+        id: entity_id(vp),
+        vehicle: build_vehicle(vp, trip)
+      }
+    end
+  end
 
+  defp build_vehicle(%VehiclePosition{} = vp, trip) do
     descriptor = %VehicleDescriptor{
       id: VehiclePosition.id(vp),
       label: VehiclePosition.label(vp),
@@ -91,27 +84,19 @@ defmodule Concentrate.Encoder.VehiclePositions do
       speed: VehiclePosition.speed(vp)
     }
 
-    vehicle = %{
-      update_entity.vehicle
-      | vehicle: descriptor,
-        position: position,
-        stop_id: VehiclePosition.stop_id(vp),
-        current_stop_sequence: VehiclePosition.stop_sequence(vp),
-        current_status: VehiclePosition.status(vp),
-        timestamp: time(VehiclePosition.last_updated(vp))
+    %GTFSRealtime.VehiclePosition{
+      trip: trip,
+      vehicle: descriptor,
+      position: position,
+      stop_id: VehiclePosition.stop_id(vp),
+      current_stop_sequence: VehiclePosition.stop_sequence(vp),
+      current_status: VehiclePosition.status(vp),
+      timestamp: time(VehiclePosition.last_updated(vp))
     }
-
-    update_entity = %{
-      update_entity
-      | id: vehicle.vehicle.id || update_entity.id,
-        vehicle: vehicle
-    }
-
-    prefix ++ [update_entity | suffix]
   end
 
-  defp build_entity(_, acc) do
-    acc
+  defp entity_id(vp) do
+    VehiclePosition.id(vp) || VehiclePosition.trip_id(vp) || "#{:erlang.phash2(vp)}"
   end
 
   def time(nil) do
@@ -122,30 +107,14 @@ defmodule Concentrate.Encoder.VehiclePositions do
     DateTime.to_unix(dt)
   end
 
-  defp find_entity(list, trip_id, prefix \\ [])
-
-  defp find_entity(_, nil, _) do
-    nil
-  end
-
-  defp find_entity([], trip_id, prefix) do
-    entity = %FeedEntity{
-      id: trip_id,
-      vehicle: %GTFSRealtime.VehiclePosition{
-        trip: %GTFSRealtime.TripDescriptor{trip_id: trip_id, schedule_relationship: :UNSCHEDULED}
-      }
+  defp trip_descriptor(update) do
+    %TripDescriptor{
+      trip_id: TripUpdate.trip_id(update),
+      route_id: TripUpdate.route_id(update),
+      direction_id: TripUpdate.direction_id(update),
+      start_time: TripUpdate.start_time(update),
+      start_date: TripUpdate.start_date(update),
+      schedule_relationship: TripUpdate.schedule_relationship(update)
     }
-
-    {entity, [], Enum.reverse(prefix)}
-  end
-
-  defp find_entity([head | tail], trip_id, prefix) do
-    case head.vehicle do
-      %{trip: %{trip_id: ^trip_id}} ->
-        {head, Enum.reverse(prefix), tail}
-
-      _ ->
-        find_entity(tail, trip_id, [head | prefix])
-    end
   end
 end
