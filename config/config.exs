@@ -22,7 +22,8 @@ config :concentrate,
   encoders: [
     files: [
       {"TripUpdates.pb", Concentrate.Encoder.TripUpdates},
-      {"VehiclePositions.pb", Concentrate.Encoder.VehiclePositions}
+      {"VehiclePositions.pb", Concentrate.Encoder.VehiclePositions},
+      {"TripUpdates_enhanced.json", Concentrate.Encoder.TripUpdatesEnhanced}
     ]
   ],
   sinks: [
