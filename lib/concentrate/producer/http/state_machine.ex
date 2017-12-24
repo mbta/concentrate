@@ -6,7 +6,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defstruct url: "",
             get_opts: [],
-            body: [],
+            body: "",
             headers: [],
             fetch_after: 5_000
 
@@ -127,9 +127,9 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, [], []}
   end
 
-  defp handle_message(%{body: iolist} = machine, %HTTPoison.AsyncChunk{chunk: chunk})
-       when is_list(iolist) do
-    machine = %{machine | body: [iolist, chunk]}
+  defp handle_message(%{body: binary} = machine, %HTTPoison.AsyncChunk{chunk: chunk})
+       when is_binary(binary) do
+    machine = %{machine | body: binary <> chunk}
     {machine, [], []}
   end
 
@@ -166,8 +166,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, [], []}
   end
 
-  defp parse_bodies([_ | _] = body) do
-    [IO.iodata_to_binary(body)]
+  defp parse_bodies(body) when is_binary(body) do
+    [body]
   end
 
   defp parse_bodies(_) do
@@ -185,7 +185,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   end
 
   defp reset_machine(machine) do
-    %{machine | body: []}
+    %{machine | body: ""}
   end
 
   defp log_error(error, machine) do
