@@ -75,14 +75,16 @@ defmodule Concentrate.Producer.HTTP do
 
     [parsed]
   rescue
-    error -> parse_error(error, state)
+    error -> parse_error(error, state, System.stacktrace())
   catch
-    error -> parse_error(error, state)
+    error -> parse_error(error, state, System.stacktrace())
   end
 
-  defp parse_error(error, state) do
+  defp parse_error(error, state, trace) do
     Logger.error(fn ->
-      "#{__MODULE__}: #{inspect(state.machine.url)} parse error: #{inspect(error)}"
+      "#{__MODULE__}: #{inspect(state.machine.url)} parse error: #{inspect(error)}\n#{
+        Exception.format_stacktrace(trace)
+      }"
     end)
 
     []
