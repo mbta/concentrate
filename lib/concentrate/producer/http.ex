@@ -44,7 +44,7 @@ defmodule Concentrate.Producer.HTTP do
     events = parse_bodies(bodies, state)
     new_demand = demand - length(events)
 
-    if demand > 0 do
+    if new_demand > 0 do
       send_outgoing_messages(outgoing_messages)
     end
 
@@ -54,7 +54,11 @@ defmodule Concentrate.Producer.HTTP do
   @impl GenStage
   def handle_demand(new_demand, %{machine: machine, demand: existing_demand} = state) do
     {machine, [], outgoing_messages} = SM.fetch(machine)
-    send_outgoing_messages(outgoing_messages)
+
+    if existing_demand == 0 do
+      send_outgoing_messages(outgoing_messages)
+    end
+
     {:noreply, [], %{state | machine: machine, demand: new_demand + existing_demand}}
   end
 

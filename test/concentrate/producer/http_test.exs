@@ -26,6 +26,17 @@ defmodule Concentrate.Producer.HTTPTest do
     end
   end
 
+  describe "handle_demand/3" do
+    test "only send messages if there was no previous demand" do
+      {_, state} = init({"url", []})
+      {:noreply, _, state} = handle_demand(1, state)
+      assert_receive {:fetch, "url"}
+      # there's demand now, so more incoming demand shouldn't reschedule
+      handle_demand(1, state)
+      refute_receive {:fetch, "url"}
+    end
+  end
+
   describe "bypass" do
     setup do
       Application.ensure_all_started(:bypass)
