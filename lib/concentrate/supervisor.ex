@@ -91,12 +91,20 @@ defmodule Concentrate.Supervisor do
   end
 
   def sinks(config, output_names) do
-    [
-      {Concentrate.Sink.Filesystem, [
-        directory: config[:filesystem][:directory],
-        subscribe_to: output_names
-      ]}
-    ]
+    for {sink_type, sink_config} <- config do
+      sink_config(sink_type, sink_config, output_names)
+    end
+  end
+
+  defp sink_config(:filesystem, config, output_names) do
+    {Concentrate.Sink.Filesystem, [
+      directory: config[:directory],
+      subscribe_to: output_names
+    ]}
+  end
+
+  defp sink_config(:s3, config, output_names) do
+    {Concentrate.Sink.S3, [subscribe_to: output_names] ++ config}
   end
 
   defp child_ids(children) do
