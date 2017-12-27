@@ -17,7 +17,8 @@ config :concentrate,
   filters: [
     Concentrate.Filter.VehicleWithNoTrip,
     Concentrate.Filter.RoundSpeedToInteger,
-    Concentrate.Filter.IncludeRouteDirection
+    Concentrate.Filter.IncludeRouteDirection,
+    Concentrate.Filter.RemoveUnneededTimes
   ],
   encoders: [
     files: [

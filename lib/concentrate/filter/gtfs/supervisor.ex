@@ -18,7 +18,8 @@ defmodule Concentrate.Filter.GTFS.Supervisor do
               parser: Concentrate.Filter.GTFS.Unzip, fetch_after: @one_hour, name: :gtfs_producer
             }
           },
-          {Concentrate.Filter.GTFS.Trips, subscribe_to: [:gtfs_producer]}
+          {Concentrate.Filter.GTFS.Trips, subscribe_to: [:gtfs_producer]},
+          {Concentrate.Filter.GTFS.FirstLastStopSequence, subscribe_to: [:gtfs_producer]}
         ],
         strategy: :rest_for_one
       )
