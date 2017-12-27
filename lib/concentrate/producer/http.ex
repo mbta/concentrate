@@ -35,7 +35,12 @@ defmodule Concentrate.Producer.HTTP do
 
     opts = Keyword.drop(opts, [:parser])
     machine = SM.init(url, opts)
-    {:producer, %State{machine: machine, parser: parser}}
+
+    {
+      :producer,
+      %State{machine: machine, parser: parser},
+      dispatcher: GenStage.BroadcastDispatcher
+    }
   end
 
   @impl GenStage

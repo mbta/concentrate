@@ -12,7 +12,7 @@ defmodule Concentrate.Producer.HTTPTest do
         def parse(_body), do: []
       end
 
-      assert {:producer, state} = init({"url", parser: __MODULE__.TestParser})
+      assert {:producer, state, _} = init({"url", parser: __MODULE__.TestParser})
       assert state.parser == &__MODULE__.TestParser.parse/1
     end
   end
@@ -28,7 +28,7 @@ defmodule Concentrate.Producer.HTTPTest do
 
   describe "handle_demand/3" do
     test "only send messages if there was no previous demand" do
-      {_, state} = init({"url", []})
+      {_, state, _} = init({"url", []})
       {:noreply, _, state} = handle_demand(1, state)
       assert_receive {:fetch, "url"}
       # there's demand now, so more incoming demand shouldn't reschedule
