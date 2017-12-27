@@ -18,7 +18,7 @@ WORKDIR /root
 RUN elixir --erl "-smp enable" /usr/local/bin/mix do deps.get --only prod, compile, release --verbose
 
 # Second stage: uses the built .tgz to get the files over
-FROM elixir:alpine
+FROM alpine:latest
 
 RUN apk add --update libssl1.0 ncurses-libs bash \
 	&& rm -rf /var/cache/apk
@@ -28,8 +28,6 @@ ENV MIX_ENV=prod TERM=xterm LANG=C.UTF-8 REPLACE_OS_VARS=true
 
 WORKDIR /root/
 
-COPY --from=builder /root/_build/prod/rel/concentrate/releases/*/concentrate.tar.gz .
+COPY --from=builder /root/_build/prod/rel /root/rel
 
-RUN tar -zxf concentrate.tar.gz && rm concentrate.tar.gz
-
-CMD ["/root/bin/concentrate", "foreground"]
+CMD ["/root/rel/concentrate/bin/concentrate", "foreground"]
