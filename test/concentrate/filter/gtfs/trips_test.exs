@@ -9,7 +9,7 @@ defmodule Concentrate.Filter.GTFS.TripsTest do
   """
 
   setup do
-    {:ok, _pid} = start_link([])
+    start_supervised(Concentrate.Filter.GTFS.Trips)
     event = [{"trips.txt", @body}]
     # relies on being able to update the table from a different process
     handle_events([event], :ignored, :ignored)

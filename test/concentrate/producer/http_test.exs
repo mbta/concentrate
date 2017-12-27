@@ -220,7 +220,7 @@ defmodule Concentrate.Producer.HTTPTest do
 
     @tag :capture_log
     test "a fetch error is not fatal" do
-      {:ok, pid} = start_link({"nodomain.dne", []})
+      {:ok, pid} = start_supervised({Concentrate.Producer.HTTP, {"nodomain.dne", []}})
       # this will never finish, so run it in a separate process
       Task.async(fn -> take_events(pid, 1) end)
       :timer.sleep(50)
@@ -231,7 +231,7 @@ defmodule Concentrate.Producer.HTTPTest do
       url = "http://127.0.0.1:#{bypass.port}/"
       opts = Keyword.put_new(opts, :parser, fn body -> [body] end)
 
-      start_link({url, opts})
+      {:ok, _} = start_supervised({Concentrate.Producer.HTTP, {url, opts}})
     end
 
     defp take_events(producer, event_count) do
