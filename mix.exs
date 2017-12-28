@@ -26,9 +26,17 @@ defmodule Concentrate.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger | env_applications(Mix.env())],
       mod: {Concentrate, []}
     ]
+  end
+
+  defp env_applications(:prod) do
+    [:sasl]
+  end
+
+  defp env_applications(_) do
+    []
   end
 
   # Run "mix help deps" to learn about dependencies.
@@ -38,7 +46,8 @@ defmodule Concentrate.MixProject do
       {:credo, "~> 0.8", only: :dev},
       {:csv, "~> 2.1"},
       {:dialyxir, "~> 0.5", only: :dev},
-      {:distillery, "~> 1.4", runtime: false},
+      {:distillery, "~> 1.4", runtime: false, only: :prod},
+      {:ehmon, git: "https://github.com/heroku/ehmon.git", tag: "v4", only: :prod},
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:excoveralls, "~> 0.7", only: :test},

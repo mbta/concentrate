@@ -2,13 +2,7 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-log_level =
-  case Mix.env() do
-    :test -> :warn
-    _ -> :info
-  end
-
-config :logger, level: log_level
+config :logger, level: :debug
 
 config :concentrate,
   sources: [
@@ -35,4 +29,4 @@ config :concentrate,
     filesystem: [directory: "/tmp"]
   ]
 
-import_config "*.local.exs"
+import_config "#{Mix.env()}.exs"
