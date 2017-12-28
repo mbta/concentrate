@@ -41,17 +41,13 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   end
 
   defp handle_message(machine, {:fetch, url}) do
-    messages =
-      case HTTPoison.get(url, machine.headers, [stream_to: self()] ++ machine.get_opts) do
-        {:ok, _} ->
-          []
+    case HTTPoison.get(url, machine.headers, [stream_to: self()] ++ machine.get_opts) do
+      {:ok, _} ->
+        {machine, [], []}
 
-        {:error, error} ->
-          log_error(error, machine)
-          [{fetch_message(machine), machine.fetch_after}]
-      end
-
-    {machine, [], messages}
+      {:error, error} ->
+        handle_message(machine, error)
+    end
   end
 
   defp handle_message(machine, %HTTPoison.AsyncStatus{code: 200}) do
@@ -138,9 +134,12 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   end
 
   defp handle_message(machine, %HTTPoison.Error{reason: reason}) do
-    Logger.error(fn ->
-      "#{__MODULE__}: #{inspect(machine.url)} error: #{inspect(reason)}"
-    end)
+    log_level = error_log_level(reason)
+
+    _ =
+      Logger.log(log_level, fn ->
+        "#{__MODULE__}: #{inspect(machine.url)} error: #{inspect(reason)}"
+      end)
 
     message = fetch_message(machine)
     messages = [{message, delay_after_fetch(machine)}]
@@ -188,9 +187,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     %{machine | body: ""}
   end
 
-  defp log_error(error, machine) do
-    Logger.error(fn ->
-      "#{__MODULE__}: #{inspect(machine.url)} fetch error: #{inspect(error)}"
-    end)
-  end
+  defp error_log_level(:closed), do: :warn
+  defp error_log_level({:closed, _}), do: :warn
+  defp error_log_level(_), do: :error
 end
