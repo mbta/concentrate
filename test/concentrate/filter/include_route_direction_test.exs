@@ -4,16 +4,7 @@ defmodule Concentrate.Filter.IncludeRouteDirectionTest do
   import Concentrate.Filter.IncludeRouteDirection
   alias Concentrate.TripUpdate
 
-  defmodule FakeTrips do
-    @moduledoc "Fake implementation of Filter.GTFS.Trips"
-    def route_id("trip"), do: "route"
-    def route_id(_), do: nil
-
-    def direction_id("trip"), do: 1
-    def direction_id(_), do: nil
-  end
-
-  @state __MODULE__.FakeTrips
+  @state Concentrate.Filter.FakeTrips
 
   describe "filter/2" do
     test "a trip update with a route/direction is kept as-is" do
