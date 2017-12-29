@@ -41,9 +41,10 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
       for alert <- alerts,
           Alert.effect(alert) == :NO_SERVICE,
           entity <- Alert.informed_entity(alert),
-          not is_nil(InformedEntity.stop_id(entity)),
+          stop_id = InformedEntity.stop_id(entity),
+          not is_nil(stop_id),
           {start, stop} <- Alert.active_period(alert) do
-        {InformedEntity.stop_id(entity), DateTime.to_unix(start), DateTime.to_unix(stop), entity}
+        {stop_id, DateTime.to_unix(start), DateTime.to_unix(stop), entity}
       end
 
     unless inserts == [] do

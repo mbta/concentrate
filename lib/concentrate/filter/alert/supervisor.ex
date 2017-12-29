@@ -16,7 +16,8 @@ defmodule Concentrate.Filter.Alert.Supervisor do
               parser: Concentrate.Parser.Alerts, fetch_after: 10_000, name: :alert_producer
             }
           },
-          {Concentrate.Filter.Alert.ClosedStops, subscribe_to: [:alert_producer]}
+          {Concentrate.Filter.Alert.ClosedStops, subscribe_to: [:alert_producer]},
+          {Concentrate.Filter.Alert.CancelledTrips, subscribe_to: [:alert_producer]}
         ],
         strategy: :rest_for_one
       )
