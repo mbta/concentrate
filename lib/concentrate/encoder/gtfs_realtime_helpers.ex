@@ -1,5 +1,7 @@
-defmodule Concentrate.Encoder.GTFSRealtimeGroup do
-  @moduledoc false
+defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
+  @moduledoc """
+  Helper functions for encoding GTFS-Realtime files.
+  """
   alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
 
   @doc """
@@ -16,6 +18,25 @@ defmodule Concentrate.Encoder.GTFSRealtimeGroup do
         vps != [] or stus != [] do
       {tu, Enum.reverse(vps), Enum.reverse(stus)}
     end
+  end
+
+  @doc """
+  Encodes a Date into the GTFS-Realtime format YYYYMMDD.
+
+  ## Examples
+
+      iex> import Concentrate.Encoder.GTFSRealtimeHelpers
+      iex> encode_date(nil)
+      nil
+      iex> encode_date(~D[1970-01-03])
+      "19700103"
+  """
+  def encode_date(nil) do
+    nil
+  end
+
+  def encode_date(%Date{} = date) do
+    Date.to_iso8601(date, :basic)
   end
 
   defp group_by_trip_id(%TripUpdate{} = tu, map) do

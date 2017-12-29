@@ -1,8 +1,10 @@
-defmodule Concentrate.Encoder.GTFSRealtimeGroupTest do
+defmodule Concentrate.Encoder.GTFSRealtimeHelpersTest do
   @moduledoc false
   use ExUnit.Case, async: true
-  import Concentrate.Encoder.GTFSRealtimeGroup
+  import Concentrate.Encoder.GTFSRealtimeHelpers
   alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
+
+  doctest Concentrate.Encoder.GTFSRealtimeHelpers
 
   describe "group/1" do
     test "groups items by their trip ID" do

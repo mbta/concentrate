@@ -6,7 +6,7 @@ defmodule Concentrate.Encoder.TripUpdates do
   alias Concentrate.{TripUpdate, StopTimeUpdate}
   alias Concentrate.Parser.GTFSRealtime
   alias GTFSRealtime.{FeedMessage, FeedHeader, FeedEntity, TripDescriptor}
-  import Concentrate.Encoder.GTFSRealtimeGroup
+  import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
   def encode(list) when is_list(list) do
@@ -43,7 +43,7 @@ defmodule Concentrate.Encoder.TripUpdates do
             route_id: TripUpdate.route_id(update),
             direction_id: TripUpdate.direction_id(update),
             start_time: TripUpdate.start_time(update),
-            start_date: TripUpdate.start_date(update),
+            start_date: encode_date(TripUpdate.start_date(update)),
             schedule_relationship: TripUpdate.schedule_relationship(update)
           },
           stop_time_update: Enum.map(stus, &build_stop_time_update/1)

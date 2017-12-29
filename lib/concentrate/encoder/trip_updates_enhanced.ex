@@ -4,7 +4,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
   """
   @behaviour Concentrate.Encoder
   alias Concentrate.{TripUpdate, StopTimeUpdate}
-  import Concentrate.Encoder.GTFSRealtimeGroup
+  import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
   def encode(list) when is_list(list) do

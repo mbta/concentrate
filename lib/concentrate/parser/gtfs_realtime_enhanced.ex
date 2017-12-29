@@ -69,11 +69,31 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         trip_id: optional_copy(trip["trip_id"]),
         route_id: optional_copy(trip["route_id"]),
         direction_id: trip["direction_id"],
-        start_date: optional_copy(trip["start_date"]),
+        start_date: date(trip["start_date"]),
         start_time: optional_copy(trip["start_time"]),
         schedule_relationship: schedule_relationship(trip["schedule_relationship"])
       )
     ]
+  end
+
+  def date(nil) do
+    nil
+  end
+
+  def date(<<year_str::binary-4, month_str::binary-2, day_str::binary-2>>) do
+    {:ok, date} =
+      Date.new(
+        String.to_integer(year_str),
+        String.to_integer(month_str),
+        String.to_integer(day_str)
+      )
+
+    date
+  end
+
+  def date(date) when is_binary(date) do
+    {:ok, date} = Date.from_iso8601(date)
+    date
   end
 
   defp time_from_event(nil), do: nil
