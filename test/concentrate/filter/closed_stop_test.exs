@@ -20,11 +20,14 @@ defmodule Concentrate.Filter.ClosedStopTest do
         StopTimeUpdate.new(
           trip_id: "trip",
           stop_id: "stop",
-          arrival_time: @valid_date_time
+          arrival_time: @valid_date_time,
+          departure_time: @valid_date_time
         )
 
       assert {:cont, new_stu, _} = filter(stu, @state)
       assert StopTimeUpdate.schedule_relationship(new_stu) == :SKIPPED
+      assert StopTimeUpdate.arrival_time(new_stu) == nil
+      assert StopTimeUpdate.departure_time(new_stu) == nil
     end
 
     test "does not skip the stop time if the stop is closed at a different time" do

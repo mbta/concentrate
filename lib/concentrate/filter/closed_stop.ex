@@ -36,7 +36,7 @@ defmodule Concentrate.Filter.ClosedStop do
     ]
 
     if Enum.any?(entities, &InformedEntity.match?(&1, match)) do
-      StopTimeUpdate.update(stu, schedule_relationship: :SKIPPED)
+      StopTimeUpdate.skip(stu)
     else
       stu
     end

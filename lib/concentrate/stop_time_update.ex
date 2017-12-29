@@ -15,6 +15,19 @@ defmodule Concentrate.StopTimeUpdate do
     schedule_relationship: :SCHEDULED
   ])
 
+  @doc """
+  Marks the update as skipped (when the stop is closed, for example).
+  """
+  @spec skip(%__MODULE__{}) :: t
+  def skip(%__MODULE__{} = stu) do
+    update(
+      stu,
+      schedule_relationship: :SKIPPED,
+      arrival_time: nil,
+      departure_time: nil
+    )
+  end
+
   defimpl Concentrate.Mergeable do
     def key(%{trip_id: trip_id, stop_id: stop_id, stop_sequence: stop_sequence}) do
       {trip_id, stop_id, stop_sequence}
