@@ -34,6 +34,14 @@ defmodule Concentrate do
     ]
   end
 
+  defp decode_json_key_value({"alerts", object}) do
+    if url = object["url"] do
+      [alerts: [url: url]]
+    else
+      []
+    end
+  end
+
   defp decode_json_key_value({"gtfs", object}) do
     if url = object["url"] do
       [gtfs: [url: url]]

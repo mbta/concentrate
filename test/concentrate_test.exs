@@ -27,6 +27,9 @@ defmodule ConcentrateTest do
   "gtfs": {
     "url": "gtfs_url"
   },
+  "alerts": {
+    "url": "alerts_url"
+  },
   "sinks": {
     "s3": {
       "bucket": "s3-bucket",
@@ -47,6 +50,7 @@ defmodule ConcentrateTest do
              }
 
       assert config[:gtfs][:url] == "gtfs_url"
+      assert config[:alerts][:url] == "alerts_url"
       assert config[:sinks][:s3][:bucket] == "s3-bucket"
       assert config[:sinks][:s3][:prefix] == "bucket_prefix"
     end

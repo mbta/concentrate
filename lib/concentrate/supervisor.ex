@@ -20,10 +20,11 @@ defmodule Concentrate.Supervisor do
     {source_names, source_children} = sources(config[:sources])
     {output_names, output_children} = encoders(config[:encoders])
     merge = merge(source_names)
+    alerts = alerts(config[:alerts])
     gtfs = gtfs(config[:gtfs])
     filter = filter(config[:filters])
     sinks = sinks(config[:sinks], output_names)
-    Enum.concat([source_children, merge, gtfs, filter, output_children, sinks])
+    Enum.concat([source_children, merge, alerts, gtfs, filter, output_children, sinks])
   end
 
   def sources(config) do
@@ -57,6 +58,12 @@ defmodule Concentrate.Supervisor do
   def merge(source_names) do
     [
       {Concentrate.Merge.ProducerConsumer, name: :merge, subscribe_to: source_names}
+    ]
+  end
+
+  def alerts(config) do
+    [
+      {Concentrate.Filter.Alert.Supervisor, config}
     ]
   end
 

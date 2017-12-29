@@ -11,6 +11,9 @@ config :concentrate,
       trip_updates: "http://developer.mbta.com/lib/GTRTFS/Alerts/TripUpdates.pb"
     ]
   ],
+  alerts: [
+    url: "http://developer.mbta.com/lib/GTRTFS/Alerts/Alerts.pb"
+  ],
   gtfs: [
     url: "https://www.mbta.com/uploadedfiles/MBTA_GTFS.zip"
   ],
