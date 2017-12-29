@@ -22,7 +22,8 @@ config :concentrate,
     Concentrate.Filter.RoundSpeedToInteger,
     Concentrate.Filter.IncludeRouteDirection,
     Concentrate.Filter.RemoveUnneededTimes,
-    Concentrate.Filter.ClosedStop
+    Concentrate.Filter.ClosedStop,
+    Concentrate.Filter.CancelledTrip
   ],
   encoders: [
     files: [

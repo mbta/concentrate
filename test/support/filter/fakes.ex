@@ -7,8 +7,24 @@ defmodule Concentrate.Filter.FakeTrips do
   def direction_id(_), do: nil
 end
 
+defmodule Concentrate.Filter.FakeCancelledTrips do
+  @moduledoc "Fake implementation of Filter.Alerts.CancelledTrips"
+  def trip_cancelled?("trip", ~D[1970-01-01]) do
+    true
+  end
+
+  def trip_cancelled?("trip", %DateTime{} = dt) do
+    unix = DateTime.to_unix(dt)
+    unix > 5 and unix < 10
+  end
+
+  def trip_cancelled?(_, _) do
+    false
+  end
+end
+
 defmodule Concentrate.Filter.FakeClosedStops do
-  @moduledoc "Fake implementation of Filter.GTFS.ClosedStops"
+  @moduledoc "Fake implementation of Filter.Alerts.ClosedStops"
   alias Concentrate.Alert.InformedEntity
 
   def stop_closed_for("stop", date_time) do
