@@ -23,7 +23,8 @@ config :concentrate,
     Concentrate.Filter.IncludeRouteDirection,
     Concentrate.Filter.RemoveUnneededTimes,
     Concentrate.Filter.ClosedStop,
-    Concentrate.Filter.CancelledTrip
+    Concentrate.Filter.CancelledTrip,
+    Concentrate.Filter.VehiclePastStop
   ],
   encoders: [
     files: [
