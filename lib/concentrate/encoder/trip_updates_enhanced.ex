@@ -29,7 +29,6 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
     list
     |> group
     |> Enum.flat_map(&build_entity/1)
-    |> Enum.reject(&(&1.trip_update.stop_time_update == []))
   end
 
   defp build_entity({%TripUpdate{} = update, _vps, stus}) do

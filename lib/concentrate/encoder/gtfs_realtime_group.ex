@@ -12,7 +12,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeGroup do
   def group(parsed) do
     mapping = Enum.reduce(parsed, %{}, &group_by_trip_id/2)
     # we sort by the initial size, which keeps the trip updates in their original ordering
-    for {_, {tu, vps, stus, _}} <- Enum.sort_by(mapping, &elem(elem(&1, 1), 3)) do
+    for {_, {tu, vps, stus, _}} <- Enum.sort_by(mapping, &elem(elem(&1, 1), 3)),
+        vps != [] or stus != [] do
       {tu, Enum.reverse(vps), Enum.reverse(stus)}
     end
   end

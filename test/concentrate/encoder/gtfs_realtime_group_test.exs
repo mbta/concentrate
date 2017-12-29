@@ -50,5 +50,10 @@ defmodule Concentrate.Encoder.GTFSRealtimeGroupTest do
       actual = group(parsed)
       assert actual == expected
     end
+
+    test "trip updates without a vehicle or stop time are ignored" do
+      tu = TripUpdate.new(trip_id: "trip")
+      assert [] = group([tu])
+    end
   end
 end
