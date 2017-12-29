@@ -100,9 +100,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   defp time_from_event(%{"time" => nil}), do: nil
   defp time_from_event(%{"time" => time}), do: DateTime.from_unix!(time)
 
-  defp schedule_relationship(nil), do: nil
+  defp schedule_relationship(nil), do: :SCHEDULED
 
-  for relationship <- ~w(SCHEDULED)a do
+  for relationship <- ~w(SCHEDULED ADDED UNSCHEDULED CANCELED SKIPPED NO_DATA)a do
     defp schedule_relationship(unquote(Atom.to_string(relationship))), do: unquote(relationship)
   end
 
