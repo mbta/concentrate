@@ -15,6 +15,7 @@ defmodule Concentrate.Filter.ProducerConsumer do
   @impl GenStage
   def init(opts) do
     {filters, opts} = Keyword.pop(opts, :filters, [])
+    opts = Keyword.put_new(opts, :dispatcher, GenStage.BroadcastDispatcher)
 
     {:producer_consumer, filters, opts}
   end

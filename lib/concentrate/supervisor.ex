@@ -76,8 +76,12 @@ defmodule Concentrate.Supervisor do
   def filter(config) do
     [
       {
+        Concentrate.Debounce,
+        name: :debounce, subscribe_to: [:merge]
+      },
+      {
         Concentrate.Filter.ProducerConsumer,
-        name: :filter, filters: config, subscribe_to: [:merge]
+        name: :filter, filters: config, subscribe_to: [:debounce]
       }
     ]
   end
