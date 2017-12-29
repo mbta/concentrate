@@ -18,8 +18,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpersTest do
         tu,
         vehicle,
         vehicle_no_trip,
-        stu,
-        stu2
+        stu2,
+        stu
       ]
 
       expected = [

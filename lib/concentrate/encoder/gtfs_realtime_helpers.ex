@@ -16,7 +16,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     # we sort by the initial size, which keeps the trip updates in their original ordering
     for {_, {tu, vps, stus, _}} <- Enum.sort_by(mapping, &elem(elem(&1, 1), 3)),
         vps != [] or stus != [] do
-      {tu, Enum.reverse(vps), Enum.reverse(stus)}
+      {tu, Enum.reverse(vps), Enum.sort_by(stus, &StopTimeUpdate.stop_sequence/1)}
     end
   end
 
