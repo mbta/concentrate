@@ -4,7 +4,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtime
   alias Concentrate.Parser.GTFSRealtime
-  alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate}
+  alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate, Alert}
 
   describe "parse/1" do
     test "parsing a vehiclepositions.pb file returns only VehiclePosition or TripUpdate structs" do
@@ -24,6 +24,16 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
 
       for update <- parsed do
         assert update.__struct__ in [StopTimeUpdate, TripUpdate]
+      end
+    end
+
+    test "parsing an alerts.pb returns only alerts" do
+      binary = File.read!(fixture_path("alerts.pb"))
+      parsed = parse(binary)
+      assert [_ | _] = parsed
+
+      for alert <- parsed do
+        assert alert.__struct__ == Alert
       end
     end
   end

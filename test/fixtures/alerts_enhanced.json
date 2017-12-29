@@ -1,0 +1,397 @@
+{
+  "header": {
+    "gtfs_realtime_version": "1.0",
+    "incrementality": 0,
+    "timestamp": 1514507734
+  },
+  "entity": [
+    {
+      "id": "116292",
+      "alert": {
+        "effect": "NO_SERVICE",
+        "effect_detail": "STATION_CLOSURE",
+        "cause": "CONSTRUCTION",
+        "cause_detail": "CONSTRUCTION",
+        "header_text": [
+          {
+            "translation": {
+              "text": "Lechmere closed until Sun Jan 21 every Saturday and Sunday due to construction",
+              "language": "en"
+            }
+          }
+        ],
+        "description_text": [
+          {
+            "translation": {
+              "text": "Affected routes:\r\nGreen Line B branch\r\nGreen Line C branch\r\nGreen Line D branch\r\nGreen Line E branch",
+              "language": "en"
+            }
+          }
+        ],
+        "service_effect_text": [
+          {
+            "translation": {
+              "text": "Lechmere closed",
+              "language": "en"
+            }
+          }
+        ],
+        "short_header_text": [
+          {
+            "translation": {
+              "text": "Lechmere closed until Sun Jan 21 every Saturday and Sunday due to construction",
+              "language": "en"
+            }
+          }
+        ],
+        "severity": 7,
+        "created_timestamp": 1513880946,
+        "last_modified_timestamp": 1513881002,
+        "last_push_notification_timestamp": 1513880946,
+        "timeframe_text": [
+          {
+            "translation": {
+              "text": "starting Saturday",
+              "language": "en"
+            }
+          }
+        ],
+        "recurrence_text": [
+          {
+            "translation": {
+              "text": "weekends",
+              "language": "en"
+            }
+          }
+        ],
+        "alert_lifecycle": "UPCOMING",
+        "duration_certainty": "KNOWN",
+        "active_period": [
+          {
+            "start": 1514626200,
+            "end": 1514705400
+          },
+          {
+            "start": 1514712600,
+            "end": 1514791800
+          },
+          {
+            "start": 1515231000,
+            "end": 1515310200
+          },
+          {
+            "start": 1515317400,
+            "end": 1515396600
+          },
+          {
+            "start": 1515835800,
+            "end": 1515915000
+          },
+          {
+            "start": 1515922200,
+            "end": 1516001400
+          },
+          {
+            "start": 1516440600,
+            "end": 1516519800
+          },
+          {
+            "start": 1516527000,
+            "end": 1516606200
+          }
+        ],
+        "informed_entity": [
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-B",
+            "stop_id": "70209",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-B",
+            "stop_id": "70210",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-C",
+            "stop_id": "70209",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-C",
+            "stop_id": "70210",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-D",
+            "stop_id": "70209",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-D",
+            "stop_id": "70210",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-E",
+            "stop_id": "70209",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-E",
+            "stop_id": "70210",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "116364",
+      "alert": {
+        "effect": "OTHER_EFFECT",
+        "effect_detail": "ACCESS_ISSUE",
+        "cause": "MAINTENANCE",
+        "cause_detail": "MAINTENANCE",
+        "header_text": [
+          {
+            "translation": {
+              "text": "State Street Elevator 975 (Wonderland Platform to 53 State St) issue due to maintenance",
+              "language": "en"
+            }
+          }
+        ],
+        "service_effect_text": [
+          {
+            "translation": {
+              "text": "State Street access issue",
+              "language": "en"
+            }
+          }
+        ],
+        "short_header_text": [
+          {
+            "translation": {
+              "text": "State Street Elevator 975 (Wonderland Platform to 53 State St) issue due to maintenance",
+              "language": "en"
+            }
+          }
+        ],
+        "severity": 0,
+        "created_timestamp": 1514498571,
+        "last_modified_timestamp": 1514507691,
+        "closed_timestamp": 1514507691,
+        "alert_lifecycle": "NEW",
+        "duration_certainty": "KNOWN",
+        "informed_entity": [
+          {
+            "stop_id": "65",
+            "facility_id": "975",
+            "activities": [
+              "USING_WHEELCHAIR"
+            ]
+          },
+          {
+            "stop_id": "70022",
+            "facility_id": "975",
+            "activities": [
+              "USING_WHEELCHAIR"
+            ]
+          },
+          {
+            "stop_id": "70023",
+            "facility_id": "975",
+            "activities": [
+              "USING_WHEELCHAIR"
+            ]
+          },
+          {
+            "stop_id": "70041",
+            "facility_id": "975",
+            "activities": [
+              "USING_WHEELCHAIR"
+            ]
+          },
+          {
+            "stop_id": "70042",
+            "facility_id": "975",
+            "activities": [
+              "USING_WHEELCHAIR"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "116365",
+      "alert": {
+        "effect": "OTHER_EFFECT",
+        "effect_detail": "ACCESS_ISSUE",
+        "cause": "MAINTENANCE",
+        "cause_detail": "MAINTENANCE",
+        "header_text": [
+          {
+            "translation": {
+              "text": "Wonderland Elevator 710 (Plaza to Outbound Platform) issue due to maintenance",
+              "language": "en"
+            }
+          }
+        ],
+        "service_effect_text": [
+          {
+            "translation": {
+              "text": "Wonderland access issue",
+              "language": "en"
+            }
+          }
+        ],
+        "short_header_text": [
+          {
+            "translation": {
+              "text": "Wonderland Elevator 710 (Plaza to Outbound Platform) issue due to maintenance",
+              "language": "en"
+            }
+          }
+        ],
+        "severity": 1,
+        "created_timestamp": 1514503939,
+        "last_modified_timestamp": 1514503939,
+        "alert_lifecycle": "NEW",
+        "duration_certainty": "UNKNOWN",
+        "active_period": [
+          {
+            "start": 1514503939
+          }
+        ],
+        "informed_entity": [
+          {
+            "stop_id": "70059",
+            "facility_id": "710",
+            "activities": [
+              "USING_WHEELCHAIR"
+            ]
+          },
+          {
+            "stop_id": "70060",
+            "facility_id": "710",
+            "activities": [
+              "USING_WHEELCHAIR"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "116366",
+      "alert": {
+        "effect": "NO_SERVICE",
+        "effect_detail": "STATION_CLOSURE",
+        "cause": "UNKNOWN_CAUSE",
+        "cause_detail": "UNKNOWN_CAUSE",
+        "header_text": [
+          {
+            "translation": {
+              "text": "Broadway closed due to testing",
+              "language": "en"
+            }
+          }
+        ],
+        "description_text": [
+          {
+            "translation": {
+              "text": "Affected routes:\r\nRed Line",
+              "language": "en"
+            }
+          }
+        ],
+        "service_effect_text": [
+          {
+            "translation": {
+              "text": "Broadway closed",
+              "language": "en"
+            }
+          }
+        ],
+        "short_header_text": [
+          {
+            "translation": {
+              "text": "Broadway closed due to testing",
+              "language": "en"
+            }
+          }
+        ],
+        "severity": 7,
+        "created_timestamp": 1514507708,
+        "last_modified_timestamp": 1514507708,
+        "alert_lifecycle": "NEW",
+        "duration_certainty": "ESTIMATED",
+        "active_period": [
+          {
+            "start": 1514507706,
+            "end": 1514514934
+          }
+        ],
+        "informed_entity": [
+          {
+            "agency_id": "1",
+            "route_type": 1,
+            "route_id": "Red",
+            "stop_id": "70081",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 1,
+            "route_id": "Red",
+            "stop_id": "70082",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

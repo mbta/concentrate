@@ -4,7 +4,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   """
   @behaviour Concentrate.Parser
   require Logger
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.{TripUpdate, StopTimeUpdate, Alert, Alert.InformedEntity}
+
+  @default_active_period [%{"start" => nil, "end" => nil}]
 
   @impl Concentrate.Parser
   def parse(binary) when is_binary(binary) do
@@ -17,6 +19,18 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   defp decode_feed_entity(%{"trip_update" => trip_update}) do
     decode_trip_update(trip_update)
+  end
+
+  defp decode_feed_entity(%{"id" => id, "alert" => alert}) do
+    [
+      Alert.new(
+        id: id,
+        effect: alert_effect(alert["effect"]),
+        active_period:
+          Enum.map(alert["active_period"] || @default_active_period, &decode_active_period/1),
+        informed_entity: Enum.map(alert["informed_entity"] || [], &decode_informed_entity/1)
+      )
+    ]
   end
 
   defp decode_feed_entity(_) do
@@ -84,5 +98,46 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     end)
 
     nil
+  end
+
+  for effect <- ~w(NO_SERVICE OTHER_EFFECT)a do
+    defp alert_effect(unquote(Atom.to_string(effect))), do: unquote(effect)
+  end
+
+  defp alert_effect(other) do
+    Logger.error(fn ->
+      "#{__MODULE__}: unknown alert effect #{inspect(other)}"
+    end)
+
+    :OTHER_EFFECT
+  end
+
+  defp decode_active_period(map) do
+    start = DateTime.from_unix!(map["start"] || 0)
+
+    stop =
+      DateTime.from_unix!(
+        if stop = map["end"] do
+          stop
+        else
+          # 2 ^ 32 - 1
+          4_294_967_295
+        end
+      )
+
+    {start, stop}
+  end
+
+  defp decode_informed_entity(map) do
+    trip = map["trip"] || %{}
+
+    InformedEntity.new(
+      trip_id: trip["id"],
+      route_id: map["route_id"],
+      direction_id: trip["direction_id"],
+      route_type: map["route_type"],
+      stop_id: map["stop_id"],
+      activities: map["activities"] || []
+    )
   end
 end

@@ -4,7 +4,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
   """
   @behaviour Concentrate.Parser
   use Protobuf, from: Path.expand("gtfs-realtime.proto", __DIR__)
-  alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate}
+  alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate, Alert, Alert.InformedEntity}
 
   @impl Concentrate.Parser
   def parse(binary) when is_binary(binary) do
@@ -18,7 +18,8 @@ defmodule Concentrate.Parser.GTFSRealtime do
   def decode_feed_entity(entity) do
     vp = decode_vehicle(entity.vehicle)
     stop_updates = decode_trip_update(entity.trip_update)
-    vp ++ stop_updates
+    alerts = decode_alert(entity)
+    alerts ++ vp ++ stop_updates
   end
 
   def decode_vehicle(nil) do
@@ -86,6 +87,45 @@ defmodule Concentrate.Parser.GTFSRealtime do
         schedule_relationship: trip.schedule_relationship
       )
     ]
+  end
+
+  defp decode_alert(%{alert: nil}) do
+    []
+  end
+
+  defp decode_alert(%{id: id, alert: alert}) do
+    [
+      Alert.new(
+        id: id,
+        effect: alert.effect,
+        active_period: Enum.map(alert.active_period, &decode_active_period/1),
+        informed_entity: Enum.map(alert.informed_entity, &decode_informed_entity/1)
+      )
+    ]
+  end
+
+  defp decode_active_period(%{start: start, end: stop}) do
+    start = DateTime.from_unix!(start || 0)
+
+    stop =
+      if stop do
+        DateTime.from_unix!(stop)
+      else
+        # 2 ^ 32 - 1
+        DateTime.from_unix!(4_294_967_295)
+      end
+
+    {start, stop}
+  end
+
+  defp decode_informed_entity(entity) do
+    InformedEntity.new(
+      trip_id: if(entity.trip, do: entity.trip.trip_id),
+      route_id: entity.route_id,
+      direction_id: if(entity.trip, do: entity.trip.direction_id),
+      route_type: entity.route_type,
+      stop_id: entity.stop_id
+    )
   end
 
   defp time_from_event(nil), do: nil

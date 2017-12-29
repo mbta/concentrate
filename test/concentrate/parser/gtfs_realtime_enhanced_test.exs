@@ -3,7 +3,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
   use ExUnit.Case, async: true
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtimeEnhanced
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.{TripUpdate, StopTimeUpdate, Alert}
 
   describe "parse/1" do
     test "parsing a TripUpdate enhanced JSON file returns only StopTimeUpdate or TripUpdate structs" do
@@ -13,6 +13,16 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
       for update <- parsed do
         assert update.__struct__ in [StopTimeUpdate, TripUpdate]
+      end
+    end
+
+    test "parsing an alerts_enhanced.json file returns only alerts" do
+      binary = File.read!(fixture_path("alerts_enhanced.json"))
+      parsed = parse(binary)
+      assert [_ | _] = parsed
+
+      for alert <- parsed do
+        assert alert.__struct__ == Alert
       end
     end
   end
