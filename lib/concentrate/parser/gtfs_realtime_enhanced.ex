@@ -100,7 +100,16 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     nil
   end
 
-  for effect <- ~w(NO_SERVICE OTHER_EFFECT)a do
+  for effect <- ~w(
+        NO_SERVICE
+        REDUCED_SERVICE
+        SIGNIFICANT_DELAYS
+        DETOUR
+        ADDITIONAL_SERVICE
+        MODIFIED_SERVICE
+        OTHER_EFFECT
+        UNKNOWN_EFFECT
+        STOP_MOVED)a do
     defp alert_effect(unquote(Atom.to_string(effect))), do: unquote(effect)
   end
 
@@ -109,7 +118,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
       "#{__MODULE__}: unknown alert effect #{inspect(other)}"
     end)
 
-    :OTHER_EFFECT
+    :UNKNOWN_EFFECT
   end
 
   defp decode_active_period(map) do
