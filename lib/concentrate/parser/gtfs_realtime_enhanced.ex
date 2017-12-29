@@ -141,7 +141,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     trip = map["trip"] || %{}
 
     InformedEntity.new(
-      trip_id: trip["id"],
+      trip_id: trip["trip_id"],
       route_id: map["route_id"],
       direction_id: trip["direction_id"],
       route_type: map["route_type"],

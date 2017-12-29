@@ -3,7 +3,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
   use ExUnit.Case, async: true
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtimeEnhanced
-  alias Concentrate.{TripUpdate, StopTimeUpdate, Alert}
+  alias Concentrate.{TripUpdate, StopTimeUpdate, Alert, Alert.InformedEntity}
 
   describe "parse/1" do
     test "parsing a TripUpdate enhanced JSON file returns only StopTimeUpdate or TripUpdate structs" do
@@ -24,6 +24,43 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       for alert <- parsed do
         assert alert.__struct__ == Alert
       end
+    end
+
+    test "alerts decode all entity fields" do
+      body = ~s(
+        {
+          "entity": [
+            {
+              "id": "id",
+              "alert": {
+                "effect": "STOP_MOVED",
+                "informed_entity": [
+                  {
+                    "route_type": 2,
+                    "route_id": "CR-Worcester",
+                    "trip": {
+                      "route_id": "CR-Worcester",
+                      "trip_id": "CR-Weekday-Fall-17-516"
+                    },
+                    "stop_id": "Worcester",
+                    "activities": [
+                      "BOARD",
+                      "EXIT",
+                      "RIDE"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        })
+      [alert] = parse(body)
+      [entity] = Alert.informed_entity(alert)
+      assert InformedEntity.route_type(entity) == 2
+      assert InformedEntity.route_id(entity) == "CR-Worcester"
+      assert InformedEntity.trip_id(entity) == "CR-Weekday-Fall-17-516"
+      assert InformedEntity.stop_id(entity) == "Worcester"
+      assert InformedEntity.activities(entity) == ~w(BOARD EXIT RIDE)
     end
   end
 

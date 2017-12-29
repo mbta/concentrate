@@ -2,7 +2,7 @@
   "header": {
     "gtfs_realtime_version": "1.0",
     "incrementality": 0,
-    "timestamp": 1514507734
+    "timestamp": 1514558974
   },
   "entity": [
     {
@@ -51,7 +51,7 @@
         "timeframe_text": [
           {
             "translation": {
-              "text": "starting Saturday",
+              "text": "starting tomorrow",
               "language": "en"
             }
           }
@@ -185,83 +185,7 @@
       }
     },
     {
-      "id": "116364",
-      "alert": {
-        "effect": "OTHER_EFFECT",
-        "effect_detail": "ACCESS_ISSUE",
-        "cause": "MAINTENANCE",
-        "cause_detail": "MAINTENANCE",
-        "header_text": [
-          {
-            "translation": {
-              "text": "State Street Elevator 975 (Wonderland Platform to 53 State St) issue due to maintenance",
-              "language": "en"
-            }
-          }
-        ],
-        "service_effect_text": [
-          {
-            "translation": {
-              "text": "State Street access issue",
-              "language": "en"
-            }
-          }
-        ],
-        "short_header_text": [
-          {
-            "translation": {
-              "text": "State Street Elevator 975 (Wonderland Platform to 53 State St) issue due to maintenance",
-              "language": "en"
-            }
-          }
-        ],
-        "severity": 0,
-        "created_timestamp": 1514498571,
-        "last_modified_timestamp": 1514507691,
-        "closed_timestamp": 1514507691,
-        "alert_lifecycle": "NEW",
-        "duration_certainty": "KNOWN",
-        "informed_entity": [
-          {
-            "stop_id": "65",
-            "facility_id": "975",
-            "activities": [
-              "USING_WHEELCHAIR"
-            ]
-          },
-          {
-            "stop_id": "70022",
-            "facility_id": "975",
-            "activities": [
-              "USING_WHEELCHAIR"
-            ]
-          },
-          {
-            "stop_id": "70023",
-            "facility_id": "975",
-            "activities": [
-              "USING_WHEELCHAIR"
-            ]
-          },
-          {
-            "stop_id": "70041",
-            "facility_id": "975",
-            "activities": [
-              "USING_WHEELCHAIR"
-            ]
-          },
-          {
-            "stop_id": "70042",
-            "facility_id": "975",
-            "activities": [
-              "USING_WHEELCHAIR"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "116365",
+      "id": "116369",
       "alert": {
         "effect": "OTHER_EFFECT",
         "effect_detail": "ACCESS_ISSUE",
@@ -292,13 +216,13 @@
           }
         ],
         "severity": 1,
-        "created_timestamp": 1514503939,
-        "last_modified_timestamp": 1514503939,
+        "created_timestamp": 1514527400,
+        "last_modified_timestamp": 1514527400,
         "alert_lifecycle": "NEW",
         "duration_certainty": "UNKNOWN",
         "active_period": [
           {
-            "start": 1514503939
+            "start": 1514527400
           }
         ],
         "informed_entity": [
@@ -320,7 +244,116 @@
       }
     },
     {
-      "id": "116366",
+      "id": "116373",
+      "alert": {
+        "effect": "OTHER_EFFECT",
+        "effect_detail": "ACCESS_ISSUE",
+        "cause": "MAINTENANCE",
+        "cause_detail": "MAINTENANCE",
+        "header_text": [
+          {
+            "translation": {
+              "text": "Wellington Escalator 310 (Northbound Platform to Paid Lobby) issue due to maintenance",
+              "language": "en"
+            }
+          }
+        ],
+        "service_effect_text": [
+          {
+            "translation": {
+              "text": "Wellington access issue",
+              "language": "en"
+            }
+          }
+        ],
+        "short_header_text": [
+          {
+            "translation": {
+              "text": "Wellington Escalator 310 (Northbound Platform to Paid Lobby) issue due to maintenance",
+              "language": "en"
+            }
+          }
+        ],
+        "severity": 1,
+        "created_timestamp": 1514548971,
+        "last_modified_timestamp": 1514548971,
+        "alert_lifecycle": "NEW",
+        "duration_certainty": "UNKNOWN",
+        "active_period": [
+          {
+            "start": 1514548971
+          }
+        ]
+      }
+    },
+    {
+      "id": "116374",
+      "alert": {
+        "effect": "OTHER_EFFECT",
+        "effect_detail": "ACCESS_ISSUE",
+        "cause": "MAINTENANCE",
+        "cause_detail": "MAINTENANCE",
+        "header_text": [
+          {
+            "translation": {
+              "text": "Jackson Square Elevator 846 (Orange Line Platform to Lobby) issue due to maintenance",
+              "language": "en"
+            }
+          }
+        ],
+        "service_effect_text": [
+          {
+            "translation": {
+              "text": "Jackson Square access issue",
+              "language": "en"
+            }
+          }
+        ],
+        "short_header_text": [
+          {
+            "translation": {
+              "text": "Jackson Square Elevator 846 (Orange Line Platform to Lobby) issue due to maintenance",
+              "language": "en"
+            }
+          }
+        ],
+        "severity": 1,
+        "created_timestamp": 1514548971,
+        "last_modified_timestamp": 1514548971,
+        "alert_lifecycle": "NEW",
+        "duration_certainty": "UNKNOWN",
+        "active_period": [
+          {
+            "start": 1514548971
+          }
+        ],
+        "informed_entity": [
+          {
+            "stop_id": "11531",
+            "facility_id": "846",
+            "activities": [
+              "USING_WHEELCHAIR"
+            ]
+          },
+          {
+            "stop_id": "70006",
+            "facility_id": "846",
+            "activities": [
+              "USING_WHEELCHAIR"
+            ]
+          },
+          {
+            "stop_id": "70007",
+            "facility_id": "846",
+            "activities": [
+              "USING_WHEELCHAIR"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "116375",
       "alert": {
         "effect": "NO_SERVICE",
         "effect_detail": "STATION_CLOSURE",
@@ -329,7 +362,7 @@
         "header_text": [
           {
             "translation": {
-              "text": "Broadway closed due to testing",
+              "text": "Boylston closed for testing for the rest of the day",
               "language": "en"
             }
           }
@@ -337,7 +370,7 @@
         "description_text": [
           {
             "translation": {
-              "text": "Affected routes:\r\nRed Line",
+              "text": "Affected routes:\r\nGreen Line C branch\r\nGreen Line D branch",
               "language": "en"
             }
           }
@@ -345,7 +378,7 @@
         "service_effect_text": [
           {
             "translation": {
-              "text": "Broadway closed",
+              "text": "Boylston closed",
               "language": "en"
             }
           }
@@ -353,28 +386,28 @@
         "short_header_text": [
           {
             "translation": {
-              "text": "Broadway closed due to testing",
+              "text": "Boylston closed for testing for the rest of the day",
               "language": "en"
             }
           }
         ],
         "severity": 7,
-        "created_timestamp": 1514507708,
-        "last_modified_timestamp": 1514507708,
+        "created_timestamp": 1514554490,
+        "last_modified_timestamp": 1514554490,
         "alert_lifecycle": "NEW",
-        "duration_certainty": "ESTIMATED",
+        "duration_certainty": "KNOWN",
         "active_period": [
           {
-            "start": 1514507706,
-            "end": 1514514934
+            "start": 1514554488,
+            "end": 1514619000
           }
         ],
         "informed_entity": [
           {
             "agency_id": "1",
-            "route_type": 1,
-            "route_id": "Red",
-            "stop_id": "70081",
+            "route_type": 0,
+            "route_id": "Green-C",
+            "stop_id": "70158",
             "activities": [
               "BOARD",
               "EXIT"
@@ -382,12 +415,142 @@
           },
           {
             "agency_id": "1",
-            "route_type": 1,
-            "route_id": "Red",
-            "stop_id": "70082",
+            "route_type": 0,
+            "route_id": "Green-C",
+            "stop_id": "70159",
             "activities": [
               "BOARD",
               "EXIT"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-D",
+            "stop_id": "70158",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-D",
+            "stop_id": "70159",
+            "activities": [
+              "BOARD",
+              "EXIT"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "116376",
+      "alert": {
+        "effect": "NO_SERVICE",
+        "effect_detail": "CANCELLATION",
+        "cause": "UNKNOWN_CAUSE",
+        "cause_detail": "UNKNOWN_CAUSE",
+        "header_text": [
+          {
+            "translation": {
+              "text": "Framingham/Worcester Line Train 511 (10:15 am from South Station) and 3 other trains cancelled today",
+              "language": "en"
+            }
+          }
+        ],
+        "description_text": [
+          {
+            "translation": {
+              "text": "Affected trips:\r\n511 (10:15 am from South Station)\r\n514 (10:35 am from Worcester)\r\n513 (11:55 am from South Station)\r\n516 (12:05 pm from Worcester)",
+              "language": "en"
+            }
+          }
+        ],
+        "service_effect_text": [
+          {
+            "translation": {
+              "text": "Framingham/Worcester Line train cancelled",
+              "language": "en"
+            }
+          }
+        ],
+        "short_header_text": [
+          {
+            "translation": {
+              "text": "Framingham/Worcester Line Train 511 (10:15 am from South Station) and 3 other trains cancelled today",
+              "language": "en"
+            }
+          }
+        ],
+        "severity": 5,
+        "created_timestamp": 1514557864,
+        "last_modified_timestamp": 1514557864,
+        "alert_lifecycle": "NEW",
+        "duration_certainty": "KNOWN",
+        "active_period": [
+          {
+            "start": 1514560500,
+            "end": 1514576160
+          }
+        ],
+        "informed_entity": [
+          {
+            "agency_id": "1",
+            "route_type": 2,
+            "route_id": "CR-Worcester",
+            "trip": {
+              "route_id": "CR-Worcester",
+              "trip_id": "CR-Weekday-Fall-17-511"
+            },
+            "activities": [
+              "BOARD",
+              "EXIT",
+              "RIDE"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 2,
+            "route_id": "CR-Worcester",
+            "trip": {
+              "route_id": "CR-Worcester",
+              "trip_id": "CR-Weekday-Fall-17-513"
+            },
+            "activities": [
+              "BOARD",
+              "EXIT",
+              "RIDE"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 2,
+            "route_id": "CR-Worcester",
+            "trip": {
+              "route_id": "CR-Worcester",
+              "trip_id": "CR-Weekday-Fall-17-514"
+            },
+            "activities": [
+              "BOARD",
+              "EXIT",
+              "RIDE"
+            ]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 2,
+            "route_id": "CR-Worcester",
+            "trip": {
+              "route_id": "CR-Worcester",
+              "trip_id": "CR-Weekday-Fall-17-516"
+            },
+            "activities": [
+              "BOARD",
+              "EXIT",
+              "RIDE"
             ]
           }
         ]
