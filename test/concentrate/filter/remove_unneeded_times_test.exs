@@ -7,9 +7,11 @@ defmodule Concentrate.Filter.RemoveUnneededTimesTest do
   defmodule FakeSequence do
     @moduledoc "Fake implementation of Filter.GTFS.FirstLastStopSequence"
     def pickup?("trip", 5), do: false
+    def pickup?("trip", 6), do: false
     def pickup?(_, _), do: true
 
     def drop_off?("trip", 1), do: false
+    def drop_off?("trip", 6), do: false
     def drop_off?(_, _), do: true
 
     def stop_sequences("trip"), do: {1, 5}
@@ -58,6 +60,12 @@ defmodule Concentrate.Filter.RemoveUnneededTimesTest do
     test "other stop sequence values are left alone" do
       stu = StopTimeUpdate.update(@stu, stop_sequence: 3)
       assert {:cont, ^stu, _} = filter(stu, @state)
+    end
+
+    test "if we can neither pickup or drop off, skip the update" do
+      stu = StopTimeUpdate.update(@stu, stop_sequence: 6)
+      expected = StopTimeUpdate.skip(stu)
+      assert {:cont, ^expected, _} = filter(stu, @state)
     end
 
     test "other values are returned as-is" do

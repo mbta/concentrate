@@ -24,10 +24,25 @@ defmodule Concentrate.Filter.RemoveUnneededTimes do
           sequence
       end
 
+    pickup? = module.pickup?(trip_id, stop_sequence)
+    drop_off? = module.drop_off?(trip_id, stop_sequence)
+
     stu =
-      stu
-      |> update_arrival_time(module.drop_off?(trip_id, stop_sequence))
-      |> update_departure_time(module.pickup?(trip_id, stop_sequence))
+      cond do
+        pickup? and drop_off? ->
+          stu
+
+        not (pickup? or drop_off?) ->
+          StopTimeUpdate.skip(stu)
+
+        pickup? ->
+          # not drop_off?
+          remove_arrival_time(stu)
+
+        true ->
+          # not pickup?
+          remove_departure_time(stu)
+      end
 
     {:cont, stu, module}
   end
@@ -36,11 +51,7 @@ defmodule Concentrate.Filter.RemoveUnneededTimes do
     {:cont, other, module}
   end
 
-  defp update_arrival_time(stu, true) do
-    stu
-  end
-
-  defp update_arrival_time(stu, false) do
+  defp remove_arrival_time(stu) do
     if StopTimeUpdate.departure_time(stu) do
       StopTimeUpdate.update(stu, arrival_time: nil)
     else
@@ -49,11 +60,7 @@ defmodule Concentrate.Filter.RemoveUnneededTimes do
     end
   end
 
-  defp update_departure_time(stu, true) do
-    stu
-  end
-
-  defp update_departure_time(stu, false) do
+  defp remove_departure_time(stu) do
     if StopTimeUpdate.arrival_time(stu) do
       StopTimeUpdate.update(stu, departure_time: nil)
     else
