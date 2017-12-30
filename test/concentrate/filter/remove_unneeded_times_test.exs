@@ -6,6 +6,12 @@ defmodule Concentrate.Filter.RemoveUnneededTimesTest do
 
   defmodule FakeSequence do
     @moduledoc "Fake implementation of Filter.GTFS.FirstLastStopSequence"
+    def pickup?("trip", 5), do: false
+    def pickup?(_, _), do: true
+
+    def drop_off?("trip", 1), do: false
+    def drop_off?(_, _), do: true
+
     def stop_sequences("trip"), do: {1, 5}
     def stop_sequences(_), do: nil
   end

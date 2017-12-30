@@ -12,11 +12,23 @@ defmodule Concentrate.Filter.GTFS.FirstLastStopSequence do
   end
 
   @spec stop_sequences(String.t()) :: {non_neg_integer, non_neg_integer} | nil
-  def stop_sequences(trip_id) do
+  def stop_sequences(trip_id) when is_binary(trip_id) do
     case :ets.match(@table, {trip_id, :"$1"}) do
       [[sequences]] -> sequences
       [] -> nil
     end
+  end
+
+  @spec pickup?(String.t(), String.t() | non_neg_integer) :: boolean
+  def pickup?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
+    key = {:no_pickup, trip_id, stop_or_stop_sequence}
+    not :ets.member(@table, key)
+  end
+
+  @spec drop_off?(String.t(), String.t() | non_neg_integer) :: boolean
+  def drop_off?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
+    key = {:no_drop_off, trip_id, stop_or_stop_sequence}
+    not :ets.member(@table, key)
   end
 
   @impl GenStage
@@ -40,7 +52,15 @@ defmodule Concentrate.Filter.GTFS.FirstLastStopSequence do
       |> CSV.decode(headers: true, num_workers: System.schedulers())
       |> Stream.flat_map(fn
         {:ok, row} ->
-          [{copy(row["trip_id"]), String.to_integer(row["stop_sequence"])}]
+          [
+            {
+              copy(row["trip_id"]),
+              copy(row["stop_id"]),
+              String.to_integer(row["stop_sequence"]),
+              can_pickup_drop_off?(row["pickup_type"]),
+              can_pickup_drop_off?(row["drop_off_type"])
+            }
+          ]
 
         {:error, _} ->
           []
@@ -82,18 +102,39 @@ defmodule Concentrate.Filter.GTFS.FirstLastStopSequence do
     )
   end
 
-  defp group_by_first_last({trip_id, stop_sequence}, acc) do
-    Map.update(acc, trip_id, {stop_sequence, stop_sequence}, fn {first, last} = existing ->
-      cond do
-        stop_sequence < first ->
-          {stop_sequence, last}
+  defp can_pickup_drop_off?("1"), do: false
+  defp can_pickup_drop_off?(_), do: true
 
-        stop_sequence > last ->
-          {first, stop_sequence}
+  defp group_by_first_last({trip_id, stop_id, stop_sequence, can_pickup?, can_drop_off?}, acc) do
+    acc =
+      Map.update(acc, trip_id, {stop_sequence, stop_sequence}, fn {first, last} = existing ->
+        cond do
+          stop_sequence < first ->
+            {stop_sequence, last}
 
-        true ->
-          existing
+          stop_sequence > last ->
+            {first, stop_sequence}
+
+          true ->
+            existing
+        end
+      end)
+
+    acc =
+      if can_pickup? do
+        acc
+      else
+        acc
+        |> Map.put({:no_pickup, trip_id, stop_id}, [])
+        |> Map.put({:no_pickup, trip_id, stop_sequence}, [])
       end
-    end)
+
+    if can_drop_off? do
+      acc
+    else
+      acc
+      |> Map.put({:no_drop_off, trip_id, stop_id}, [])
+      |> Map.put({:no_drop_off, trip_id, stop_sequence}, [])
+    end
   end
 end
