@@ -1,7 +1,7 @@
-defmodule Concentrate.Filter.GTFS.FirstLastStopSequenceTest do
+defmodule Concentrate.Filter.GTFS.PickupDropOffTest do
   @moduledoc false
   use ExUnit.Case
-  import Concentrate.Filter.GTFS.FirstLastStopSequence
+  import Concentrate.Filter.GTFS.PickupDropOff
 
   # copied + modified from a recent stop_times.txt
   @body """
@@ -13,7 +13,7 @@ defmodule Concentrate.Filter.GTFS.FirstLastStopSequenceTest do
   """
 
   setup do
-    start_supervised(Concentrate.Filter.GTFS.FirstLastStopSequence)
+    start_supervised(Concentrate.Filter.GTFS.PickupDropOff)
     event = [{"stop_times.txt", @body}]
     # relies on being able to update the table from a different process
     handle_events([event], :ignored, :ignored)

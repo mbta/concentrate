@@ -1,6 +1,6 @@
-defmodule Concentrate.Filter.GTFS.FirstLastStopSequence do
+defmodule Concentrate.Filter.GTFS.PickupDropOff do
   @moduledoc """
-  Server which maintains a list of trip -> {first_stop_sequence, last_stop_sequence} mappings.
+  Server which knows whether riders can be picked up or dropped off at a stop.
   """
   use GenStage
   require Logger

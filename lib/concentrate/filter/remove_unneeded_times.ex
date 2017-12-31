@@ -3,12 +3,12 @@ defmodule Concentrate.Filter.RemoveUnneededTimes do
   Removes arrival times from the first stop on a trip, and the departure time from the last stop on a trip.
   """
   alias Concentrate.StopTimeUpdate
-  alias Concentrate.Filter.GTFS.FirstLastStopSequence
+  alias Concentrate.Filter.GTFS.PickupDropOff
   @behaviour Concentrate.Filter
 
   @impl Concentrate.Filter
   def init do
-    {:parallel, FirstLastStopSequence}
+    {:parallel, PickupDropOff}
   end
 
   @impl Concentrate.Filter

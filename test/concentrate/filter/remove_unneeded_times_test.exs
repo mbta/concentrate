@@ -4,8 +4,8 @@ defmodule Concentrate.Filter.RemoveUnneededTimesTest do
   import Concentrate.Filter.RemoveUnneededTimes
   alias Concentrate.StopTimeUpdate
 
-  defmodule FakeSequence do
-    @moduledoc "Fake implementation of Filter.GTFS.FirstLastStopSequence"
+  defmodule FakePickupDropOff do
+    @moduledoc "Fake implementation of Filter.GTFS.PickupDropOff"
     def pickup?("trip", 5), do: false
     def pickup?("trip", 6), do: false
     def pickup?(_, _), do: true
@@ -15,7 +15,7 @@ defmodule Concentrate.Filter.RemoveUnneededTimesTest do
     def drop_off?(_, _), do: true
   end
 
-  @state __MODULE__.FakeSequence
+  @state __MODULE__.FakePickupDropOff
   @arrival_time DateTime.from_unix!(5)
   @departure_time DateTime.from_unix!(500)
   @stu StopTimeUpdate.new(
