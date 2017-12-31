@@ -59,11 +59,4 @@ defmodule Concentrate.Filter.GTFS.FirstLastStopSequenceTest do
       assert drop_off?("unknown trip", "unknown stop")
     end
   end
-
-  describe "stop_sequences/1" do
-    test "returns the first and last stop sequence id for the given trip" do
-      assert stop_sequences("Logan-22-Weekday-trip") == {1, 3}
-      assert stop_sequences("unknown") == nil
-    end
-  end
 end

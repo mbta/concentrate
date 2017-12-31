@@ -11,14 +11,6 @@ defmodule Concentrate.Filter.GTFS.FirstLastStopSequence do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  @spec stop_sequences(String.t()) :: {non_neg_integer, non_neg_integer} | nil
-  def stop_sequences(trip_id) when is_binary(trip_id) do
-    case :ets.match(@table, {trip_id, :"$1"}) do
-      [[sequences]] -> sequences
-      [] -> nil
-    end
-  end
-
   @spec pickup?(String.t(), String.t() | non_neg_integer) :: boolean
   def pickup?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
     key = {:no_pickup, trip_id, stop_or_stop_sequence}
@@ -65,17 +57,15 @@ defmodule Concentrate.Filter.GTFS.FirstLastStopSequence do
         {:error, _} ->
           []
       end)
-      |> Enum.reduce(%{}, &group_by_first_last/2)
+      |> Enum.flat_map(&build_inserts/1)
 
     _ =
-      if inserts == %{} do
-        :ok
-      else
+      unless inserts == [] do
         true = :ets.delete_all_objects(@table)
-        :ets.insert(@table, Enum.into(inserts, []))
+        :ets.insert(@table, inserts)
 
         Logger.info(fn ->
-          "#{__MODULE__}: updated with #{map_size(inserts)} records"
+          "#{__MODULE__}: updated with #{length(inserts)} records"
         end)
       end
 
@@ -105,36 +95,25 @@ defmodule Concentrate.Filter.GTFS.FirstLastStopSequence do
   defp can_pickup_drop_off?("1"), do: false
   defp can_pickup_drop_off?(_), do: true
 
-  defp group_by_first_last({trip_id, stop_id, stop_sequence, can_pickup?, can_drop_off?}, acc) do
-    acc =
-      Map.update(acc, trip_id, {stop_sequence, stop_sequence}, fn {first, last} = existing ->
-        cond do
-          stop_sequence < first ->
-            {stop_sequence, last}
-
-          stop_sequence > last ->
-            {first, stop_sequence}
-
-          true ->
-            existing
-        end
-      end)
-
-    acc =
+  defp build_inserts({trip_id, stop_id, stop_sequence, can_pickup?, can_drop_off?}) do
+    inserts =
       if can_pickup? do
-        acc
+        []
       else
-        acc
-        |> Map.put({:no_pickup, trip_id, stop_id}, [])
-        |> Map.put({:no_pickup, trip_id, stop_sequence}, [])
+        [
+          {{:no_pickup, trip_id, stop_id}},
+          {{:no_pickup, trip_id, stop_sequence}}
+        ]
       end
 
     if can_drop_off? do
-      acc
+      inserts
     else
-      acc
-      |> Map.put({:no_drop_off, trip_id, stop_id}, [])
-      |> Map.put({:no_drop_off, trip_id, stop_sequence}, [])
+      [
+        {{:no_drop_off, trip_id, stop_id}},
+        {{:no_drop_off, trip_id, stop_sequence}}
+        | inserts
+      ]
     end
   end
 end

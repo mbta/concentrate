@@ -13,9 +13,6 @@ defmodule Concentrate.Filter.RemoveUnneededTimesTest do
     def drop_off?("trip", 1), do: false
     def drop_off?("trip", 6), do: false
     def drop_off?(_, _), do: true
-
-    def stop_sequences("trip"), do: {1, 5}
-    def stop_sequences(_), do: nil
   end
 
   @state __MODULE__.FakeSequence
