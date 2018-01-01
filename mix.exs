@@ -53,6 +53,7 @@ defmodule Concentrate.MixProject do
       {:excoveralls, "~> 0.7", only: :test},
       {:exprotobuf, "~> 1.2"},
       {:gen_stage, "~> 0.12"},
+      {:gtfs_realtime_viz, "~> 0.5"},
       {:httpoison, "~> 0.13"},
       {:poison, "~> 3.1"},
       {:stream_data, "~> 0.4", only: :test}

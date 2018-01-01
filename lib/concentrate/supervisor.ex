@@ -118,6 +118,10 @@ defmodule Concentrate.Supervisor do
     {Concentrate.Sink.S3, [subscribe_to: output_names] ++ config}
   end
 
+  defp sink_config(:visualize, config, output_names) do
+    {Concentrate.Sink.GTFSRealtimeViz, [subscribe_to: output_names] ++ config}
+  end
+
   defp child_ids(children) do
     for child <- children, do: child.id
   end
