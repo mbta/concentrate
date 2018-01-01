@@ -25,13 +25,13 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
 
   @impl GenStage
   def init(opts) do
-    :ets.new(@table, [:named_table, :public, :duplicate_bag, {:read_concurrency, true}])
+    :ets.new(@table, [:named_table, :public, :set, {:read_concurrency, true}])
     {:consumer, [], opts}
   end
 
   @impl GenStage
   def handle_events(events, _from, state) do
-    inserts =
+    count =
       events
       |> List.flatten()
       |> Stream.flat_map(fn
@@ -42,32 +42,21 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
           []
       end)
       |> CSV.decode(headers: true, num_workers: System.schedulers())
-      |> Stream.flat_map(fn
-        {:ok, row} ->
-          [
-            {
-              copy(row["trip_id"]),
-              copy(row["stop_id"]),
-              String.to_integer(row["stop_sequence"]),
-              can_pickup_drop_off?(row["pickup_type"]),
-              can_pickup_drop_off?(row["drop_off_type"])
-            }
-          ]
+      |> Stream.flat_map(&build_inserts/1)
+      |> Enum.reduce(0, fn insert, acc ->
+        if acc == 0 do
+          true = :ets.delete_all_objects(@table)
+        end
 
-        {:error, _} ->
-          []
+        :ets.insert(@table, insert)
+        acc + 1
       end)
-      |> Enum.flat_map(&build_inserts/1)
 
-    _ =
-      unless inserts == [] do
-        true = :ets.delete_all_objects(@table)
-        :ets.insert(@table, inserts)
-
-        Logger.info(fn ->
-          "#{__MODULE__}: updated with #{length(inserts)} records"
-        end)
-      end
+    if count > 0 do
+      Logger.info(fn ->
+        "#{__MODULE__}: updated with #{count} records"
+      end)
+    end
 
     {:noreply, [], state, :hibernate}
   end
@@ -95,25 +84,32 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
   defp can_pickup_drop_off?("1"), do: false
   defp can_pickup_drop_off?(_), do: true
 
-  defp build_inserts({trip_id, stop_id, stop_sequence, can_pickup?, can_drop_off?}) do
-    inserts =
-      if can_pickup? do
+  defp build_inserts({:error, _}) do
+    []
+  end
+
+  defp build_inserts({:ok, row}) do
+    trip_id = copy(Map.get(row, "trip_id"))
+    stop_id = copy(Map.get(row, "stop_id"))
+    stop_sequence = String.to_integer(Map.get(row, "stop_sequence"))
+
+    insert_keys =
+      if can_pickup_drop_off?(Map.get(row, "pickup_type")) do
         []
       else
-        [
-          {{:no_pickup, trip_id, stop_id}},
-          {{:no_pickup, trip_id, stop_sequence}}
-        ]
+        [:no_pickup]
       end
 
-    if can_drop_off? do
-      inserts
-    else
-      [
-        {{:no_drop_off, trip_id, stop_id}},
-        {{:no_drop_off, trip_id, stop_sequence}}
-        | inserts
-      ]
+    insert_keys =
+      if can_pickup_drop_off?(Map.get(row, "drop_off_type")) do
+        insert_keys
+      else
+        [:no_drop_off | insert_keys]
+      end
+
+    for key <- insert_keys,
+        stop_key <- [stop_id, stop_sequence] do
+      {{key, trip_id, stop_key}}
     end
   end
 end
