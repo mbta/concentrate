@@ -37,6 +37,6 @@ defmodule Concentrate.Debounce do
   def handle_info(:timeout, state) do
     events = state.events
     state = %{state | events: [], timer: nil}
-    {:noreply, events, state}
+    {:noreply, events, state, :hibernate}
   end
 end

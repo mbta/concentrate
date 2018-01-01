@@ -39,6 +39,6 @@ defmodule Concentrate.Encoder.ProducerConsumer do
         {filename, encoder.(data)}
       end
 
-    {:noreply, responses, state}
+    {:noreply, responses, state, :hibernate}
   end
 end

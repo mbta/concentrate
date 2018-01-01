@@ -21,7 +21,7 @@ defmodule Concentrate.DebounceTest do
       {_, state, _} = init(timeout: 100)
       {:noreply, [], state} = handle_events([1, 2, 3], :from, state)
       {:noreply, [], state} = handle_events([4, 5, 6], :from, state)
-      assert {:noreply, [6], state} = handle_info(:timeout, state)
+      assert {:noreply, [6], state, :hibernate} = handle_info(:timeout, state)
       assert state.events == []
       refute state.timer
     end

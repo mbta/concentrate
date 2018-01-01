@@ -53,7 +53,13 @@ defmodule Concentrate.Producer.HTTP do
       send_outgoing_messages(outgoing_messages)
     end
 
-    {:noreply, events, %{state | machine: machine, demand: new_demand}}
+    new_state = %{state | machine: machine, demand: new_demand}
+
+    if events == [] do
+      {:noreply, events, new_state}
+    else
+      {:noreply, events, new_state, :hibernate}
+    end
   end
 
   @impl GenStage
