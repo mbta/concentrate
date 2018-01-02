@@ -13,8 +13,15 @@ defmodule Concentrate.Filter.ClosedStop do
 
   def filter(%StopTimeUpdate{} = stu, {stops_module, trips_module} = modules) do
     time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
-    entities = stops_module.stop_closed_for(StopTimeUpdate.stop_id(stu), time)
-    stu = update_stu_from_closed_entities(stu, entities, trips_module)
+
+    stu =
+      if is_nil(time) do
+        stu
+      else
+        entities = stops_module.stop_closed_for(StopTimeUpdate.stop_id(stu), time)
+        update_stu_from_closed_entities(stu, entities, trips_module)
+      end
+
     {:cont, stu, modules}
   end
 

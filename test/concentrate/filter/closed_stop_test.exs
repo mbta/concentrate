@@ -52,6 +52,16 @@ defmodule Concentrate.Filter.ClosedStopTest do
       assert {:cont, ^stu, _} = filter(stu, @state)
     end
 
+    test "does not modify the update if there are no times" do
+      stu =
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          stop_id: "route_stop"
+        )
+
+      assert {:cont, ^stu, _} = filter(stu, @state)
+    end
+
     test "other values are returned as-is" do
       assert {:cont, :value, _} = filter(:value, @state)
     end
