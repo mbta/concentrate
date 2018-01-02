@@ -43,9 +43,9 @@ defmodule Concentrate.MixProject do
   defp deps do
     [
       {:bypass, "~> 0.8", only: :test},
-      {:credo, "~> 0.8", only: :dev},
+      {:credo, "~> 0.8", runtime: false, only: :dev},
       {:csv, "~> 2.1"},
-      {:dialyxir, "~> 0.5", only: :dev},
+      {:dialyxir, "~> 0.5", runtime: false, only: :dev},
       {:distillery, "~> 1.4", runtime: false, only: :prod},
       {:ehmon, git: "https://github.com/heroku/ehmon.git", tag: "v4", only: :prod},
       {:ex_aws, "~> 2.0"},
