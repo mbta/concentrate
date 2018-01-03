@@ -7,7 +7,7 @@ defmodule Concentrate.Filter.VehicleWithNoTrip do
 
   @impl Concentrate.Filter
   def init do
-    {:parallel, []}
+    []
   end
 
   @impl Concentrate.Filter

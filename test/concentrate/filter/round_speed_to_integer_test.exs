@@ -4,8 +4,7 @@ defmodule Concentrate.Filter.RoundSpeedToIntegerTest do
   import Concentrate.Filter.RoundSpeedToInteger
   alias Concentrate.VehiclePosition
 
-  {_, state} = init()
-  @state state
+  @state init()
 
   describe "filter/2" do
     test "a vehicle position with no speed or bearing is unchanged" do

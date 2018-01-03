@@ -7,10 +7,12 @@ defmodule Concentrate.Filter.ClosedStop do
   alias Concentrate.Filter.Alert.ClosedStops
   alias Concentrate.Filter.GTFS.Trips
 
+  @impl Concentrate.Filter
   def init do
-    {:parallel, {ClosedStops, Trips}}
+    {ClosedStops, Trips}
   end
 
+  @impl Concentrate.Filter
   def filter(%StopTimeUpdate{} = stu, {stops_module, trips_module} = modules) do
     time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
 

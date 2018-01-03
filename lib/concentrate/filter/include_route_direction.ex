@@ -6,10 +6,12 @@ defmodule Concentrate.Filter.IncludeRouteDirection do
   alias Concentrate.TripUpdate
   alias Concentrate.Filter.GTFS.Trips
 
+  @impl Concentrate.Filter
   def init do
-    {:parallel, Trips}
+    Trips
   end
 
+  @impl Concentrate.Filter
   def filter(%TripUpdate{} = tu, module) do
     trip_id = TripUpdate.trip_id(tu)
     tu = update_route_direction(tu, trip_id, module)

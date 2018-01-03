@@ -7,7 +7,7 @@ defmodule Concentrate.Filter.VehiclePastStop do
 
   @impl Concentrate.Filter
   def init do
-    {:serial, %{}}
+    %{}
   end
 
   @impl Concentrate.Filter

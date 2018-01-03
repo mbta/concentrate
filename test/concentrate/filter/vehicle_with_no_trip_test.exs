@@ -4,8 +4,7 @@ defmodule Concentrate.Filter.VehicleWithNoTripTest do
   import Concentrate.Filter.VehicleWithNoTrip
   alias Concentrate.VehiclePosition
 
-  {_, state} = init()
-  @state state
+  @state init()
 
   describe "filter/2" do
     test "a vehicle position with a trip is kept" do

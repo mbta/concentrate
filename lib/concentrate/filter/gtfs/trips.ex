@@ -26,7 +26,7 @@ defmodule Concentrate.Filter.GTFS.Trips do
   end
 
   def init(opts) do
-    :ets.new(@table, [:named_table, :public, :duplicate_bag, {:read_concurrency, true}])
+    :ets.new(@table, [:named_table, :public, :duplicate_bag])
     {:consumer, %{}, opts}
   end
 

@@ -5,10 +5,12 @@ defmodule Concentrate.Filter.RoundSpeedToInteger do
   @behaviour Concentrate.Filter
   alias Concentrate.VehiclePosition
 
+  @impl Concentrate.Filter
   def init do
-    {:parallel, []}
+    []
   end
 
+  @impl Concentrate.Filter
   def filter(%VehiclePosition{} = vp, state) do
     speed =
       case VehiclePosition.speed(vp) do

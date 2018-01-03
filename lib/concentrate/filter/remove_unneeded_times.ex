@@ -8,7 +8,7 @@ defmodule Concentrate.Filter.RemoveUnneededTimes do
 
   @impl Concentrate.Filter
   def init do
-    {:parallel, PickupDropOff}
+    PickupDropOff
   end
 
   @impl Concentrate.Filter

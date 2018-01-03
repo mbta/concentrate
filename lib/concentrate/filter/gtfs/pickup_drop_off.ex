@@ -25,7 +25,7 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
 
   @impl GenStage
   def init(opts) do
-    :ets.new(@table, [:named_table, :public, :set, {:read_concurrency, true}])
+    :ets.new(@table, [:named_table, :public, :set])
     {:consumer, [], opts}
   end
 

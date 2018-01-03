@@ -6,10 +6,12 @@ defmodule Concentrate.Filter.CancelledTrip do
   alias Concentrate.{TripUpdate, StopTimeUpdate}
   alias Concentrate.Filter.Alert.CancelledTrips
 
+  @impl Concentrate.Filter
   def init do
-    {:parallel, CancelledTrips}
+    CancelledTrips
   end
 
+  @impl Concentrate.Filter
   def filter(%StopTimeUpdate{} = stu, module) do
     time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
 

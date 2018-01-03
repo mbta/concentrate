@@ -9,14 +9,14 @@ defmodule Concentrate.FilterTest do
     @behaviour Concentrate.Filter
 
     def init do
-      {:parallel, :state}
+      :state
     end
 
-    def filter(value, :state) do
+    def filter(value, state) do
       if Integer.mod(value, 2) == 0 do
-        {:cont, value, :ignored}
+        {:cont, value, state}
       else
-        {:skip, :also_ignored}
+        {:skip, state}
       end
     end
 
@@ -31,7 +31,7 @@ defmodule Concentrate.FilterTest do
     @behaviour Concentrate.Filter
 
     def init do
-      {:serial, 0}
+      0
     end
 
     def filter(value, previous) do
