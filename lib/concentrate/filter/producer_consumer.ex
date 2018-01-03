@@ -3,6 +3,7 @@ defmodule Concentrate.Filter.ProducerConsumer do
   ProducerConsumer which applies the set of filters to the given events.
   """
   use GenStage
+  require Logger
   alias Concentrate.Filter
   @start_link_opts [:name]
 
@@ -22,10 +23,16 @@ defmodule Concentrate.Filter.ProducerConsumer do
 
   @impl GenStage
   def handle_events(events, _from, filters) do
-    filtered =
-      events
-      |> List.last()
-      |> Filter.run(filters)
+    {time, filtered} =
+      :timer.tc(fn ->
+        events
+        |> List.last()
+        |> Filter.run(filters)
+      end)
+
+    Logger.debug(fn ->
+      "#{__MODULE__} filter took #{time / 1_000}ms"
+    end)
 
     {:noreply, [filtered], filters}
   end
