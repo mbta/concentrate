@@ -57,7 +57,10 @@ defmodule Concentrate.Supervisor do
 
   def merge(source_names) do
     [
-      {Concentrate.Merge.ProducerConsumer, name: :merge, subscribe_to: source_names}
+      {
+        Concentrate.Merge.ProducerConsumer,
+        name: :merge, subscribe_to: source_names, buffer_size: 1
+      }
     ]
   end
 
@@ -76,12 +79,8 @@ defmodule Concentrate.Supervisor do
   def filter(config) do
     [
       {
-        Concentrate.Debounce,
-        name: :debounce, subscribe_to: [:merge]
-      },
-      {
         Concentrate.Filter.ProducerConsumer,
-        name: :filter, filters: config, subscribe_to: [:debounce]
+        name: :filter, filters: config, buffer_size: 1, subscribe_to: [merge: [max_demand: 1]]
       }
     ]
   end
@@ -92,7 +91,10 @@ defmodule Concentrate.Supervisor do
         child_spec(
           {
             Concentrate.Encoder.ProducerConsumer,
-            name: encoder, files: [{filename, encoder}], subscribe_to: [:filter]
+            name: encoder,
+            files: [{filename, encoder}],
+            subscribe_to: [filter: [max_demand: 1]],
+            buffer_size: 1
           },
           id: encoder
         )
