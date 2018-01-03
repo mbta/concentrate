@@ -25,7 +25,7 @@ defmodule Concentrate.Sink.S3 do
   @impl GenStage
   def handle_events(events, _from, state) do
     events
-    |> Task.async_stream(&upload_to_s3(&1, state))
+    |> Task.async_stream(&upload_to_s3(&1, state), ordered: false)
     |> Stream.run()
 
     {:noreply, [], state}
