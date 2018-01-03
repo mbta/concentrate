@@ -20,6 +20,8 @@ defmodule Concentrate.Sink.GTFSRealtimeViz do
     state = %{
       path: path,
       urls: urls,
+      url_length: length(urls),
+      updates: MapSet.new(),
       config: config
     }
 
@@ -28,19 +30,25 @@ defmodule Concentrate.Sink.GTFSRealtimeViz do
 
   @impl GenStage
   def handle_events(events, _from, state) do
-    update_new(events)
-    update_remote(state.urls)
+    updated_filenames = update_new(events)
+    state = %{state | updates: MapSet.union(state.updates, updated_filenames)}
 
-    if Enum.any?(events, &(elem(&1, 0) == "TripUpdates.pb")) do
-      render_diff(state)
-    end
+    state =
+      if MapSet.size(state.updates) >= state.url_length do
+        update_remote(state.urls)
+        render_diff(state)
+        %{state | updates: MapSet.new()}
+      else
+        state
+      end
 
     {:noreply, [], state}
   end
 
   defp update_new(events) do
-    for {filename, body} <- events, Path.extname(filename) == ".pb" do
-      GTFSRealtimeViz.new_message(:new, body, "generated")
+    for {filename, body} <- events, into: MapSet.new() do
+      GTFSRealtimeViz.new_message(:new, body, "🚂Concentrate")
+      filename
     end
   end
 
@@ -48,13 +56,18 @@ defmodule Concentrate.Sink.GTFSRealtimeViz do
     urls
     |> Task.async_stream(&HTTPoison.get/1, ordered: false)
     |> Enum.each(fn {:ok, {:ok, %{body: remote_body}}} ->
-      GTFSRealtimeViz.new_message(:remote, remote_body, "remote")
+      GTFSRealtimeViz.new_message(:remote, remote_body, "👻Remote")
     end)
   end
 
   defp render_diff(state) do
     html = GTFSRealtimeViz.visualize_diff(:new, :remote, state.config)
-    File.write!(state.path, html)
+
+    File.write!(state.path, [
+      "<!DOCTYPE html><html><body>",
+      html,
+      "</body></html>"
+    ])
 
     Logger.info(fn ->
       "#{__MODULE__}: #{state.path} updated: #{byte_size(html)} bytes"

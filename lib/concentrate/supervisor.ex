@@ -119,10 +119,21 @@ defmodule Concentrate.Supervisor do
   end
 
   defp sink_config(:visualize, config, output_names) do
-    {Concentrate.Sink.GTFSRealtimeViz, [subscribe_to: output_names] ++ config}
+    selector = fn {filename, _} ->
+      Path.extname(filename) == ".pb"
+    end
+
+    outputs = outputs_with_options(output_names, selector: selector)
+    {Concentrate.Sink.GTFSRealtimeViz, [subscribe_to: outputs] ++ config}
   end
 
   defp child_ids(children) do
     for child <- children, do: child.id
+  end
+
+  def outputs_with_options(outputs, options) do
+    for name <- outputs do
+      {name, options}
+    end
   end
 end
