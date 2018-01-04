@@ -25,8 +25,9 @@ defmodule Concentrate.Filter do
   """
   @spec run([data], [module]) :: [data]
   def run(data_list, filter_list) do
-    stream = Enum.reduce(filter_list, data_list, &apply_filter_to_stream/2)
-    Enum.into(stream, [])
+    filter_list
+    |> Enum.reduce(data_list, &apply_filter_to_stream/2)
+    |> Enum.to_list()
   end
 
   defp apply_filter_to_stream(module, stream) do
