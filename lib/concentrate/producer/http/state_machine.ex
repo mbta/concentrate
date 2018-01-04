@@ -8,7 +8,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
             get_opts: [],
             body: "",
             headers: [],
-            fetch_after: 5_000
+            fetch_after: 5_000,
+            previous_hash: -1
 
   @type t :: %__MODULE__{url: binary}
   @type message :: {term, non_neg_integer}
@@ -148,7 +149,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   end
 
   defp handle_message(machine, %HTTPoison.AsyncEnd{}) do
-    bodies = parse_bodies(machine.body)
+    {bodies, machine} = parse_bodies(machine)
     delay = delay_after_fetch(machine)
     message = fetch_message(machine)
     messages = [{message, delay}]
@@ -165,12 +166,22 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, [], []}
   end
 
-  defp parse_bodies(body) when is_binary(body) do
-    [body]
+  defp parse_bodies(%{body: body, previous_hash: previous_hash} = machine) when is_binary(body) do
+    case :erlang.phash2(machine.body) do
+      ^previous_hash ->
+        Logger.info(fn ->
+          "#{__MODULE__}: #{inspect(machine.url)} same content"
+        end)
+
+        {[], machine}
+
+      new_hash ->
+        {[body], %{machine | previous_hash: new_hash}}
+    end
   end
 
-  defp parse_bodies(_) do
-    []
+  defp parse_bodies(machine) do
+    {[], machine}
   end
 
   defp delay_after_fetch(%{body: {:redirect, _, _}}) do

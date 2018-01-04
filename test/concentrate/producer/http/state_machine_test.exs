@@ -31,5 +31,29 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
 
       assert log =~ ":unknown_error"
     end
+
+    test "receiving the same body twice does not send a second message" do
+      machine = init("url", [])
+
+      messages = [
+        %HTTPoison.AsyncStatus{code: 200},
+        %HTTPoison.AsyncHeaders{headers: []},
+        %HTTPoison.AsyncChunk{chunk: "body"},
+        %HTTPoison.AsyncEnd{},
+        %HTTPoison.AsyncStatus{code: 200},
+        %HTTPoison.AsyncHeaders{headers: []},
+        %HTTPoison.AsyncChunk{chunk: "body"},
+        %HTTPoison.AsyncEnd{}
+      ]
+
+      initial = {machine, [], []}
+
+      {_machine, bodies, _messages} =
+        Enum.reduce(messages, initial, fn message, {machine, _, _} ->
+          message(machine, message)
+        end)
+
+      assert bodies == []
+    end
   end
 end

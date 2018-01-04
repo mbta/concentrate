@@ -147,6 +147,7 @@ defmodule Concentrate.Producer.HTTPTest do
       temp_redirect = Bypass.open()
       permanent_redirect = Bypass.open()
       {:ok, agent} = response_agent()
+      {:ok, permanent_redirect_agent} = response_agent()
 
       agent
       |> add_response(fn conn ->
@@ -160,13 +161,19 @@ defmodule Concentrate.Producer.HTTPTest do
         |> send_resp(301, "should have permanently redirect")
       end)
 
+      permanent_redirect_agent
+      |> add_response(fn conn ->
+        send_resp(conn, 200, "in permanent redirect")
+      end)
+      |> add_response(fn conn ->
+        send_resp(conn, 200, "in permanent redirect again")
+      end)
+
       Bypass.expect_once(temp_redirect, fn conn ->
         send_resp(conn, 200, "in temp redirect")
       end)
 
-      Bypass.expect(permanent_redirect, fn conn ->
-        send_resp(conn, 200, "in permanent redirect")
-      end)
+      Bypass.expect(permanent_redirect, &agent_response(permanent_redirect_agent, &1))
 
       Bypass.expect(bypass, fn conn -> agent_response(agent, conn) end)
       {:ok, producer} = start_producer(bypass, fetch_after: 10)
@@ -174,7 +181,7 @@ defmodule Concentrate.Producer.HTTPTest do
       assert take_events(producer, 3) == [
                ["in temp redirect"],
                ["in permanent redirect"],
-               ["in permanent redirect"]
+               ["in permanent redirect again"]
              ]
     end
 
