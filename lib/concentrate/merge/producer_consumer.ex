@@ -41,7 +41,7 @@ defmodule Concentrate.Merge.ProducerConsumer do
     {time, merged} =
       :timer.tc(fn ->
         state.data
-        |> Stream.flat_map(fn {_from, data} -> data end)
+        |> Stream.flat_map(&elem(&1, 1))
         |> Merge.merge()
       end)
 

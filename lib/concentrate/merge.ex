@@ -23,24 +23,21 @@ defmodule Concentrate.Merge do
 
   def merge(items) do
     items
-    |> Stream.with_index()
     |> Enum.reduce(%{}, &merge_item/2)
-    |> Enum.sort_by(fn {_key, {_item, index}} -> index end)
-    |> Enum.map(fn {_key, {item, _index}} -> item end)
+    |> Map.values()
+    |> Enum.sort()
+    |> Enum.map(&elem(&1, 1))
   end
 
-  defp merge_item({item, index}, acc) do
+  defp merge_item(item, acc) do
     key = {Mergeable.impl_for!(item), Mergeable.key(item)}
 
-    value =
-      case Map.fetch(acc, key) do
-        :error ->
-          {item, index}
+    case Map.fetch(acc, key) do
+      :error ->
+        Map.put(acc, key, {map_size(acc), item})
 
-        {:ok, {existing, existing_index}} ->
-          {Mergeable.merge(existing, item), existing_index}
-      end
-
-    Map.put(acc, key, value)
+      {:ok, {existing_index, existing}} ->
+        %{acc | key => {existing_index, Mergeable.merge(existing, item)}}
+    end
   end
 end
