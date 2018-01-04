@@ -8,6 +8,7 @@ defmodule Concentrate.Merge.ProducerConsumerTest do
   describe "handle_events/2" do
     test "schedules a timeout" do
       {_, state, _} = init(timeout: 100)
+      {_, state} = handle_subscribe(:producer, [], :from, state)
       {:noreply, [], state} = handle_events([1, 2, 3], :from, state)
       assert state.timer
       refute_received :timeout
@@ -15,11 +16,19 @@ defmodule Concentrate.Merge.ProducerConsumerTest do
       assert_receive :timeout, 500
     end
 
+    test "cleans up state if a producer dies" do
+      {_, state, _} = init([])
+      {_, state} = handle_subscribe(:producer, [], :from, state)
+      assert {:noreply, [], %{data: data}} = handle_cancel({:cancel, :whatever}, :from, state)
+      assert data == %{}
+    end
+
     property "with one source, returns the latest data, merged" do
       check all all_mergeables <- list_of_mergeables() do
         {_, state, _} = init([])
         expected = Merge.merge(List.last(all_mergeables))
 
+        {_, state} = handle_subscribe(:producer, [], :from, state)
         assert {:noreply, [], state} = handle_events(all_mergeables, :from, state)
         assert {:noreply, [^expected], _} = handle_info(:timeout, state)
       end
@@ -39,6 +48,7 @@ defmodule Concentrate.Merge.ProducerConsumerTest do
         {:noreply, [], state} =
           Enum.reduce(multi_source_mergeables, acc, fn mergeables, {_, _, state} ->
             from = make_ref()
+            {_, state} = handle_subscribe(:producer, [], from, state)
             handle_events([mergeables], from, state)
           end)
 
@@ -51,6 +61,7 @@ defmodule Concentrate.Merge.ProducerConsumerTest do
     property "updating a source returns the latest data for that source" do
       check all all_mergeables <- list_of_mergeables() do
         {_, state, _} = init([])
+        {_, state} = handle_subscribe(:producer, [], :from, state)
         expected = Merge.merge(List.last(all_mergeables))
 
         acc = {:noreply, [], state}

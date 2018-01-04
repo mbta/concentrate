@@ -22,9 +22,25 @@ defmodule Concentrate.Merge.ProducerConsumer do
   end
 
   @impl GenStage
+  def handle_subscribe(:producer, _options, from, %{data: data} = state) do
+    state = %{state | data: Map.put(data, from, [])}
+    {:automatic, state}
+  end
+
+  def handle_subscribe(producer_or_consumer, options, from, state) do
+    super(producer_or_consumer, options, from, state)
+  end
+
+  @impl GenStage
+  def handle_cancel(_reason, from, %{data: data} = state) do
+    state = %{state | data: Map.delete(data, from)}
+    {:noreply, [], state}
+  end
+
+  @impl GenStage
   def handle_events(events, from, %{data: data} = state) do
     latest_data = List.last(events)
-    state = put_in(state.data, Map.put(data, from, latest_data))
+    state = %{state | data: %{data | from => latest_data}}
 
     state =
       if state.timer do
