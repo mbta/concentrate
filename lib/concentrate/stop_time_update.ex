@@ -48,13 +48,8 @@ defmodule Concentrate.StopTimeUpdate do
 
     defp time(_, nil, time), do: time
     defp time(_, time, nil), do: time
-
-    defp time(best_comparison, first, second) do
-      if DateTime.compare(first, second) == best_comparison do
-        first
-      else
-        second
-      end
-    end
+    defp time(:lt, first, second) when first < second, do: first
+    defp time(:gt, first, second) when first > second, do: first
+    defp time(_, _, second), do: second
   end
 end

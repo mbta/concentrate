@@ -81,24 +81,20 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   def date(<<year_str::binary-4, month_str::binary-2, day_str::binary-2>>) do
-    {:ok, date} =
-      Date.new(
-        String.to_integer(year_str),
-        String.to_integer(month_str),
-        String.to_integer(day_str)
-      )
-
-    date
+    {
+      String.to_integer(year_str),
+      String.to_integer(month_str),
+      String.to_integer(day_str)
+    }
   end
 
   def date(date) when is_binary(date) do
     {:ok, date} = Date.from_iso8601(date)
-    date
+    Date.to_erl(date)
   end
 
   defp time_from_event(nil), do: nil
-  defp time_from_event(%{"time" => nil}), do: nil
-  defp time_from_event(%{"time" => time}), do: DateTime.from_unix!(time)
+  defp time_from_event(%{"time" => time}), do: time
 
   defp schedule_relationship(nil), do: :SCHEDULED
 
@@ -142,17 +138,15 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp decode_active_period(map) do
-    start = DateTime.from_unix!(map["start"] || 0)
+    start = map["start"] || 0
 
     stop =
-      DateTime.from_unix!(
-        if stop = map["end"] do
-          stop
-        else
-          # 2 ^ 32 - 1
-          4_294_967_295
-        end
-      )
+      if stop = map["end"] do
+        stop
+      else
+        # 2 ^ 32 - 1
+        4_294_967_295
+      end
 
     {start, stop}
   end

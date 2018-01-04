@@ -3,6 +3,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   Helper functions for encoding GTFS-Realtime files.
   """
   alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
+  import Calendar.ISO, only: [date_to_iso8601: 4]
 
   @doc """
   Given a list of parsed data, returns a list of tuples:
@@ -28,15 +29,15 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
       iex> import Concentrate.Encoder.GTFSRealtimeHelpers
       iex> encode_date(nil)
       nil
-      iex> encode_date(~D[1970-01-03])
+      iex> encode_date({1970, 1, 3})
       "19700103"
   """
   def encode_date(nil) do
     nil
   end
 
-  def encode_date(%Date{} = date) do
-    Date.to_iso8601(date, :basic)
+  def encode_date({year, month, day}) do
+    date_to_iso8601(year, month, day, :basic)
   end
 
   defp group_by_trip_id(%TripUpdate{} = tu, map) do

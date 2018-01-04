@@ -4,8 +4,8 @@ defmodule Concentrate.Filter.ClosedStopTest do
   import Concentrate.Filter.ClosedStop
   alias Concentrate.StopTimeUpdate
 
-  @valid_date_time DateTime.from_unix!(8)
-  @invalid_date_time DateTime.from_unix!(4)
+  @valid_date_time 8
+  @invalid_date_time 4
 
   @state {Concentrate.Filter.FakeClosedStops, Concentrate.Filter.FakeTrips}
 

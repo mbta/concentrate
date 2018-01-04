@@ -9,12 +9,11 @@ end
 
 defmodule Concentrate.Filter.FakeCancelledTrips do
   @moduledoc "Fake implementation of Filter.Alerts.CancelledTrips"
-  def trip_cancelled?("trip", ~D[1970-01-01]) do
+  def trip_cancelled?("trip", {1970, 1, 1}) do
     true
   end
 
-  def trip_cancelled?("trip", %DateTime{} = dt) do
-    unix = DateTime.to_unix(dt)
+  def trip_cancelled?("trip", unix) do
     unix > 5 and unix < 10
   end
 
@@ -27,9 +26,7 @@ defmodule Concentrate.Filter.FakeClosedStops do
   @moduledoc "Fake implementation of Filter.Alerts.ClosedStops"
   alias Concentrate.Alert.InformedEntity
 
-  def stop_closed_for("stop", date_time) do
-    unix = DateTime.to_unix(date_time)
-
+  def stop_closed_for("stop", unix) do
     cond do
       unix < 5 ->
         []

@@ -15,8 +15,8 @@ defmodule Concentrate.Filter.Alert.ClosedStopsTest do
         Alert.new(
           effect: :NO_SERVICE,
           active_period: [
-            {DateTime.from_unix!(5), DateTime.from_unix!(10)},
-            {DateTime.from_unix!(15), DateTime.from_unix!(20)}
+            {5, 10},
+            {15, 20}
           ],
           informed_entity: [
             stop_only = InformedEntity.new(stop_id: "stop"),
@@ -26,10 +26,10 @@ defmodule Concentrate.Filter.Alert.ClosedStopsTest do
 
       handle_events([[alert]], :from, :state)
 
-      assert stop_closed_for("stop", DateTime.from_unix!(5)) == [stop_only]
-      assert stop_closed_for("other", DateTime.from_unix!(20)) == [stop_route]
-      assert stop_closed_for("stop", DateTime.from_unix!(12)) == []
-      assert stop_closed_for("unknown", DateTime.from_unix!(8)) == []
+      assert stop_closed_for("stop", 5) == [stop_only]
+      assert stop_closed_for("other", 20) == [stop_route]
+      assert stop_closed_for("stop", 12) == []
+      assert stop_closed_for("unknown", 8) == []
     end
   end
 end

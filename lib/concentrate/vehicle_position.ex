@@ -42,7 +42,7 @@ defmodule Concentrate.VehiclePosition do
     end
 
     def merge(first, second) do
-      if DateTime.compare(first.last_updated, second.last_updated) == :lt do
+      if first.last_updated < second.last_updated do
         second
       else
         first

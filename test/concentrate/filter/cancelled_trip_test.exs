@@ -11,7 +11,7 @@ defmodule Concentrate.Filter.CancelledTripTest do
       tu =
         TripUpdate.new(
           trip_id: "trip",
-          start_date: ~D[1970-01-01]
+          start_date: {1970, 1, 1}
         )
 
       assert {:cont, new_tu, _} = filter(tu, @state)
@@ -22,7 +22,7 @@ defmodule Concentrate.Filter.CancelledTripTest do
       tu =
         TripUpdate.new(
           trip_id: "trip",
-          start_date: ~D[1970-01-02]
+          start_date: {1970, 1, 2}
         )
 
       assert {:cont, ^tu, _} = filter(tu, @state)
@@ -32,7 +32,7 @@ defmodule Concentrate.Filter.CancelledTripTest do
       tu =
         TripUpdate.new(
           trip_id: "other trip",
-          start_date: ~D[1970-01-01]
+          start_date: {1970, 1, 1}
         )
 
       assert {:cont, ^tu, _} = filter(tu, @state)
@@ -42,7 +42,7 @@ defmodule Concentrate.Filter.CancelledTripTest do
       stu =
         StopTimeUpdate.new(
           trip_id: "trip",
-          arrival_time: DateTime.from_unix!(8)
+          arrival_time: 8
         )
 
       assert {:cont, new_stu, _} = filter(stu, @state)
@@ -53,7 +53,7 @@ defmodule Concentrate.Filter.CancelledTripTest do
       stu =
         StopTimeUpdate.new(
           trip_id: "trip",
-          arrival_time: DateTime.from_unix!(50)
+          arrival_time: 50
         )
 
       assert {:cont, ^stu, _} = filter(stu, @state)

@@ -59,7 +59,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
                  trip_id: "trip",
                  route_id: "route",
                  direction_id: 1,
-                 start_date: ~D[2017-12-20],
+                 start_date: {2017, 12, 20},
                  start_time: "26:15:09",
                  schedule_relationship: :ADDED
                )

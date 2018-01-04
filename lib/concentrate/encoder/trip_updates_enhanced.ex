@@ -42,7 +42,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
               route_id: TripUpdate.route_id(update),
               direction_id: TripUpdate.direction_id(update),
               start_time: TripUpdate.start_time(update),
-              start_date: TripUpdate.start_date(update),
+              start_date: encode_date(TripUpdate.start_date(update)),
               schedule_relationship: TripUpdate.schedule_relationship(update)
             }),
           stop_time_update: Enum.map(stus, &build_stop_time_update/1)
@@ -70,9 +70,9 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
     nil
   end
 
-  defp stop_time_event(%DateTime{} = dt) do
+  defp stop_time_event(unix_timestamp) do
     %{
-      time: DateTime.to_unix(dt)
+      time: unix_timestamp
     }
   end
 

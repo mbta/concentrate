@@ -15,8 +15,8 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
         Alert.new(
           effect: :NO_SERVICE,
           active_period: [
-            {DateTime.from_unix!(5), DateTime.from_unix!(10)},
-            {DateTime.from_unix!(15), DateTime.from_unix!(20)}
+            {5, 10},
+            {15, 20}
           ],
           informed_entity: [
             InformedEntity.new(trip_id: "trip_with_stop", stop_id: "stop"),
@@ -26,9 +26,9 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
 
       handle_events([[alert]], :from, :state)
 
-      assert trip_cancelled?("trip_with_route", DateTime.from_unix!(5))
-      refute trip_cancelled?("trip_with_stop", DateTime.from_unix!(20))
-      assert trip_cancelled?("trip_with_route", ~D[1970-01-01])
+      assert trip_cancelled?("trip_with_route", 5)
+      refute trip_cancelled?("trip_with_stop", 20)
+      assert trip_cancelled?("trip_with_route", {1970, 1, 1})
     end
 
     test "correct handles start/stop date times across date boundaries" do
@@ -38,7 +38,7 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
         Alert.new(
           effect: :NO_SERVICE,
           active_period: [
-            {DateTime.from_unix!(one_day - 5), DateTime.from_unix!(one_day + 5)}
+            {one_day - 5, one_day + 5}
           ],
           informed_entity: [
             InformedEntity.new(trip_id: "trip")
@@ -47,13 +47,13 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
 
       handle_events([[alert]], :from, :state)
 
-      assert trip_cancelled?("trip", ~D[1970-01-01])
-      assert trip_cancelled?("trip", ~D[1970-01-02])
-      refute trip_cancelled?("trip", ~D[1970-01-03])
-      assert trip_cancelled?("trip", DateTime.from_unix!(one_day - 1))
-      assert trip_cancelled?("trip", DateTime.from_unix!(one_day + 1))
-      refute trip_cancelled?("trip", DateTime.from_unix!(one_day - 10))
-      refute trip_cancelled?("trip", DateTime.from_unix!(one_day + 10))
+      assert trip_cancelled?("trip", {1970, 1, 1})
+      assert trip_cancelled?("trip", {1970, 1, 2})
+      refute trip_cancelled?("trip", {1970, 1, 3})
+      assert trip_cancelled?("trip", one_day - 1)
+      assert trip_cancelled?("trip", one_day + 1)
+      refute trip_cancelled?("trip", one_day - 10)
+      refute trip_cancelled?("trip", one_day + 10)
     end
   end
 end

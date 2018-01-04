@@ -12,9 +12,8 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def stop_closed_for(stop_id, %DateTime{} = date_time) when is_binary(stop_id) do
-    unix = DateTime.to_unix(date_time)
-
+  @spec stop_closed_for(String.t(), integer) :: [Alert.InformedEntity.t()]
+  def stop_closed_for(stop_id, unix) when is_binary(stop_id) do
     matcher =
       {
         {stop_id, :"$1", :"$2", :"$3"},
@@ -44,7 +43,7 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
           stop_id = InformedEntity.stop_id(entity),
           not is_nil(stop_id),
           {start, stop} <- Alert.active_period(alert) do
-        {stop_id, DateTime.to_unix(start), DateTime.to_unix(stop), entity}
+        {stop_id, start, stop, entity}
       end
 
     unless inserts == [] do

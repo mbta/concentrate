@@ -16,8 +16,8 @@ defmodule Concentrate.Filter.RemoveUnneededTimesTest do
   end
 
   @state __MODULE__.FakePickupDropOff
-  @arrival_time DateTime.from_unix!(5)
-  @departure_time DateTime.from_unix!(500)
+  @arrival_time 5
+  @departure_time 500
   @stu StopTimeUpdate.new(
          trip_id: "trip",
          arrival_time: @arrival_time,

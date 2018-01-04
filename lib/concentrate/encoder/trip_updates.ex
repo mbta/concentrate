@@ -70,9 +70,9 @@ defmodule Concentrate.Encoder.TripUpdates do
     nil
   end
 
-  defp stop_time_event(%DateTime{} = dt) do
+  defp stop_time_event(unix_timestamp) do
     %GTFSRealtime.TripUpdate.StopTimeEvent{
-      time: DateTime.to_unix(dt)
+      time: unix_timestamp
     }
   end
 end

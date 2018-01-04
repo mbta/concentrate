@@ -42,7 +42,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
           odometer: vp.position.odometer,
           status: vp.current_status,
           stop_sequence: vp.current_stop_sequence,
-          last_updated: if(vp.timestamp, do: DateTime.from_unix!(vp.timestamp))
+          last_updated: vp.timestamp
         )
       ]
   end
@@ -94,14 +94,11 @@ defmodule Concentrate.Parser.GTFSRealtime do
   end
 
   defp date(<<year_str::binary-4, month_str::binary-2, day_str::binary-2>>) do
-    {:ok, date} =
-      Date.new(
-        String.to_integer(year_str),
-        String.to_integer(month_str),
-        String.to_integer(day_str)
-      )
-
-    date
+    {
+      String.to_integer(year_str),
+      String.to_integer(month_str),
+      String.to_integer(day_str)
+    }
   end
 
   defp decode_alert(%{alert: nil}) do
@@ -120,14 +117,14 @@ defmodule Concentrate.Parser.GTFSRealtime do
   end
 
   defp decode_active_period(%{start: start, end: stop}) do
-    start = DateTime.from_unix!(start || 0)
+    start = start || 0
 
     stop =
       if stop do
-        DateTime.from_unix!(stop)
+        stop
       else
         # 2 ^ 32 - 1
-        DateTime.from_unix!(4_294_967_295)
+        4_294_967_295
       end
 
     {start, stop}
@@ -144,6 +141,5 @@ defmodule Concentrate.Parser.GTFSRealtime do
   end
 
   defp time_from_event(nil), do: nil
-  defp time_from_event(%{time: nil}), do: nil
-  defp time_from_event(%{time: time}), do: DateTime.from_unix!(time)
+  defp time_from_event(%{time: time}), do: time
 end

@@ -91,20 +91,12 @@ defmodule Concentrate.Encoder.VehiclePositions do
       stop_id: VehiclePosition.stop_id(vp),
       current_stop_sequence: VehiclePosition.stop_sequence(vp),
       current_status: VehiclePosition.status(vp),
-      timestamp: time(VehiclePosition.last_updated(vp))
+      timestamp: VehiclePosition.last_updated(vp)
     }
   end
 
   defp entity_id(vp) do
     VehiclePosition.id(vp) || VehiclePosition.trip_id(vp) || "#{:erlang.phash2(vp)}"
-  end
-
-  def time(nil) do
-    nil
-  end
-
-  def time(%DateTime{} = dt) do
-    DateTime.to_unix(dt)
   end
 
   defp trip_descriptor(update) do

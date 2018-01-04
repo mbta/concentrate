@@ -11,8 +11,8 @@ defmodule Concentrate.StopTimeUpdateTest do
           trip_id: "trip",
           stop_id: "stop",
           stop_sequence: 1,
-          arrival_time: DateTime.from_unix!(2),
-          departure_time: DateTime.from_unix!(3),
+          arrival_time: 2,
+          departure_time: 3,
           status: "status"
         )
 
@@ -21,8 +21,8 @@ defmodule Concentrate.StopTimeUpdateTest do
           trip_id: "trip",
           stop_id: "stop",
           stop_sequence: 1,
-          arrival_time: DateTime.from_unix!(1),
-          departure_time: DateTime.from_unix!(4),
+          arrival_time: 1,
+          departure_time: 4,
           track: "track",
           schedule_relationship: :SKIPPED
         )
@@ -32,8 +32,8 @@ defmodule Concentrate.StopTimeUpdateTest do
           trip_id: "trip",
           stop_id: "stop",
           stop_sequence: 1,
-          arrival_time: DateTime.from_unix!(1),
-          departure_time: DateTime.from_unix!(4),
+          arrival_time: 1,
+          departure_time: 4,
           status: "status",
           track: "track",
           schedule_relationship: :SKIPPED

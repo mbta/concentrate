@@ -5,6 +5,7 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
   use GenStage
   require Logger
   alias Concentrate.{Alert, Alert.InformedEntity}
+  import Calendar.ISO, only: [from_unix: 2]
 
   @table __MODULE__
   @empty_value []
@@ -13,22 +14,15 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def trip_cancelled?(trip_id, %Date{} = date) when is_binary(trip_id) do
-    date = Date.to_erl(date)
+  def trip_cancelled?(trip_id, {_, _, _} = date) when is_binary(trip_id) do
     key = {trip_id, date}
     :ets.member(@table, key)
   end
 
-  def trip_cancelled?(trip_id, %DateTime{} = date_time) when is_binary(trip_id) do
-    # if we have a DateTime, we match on the date, as well as asserting that the DateTime
-    # is within the range of the active period.
-    date = Date.to_erl(date_time)
-    unix = DateTime.to_unix(date_time)
-    key = {trip_id, date}
-
+  def trip_cancelled?(trip_id, unix) when is_binary(trip_id) do
     select =
       {
-        {key, :"$1", :"$2"},
+        {{trip_id, :_}, :"$1", :"$2"},
         [
           {:"=<", :"$1", unix},
           {:"=<", unix, :"$2"}
@@ -56,8 +50,8 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
           not is_nil(trip_id),
           {start, stop} <- Alert.active_period(alert),
           date_time <- [start, stop] do
-        date = Date.to_erl(date_time)
-        {{trip_id, date}, DateTime.to_unix(start), DateTime.to_unix(stop)}
+        {:ok, date, _, _} = from_unix(date_time, :second)
+        {{trip_id, date}, start, stop}
       end
 
     unless inserts == [] do
