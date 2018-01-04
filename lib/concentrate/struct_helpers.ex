@@ -50,7 +50,7 @@ defmodule Concentrate.StructHelpers do
   @doc false
   def define_update do
     quote do
-      @spec update(%__MODULE__{}, Enumerable.t()) :: t
+      @spec update(%__MODULE__{} | t, Enumerable.t()) :: t
       def update(%__MODULE__{} = existing, %{} = opts) do
         Map.merge(existing, opts)
       end
@@ -71,7 +71,7 @@ defmodule Concentrate.StructHelpers do
 
     quote do
       @doc false
-      @spec unquote(name)(%__MODULE__{}, any) :: t
+      @spec unquote(name)(%__MODULE__{} | t, any) :: t
       def unquote(name)(%__MODULE__{} = struct, new_value) do
         %{struct | unquote(field) => new_value}
       end
@@ -86,7 +86,7 @@ defmodule Concentrate.StructHelpers do
   def define_accessor(field) do
     quote do
       @doc false
-      @spec unquote(field)(%__MODULE__{}) :: any
+      @spec unquote(field)(%__MODULE__{} | t) :: any
       def unquote(field)(%__MODULE__{unquote(field) => value}), do: value
       defoverridable [{unquote(field), 1}]
     end

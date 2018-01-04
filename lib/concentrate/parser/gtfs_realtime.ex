@@ -1,6 +1,12 @@
 defmodule Concentrate.Parser.GTFSRealtime do
   @moduledoc """
   Parser for [GTFS-Realtime](https://developers.google.com/transit/gtfs-realtime/) ProtoBuf files.
+
+  Options:
+
+  * routes: a list of route IDs to include in the output. Other route IDs
+  (including unknown routes) will not be included.
+
   """
   @behaviour Concentrate.Parser
   use Protobuf, from: Path.expand("gtfs-realtime.proto", __DIR__)
@@ -10,24 +16,37 @@ defmodule Concentrate.Parser.GTFSRealtime do
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
     for message <- [__MODULE__.FeedMessage.decode(binary)],
         entity <- message.entity,
-        decoded <- decode_feed_entity(entity) do
+        decoded <- decode_feed_entity(entity, opts) do
       decoded
     end
   end
 
-  def decode_feed_entity(entity) do
-    vp = decode_vehicle(entity.vehicle)
-    stop_updates = decode_trip_update(entity.trip_update)
+  def decode_feed_entity(entity, opts) do
+    vp = decode_vehicle(entity.vehicle, opts)
+    stop_updates = decode_trip_update(entity.trip_update, opts)
     alerts = decode_alert(entity)
     alerts ++ vp ++ stop_updates
   end
 
-  def decode_vehicle(nil) do
+  def decode_vehicle(nil, _opts) do
     []
   end
 
-  def decode_vehicle(vp) do
-    decode_trip_descriptor(vp.trip) ++
+  def decode_vehicle(vp, opts) do
+    tu = decode_trip_descriptor(vp.trip)
+    decode_vehicle_position(tu, vp, Keyword.fetch(opts, :routes))
+  end
+
+  defp decode_vehicle_position([tu], vp, {:ok, routes}) do
+    if TripUpdate.route_id(tu) in routes do
+      decode_vehicle_position([tu], vp, :error)
+    else
+      []
+    end
+  end
+
+  defp decode_vehicle_position(tu, vp, _) do
+    tu ++
       [
         VehiclePosition.new(
           id: optional_copy(vp.vehicle.id),
@@ -47,13 +66,24 @@ defmodule Concentrate.Parser.GTFSRealtime do
       ]
   end
 
-  def decode_trip_update(nil) do
+  def decode_trip_update(nil, _opts) do
     []
   end
 
-  def decode_trip_update(trip_update) do
+  def decode_trip_update(trip_update, opts) do
     tu = decode_trip_descriptor(trip_update.trip)
+    decode_stop_updates(tu, trip_update, Keyword.fetch(opts, :routes))
+  end
 
+  defp decode_stop_updates([tu], trip_update, {:ok, routes}) do
+    if TripUpdate.route_id(tu) in routes do
+      decode_stop_updates([tu], trip_update, :error)
+    else
+      []
+    end
+  end
+
+  defp decode_stop_updates(tu, trip_update, _) do
     stop_updates =
       for stu <- trip_update.stop_time_update do
         StopTimeUpdate.new(

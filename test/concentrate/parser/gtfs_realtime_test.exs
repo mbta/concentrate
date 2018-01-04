@@ -38,7 +38,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
     end
   end
 
-  describe "decode_trip_update/1" do
+  describe "decode_trip_update/2" do
     test "parses the trip descriptor" do
       update = %GTFSRealtime.TripUpdate{
         trip: %GTFSRealtime.TripDescriptor{
@@ -52,7 +52,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         stop_time_update: []
       }
 
-      [tu] = decode_trip_update(update)
+      [tu] = decode_trip_update(update, [])
 
       assert tu ==
                TripUpdate.new(
@@ -76,9 +76,57 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         ]
       }
 
-      [_tu, stop_update] = decode_trip_update(update)
+      [_tu, stop_update] = decode_trip_update(update, [])
       refute StopTimeUpdate.arrival_time(stop_update)
       refute StopTimeUpdate.departure_time(stop_update)
+    end
+
+    test "does not include trip or stop update if we're ignoring the route" do
+      update = %GTFSRealtime.TripUpdate{
+        trip: %GTFSRealtime.TripDescriptor{route_id: "ignored"},
+        stop_time_update: [
+          %GTFSRealtime.TripUpdate.StopTimeUpdate{
+            departure: %GTFSRealtime.TripUpdate.StopTimeEvent{time: 1}
+          }
+        ]
+      }
+
+      assert [] = decode_trip_update(update, routes: ["keeping"])
+    end
+
+    test "includes trip/stop update if we're keeping the route" do
+      update = %GTFSRealtime.TripUpdate{
+        trip: %GTFSRealtime.TripDescriptor{route_id: "keeping"},
+        stop_time_update: [
+          %GTFSRealtime.TripUpdate.StopTimeUpdate{
+            departure: %GTFSRealtime.TripUpdate.StopTimeEvent{time: 1}
+          }
+        ]
+      }
+
+      assert [_, _] = decode_trip_update(update, routes: ["keeping"])
+    end
+  end
+
+  describe "decode_vehicle/2" do
+    test "does not include trip or vehicle if we're ignoring the route" do
+      position = %GTFSRealtime.VehiclePosition{
+        trip: %GTFSRealtime.TripDescriptor{route_id: "ignoring"},
+        vehicle: %GTFSRealtime.VehicleDescriptor{},
+        position: %GTFSRealtime.Position{latitude: 1, longitude: 1}
+      }
+
+      assert [] = decode_vehicle(position, routes: ["keeping"])
+    end
+
+    test "includes trip/vehicle if we're keeping the route" do
+      position = %GTFSRealtime.VehiclePosition{
+        trip: %GTFSRealtime.TripDescriptor{route_id: "keeping"},
+        vehicle: %GTFSRealtime.VehicleDescriptor{},
+        position: %GTFSRealtime.Position{latitude: 1, longitude: 1}
+      }
+
+      assert [_, _] = decode_vehicle(position, routes: ["keeping"])
     end
   end
 end
