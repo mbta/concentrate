@@ -30,10 +30,19 @@ defmodule Concentrate.Supervisor do
   def sources(config) do
     realtime_children =
       for {source, url} <- config[:gtfs_realtime] || [] do
+        {url, parser} =
+          case url do
+            {url, opts} ->
+              {url, {Concentrate.Parser.GTFSRealtime, opts}}
+
+            url ->
+              {url, Concentrate.Parser.GTFSRealtime}
+          end
+
         child_spec(
           {
             Concentrate.Producer.HTTP,
-            {url, name: source, parser: Concentrate.Parser.GTFSRealtime}
+            {url, name: source, parser: parser}
           },
           id: source
         )

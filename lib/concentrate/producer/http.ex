@@ -16,7 +16,7 @@ defmodule Concentrate.Producer.HTTP do
 
   alias __MODULE__.State
 
-  def start_link({url, opts}) when is_list(opts) do
+  def start_link({url, opts}) when is_binary(url) and is_list(opts) do
     start_link_opts = Keyword.take(opts, @start_link_opts)
     opts = Keyword.drop(opts, @start_link_opts)
     GenStage.start_link(__MODULE__, {url, opts}, start_link_opts)

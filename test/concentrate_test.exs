@@ -67,5 +67,25 @@ defmodule ConcentrateTest do
       assert config[:gtfs] == nil
       assert config[:sinks] == %{}
     end
+
+    test "gtfs_realtime sources can have additional route configuration" do
+      body = ~s(
+{
+  "sources": {
+    "gtfs_realtime": {
+      "name": {
+        "url": "url",
+        "routes": ["a", "b"]
+      },
+      "name_2": {
+        "url": "only_url"
+      }
+    }
+  }
+})
+      config = parse_json_configuration(body)
+      assert config[:sources][:gtfs_realtime][:name] == {"url", routes: ~w(a b)}
+      assert config[:sources][:gtfs_realtime][:name_2] == "only_url"
+    end
   end
 end

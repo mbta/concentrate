@@ -28,7 +28,7 @@ defmodule Concentrate do
 
     [
       sources: [
-        gtfs_realtime: atomize_keys(realtime),
+        gtfs_realtime: decode_gtfs_realtime(realtime),
         gtfs_realtime_enhanced: atomize_keys(enhanced)
       ]
     ]
@@ -70,6 +70,25 @@ defmodule Concentrate do
 
   defp decode_json_key_value(_unknown) do
     []
+  end
+
+  defp decode_gtfs_realtime(realtime) do
+    # UNSAFE! only call this during startup, and with controlled JSON files.
+    for {key, value} <- realtime, into: %{} do
+      value =
+        case value do
+          %{"url" => url, "routes" => routes} when is_list(routes) ->
+            {url, routes: routes}
+
+          %{"url" => url} when is_binary(url) ->
+            url
+
+          url when is_binary(url) ->
+            url
+        end
+
+      {String.to_atom(key), value}
+    end
   end
 
   defp atomize_keys(enumerable) do
