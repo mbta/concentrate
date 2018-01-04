@@ -20,12 +20,7 @@ defmodule Concentrate.StopTimeUpdate do
   """
   @spec skip(%__MODULE__{}) :: t
   def skip(%__MODULE__{} = stu) do
-    update(
-      stu,
-      schedule_relationship: :SKIPPED,
-      arrival_time: nil,
-      departure_time: nil
-    )
+    %{stu | schedule_relationship: :SKIPPED, arrival_time: nil, departure_time: nil}
   end
 
   defimpl Concentrate.Mergeable do
@@ -38,8 +33,8 @@ defmodule Concentrate.StopTimeUpdate do
         trip_id: first.trip_id,
         stop_id: first.stop_id,
         stop_sequence: first.stop_sequence,
-        arrival_time: time(:min_by, first.arrival_time, second.arrival_time),
-        departure_time: time(:max_by, first.departure_time, second.departure_time),
+        arrival_time: time(:lt, first.arrival_time, second.arrival_time),
+        departure_time: time(:gt, first.departure_time, second.departure_time),
         status: first.status || second.status,
         track: first.track || second.track,
         schedule_relationship:
@@ -54,9 +49,12 @@ defmodule Concentrate.StopTimeUpdate do
     defp time(_, nil, time), do: time
     defp time(_, time, nil), do: time
 
-    defp time(fun, first, second) do
-      times = [first, second]
-      apply(Enum, fun, [times, &DateTime.to_unix/1])
+    defp time(best_comparison, first, second) do
+      if DateTime.compare(first, second) == best_comparison do
+        first
+      else
+        second
+      end
     end
   end
 end

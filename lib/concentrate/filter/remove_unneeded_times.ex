@@ -53,19 +53,19 @@ defmodule Concentrate.Filter.RemoveUnneededTimes do
 
   defp remove_arrival_time(stu) do
     if StopTimeUpdate.departure_time(stu) do
-      StopTimeUpdate.update(stu, arrival_time: nil)
+      StopTimeUpdate.update_arrival_time(stu, nil)
     else
       arrival_time = StopTimeUpdate.arrival_time(stu)
-      StopTimeUpdate.update(stu, arrival_time: nil, departure_time: arrival_time)
+      StopTimeUpdate.update(stu, %{arrival_time: nil, departure_time: arrival_time})
     end
   end
 
   defp remove_departure_time(stu) do
     if StopTimeUpdate.arrival_time(stu) do
-      StopTimeUpdate.update(stu, departure_time: nil)
+      StopTimeUpdate.update_departure_time(stu, nil)
     else
       departure_time = StopTimeUpdate.departure_time(stu)
-      StopTimeUpdate.update(stu, departure_time: nil, arrival_time: departure_time)
+      StopTimeUpdate.update(stu, %{departure_time: nil, arrival_time: departure_time})
     end
   end
 end

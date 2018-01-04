@@ -26,7 +26,7 @@ defmodule Concentrate.Filter.RoundSpeedToInteger do
         nil
       end
 
-    {:cont, VehiclePosition.update(vp, speed: speed, bearing: bearing), state}
+    {:cont, VehiclePosition.update(vp, %{speed: speed, bearing: bearing}), state}
   end
 
   def filter(other, state) do

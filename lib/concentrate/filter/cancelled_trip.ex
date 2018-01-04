@@ -34,7 +34,7 @@ defmodule Concentrate.Filter.CancelledTrip do
     tu =
       if module.trip_cancelled?(TripUpdate.trip_id(tu), TripUpdate.start_date(tu)) do
         # single L
-        TripUpdate.update(tu, schedule_relationship: :CANCELED)
+        TripUpdate.update_schedule_relationship(tu, :CANCELED)
       else
         tu
       end

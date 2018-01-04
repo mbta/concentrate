@@ -31,16 +31,13 @@ defmodule Concentrate.Filter.IncludeRouteDirection do
       if TripUpdate.route_id(tu) do
         tu
       else
-        TripUpdate.update(tu, route_id: module.route_id(trip_id))
+        TripUpdate.update_route_id(tu, module.route_id(trip_id))
       end
 
-    tu =
-      if TripUpdate.direction_id(tu) do
-        tu
-      else
-        TripUpdate.update(tu, direction_id: module.direction_id(trip_id))
-      end
-
-    tu
+    if TripUpdate.direction_id(tu) do
+      tu
+    else
+      TripUpdate.update_direction_id(tu, module.direction_id(trip_id))
+    end
   end
 end
