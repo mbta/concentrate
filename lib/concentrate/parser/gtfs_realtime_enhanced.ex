@@ -9,7 +9,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   @default_active_period [%{"start" => nil, "end" => nil}]
 
   @impl Concentrate.Parser
-  def parse(binary) when is_binary(binary) do
+  def parse(binary, opts) when is_binary(binary) and is_list(opts) do
     for {:ok, json} <- [Poison.decode(binary)],
         entity <- Map.get(json, "entity", []),
         decoded <- decode_feed_entity(entity) do

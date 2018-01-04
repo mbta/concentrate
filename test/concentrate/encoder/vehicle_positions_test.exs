@@ -106,13 +106,13 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
     end
 
     test "decoding and re-encoding vehiclepositions.pb is a no-op" do
-      decoded = GTFSRealtime.parse(File.read!(fixture_path("vehiclepositions.pb")))
+      decoded = GTFSRealtime.parse(File.read!(fixture_path("vehiclepositions.pb")), [])
       assert round_trip(decoded) == decoded
     end
   end
 
   defp round_trip(data) do
     # return the result of decoding the encoded data
-    GTFSRealtime.parse(encode(data))
+    GTFSRealtime.parse(encode(data), [])
   end
 end

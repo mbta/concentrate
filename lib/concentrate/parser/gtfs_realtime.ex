@@ -7,7 +7,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
   alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate, Alert, Alert.InformedEntity}
 
   @impl Concentrate.Parser
-  def parse(binary) when is_binary(binary) do
+  def parse(binary, opts) when is_binary(binary) and is_list(opts) do
     for message <- [__MODULE__.FeedMessage.decode(binary)],
         entity <- message.entity,
         decoded <- decode_feed_entity(entity) do

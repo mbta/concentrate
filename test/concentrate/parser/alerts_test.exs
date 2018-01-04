@@ -7,12 +7,12 @@ defmodule Concentrate.Parser.AlertsTest do
   describe "parse/1" do
     test "parses a protobuf file" do
       body = File.read!(fixture_path("alerts.pb"))
-      assert [_ | _] = parse(body)
+      assert [_ | _] = parse(body, [])
     end
 
     test "parses a JSON file" do
       body = File.read!(fixture_path("alerts_enhanced.json"))
-      assert [_ | _] = parse(body)
+      assert [_ | _] = parse(body, [])
     end
   end
 end

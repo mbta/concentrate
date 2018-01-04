@@ -27,7 +27,10 @@ defmodule Concentrate.Producer.HTTP do
     parser =
       case Keyword.get(opts, :parser) do
         module when is_atom(module) ->
-          &module.parse/1
+          fn binary -> module.parse(binary, []) end
+
+        {module, opts} when is_atom(module) and is_list(opts) ->
+          fn binary -> module.parse(binary, opts) end
 
         fun when is_function(fun, 1) ->
           fun

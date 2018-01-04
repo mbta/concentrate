@@ -5,15 +5,20 @@ defmodule Concentrate.Producer.HTTPTest do
   alias Concentrate.Producer.HTTP.StateMachine
   import Plug.Conn, only: [get_req_header: 2, put_resp_header: 3, send_resp: 3]
 
+  defmodule TestParser do
+    @behaviour Concentrate.Parser
+    def parse(_body, _opts), do: []
+  end
+
   describe "init/1" do
     test "parser can be a module" do
-      defmodule TestParser do
-        @behaviour Concentrate.Parser
-        def parse(_body), do: []
-      end
-
       assert {:producer, state, _} = init({"url", parser: __MODULE__.TestParser})
-      assert state.parser == &__MODULE__.TestParser.parse/1
+      assert is_function(state.parser, 1)
+    end
+
+    test "parser can be a module with options" do
+      assert {:producer, state, _} = init({"url", parser: {__MODULE__.TestParser, [opt: 1]}})
+      assert is_function(state.parser, 1)
     end
   end
 

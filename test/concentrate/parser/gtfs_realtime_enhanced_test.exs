@@ -8,7 +8,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
   describe "parse/1" do
     test "parsing a TripUpdate enhanced JSON file returns only StopTimeUpdate or TripUpdate structs" do
       binary = File.read!(fixture_path("TripUpdates_enhanced.json"))
-      parsed = parse(binary)
+      parsed = parse(binary, [])
       assert [_ | _] = parsed
 
       for update <- parsed do
@@ -18,7 +18,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
     test "parsing an alerts_enhanced.json file returns only alerts" do
       binary = File.read!(fixture_path("alerts_enhanced.json"))
-      parsed = parse(binary)
+      parsed = parse(binary, [])
       assert [_ | _] = parsed
 
       for alert <- parsed do
@@ -54,7 +54,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
             }
           ]
         })
-      [alert] = parse(body)
+      [alert] = parse(body, [])
       [entity] = Alert.informed_entity(alert)
       assert InformedEntity.route_type(entity) == 2
       assert InformedEntity.route_id(entity) == "CR-Worcester"

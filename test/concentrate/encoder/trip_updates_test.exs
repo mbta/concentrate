@@ -14,7 +14,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         StopTimeUpdate.new(trip_id: "1")
       ]
 
-      decoded = GTFSRealtime.parse(encode(initial))
+      decoded = GTFSRealtime.parse(encode(initial), [])
       assert [TripUpdate.new(trip_id: "1"), StopTimeUpdate.new(trip_id: "1")] == decoded
     end
 
@@ -33,7 +33,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         ])
 
       initial = trip_updates ++ stop_time_updates
-      decoded = GTFSRealtime.parse(encode(initial))
+      decoded = GTFSRealtime.parse(encode(initial), [])
 
       assert [
                TripUpdate.new(trip_id: "1"),
@@ -46,13 +46,13 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
     end
 
     test "decoding and re-encoding tripupdates.pb is a no-op" do
-      decoded = GTFSRealtime.parse(File.read!(fixture_path("tripupdates.pb")))
-      round_tripped = GTFSRealtime.parse(encode(decoded))
+      decoded = GTFSRealtime.parse(File.read!(fixture_path("tripupdates.pb")), [])
+      round_tripped = GTFSRealtime.parse(encode(decoded), [])
       assert round_tripped == decoded
     end
 
     test "interspersing VehiclePositions doesn't affect the output (with non-matching trips)" do
-      decoded = GTFSRealtime.parse(File.read!(fixture_path("tripupdates.pb")))
+      decoded = GTFSRealtime.parse(File.read!(fixture_path("tripupdates.pb")), [])
 
       interspersed =
         Enum.intersperse(
@@ -60,7 +60,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
           VehiclePosition.new(trip_id: "non_matching", latitude: 1, longitude: 1)
         )
 
-      round_tripped = GTFSRealtime.parse(encode(interspersed))
+      round_tripped = GTFSRealtime.parse(encode(interspersed), [])
       assert round_tripped == decoded
     end
   end

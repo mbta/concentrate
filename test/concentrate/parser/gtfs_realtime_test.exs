@@ -9,7 +9,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
   describe "parse/1" do
     test "parsing a vehiclepositions.pb file returns only VehiclePosition or TripUpdate structs" do
       binary = File.read!(fixture_path("vehiclepositions.pb"))
-      parsed = parse(binary)
+      parsed = parse(binary, [])
       assert [_ | _] = parsed
 
       for vp <- parsed do
@@ -19,7 +19,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
 
     test "parsing a tripupdates.pb file returns only StopTimeUpdate or TripUpdate structs" do
       binary = File.read!(fixture_path("tripupdates.pb"))
-      parsed = parse(binary)
+      parsed = parse(binary, [])
       assert [_ | _] = parsed
 
       for update <- parsed do
@@ -29,7 +29,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
 
     test "parsing an alerts.pb returns only alerts" do
       binary = File.read!(fixture_path("alerts.pb"))
-      parsed = parse(binary)
+      parsed = parse(binary, [])
       assert [_ | _] = parsed
 
       for alert <- parsed do

@@ -5,9 +5,9 @@ defmodule Concentrate.Parser.Alerts do
   alias Concentrate.Parser
   @behaviour Concentrate.Parser
 
-  def parse(body) do
+  def parse(body, opts) do
     module = parse_module(body)
-    module.parse(body)
+    module.parse(body, opts)
   end
 
   defp parse_module("{" <> _), do: Parser.GTFSRealtimeEnhanced

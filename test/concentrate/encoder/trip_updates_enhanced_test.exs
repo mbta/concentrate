@@ -8,8 +8,10 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
 
   describe "encode/1" do
     test "decoding and re-encoding TripUpdates_enhanced.json is a no-op" do
-      decoded = GTFSRealtimeEnhanced.parse(File.read!(fixture_path("TripUpdates_enhanced.json")))
-      round_tripped = GTFSRealtimeEnhanced.parse(encode(decoded))
+      decoded =
+        GTFSRealtimeEnhanced.parse(File.read!(fixture_path("TripUpdates_enhanced.json")), [])
+
+      round_tripped = GTFSRealtimeEnhanced.parse(encode(decoded), [])
       assert round_tripped == decoded
     end
 
