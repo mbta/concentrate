@@ -80,4 +80,27 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
       end
     end
   end
+
+  describe "route_cancelled?/1" do
+    test "returns a boolean indicating whether the route is cancelled at the given date or time" do
+      alert =
+        Alert.new(
+          effect: :NO_SERVICE,
+          active_period: [
+            {5, 10},
+            {15, 20}
+          ],
+          informed_entity: [
+            InformedEntity.new(route_id: "route_alone"),
+            InformedEntity.new(trip_id: "trip_with_route", route_id: "route")
+          ]
+        )
+
+      handle_events([[alert]], :from, :state)
+
+      assert route_cancelled?("route_alone", 5)
+      refute route_cancelled?("route", 20)
+      assert route_cancelled?("route_alone", {1970, 1, 1})
+    end
+  end
 end

@@ -9,6 +9,18 @@ end
 
 defmodule Concentrate.Filter.FakeCancelledTrips do
   @moduledoc "Fake implementation of Filter.Alerts.CancelledTrips"
+  def route_cancelled?("route", {1970, 1, 2}) do
+    true
+  end
+
+  def route_cancelled?("route", unix) do
+    unix > 86_405 and unix < 86_410
+  end
+
+  def route_cancelled?(_, _) do
+    false
+  end
+
   def trip_cancelled?("trip", {1970, 1, 1}) do
     true
   end

@@ -4,7 +4,7 @@ defmodule Concentrate.Filter.CancelledTripTest do
   import Concentrate.Filter.CancelledTrip
   alias Concentrate.{TripUpdate, StopTimeUpdate}
 
-  @state Concentrate.Filter.FakeCancelledTrips
+  @state {Concentrate.Filter.FakeCancelledTrips, %{}}
 
   describe "filter/2" do
     test "TripUpdate is cancelled if the start date matches" do
@@ -38,6 +38,31 @@ defmodule Concentrate.Filter.CancelledTripTest do
       assert {:cont, ^tu, _} = filter(tu, @state)
     end
 
+    test "TripUpdate is cancelled if the route is cancelled" do
+      tu =
+        TripUpdate.new(
+          trip_id: "other_trip",
+          route_id: "route",
+          start_date: {1970, 1, 2}
+        )
+
+      assert {:cont, new_tu, {_, map}} = filter(tu, @state)
+      assert TripUpdate.schedule_relationship(new_tu) == :CANCELED
+      assert map["other_trip"] == "route"
+    end
+
+    test "TripUpdate is not cancelled if the route is not cancelled" do
+      tu =
+        TripUpdate.new(
+          trip_id: "other_trip",
+          route_id: "route",
+          start_date: {1970, 1, 1}
+        )
+
+      assert {:cont, ^tu, {_, map}} = filter(tu, @state)
+      assert map == %{}
+    end
+
     test "StopTimeUpdate is skipped if the trip ID and time match" do
       stu =
         StopTimeUpdate.new(
@@ -57,6 +82,43 @@ defmodule Concentrate.Filter.CancelledTripTest do
         )
 
       assert {:cont, ^stu, _} = filter(stu, @state)
+    end
+
+    test "StopTimeUpdate is skipped if the route was cancelled" do
+      tu =
+        TripUpdate.new(
+          trip_id: "other_trip",
+          route_id: "route",
+          start_date: {1970, 1, 2}
+        )
+
+      stu =
+        StopTimeUpdate.new(
+          trip_id: "other_trip",
+          arrival_time: 86_406
+        )
+
+      {:cont, _, state} = filter(tu, @state)
+      assert {:cont, new_stu, _} = filter(stu, state)
+      assert new_stu == StopTimeUpdate.skip(stu)
+    end
+
+    test "StopTimeUpdate is not skipped if the route was cancelled at a different time" do
+      tu =
+        TripUpdate.new(
+          trip_id: "other_trip",
+          route_id: "route",
+          start_date: {1970, 1, 2}
+        )
+
+      stu =
+        StopTimeUpdate.new(
+          trip_id: "other_trip",
+          arrival_time: 87_000
+        )
+
+      {:cont, _, state} = filter(tu, @state)
+      assert {:cont, ^stu, _} = filter(stu, state)
     end
 
     test "other values are returned as-is" do

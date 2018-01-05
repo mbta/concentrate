@@ -15,16 +15,24 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def trip_cancelled?(trip_id, {_, _, _} = date) when is_binary(trip_id) do
+  def route_cancelled?(route_id, date_or_timestamp) when is_binary(route_id) do
+    date_overlaps?({:route, route_id}, date_or_timestamp)
+  end
+
+  def trip_cancelled?(trip_id, date_or_timestamp) when is_binary(trip_id) do
+    date_overlaps?({:trip, trip_id}, date_or_timestamp)
+  end
+
+  defp date_overlaps?(key, {_, _, _} = date) do
     start_of_day_unix =
       :calendar.datetime_to_gregorian_seconds({date, {0, 0, 0}}) - @epoch_seconds
 
     end_of_day_unix = start_of_day_unix + @one_day_minus_one
-    date_overlaps?(trip_id, start_of_day_unix, end_of_day_unix)
+    date_overlaps?(key, start_of_day_unix, end_of_day_unix)
   end
 
-  def trip_cancelled?(trip_id, unix) when is_binary(trip_id) do
-    date_overlaps?(trip_id, unix, unix)
+  defp date_overlaps?(key, unix) when is_integer(unix) do
+    date_overlaps?(key, unix, unix)
   end
 
   defp date_overlaps?(trip_id, start, stop) do
@@ -54,10 +62,9 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
           Alert.effect(alert) == :NO_SERVICE,
           entity <- Alert.informed_entity(alert),
           is_nil(InformedEntity.stop_id(entity)),
-          trip_id = InformedEntity.trip_id(entity),
-          is_binary(trip_id),
+          key <- cancellation_type(entity),
           {start, stop} <- Alert.active_period(alert) do
-        {trip_id, start, stop}
+        {key, start, stop}
       end
 
     unless inserts == [] do
@@ -71,5 +78,18 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
     end
 
     {:noreply, [], state}
+  end
+
+  defp cancellation_type(entity) do
+    cond do
+      is_binary(trip_id = InformedEntity.trip_id(entity)) ->
+        [{:trip, trip_id}]
+
+      is_binary(route_id = InformedEntity.route_id(entity)) ->
+        [{:route, route_id}]
+
+      true ->
+        []
+    end
   end
 end
