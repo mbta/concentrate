@@ -21,7 +21,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
         StopTimeUpdate.new(trip_id: "trip", stop_id: "5")
       ]
 
-      encoded = Poison.decode!(encode(parsed))
+      encoded = Jason.decode!(encode(parsed))
       update = get_in(encoded, ["entity", Access.at(0), "trip_update", "trip"])
       refute "start_time" in Map.keys(update)
     end
@@ -32,7 +32,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
         StopTimeUpdate.new(trip_id: "trip", stop_id: "5")
       ]
 
-      encoded = Poison.decode!(encode(parsed))
+      encoded = Jason.decode!(encode(parsed))
 
       update =
         get_in(encoded, ["entity", Access.at(0), "trip_update", "stop_time_update", Access.at(0)])

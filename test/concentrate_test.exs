@@ -9,7 +9,7 @@ defmodule ConcentrateTest do
     end
 
     test "invalid JSON raises an exception" do
-      assert_raise Poison.SyntaxError, fn -> parse_json_configuration("{") end
+      assert_raise Jason.DecodeError, fn -> parse_json_configuration("{") end
     end
 
     test "parses config into a keyword list" do

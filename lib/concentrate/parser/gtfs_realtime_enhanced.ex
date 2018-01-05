@@ -10,7 +10,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   @impl Concentrate.Parser
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
-    for {:ok, json} <- [Poison.decode(binary)],
+    for {:ok, json} <- [Jason.decode(binary, strings: :copy)],
         entity <- Map.get(json, "entity", []),
         decoded <- decode_feed_entity(entity) do
       decoded
@@ -43,10 +43,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     stop_updates =
       for stu <- trip_update["stop_time_update"] do
         StopTimeUpdate.new(
-          trip_id: if(trip_update["trip"], do: optional_copy(trip_update["trip"]["trip_id"])),
-          stop_id: optional_copy(stu["stop_id"]),
+          trip_id: if(trip_update["trip"], do: trip_update["trip"]["trip_id"]),
+          stop_id: stu["stop_id"],
           stop_sequence: stu["stop_sequence"],
-          schedule_relationship: schedule_relationship(stu["schedule_relationship"]),
+          schedule_relationship: stu["schedule_relationship"],
           arrival_time: time_from_event(stu["arrival"]),
           departure_time: time_from_event(stu["departure"]),
           status: boarding_status(stu["boarding_status"])
@@ -56,9 +56,6 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     tu ++ stop_updates
   end
 
-  defp optional_copy(binary) when is_binary(binary), do: :binary.copy(binary)
-  defp optional_copy(nil), do: nil
-
   defp decode_trip_descriptor(nil) do
     []
   end
@@ -66,11 +63,11 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   defp decode_trip_descriptor(trip) do
     [
       TripUpdate.new(
-        trip_id: optional_copy(trip["trip_id"]),
-        route_id: optional_copy(trip["route_id"]),
+        trip_id: trip["trip_id"],
+        route_id: trip["route_id"],
         direction_id: trip["direction_id"],
         start_date: date(trip["start_date"]),
-        start_time: optional_copy(trip["start_time"]),
+        start_time: trip["start_time"],
         schedule_relationship: schedule_relationship(trip["schedule_relationship"])
       )
     ]

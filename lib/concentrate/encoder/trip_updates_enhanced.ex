@@ -13,7 +13,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
       entity: feed_entity(list)
     }
 
-    Poison.encode!(message)
+    Jason.encode!(message)
   end
 
   def feed_header do
