@@ -13,12 +13,18 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   The VehiclePositions/StopTimeUpdates will share the same trip ID.
   """
   def group(parsed) do
-    mapping = Enum.reduce(parsed, %{}, &group_by_trip_id/2)
     # we sort by the initial size, which keeps the trip updates in their original ordering
-    for {_, {tu, vps, stus, _}} <- Enum.sort_by(mapping, &elem(elem(&1, 1), 3)),
-        vps != [] or stus != [] do
-      {tu, Enum.reverse(vps), Enum.sort_by(stus, &StopTimeUpdate.stop_sequence/1)}
-    end
+    parsed
+    |> Enum.reduce(%{}, &group_by_trip_id/2)
+    |> Map.values()
+    |> Enum.reject(&match?({_, _, [], []}, &1))
+    |> Enum.sort()
+    |> Enum.map(fn {_, tu, vps, stus} ->
+      vps = Enum.reverse(vps)
+      stus = Enum.sort_by(stus, &StopTimeUpdate.stop_sequence/1)
+
+      {tu, vps, stus}
+    end)
   end
 
   @doc """
@@ -26,7 +32,6 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
   ## Examples
 
-      iex> import Concentrate.Encoder.GTFSRealtimeHelpers
       iex> encode_date(nil)
       nil
       iex> encode_date({1970, 1, 3})
@@ -46,25 +51,31 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
         map
 
       id ->
-        Map.update(map, id, {tu, [], [], map_size(map)}, fn {_, vps, stus, size} ->
-          {tu, vps, stus, size}
-        end)
+        Map.update(map, id, {map_size(map), tu, [], []}, &add_trip_update(&1, tu))
     end
   end
 
   defp group_by_trip_id(%VehiclePosition{} = vp, map) do
     trip_id = VehiclePosition.trip_id(vp)
 
-    Map.update(map, trip_id, {nil, [vp], [], map_size(map)}, fn {tu, vps, stus, size} ->
-      {tu, [vp | vps], stus, size}
-    end)
+    Map.update(map, trip_id, {map_size(map), nil, [vp], []}, &add_vehicle_position(&1, vp))
   end
 
   defp group_by_trip_id(%StopTimeUpdate{} = stu, map) do
     trip_id = StopTimeUpdate.trip_id(stu)
 
-    Map.update(map, trip_id, {nil, [], [stu], map_size(map)}, fn {tu, vps, stus, size} ->
-      {tu, vps, [stu | stus], size}
-    end)
+    Map.update(map, trip_id, {map_size(map), nil, [], [stu]}, &add_stop_time_update(&1, stu))
+  end
+
+  defp add_trip_update({size, _tu, vps, stus}, tu) do
+    {size, tu, vps, stus}
+  end
+
+  defp add_vehicle_position({size, tu, vps, stus}, vp) do
+    {size, tu, [vp | vps], stus}
+  end
+
+  defp add_stop_time_update({size, tu, vps, stus}, stu) do
+    {size, tu, vps, [stu | stus]}
   end
 end
