@@ -32,9 +32,56 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
       assert log =~ ":unknown_error"
     end
 
-    test "receiving the same body twice does not send a second message" do
-      machine = init("url", [])
+    test "logs a error if we have't gotten content since a timeout" do
+      opts = [content_warning_timeout: 0]
 
+      messages = [
+        %HTTPoison.AsyncStatus{code: 200},
+        %HTTPoison.AsyncHeaders{headers: []},
+        %HTTPoison.AsyncChunk{chunk: "body"},
+        %HTTPoison.AsyncEnd{},
+        fn -> :timer.sleep(5) end,
+        %HTTPoison.AsyncStatus{code: 304},
+        %HTTPoison.AsyncHeaders{headers: []},
+        %HTTPoison.AsyncEnd{}
+      ]
+
+      log =
+        capture_log([level: :error], fn ->
+          _ = run_machine("url", opts, messages)
+        end)
+
+      assert log =~ ~s("url")
+      assert log =~ "has not been updated in"
+    end
+
+    test "does not log multiple warnings after the first timeout" do
+      opts = [content_warning_timeout: 5]
+
+      messages = [
+        %HTTPoison.AsyncStatus{code: 200},
+        %HTTPoison.AsyncHeaders{headers: []},
+        %HTTPoison.AsyncChunk{chunk: "body"},
+        %HTTPoison.AsyncEnd{},
+        fn -> :timer.sleep(10) end,
+        %HTTPoison.AsyncStatus{code: 304},
+        %HTTPoison.AsyncHeaders{headers: []},
+        %HTTPoison.AsyncEnd{},
+        %HTTPoison.AsyncStatus{code: 304},
+        %HTTPoison.AsyncHeaders{headers: []},
+        %HTTPoison.AsyncEnd{}
+      ]
+
+      log =
+        capture_log([level: :error], fn ->
+          _ = run_machine("url", opts, messages)
+        end)
+
+      # only one message (some content before, some content after)
+      assert [_, _] = String.split(log, "[error]")
+    end
+
+    test "receiving the same body twice does not send a second message" do
       messages = [
         %HTTPoison.AsyncStatus{code: 200},
         %HTTPoison.AsyncHeaders{headers: []},
@@ -46,14 +93,25 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
         %HTTPoison.AsyncEnd{}
       ]
 
-      initial = {machine, [], []}
-
-      {_machine, bodies, _messages} =
-        Enum.reduce(messages, initial, fn message, {machine, _, _} ->
-          message(machine, message)
-        end)
+      {_machine, bodies, _messages} = run_machine("url", [], messages)
 
       assert bodies == []
     end
+  end
+
+  defp run_machine(url, opts, messages) do
+    machine = init(url, opts)
+    initial = {machine, [], []}
+
+    Enum.reduce(messages, initial, fn message, {machine, _, _} ->
+      case message do
+        fun when is_function(fun, 0) ->
+          fun.()
+          {machine, [], []}
+
+        message ->
+          message(machine, message)
+      end
+    end)
   end
 end

@@ -9,6 +9,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
             body: "",
             headers: [],
             fetch_after: 5_000,
+            content_warning_timeout: 300_000,
+            last_success: nil,
             previous_hash: -1
 
   @type t :: %__MODULE__{url: binary}
@@ -18,7 +20,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   @spec init(binary, Keyword.t()) :: t
   def init(url, opts) when is_binary(url) and is_list(opts) do
     state = %__MODULE__{url: url}
-    state = struct!(state, Keyword.take(opts, ~w(get_opts fetch_after)a))
+    state = struct!(state, Keyword.take(opts, ~w(get_opts fetch_after content_warning_timeout)a))
     state
   end
 
@@ -150,6 +152,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defp handle_message(machine, %HTTPoison.AsyncEnd{}) do
     {bodies, machine} = parse_bodies(machine)
+    machine = check_last_success(machine, bodies)
     delay = delay_after_fetch(machine)
     message = fetch_message(machine)
     messages = [{message, delay}]
@@ -184,6 +187,26 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {[], machine}
   end
 
+  defp check_last_success(%{last_success: last_success} = machine, [])
+       when is_integer(last_success) do
+    time_since_last_success = now() - last_success
+
+    if time_since_last_success > machine.content_warning_timeout do
+      Logger.error(fn ->
+        delay = div(time_since_last_success, 1000)
+        "#{__MODULE__}: #{inspect(machine.url)} has not been updated in #{delay}s"
+      end)
+
+      %{machine | last_success: now()}
+    else
+      machine
+    end
+  end
+
+  defp check_last_success(machine, _) do
+    %{machine | last_success: now()}
+  end
+
   defp delay_after_fetch(%{body: {:redirect, _, _}}) do
     # refetch immediately if we got redirected
     0
@@ -201,4 +224,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   defp error_log_level(:closed), do: :warn
   defp error_log_level({:closed, _}), do: :warn
   defp error_log_level(_), do: :error
+
+  defp now do
+    System.monotonic_time(:millisecond)
+  end
 end
