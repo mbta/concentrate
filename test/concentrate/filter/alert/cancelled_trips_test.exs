@@ -4,6 +4,8 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
   import Concentrate.Filter.Alert.CancelledTrips
   alias Concentrate.{Alert, Alert.InformedEntity}
 
+  @one_day 86_400
+
   setup do
     start_supervised(Concentrate.Filter.Alert.CancelledTrips)
     :ok
@@ -32,13 +34,11 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
     end
 
     test "correct handles start/stop date times across date boundaries" do
-      one_day = 86_400
-
       alert =
         Alert.new(
           effect: :NO_SERVICE,
           active_period: [
-            {one_day - 5, one_day + 5}
+            {@one_day - 5, @one_day + 5}
           ],
           informed_entity: [
             InformedEntity.new(trip_id: "trip")
@@ -50,10 +50,34 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
       assert trip_cancelled?("trip", {1970, 1, 1})
       assert trip_cancelled?("trip", {1970, 1, 2})
       refute trip_cancelled?("trip", {1970, 1, 3})
-      assert trip_cancelled?("trip", one_day - 1)
-      assert trip_cancelled?("trip", one_day + 1)
-      refute trip_cancelled?("trip", one_day - 10)
-      refute trip_cancelled?("trip", one_day + 10)
+      assert trip_cancelled?("trip", @one_day - 1)
+      assert trip_cancelled?("trip", @one_day + 1)
+      refute trip_cancelled?("trip", @one_day - 10)
+      refute trip_cancelled?("trip", @one_day + 10)
+    end
+
+    test "correctly handles long term cancellations" do
+      alert =
+        Alert.new(
+          effect: :NO_SERVICE,
+          active_period: [
+            {@one_day + 1, @one_day * 10}
+          ],
+          informed_entity: [
+            InformedEntity.new(trip_id: "trip")
+          ]
+        )
+
+      handle_events([[alert]], :from, :state)
+
+      refute trip_cancelled?("trip", {1970, 1, 1})
+      refute trip_cancelled?("trip", 0)
+      refute trip_cancelled?("trip", @one_day)
+
+      for i <- 2..4 do
+        assert trip_cancelled?("trip", {1970, 1, i})
+        assert trip_cancelled?("trip", @one_day * i)
+      end
     end
   end
 end

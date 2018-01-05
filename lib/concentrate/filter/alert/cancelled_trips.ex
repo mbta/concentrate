@@ -5,27 +5,35 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
   use GenStage
   require Logger
   alias Concentrate.{Alert, Alert.InformedEntity}
-  import Calendar.ISO, only: [from_unix: 2]
 
   @table __MODULE__
   @empty_value []
+  @epoch_seconds :calendar.datetime_to_gregorian_seconds({{1970, 1, 1}, {0, 0, 0}})
+  @one_day_minus_one 86_399
 
   def start_link(opts) do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
   def trip_cancelled?(trip_id, {_, _, _} = date) when is_binary(trip_id) do
-    key = {trip_id, date}
-    :ets.member(@table, key)
+    start_of_day_unix =
+      :calendar.datetime_to_gregorian_seconds({date, {0, 0, 0}}) - @epoch_seconds
+
+    end_of_day_unix = start_of_day_unix + @one_day_minus_one
+    date_overlaps?(trip_id, start_of_day_unix, end_of_day_unix)
   end
 
   def trip_cancelled?(trip_id, unix) when is_binary(trip_id) do
+    date_overlaps?(trip_id, unix, unix)
+  end
+
+  defp date_overlaps?(trip_id, start, stop) do
     select =
       {
-        {{trip_id, :_}, :"$1", :"$2"},
+        {trip_id, :"$1", :"$2"},
         [
-          {:"=<", :"$1", unix},
-          {:"=<", unix, :"$2"}
+          {:"=<", :"$1", stop},
+          {:"=<", start, :"$2"}
         ],
         [@empty_value]
       }
@@ -47,11 +55,9 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
           entity <- Alert.informed_entity(alert),
           is_nil(InformedEntity.stop_id(entity)),
           trip_id = InformedEntity.trip_id(entity),
-          not is_nil(trip_id),
-          {start, stop} <- Alert.active_period(alert),
-          date_time <- [start, stop] do
-        {:ok, date, _, _} = from_unix(date_time, :second)
-        {{trip_id, date}, start, stop}
+          is_binary(trip_id),
+          {start, stop} <- Alert.active_period(alert) do
+        {trip_id, start, stop}
       end
 
     unless inserts == [] do
