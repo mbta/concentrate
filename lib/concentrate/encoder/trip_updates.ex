@@ -35,10 +35,10 @@ defmodule Concentrate.Encoder.TripUpdates do
 
   defp build_entity({%TripUpdate{} = update, _vps, stus}) do
     trip_id = TripUpdate.trip_id(update)
+
     [
       %FeedEntity{
         id: trip_id || "#{:erlang.phash2(update)}",
-
         trip_update: %GTFSRealtime.TripUpdate{
           trip: %TripDescriptor{
             trip_id: trip_id,
