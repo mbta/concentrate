@@ -30,14 +30,15 @@ defmodule Concentrate.Merge do
   end
 
   defp merge_item(item, acc) do
-    key = {Mergeable.impl_for!(item), Mergeable.key(item)}
+    module = Mergeable.impl_for!(item)
+    key = {module, module.key(item)}
 
-    case Map.fetch(acc, key) do
-      :error ->
+    case acc do
+      %{^key => {existing_index, existing}} ->
+        %{acc | key => {existing_index, module.merge(existing, item)}}
+
+      acc ->
         Map.put(acc, key, {map_size(acc), item})
-
-      {:ok, {existing_index, existing}} ->
-        %{acc | key => {existing_index, Mergeable.merge(existing, item)}}
     end
   end
 end

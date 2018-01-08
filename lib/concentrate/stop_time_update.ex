@@ -29,25 +29,24 @@ defmodule Concentrate.StopTimeUpdate do
     end
 
     def merge(first, second) do
-      @for.new(
-        trip_id: first.trip_id,
-        stop_id: first.stop_id,
-        stop_sequence: first.stop_sequence,
-        arrival_time: time(:lt, first.arrival_time, second.arrival_time),
-        departure_time: time(:gt, first.departure_time, second.departure_time),
-        status: first.status || second.status,
-        track: first.track || second.track,
-        schedule_relationship:
-          if first.schedule_relationship == :SCHEDULED do
-            second.schedule_relationship
-          else
-            first.schedule_relationship
-          end
-      )
+      %{
+        first
+        | arrival_time: time(:lt, first.arrival_time, second.arrival_time),
+          departure_time: time(:gt, first.departure_time, second.departure_time),
+          status: first.status || second.status,
+          track: first.track || second.track,
+          schedule_relationship:
+            if first.schedule_relationship == :SCHEDULED do
+              second.schedule_relationship
+            else
+              first.schedule_relationship
+            end
+      }
     end
 
     defp time(_, nil, time), do: time
     defp time(_, time, nil), do: time
+    defp time(_, time, time), do: time
     defp time(:lt, first, second) when first < second, do: first
     defp time(:gt, first, second) when first > second, do: first
     defp time(_, _, second), do: second
