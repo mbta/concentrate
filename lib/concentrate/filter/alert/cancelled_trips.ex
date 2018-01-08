@@ -46,7 +46,7 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
         [@empty_value]
       }
 
-    :ets.select(@table, [select]) != []
+    :ets.select(@table, [select], 1) != :"$end_of_table"
   end
 
   def init(opts) do
