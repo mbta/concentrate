@@ -17,10 +17,10 @@ defmodule Concentrate.Merge.ProducerConsumerTest do
     end
 
     test "cleans up state if a producer dies" do
-      {_, state, _} = init([])
-      {_, state} = handle_subscribe(:producer, [], :from, state)
-      assert {:noreply, [], %{data: data}} = handle_cancel({:cancel, :whatever}, :from, state)
-      assert data == %{}
+      {_, original_state, _} = init([])
+      {_, state} = handle_subscribe(:producer, [], :from, original_state)
+      assert {:noreply, [], new_state} = handle_cancel({:cancel, :whatever}, :from, state)
+      assert original_state == new_state
     end
 
     property "with one source, returns the latest data, merged" do
