@@ -4,7 +4,7 @@ defmodule Concentrate.Merge.ProducerConsumer do
   """
   use GenStage
   require Logger
-  alias Concentrate.Merge
+  alias Concentrate.Merge.Table
   @start_link_opts [:name]
 
   def start_link(opts \\ []) do
@@ -16,14 +16,14 @@ defmodule Concentrate.Merge.ProducerConsumer do
   @impl GenStage
   def init(opts) do
     {timeout, opts} = Keyword.pop(opts, :timeout, 1_000)
-    state = %{timeout: timeout, timer: nil, data: %{}}
+    state = %{timeout: timeout, timer: nil, table: Table.new()}
     opts = Keyword.take(opts, [:subscribe_to])
     {:producer_consumer, state, opts}
   end
 
   @impl GenStage
-  def handle_subscribe(:producer, _options, from, %{data: data} = state) do
-    state = %{state | data: Map.put(data, from, [])}
+  def handle_subscribe(:producer, _options, from, state) do
+    state = put_in(state.table, Table.add(state.table, from))
     {:automatic, state}
   end
 
@@ -32,15 +32,15 @@ defmodule Concentrate.Merge.ProducerConsumer do
   end
 
   @impl GenStage
-  def handle_cancel(_reason, from, %{data: data} = state) do
-    state = %{state | data: Map.delete(data, from)}
+  def handle_cancel(_reason, from, state) do
+    state = put_in(state.table, Table.remove(state.table, from))
     {:noreply, [], state}
   end
 
   @impl GenStage
-  def handle_events(events, from, %{data: data} = state) do
+  def handle_events(events, from, state) do
     latest_data = List.last(events)
-    state = %{state | data: %{data | from => latest_data}}
+    state = put_in(state.table, Table.update(state.table, from, latest_data))
 
     state =
       if state.timer do
@@ -56,13 +56,15 @@ defmodule Concentrate.Merge.ProducerConsumer do
   def handle_info(:timeout, state) do
     {time, merged} =
       :timer.tc(fn ->
-        state.data
-        |> Stream.flat_map(&elem(&1, 1))
-        |> Merge.merge()
+        Table.items(state.table)
       end)
 
     Logger.debug(fn ->
-      "#{__MODULE__} handle_events took #{time / 1_000}ms"
+      "#{__MODULE__} merge took #{time / 1_000}ms"
+    end)
+
+    Logger.debug(fn ->
+      "#{__MODULE__} merge #{time / length(merged)}us per record"
     end)
 
     state = %{state | timer: nil}

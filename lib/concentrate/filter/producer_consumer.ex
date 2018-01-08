@@ -34,6 +34,10 @@ defmodule Concentrate.Filter.ProducerConsumer do
       "#{__MODULE__} filter took #{time / 1_000}ms"
     end)
 
+    Logger.debug(fn ->
+      "#{__MODULE__} filter #{time / length(filtered)}us per record"
+    end)
+
     {:noreply, [filtered], filters}
   end
 end
