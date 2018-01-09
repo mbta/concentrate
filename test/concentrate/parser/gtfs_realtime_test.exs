@@ -91,7 +91,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         ]
       }
 
-      assert [] = decode_trip_update(update, routes: ["keeping"])
+      assert [] = decode_trip_update(update, {:ok, ["keeping"]})
     end
 
     test "includes trip/stop update if we're keeping the route" do
@@ -104,7 +104,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         ]
       }
 
-      assert [_, _] = decode_trip_update(update, routes: ["keeping"])
+      assert [_, _] = decode_trip_update(update, {:ok, ["keeping"]})
     end
   end
 
@@ -116,7 +116,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         position: %GTFSRealtime.Position{latitude: 1, longitude: 1}
       }
 
-      assert [] = decode_vehicle(position, routes: ["keeping"])
+      assert [] = decode_vehicle(position, {:ok, ["keeping"]})
     end
 
     test "includes trip/vehicle if we're keeping the route" do
@@ -126,7 +126,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         position: %GTFSRealtime.Position{latitude: 1, longitude: 1}
       }
 
-      assert [_, _] = decode_vehicle(position, routes: ["keeping"])
+      assert [_, _] = decode_vehicle(position, {:ok, ["keeping"]})
     end
   end
 end

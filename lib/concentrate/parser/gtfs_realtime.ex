@@ -14,27 +14,25 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
   @impl Concentrate.Parser
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
-    for message <- [__MODULE__.FeedMessage.decode(binary)],
-        entity <- message.entity,
-        decoded <- decode_feed_entity(entity, opts) do
-      decoded
-    end
+    routes = Keyword.fetch(opts, :routes)
+    message = __MODULE__.FeedMessage.decode(binary)
+    Enum.flat_map(message.entity, &decode_feed_entity(&1, routes))
   end
 
-  def decode_feed_entity(entity, opts) do
-    vp = decode_vehicle(entity.vehicle, opts)
-    stop_updates = decode_trip_update(entity.trip_update, opts)
+  def decode_feed_entity(entity, routes) do
+    vp = decode_vehicle(entity.vehicle, routes)
+    stop_updates = decode_trip_update(entity.trip_update, routes)
     alerts = decode_alert(entity)
-    alerts ++ vp ++ stop_updates
+    List.flatten([alerts, vp, stop_updates])
   end
 
   def decode_vehicle(nil, _opts) do
     []
   end
 
-  def decode_vehicle(vp, opts) do
+  def decode_vehicle(vp, routes) do
     tu = decode_trip_descriptor(vp.trip)
-    decode_vehicle_position(tu, vp, Keyword.fetch(opts, :routes))
+    decode_vehicle_position(tu, vp, routes)
   end
 
   defp decode_vehicle_position([tu], vp, {:ok, routes}) do
@@ -66,13 +64,13 @@ defmodule Concentrate.Parser.GTFSRealtime do
       ]
   end
 
-  def decode_trip_update(nil, _opts) do
+  def decode_trip_update(nil, _routes) do
     []
   end
 
-  def decode_trip_update(trip_update, opts) do
+  def decode_trip_update(trip_update, routes) do
     tu = decode_trip_descriptor(trip_update.trip)
-    decode_stop_updates(tu, trip_update, Keyword.fetch(opts, :routes))
+    decode_stop_updates(tu, trip_update, routes)
   end
 
   defp decode_stop_updates([tu], trip_update, {:ok, routes}) do
