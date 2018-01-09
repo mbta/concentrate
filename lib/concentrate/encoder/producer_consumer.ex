@@ -2,6 +2,7 @@ defmodule Concentrate.Encoder.ProducerConsumer do
   @moduledoc """
   """
   use GenStage
+  require Logger
   @start_link_opts [:name]
 
   def start_link(opts) do
@@ -36,7 +37,13 @@ defmodule Concentrate.Encoder.ProducerConsumer do
 
     responses =
       for {filename, encoder} <- state do
-        {filename, encoder.(data)}
+        {time, encoded} = :timer.tc(encoder, [data])
+
+        Logger.debug(fn ->
+          "#{__MODULE__} encoded #{inspect(filename)} in #{time / 1000}ms"
+        end)
+
+        {filename, encoded}
       end
 
     {:noreply, responses, state, :hibernate}

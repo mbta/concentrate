@@ -81,10 +81,12 @@ defmodule Concentrate.Producer.HTTP do
   end
 
   defp parse_bodies([binary], state) do
-    parsed = state.parser.(binary)
+    {time, parsed} = :timer.tc(state.parser, [binary])
 
     Logger.info(fn ->
-      "#{__MODULE__}: #{inspect(state.machine.url)} got #{length(parsed)} records"
+      "#{__MODULE__}: #{inspect(state.machine.url)} got #{length(parsed)} records in #{
+        time / 1000
+      }ms"
     end)
 
     [parsed]
