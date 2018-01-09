@@ -18,20 +18,12 @@ defmodule Concentrate.TestMergeable do
   """
   @spec mergeables :: StreamData.t()
   def mergeables do
-    mergeables_from_keys(~w(a b c)a)
-  end
-
-  defp mergeables_from_keys(keys) do
-    ExUnitProperties.gen all key <- StreamData.member_of(keys),
-                             mergeables <- StreamData.list_of(mergeable(key)) do
-      mergeables
-    end
-  end
-
-  defp mergeable(key) do
-    ExUnitProperties.gen all value <- StreamData.integer() do
-      new(key, value)
-    end
+    # get a keyword list of integers, filter out duplicate keys, then create
+    # mergeables
+    StreamData.integer()
+    |> StreamData.keyword_of()
+    |> StreamData.map(fn list -> Enum.uniq_by(list, &elem(&1, 0)) end)
+    |> StreamData.map(fn list -> Enum.map(list, fn {k, v} -> new(k, v) end) end)
   end
 
   defimpl Concentrate.Mergeable do

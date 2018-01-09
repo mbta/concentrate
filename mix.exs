@@ -42,6 +42,7 @@ defmodule Concentrate.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:benchee, ">= 0.0.0", runtime: false, only: :dev},
       {:bypass, "~> 0.8", only: :test},
       {:credo, "~> 0.8", runtime: false, only: :dev},
       {:csv, "~> 2.1"},
