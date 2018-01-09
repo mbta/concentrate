@@ -9,10 +9,10 @@ defmodule Concentrate.Merge.ProducerConsumerTest do
     test "schedules a timeout" do
       {_, state, _} = init(timeout: 100)
       {_, state} = handle_subscribe(:producer, [], :from, state)
-      {:noreply, [], state} = handle_events([1, 2, 3], :from, state)
+      {:noreply, [], state} = handle_events([[], [], []], :from, state)
       assert state.timer
       refute_received :timeout
-      {:noreply, [], _state} = handle_events([4, 5, 6], :from, state)
+      {:noreply, [], _state} = handle_events([[], [], []], :from, state)
       assert_receive :timeout, 500
     end
 

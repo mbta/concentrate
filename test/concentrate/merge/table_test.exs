@@ -6,29 +6,52 @@ defmodule Concentrate.Merge.TableTest do
   alias Concentrate.{Merge, TestMergeable}
 
   describe "items/2" do
-    property "with one source, returns the latest data, merged" do
-      check all all_mergeables <- list_of_mergeables() do
-        expected = Merge.merge(List.last(all_mergeables))
+    test "keeps items from different sources in order" do
+      first = TestMergeable.new(:first, 1)
+      second = TestMergeable.new(:second, 2)
+      other = TestMergeable.new(:other, 3)
+
+      table =
+        new()
+        |> add(:one)
+        |> update(:one, [other])
+        |> add(:two)
+        |> update(:two, [first, second])
+
+      actual = items(table)
+
+      assert actual in [
+               [first, second, other],
+               [other, first, second]
+             ]
+    end
+
+    property "with one source, returns the data" do
+      check all mergeables <- TestMergeable.mergeables() do
         from = :from
         table = new()
         table = add(table, from)
-        table = update(table, from, List.last(all_mergeables))
-        assert items(table) == expected
+        table = update(table, from, mergeables)
+        assert items(table) == mergeables
       end
     end
 
     property "with multiple sources, returns the merged data" do
-      check all multi_source_mergeables <- list_of_mergeables() do
+      check all multi_source_mergeables <- sourced_mergeables() do
+        # reverse so we get the latest data
+        # get the uniq sources
         expected =
           multi_source_mergeables
-          |> List.flatten()
+          |> Enum.reverse()
+          |> Enum.uniq_by(&elem(&1, 0))
+          |> Enum.flat_map(&elem(&1, 1))
           |> Merge.merge()
 
         table =
-          Enum.reduce(multi_source_mergeables, new(), fn mergeables, table ->
-            from = make_ref()
-            table = add(table, from)
-            update(table, from, mergeables)
+          Enum.reduce(multi_source_mergeables, new(), fn {source, mergeables}, table ->
+            table
+            |> add(source)
+            |> update(source, mergeables)
           end)
 
         actual = items(table)
@@ -42,7 +65,7 @@ defmodule Concentrate.Merge.TableTest do
         from = :from
         table = new()
         table = add(table, from)
-        expected = Merge.merge(List.last(all_mergeables))
+        expected = List.last(all_mergeables)
 
         table =
           Enum.reduce(all_mergeables, table, fn mergeables, table ->
@@ -52,6 +75,14 @@ defmodule Concentrate.Merge.TableTest do
         assert items(table) == expected
       end
     end
+  end
+
+  defp sourced_mergeables do
+    list_of(
+      {StreamData.atom(:alphanumeric), TestMergeable.mergeables()},
+      min_length: 1,
+      max_length: 3
+    )
   end
 
   defp list_of_mergeables do

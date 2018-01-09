@@ -101,11 +101,11 @@ defmodule Concentrate.MergeTest do
           |> Enum.uniq()
           |> Enum.sort()
 
-        # Merged values should already be unique
         actual =
           mergeables
           |> merge
           |> Enum.flat_map(& &1.value)
+          |> Enum.uniq()
           |> Enum.sort()
 
         assert actual == expected
