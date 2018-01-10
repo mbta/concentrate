@@ -50,7 +50,7 @@ defmodule Concentrate do
     sinks =
       if s3_object = sinks_object[:s3] do
         %{
-          s3: s3_object
+          s3: Enum.to_list(s3_object)
         }
       else
         %{}
