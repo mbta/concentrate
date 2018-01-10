@@ -3,7 +3,6 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
   use ExUnit.Case, async: true
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtime
-  alias Concentrate.Parser.GTFSRealtime
   alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate, Alert}
 
   describe "parse/1" do
@@ -40,8 +39,8 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
 
   describe "decode_trip_update/2" do
     test "parses the trip descriptor" do
-      update = %GTFSRealtime.TripUpdate{
-        trip: %GTFSRealtime.TripDescriptor{
+      update = %{
+        trip: %{
           trip_id: "trip",
           route_id: "route",
           direction_id: 1,
@@ -66,12 +65,12 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
     end
 
     test "test can handle nil times as well as nil events" do
-      update = %GTFSRealtime.TripUpdate{
-        trip: %GTFSRealtime.TripDescriptor{},
+      update = %{
+        trip: %{},
         stop_time_update: [
-          %GTFSRealtime.TripUpdate.StopTimeUpdate{
+          %{
             arrival: nil,
-            departure: %GTFSRealtime.TripUpdate.StopTimeEvent{}
+            departure: %{}
           }
         ]
       }
@@ -82,11 +81,11 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
     end
 
     test "does not include trip or stop update if we're ignoring the route" do
-      update = %GTFSRealtime.TripUpdate{
-        trip: %GTFSRealtime.TripDescriptor{route_id: "ignored"},
+      update = %{
+        trip: %{route_id: "ignored"},
         stop_time_update: [
-          %GTFSRealtime.TripUpdate.StopTimeUpdate{
-            departure: %GTFSRealtime.TripUpdate.StopTimeEvent{time: 1}
+          %{
+            departure: %{time: 1}
           }
         ]
       }
@@ -95,11 +94,11 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
     end
 
     test "includes trip/stop update if we're keeping the route" do
-      update = %GTFSRealtime.TripUpdate{
-        trip: %GTFSRealtime.TripDescriptor{route_id: "keeping"},
+      update = %{
+        trip: %{route_id: "keeping"},
         stop_time_update: [
-          %GTFSRealtime.TripUpdate.StopTimeUpdate{
-            departure: %GTFSRealtime.TripUpdate.StopTimeEvent{time: 1}
+          %{
+            departure: %{time: 1}
           }
         ]
       }
@@ -110,20 +109,20 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
 
   describe "decode_vehicle/2" do
     test "does not include trip or vehicle if we're ignoring the route" do
-      position = %GTFSRealtime.VehiclePosition{
-        trip: %GTFSRealtime.TripDescriptor{route_id: "ignoring"},
-        vehicle: %GTFSRealtime.VehicleDescriptor{},
-        position: %GTFSRealtime.Position{latitude: 1, longitude: 1}
+      position = %{
+        trip: %{route_id: "ignoring"},
+        vehicle: %{},
+        position: %{latitude: 1, longitude: 1}
       }
 
       assert [] = decode_vehicle(position, {:ok, ["keeping"]})
     end
 
     test "includes trip/vehicle if we're keeping the route" do
-      position = %GTFSRealtime.VehiclePosition{
-        trip: %GTFSRealtime.TripDescriptor{route_id: "keeping"},
-        vehicle: %GTFSRealtime.VehicleDescriptor{},
-        position: %GTFSRealtime.Position{latitude: 1, longitude: 1}
+      position = %{
+        trip: %{route_id: "keeping"},
+        vehicle: %{},
+        position: %{latitude: 1, longitude: 1}
       }
 
       assert [_, _] = decode_vehicle(position, {:ok, ["keeping"]})
