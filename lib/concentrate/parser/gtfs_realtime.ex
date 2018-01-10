@@ -154,8 +154,8 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
   defp decode_active_period(period) do
     start = Map.get(period, :start, 0)
-    # 2 ^ 64 - 1
-    stop = Map.get(period, :stop, 1.8446744073709552e19)
+    # 2 ^ 32 - 1, max value for the field
+    stop = Map.get(period, :stop, 4_294_967_295)
     {start, stop}
   end
 

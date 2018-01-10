@@ -45,6 +45,25 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     date_to_iso8601(year, month, day, :basic)
   end
 
+  @doc """
+  Removes nil values from a map.
+
+  ## Examples
+
+      iex> drop_nils(%{a: 1, b: nil})
+      %{a: 1}
+  """
+  def drop_nils(map) do
+    :maps.fold(
+      fn
+        _k, nil, acc -> acc
+        k, v, acc -> Map.put(acc, k, v)
+      end,
+      %{},
+      map
+    )
+  end
+
   defp group_by_trip_id(%TripUpdate{} = tu, map) do
     case TripUpdate.trip_id(tu) do
       nil ->

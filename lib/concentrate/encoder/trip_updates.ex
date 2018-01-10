@@ -4,24 +4,22 @@ defmodule Concentrate.Encoder.TripUpdates do
   """
   @behaviour Concentrate.Encoder
   alias Concentrate.{TripUpdate, StopTimeUpdate}
-  alias Concentrate.Parser.GTFSRealtime
-  alias GTFSRealtime.{FeedMessage, FeedHeader, FeedEntity, TripDescriptor}
   import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
   def encode(list) when is_list(list) do
-    message = %FeedMessage{
+    message = %{
       header: feed_header(),
       entity: feed_entity(list)
     }
 
-    FeedMessage.encode(message)
+    :gtfs_realtime_proto.encode_msg(message, :FeedMessage)
   end
 
   def feed_header do
     timestamp = :erlang.system_time(:seconds)
 
-    %FeedHeader{
+    %{
       gtfs_realtime_version: "2.0",
       timestamp: timestamp
     }
@@ -37,17 +35,18 @@ defmodule Concentrate.Encoder.TripUpdates do
     trip_id = TripUpdate.trip_id(update)
 
     [
-      %FeedEntity{
+      %{
         id: trip_id || "#{:erlang.phash2(update)}",
-        trip_update: %GTFSRealtime.TripUpdate{
-          trip: %TripDescriptor{
-            trip_id: trip_id,
-            route_id: TripUpdate.route_id(update),
-            direction_id: TripUpdate.direction_id(update),
-            start_time: TripUpdate.start_time(update),
-            start_date: encode_date(TripUpdate.start_date(update)),
-            schedule_relationship: TripUpdate.schedule_relationship(update)
-          },
+        trip_update: %{
+          trip:
+            drop_nils(%{
+              trip_id: trip_id,
+              route_id: TripUpdate.route_id(update),
+              direction_id: TripUpdate.direction_id(update),
+              start_time: TripUpdate.start_time(update),
+              start_date: encode_date(TripUpdate.start_date(update)),
+              schedule_relationship: TripUpdate.schedule_relationship(update)
+            }),
           stop_time_update: Enum.map(stus, &build_stop_time_update/1)
         }
       }
@@ -59,13 +58,13 @@ defmodule Concentrate.Encoder.TripUpdates do
   end
 
   defp build_stop_time_update(%StopTimeUpdate{} = update) do
-    %GTFSRealtime.TripUpdate.StopTimeUpdate{
+    drop_nils(%{
       stop_id: StopTimeUpdate.stop_id(update),
       stop_sequence: StopTimeUpdate.stop_sequence(update),
       arrival: stop_time_event(StopTimeUpdate.arrival_time(update)),
       departure: stop_time_event(StopTimeUpdate.departure_time(update)),
       schedule_relationship: StopTimeUpdate.schedule_relationship(update)
-    }
+    })
   end
 
   defp stop_time_event(nil) do
@@ -73,7 +72,7 @@ defmodule Concentrate.Encoder.TripUpdates do
   end
 
   defp stop_time_event(unix_timestamp) do
-    %GTFSRealtime.TripUpdate.StopTimeEvent{
+    %{
       time: unix_timestamp
     }
   end
