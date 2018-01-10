@@ -4,6 +4,12 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
   import Concentrate.Producer.HTTP.StateMachine
   import ExUnit.CaptureLog
 
+  setup_all do
+    Application.ensure_all_started(:bypass)
+    Application.ensure_all_started(:httpoison)
+    :ok
+  end
+
   describe "message/2" do
     test "does not log an error on :closed errors" do
       machine = init("url", [])
@@ -96,6 +102,39 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
       {_machine, bodies, _messages} = run_machine("url", [], messages)
 
       assert bodies == []
+    end
+
+    test "messages with the wrong reference log an error" do
+      messages = [
+        %HTTPoison.AsyncStatus{id: make_ref(), code: 200}
+      ]
+
+      log =
+        capture_log([level: :error], fn ->
+          run_machine("url", [], messages)
+        end)
+
+      refute log == ""
+    end
+
+    test "fetch when there's already a request in flight is ignored" do
+      bypass = Bypass.open()
+      Bypass.expect(bypass, &Plug.Conn.send_resp(&1, 200, ""))
+      # we don't actually care about the request
+      Bypass.pass(bypass)
+      url = "http://localhost:#{bypass.port}"
+
+      messages = [
+        {:fetch, url},
+        {:fetch, url}
+      ]
+
+      log =
+        capture_log([level: :error], fn ->
+          run_machine(url, [], messages)
+        end)
+
+      refute log == ""
     end
   end
 

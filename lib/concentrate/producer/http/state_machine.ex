@@ -8,6 +8,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
             get_opts: [],
             body: "",
             headers: [],
+            ref: nil,
             fetch_after: 5_000,
             content_warning_timeout: 300_000,
             last_success: nil,
@@ -43,31 +44,31 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, bodies, messages}
   end
 
-  defp handle_message(machine, {:fetch, url}) do
+  defp handle_message(%{ref: nil} = machine, {:fetch, url}) do
     case HTTPoison.get(url, machine.headers, [stream_to: self()] ++ machine.get_opts) do
-      {:ok, _} ->
-        {machine, [], []}
+      {:ok, %{id: ref}} ->
+        {%{machine | ref: ref}, [], []}
 
       {:error, error} ->
         handle_message(machine, error)
     end
   end
 
-  defp handle_message(machine, %HTTPoison.AsyncStatus{code: 200}) do
+  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncStatus{id: ref, code: 200}) do
     {machine, [], []}
   end
 
-  defp handle_message(machine, %HTTPoison.AsyncStatus{code: 301}) do
+  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncStatus{id: ref, code: 301}) do
     machine = %{machine | body: {:redirect, :permanent}}
     {machine, [], []}
   end
 
-  defp handle_message(machine, %HTTPoison.AsyncStatus{code: 302}) do
+  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncStatus{id: ref, code: 302}) do
     machine = %{machine | body: {:redirect, :temporary}}
     {machine, [], []}
   end
 
-  defp handle_message(machine, %HTTPoison.AsyncStatus{code: 304}) do
+  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncStatus{id: ref, code: 304}) do
     Logger.info(fn ->
       "#{__MODULE__}: #{inspect(machine.url)} not modified"
     end)
@@ -76,7 +77,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, [], []}
   end
 
-  defp handle_message(machine, %HTTPoison.AsyncStatus{code: code}) do
+  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncStatus{id: ref, code: code}) do
     Logger.warn(fn ->
       "#{__MODULE__}: #{inspect(machine.url)} unexpected code #{inspect(code)}"
     end)
@@ -85,11 +86,12 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, [], []}
   end
 
-  defp handle_message(%{body: :halt} = machine, %HTTPoison.AsyncHeaders{}) do
+  defp handle_message(%{ref: ref, body: :halt} = machine, %HTTPoison.AsyncHeaders{id: ref}) do
     {machine, [], []}
   end
 
-  defp handle_message(%{body: {:redirect, type}} = machine, %HTTPoison.AsyncHeaders{
+  defp handle_message(%{ref: ref, body: {:redirect, type}} = machine, %HTTPoison.AsyncHeaders{
+         id: ref,
          headers: headers
        }) do
     {_, new_location} =
@@ -106,7 +108,10 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, [], []}
   end
 
-  defp handle_message(machine, %HTTPoison.AsyncHeaders{headers: resp_headers}) do
+  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncHeaders{
+         id: ref,
+         headers: resp_headers
+       }) do
     # grab the cache headers
     headers =
       Enum.reduce(resp_headers, [], fn {header, value}, acc ->
@@ -126,17 +131,20 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, [], []}
   end
 
-  defp handle_message(%{body: binary} = machine, %HTTPoison.AsyncChunk{chunk: chunk})
+  defp handle_message(%{ref: ref, body: binary} = machine, %HTTPoison.AsyncChunk{
+         id: ref,
+         chunk: chunk
+       })
        when is_binary(binary) do
     machine = %{machine | body: binary <> chunk}
     {machine, [], []}
   end
 
-  defp handle_message(machine, %HTTPoison.AsyncChunk{}) do
+  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncChunk{id: ref}) do
     {machine, [], []}
   end
 
-  defp handle_message(machine, %HTTPoison.Error{reason: reason}) do
+  defp handle_message(%{ref: ref} = machine, %HTTPoison.Error{id: ref, reason: reason}) do
     log_level = error_log_level(reason)
 
     _ =
@@ -150,7 +158,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, [], messages}
   end
 
-  defp handle_message(machine, %HTTPoison.AsyncEnd{}) do
+  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncEnd{id: ref}) do
     {bodies, machine} = parse_bodies(machine)
     machine = check_last_success(machine, bodies)
     delay = delay_after_fetch(machine)
@@ -218,7 +226,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   end
 
   defp reset_machine(machine) do
-    %{machine | body: ""}
+    %{machine | body: "", ref: nil}
   end
 
   defp error_log_level(:closed), do: :warn
