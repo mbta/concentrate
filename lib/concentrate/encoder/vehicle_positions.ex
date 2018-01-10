@@ -4,32 +4,22 @@ defmodule Concentrate.Encoder.VehiclePositions do
   """
   @behaviour Concentrate.Encoder
   alias Concentrate.{TripUpdate, VehiclePosition}
-  alias Concentrate.Parser.GTFSRealtime
   import Concentrate.Encoder.GTFSRealtimeHelpers
-
-  alias GTFSRealtime.{
-    FeedMessage,
-    FeedHeader,
-    FeedEntity,
-    TripDescriptor,
-    VehicleDescriptor,
-    Position
-  }
 
   @impl Concentrate.Encoder
   def encode(list) when is_list(list) do
-    message = %FeedMessage{
+    message = %{
       header: feed_header(),
       entity: feed_entity(list)
     }
 
-    FeedMessage.encode(message)
+    :gtfs_realtime_proto.encode_msg(message, :FeedMessage)
   end
 
   def feed_header do
     timestamp = :erlang.system_time(:seconds)
 
-    %FeedHeader{
+    %{
       gtfs_realtime_version: "2.0",
       timestamp: timestamp
     }
@@ -45,7 +35,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
     trip = trip_descriptor(update)
 
     for vp <- vps do
-      %FeedEntity{
+      %{
         id: entity_id(vp),
         vehicle: build_vehicle(vp, trip)
       }
@@ -57,13 +47,13 @@ defmodule Concentrate.Encoder.VehiclePositions do
     for vp <- vps do
       trip =
         if trip_id = VehiclePosition.trip_id(vp) do
-          %TripDescriptor{
+          %{
             trip_id: trip_id,
             schedule_relationship: :UNSCHEDULED
           }
         end
 
-      %FeedEntity{
+      %{
         id: entity_id(vp),
         vehicle: build_vehicle(vp, trip)
       }
@@ -71,20 +61,22 @@ defmodule Concentrate.Encoder.VehiclePositions do
   end
 
   defp build_vehicle(%VehiclePosition{} = vp, trip) do
-    descriptor = %VehicleDescriptor{
-      id: VehiclePosition.id(vp),
-      label: VehiclePosition.label(vp),
-      license_plate: VehiclePosition.license_plate(vp)
-    }
+    descriptor =
+      drop_nils(%{
+        id: VehiclePosition.id(vp),
+        label: VehiclePosition.label(vp),
+        license_plate: VehiclePosition.license_plate(vp)
+      })
 
-    position = %Position{
-      latitude: VehiclePosition.latitude(vp),
-      longitude: VehiclePosition.longitude(vp),
-      bearing: VehiclePosition.bearing(vp),
-      speed: VehiclePosition.speed(vp)
-    }
+    position =
+      drop_nils(%{
+        latitude: VehiclePosition.latitude(vp),
+        longitude: VehiclePosition.longitude(vp),
+        bearing: VehiclePosition.bearing(vp),
+        speed: VehiclePosition.speed(vp)
+      })
 
-    %GTFSRealtime.VehiclePosition{
+    drop_nils(%{
       trip: trip,
       vehicle: descriptor,
       position: position,
@@ -92,7 +84,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
       current_stop_sequence: VehiclePosition.stop_sequence(vp),
       current_status: VehiclePosition.status(vp),
       timestamp: VehiclePosition.last_updated(vp)
-    }
+    })
   end
 
   defp entity_id(vp) do
@@ -100,13 +92,13 @@ defmodule Concentrate.Encoder.VehiclePositions do
   end
 
   defp trip_descriptor(update) do
-    %TripDescriptor{
+    drop_nils(%{
       trip_id: TripUpdate.trip_id(update),
       route_id: TripUpdate.route_id(update),
       direction_id: TripUpdate.direction_id(update),
       start_time: TripUpdate.start_time(update),
       start_date: encode_date(TripUpdate.start_date(update)),
       schedule_relationship: TripUpdate.schedule_relationship(update)
-    }
+    })
   end
 end

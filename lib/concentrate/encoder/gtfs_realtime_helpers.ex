@@ -52,7 +52,13 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
       iex> drop_nils(%{a: 1, b: nil})
       %{a: 1}
+      iex> drop_nils(%{})
+      nil
   """
+  def drop_nils(empty) when empty == %{} do
+    nil
+  end
+
   def drop_nils(map) do
     :maps.fold(
       fn
