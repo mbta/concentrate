@@ -55,7 +55,7 @@ defmodule Concentrate.MixProject do
       {:exprotobuf, "~> 1.2"},
       {:gen_stage, "~> 0.12"},
       {:gtfs_realtime_viz, "~> 0.5"},
-      {:httpoison, "~> 0.13"},
+      {:httpoison, "~> 1.0"},
       {:poison, "~> 3.1"},
       {:stream_data, "~> 0.4", only: :test}
     ]
