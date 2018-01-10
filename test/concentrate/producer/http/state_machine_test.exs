@@ -10,6 +10,27 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
     :ok
   end
 
+  describe "fetch/1" do
+    test "fetches immediately the first time" do
+      machine = init("url", [])
+      assert {_machine, [], [{_, 0}]} = fetch(machine)
+    end
+
+    test "if we had a success in the past, doesn't refetch immediately" do
+      machine = init("url", [])
+      {machine, _, _} = message(machine, %HTTPoison.AsyncEnd{})
+      assert {_machine, _, [{_, delay}]} = fetch(machine)
+      assert delay > 0
+    end
+
+    test "if we had a success more than `fetch_after` in the past, fetches immediately" do
+      machine = init("url", fetch_after: 10)
+      {machine, _, _} = message(machine, %HTTPoison.AsyncEnd{})
+      :timer.sleep(11)
+      assert {_machine, _, [{_, 0}]} = fetch(machine)
+    end
+  end
+
   describe "message/2" do
     test "does not log an error on :closed errors" do
       machine = init("url", [])

@@ -27,7 +27,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   @spec fetch(t) :: return
   def fetch(%__MODULE__{} = machine) do
-    {machine, [], [{fetch_message(machine), 0}]}
+    {machine, [], [{fetch_message(machine), fetch_delay(machine)}]}
   end
 
   defp fetch_message(%{body: {:redirect, _, new_url}}) do
@@ -36,6 +36,27 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defp fetch_message(%{url: url}) do
     {:fetch, url}
+  end
+
+  defp fetch_delay(%{last_success: nil}) do
+    0
+  end
+
+  defp fetch_delay(machine) do
+    since_last_success = now() - machine.last_success
+
+    time =
+      if since_last_success > machine.fetch_after do
+        0
+      else
+        machine.fetch_after - since_last_success
+      end
+
+    Logger.debug(fn ->
+      "#{__MODULE__} #{inspect(machine.url)} scheduling fetch after #{time}ms"
+    end)
+
+    time
   end
 
   @spec message(t, term) :: return
