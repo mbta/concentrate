@@ -4,6 +4,8 @@ use Mix.Config
 
 config :logger, level: :debug
 
+config :ex_aws, json_codec: Jason
+
 config :concentrate,
   sources: [
     gtfs_realtime: [
