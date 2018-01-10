@@ -65,10 +65,12 @@ defmodule Concentrate.Supervisor do
   end
 
   def merge(source_names) do
+    sources = outputs_with_options(source_names, max_demand: 1)
+
     [
       {
         Concentrate.Merge.ProducerConsumer,
-        name: :merge, subscribe_to: source_names, buffer_size: 1
+        name: :merge, subscribe_to: sources, buffer_size: 1
       }
     ]
   end
