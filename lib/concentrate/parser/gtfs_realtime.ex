@@ -9,7 +9,6 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
   """
   @behaviour Concentrate.Parser
-  use Protobuf, from: Path.expand("gtfs-realtime.proto", __DIR__)
   alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate, Alert, Alert.InformedEntity}
 
   @impl Concentrate.Parser

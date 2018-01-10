@@ -43,7 +43,7 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
       ]
 
       encoded = encode(data)
-      proto = GTFSRealtime.FeedMessage.decode(encoded)
+      proto = :gtfs_realtime_proto.decode_msg(encoded, :FeedMessage)
 
       assert %{
                entity: [

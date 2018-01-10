@@ -47,7 +47,7 @@ defmodule Concentrate.Sink.GTFSRealtimeViz do
 
   defp update_new(events) do
     for {filename, body} <- events, into: MapSet.new() do
-      GTFSRealtimeViz.new_message(:new, body, "🚂Concentrate")
+      apply(GTFSRealtimeViz, :new_message, [:new, body, "🚂Concentrate"])
       filename
     end
   end
@@ -56,12 +56,12 @@ defmodule Concentrate.Sink.GTFSRealtimeViz do
     urls
     |> Task.async_stream(&HTTPoison.get/1, ordered: false)
     |> Enum.each(fn {:ok, {:ok, %{body: remote_body}}} ->
-      GTFSRealtimeViz.new_message(:remote, remote_body, "👻Remote")
+      apply(GTFSRealtimeViz, :new_message, [:remote, remote_body, "👻Remote"])
     end)
   end
 
   defp render_diff(state) do
-    html = GTFSRealtimeViz.visualize_diff(:new, :remote, state.config)
+    html = apply(GTFSRealtimeViz, :visualize_diff, [:new, :remote, state.config])
 
     File.write!(state.path, [
       "<!DOCTYPE html><html><body>",

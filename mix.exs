@@ -52,9 +52,9 @@ defmodule Concentrate.MixProject do
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:excoveralls, "~> 0.7", only: :test},
-      {:exprotobuf, "~> 1.2"},
       {:gen_stage, "~> 0.12"},
-      {:gtfs_realtime_viz, "~> 0.5"},
+      {:gpb, "~> 3.24", only: :dev},
+      {:gtfs_realtime_viz, "~> 0.5", only: :dev},
       {:httpoison, "~> 1.0"},
       {:jason, "~> 1.0-rc.2"},
       {:stream_data, "~> 0.4", only: :test}
