@@ -1,6 +1,6 @@
 defmodule Concentrate.Producer.HTTP.StateMachineTest do
   @moduledoc false
-  use ExUnit.Case, async: true
+  use ExUnit.Case
   import Concentrate.Producer.HTTP.StateMachine
   import ExUnit.CaptureLog
 

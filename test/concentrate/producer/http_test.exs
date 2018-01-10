@@ -1,6 +1,6 @@
 defmodule Concentrate.Producer.HTTPTest do
   @moduledoc false
-  use ExUnit.Case, async: true
+  use ExUnit.Case
   import Concentrate.Producer.HTTP
   alias Concentrate.Producer.HTTP.StateMachine
   import Plug.Conn, only: [get_req_header: 2, put_resp_header: 3, send_resp: 3]
