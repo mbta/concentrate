@@ -62,21 +62,21 @@ defmodule Concentrate.Encoder.VehiclePositions do
 
   defp build_vehicle(%VehiclePosition{} = vp, trip) do
     descriptor =
-      drop_nils(%{
+      drop_nil_values(%{
         id: VehiclePosition.id(vp),
         label: VehiclePosition.label(vp),
         license_plate: VehiclePosition.license_plate(vp)
       })
 
     position =
-      drop_nils(%{
+      drop_nil_values(%{
         latitude: VehiclePosition.latitude(vp),
         longitude: VehiclePosition.longitude(vp),
         bearing: VehiclePosition.bearing(vp),
         speed: VehiclePosition.speed(vp)
       })
 
-    drop_nils(%{
+    drop_nil_values(%{
       trip: trip,
       vehicle: descriptor,
       position: position,
@@ -92,7 +92,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
   end
 
   defp trip_descriptor(update) do
-    drop_nils(%{
+    drop_nil_values(%{
       trip_id: TripUpdate.trip_id(update),
       route_id: TripUpdate.route_id(update),
       direction_id: TripUpdate.direction_id(update),

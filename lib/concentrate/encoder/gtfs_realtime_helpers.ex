@@ -50,16 +50,16 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
   ## Examples
 
-      iex> drop_nils(%{a: 1, b: nil})
+      iex> drop_nil_values(%{a: 1, b: nil})
       %{a: 1}
-      iex> drop_nils(%{})
+      iex> drop_nil_values(%{})
       nil
   """
-  def drop_nils(empty) when empty == %{} do
+  def drop_nil_values(empty) when empty == %{} do
     nil
   end
 
-  def drop_nils(map) do
+  def drop_nil_values(map) do
     :maps.fold(
       fn
         _k, nil, acc -> acc

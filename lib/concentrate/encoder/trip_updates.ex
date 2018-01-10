@@ -39,7 +39,7 @@ defmodule Concentrate.Encoder.TripUpdates do
         id: trip_id || "#{:erlang.phash2(update)}",
         trip_update: %{
           trip:
-            drop_nils(%{
+            drop_nil_values(%{
               trip_id: trip_id,
               route_id: TripUpdate.route_id(update),
               direction_id: TripUpdate.direction_id(update),
@@ -58,7 +58,7 @@ defmodule Concentrate.Encoder.TripUpdates do
   end
 
   defp build_stop_time_update(%StopTimeUpdate{} = update) do
-    drop_nils(%{
+    drop_nil_values(%{
       stop_id: StopTimeUpdate.stop_id(update),
       stop_sequence: StopTimeUpdate.stop_sequence(update),
       arrival: stop_time_event(StopTimeUpdate.arrival_time(update)),

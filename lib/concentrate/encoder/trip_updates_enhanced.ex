@@ -75,8 +75,4 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
       time: unix_timestamp
     }
   end
-
-  defp drop_nil_values(map) do
-    for {k, v} <- map, not is_nil(v), into: %{}, do: {k, v}
-  end
 end
