@@ -15,12 +15,16 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
   def pickup?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
     key = {:no_pickup, trip_id, stop_or_stop_sequence}
     not :ets.member(@table, key)
+  rescue
+    ArgumentError -> true
   end
 
   @spec drop_off?(String.t(), String.t() | non_neg_integer) :: boolean
   def drop_off?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
     key = {:no_drop_off, trip_id, stop_or_stop_sequence}
     not :ets.member(@table, key)
+  rescue
+    ArgumentError -> true
   end
 
   @impl GenStage

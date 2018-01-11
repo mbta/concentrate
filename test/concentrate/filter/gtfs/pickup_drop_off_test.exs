@@ -12,7 +12,7 @@ defmodule Concentrate.Filter.GTFS.PickupDropOffTest do
   "Logan-33-Weekday-trip","08:04:00","08:04:00","Logan-RentalCarCenter",2,"",2,2,0,""
   """
 
-  setup do
+  defp supervised(_) do
     start_supervised(Concentrate.Filter.GTFS.PickupDropOff)
     event = [{"stop_times.txt", @body}]
     # relies on being able to update the table from a different process
@@ -21,6 +21,8 @@ defmodule Concentrate.Filter.GTFS.PickupDropOffTest do
   end
 
   describe "pickup?" do
+    setup :supervised
+
     test "true if there's a pickup at the stop on that trip" do
       assert pickup?("Logan-22-Weekday-trip", "Logan-Subway")
       assert pickup?("Logan-22-Weekday-trip", "Logan-RentalCarCenter")
@@ -41,6 +43,8 @@ defmodule Concentrate.Filter.GTFS.PickupDropOffTest do
   end
 
   describe "drop_off?" do
+    setup :supervised
+
     test "true if there's a drop_off at the stop on that trip" do
       refute drop_off?("Logan-22-Weekday-trip", "Logan-Subway")
       assert drop_off?("Logan-22-Weekday-trip", "Logan-RentalCarCenter")
@@ -57,6 +61,16 @@ defmodule Concentrate.Filter.GTFS.PickupDropOffTest do
 
     test "true for unknown trips" do
       assert drop_off?("unknown trip", "unknown stop")
+    end
+  end
+
+  describe "missing ETS table" do
+    test "pickup? is true" do
+      assert pickup?("trip", 1)
+    end
+
+    test "drop_off? is true" do
+      assert drop_off?("trip", 1)
     end
   end
 end
