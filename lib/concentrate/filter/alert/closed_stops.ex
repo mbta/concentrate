@@ -26,6 +26,8 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
       }
 
     :ets.select(@table, [matcher])
+  rescue
+    ArgumentError -> []
   end
 
   def init(opts) do

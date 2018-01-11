@@ -4,12 +4,14 @@ defmodule Concentrate.Filter.Alert.ClosedStopsTest do
   import Concentrate.Filter.Alert.ClosedStops
   alias Concentrate.{Alert, Alert.InformedEntity}
 
-  setup do
+  defp supervised(_) do
     start_supervised(Concentrate.Filter.Alert.ClosedStops)
     :ok
   end
 
   describe "stop_closed_for/2" do
+    setup :supervised
+
     test "returns a list of entities for which the stop is closed at the given time" do
       alert =
         Alert.new(
@@ -30,6 +32,12 @@ defmodule Concentrate.Filter.Alert.ClosedStopsTest do
       assert stop_closed_for("other", 20) == [stop_route]
       assert stop_closed_for("stop", 12) == []
       assert stop_closed_for("unknown", 8) == []
+    end
+  end
+
+  describe "missing ETS table" do
+    test "stop_closed_for/2 returns empty list" do
+      assert stop_closed_for("stop", 0) == []
     end
   end
 end
