@@ -8,6 +8,7 @@ defmodule Concentrate.Sink.S3 do
 
   @config Application.get_env(:concentrate, :sink_s3) || []
   @ex_aws Keyword.get(@config, :ex_aws, ExAws)
+  @default_timeout 30_000
 
   def start_link(opts) do
     GenStage.start_link(__MODULE__, opts)
@@ -18,14 +19,20 @@ defmodule Concentrate.Sink.S3 do
     bucket = Keyword.fetch!(opts, :bucket)
     prefix = Keyword.get(opts, :prefix, "")
     acl = Keyword.get(opts, :acl, :public_read)
+    timeout = Keyword.get(opts, :timeout, @default_timeout)
     opts = Keyword.drop(opts, ~w(bucket prefix acl)a)
-    {:consumer, %{bucket: bucket, prefix: prefix, acl: acl}, opts}
+    {:consumer, %{bucket: bucket, prefix: prefix, acl: acl, timeout: timeout}, opts}
   end
 
   @impl GenStage
   def handle_events(events, _from, state) do
     events
-    |> Task.async_stream(&upload_to_s3(&1, state), ordered: false)
+    |> Task.async_stream(
+      &upload_to_s3(&1, state),
+      ordered: false,
+      timeout: state.timeout,
+      on_exit: :kill_task
+    )
     |> Stream.run()
 
     {:noreply, [], state}
