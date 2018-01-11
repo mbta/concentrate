@@ -11,6 +11,9 @@ defmodule Concentrate.Filter do
 
   The filter can return a new parsed item to replace the one passed in. In
   this way, you can also map over the parsed data.
+
+  The cleanup/1 callback is optional: it's called after the filter is used to
+  clean up the state.
   """
   require Logger
 
@@ -19,21 +22,26 @@ defmodule Concentrate.Filter do
 
   @callback init() :: state
   @callback filter(data, state) :: {:cont, data, state} | {:skip, state}
+  @callback cleanup(state) :: term
+  @optional_callbacks [cleanup: 1]
 
   @doc """
   Given a list of Concentrate.Filter modules, applies them to the list of data.
   """
   @spec run([data], [module]) :: [data]
   def run(data_list, filter_list) do
-    filter_list
-    |> Enum.reduce(data_list, &apply_filter_to_stream/2)
-    |> Enum.to_list()
+    Enum.reduce(filter_list, data_list, &apply_filter_to_enum/2)
   end
 
-  defp apply_filter_to_stream(module, stream) do
+  defp apply_filter_to_enum(module, enum) do
     state = module.init()
+    {enum, state} = Enum.flat_map_reduce(enum, state, &transform(module, &1, &2))
 
-    Stream.transform(stream, state, &transform(module, &1, &2))
+    if function_exported?(module, :cleanup, 1) do
+      module.cleanup(state)
+    end
+
+    enum
   end
 
   defp transform(module, item, state) do
