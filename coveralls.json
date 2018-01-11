@@ -1,0 +1,6 @@
+{
+  "skip_files": [
+    "test/support",
+    "src/gtfs_realtime_proto.erl"
+  ]
+}
