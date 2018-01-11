@@ -46,9 +46,8 @@ defmodule Concentrate.Filter.CancelledTripTest do
           start_date: {1970, 1, 2}
         )
 
-      assert {:cont, new_tu, {_, map}} = filter(tu, @state)
+      assert {:cont, new_tu, _} = filter(tu, @state)
       assert TripUpdate.schedule_relationship(new_tu) == :CANCELED
-      assert map["other_trip"] == "route"
     end
 
     test "TripUpdate is not cancelled if the route is not cancelled" do
@@ -61,6 +60,16 @@ defmodule Concentrate.Filter.CancelledTripTest do
 
       assert {:cont, ^tu, {_, map}} = filter(tu, @state)
       assert map == %{}
+    end
+
+    test "TripUpdate is not cancelled if it doesn't have a start date" do
+      tu =
+        TripUpdate.new(
+          trip_id: "trip",
+          route_id: "route"
+        )
+
+      assert {:cont, ^tu, _state} = filter(tu, @state)
     end
 
     test "StopTimeUpdate is skipped if the trip ID and time match" do

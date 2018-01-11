@@ -17,7 +17,11 @@ defmodule Concentrate.Filter.FakeCancelledTrips do
     unix > 86_405 and unix < 86_410
   end
 
-  def route_cancelled?(_, _) do
+  def route_cancelled?(route, time) when is_binary(route) and is_integer(time) do
+    false
+  end
+
+  def route_cancelled?(route, {_, _, _}) when is_binary(route) do
     false
   end
 
@@ -29,7 +33,11 @@ defmodule Concentrate.Filter.FakeCancelledTrips do
     unix > 5 and unix < 10
   end
 
-  def trip_cancelled?(_, _) do
+  def trip_cancelled?(trip, time) when is_binary(trip) and is_integer(time) do
+    false
+  end
+
+  def trip_cancelled?(trip, {_, _, _}) when is_binary(trip) do
     false
   end
 end

@@ -21,7 +21,7 @@ defmodule Concentrate.Filter.CancelledTrip do
         is_nil(time) ->
           stu
 
-        module.trip_cancelled?(trip_id, time) ->
+        is_binary(trip_id) and module.trip_cancelled?(trip_id, time) ->
           StopTimeUpdate.skip(stu)
 
         is_binary(route_id = Map.get(map, trip_id)) and module.route_cancelled?(route_id, time) ->
@@ -40,13 +40,18 @@ defmodule Concentrate.Filter.CancelledTrip do
     route_id = TripUpdate.route_id(tu)
 
     {tu, map} =
-      if module.trip_cancelled?(trip_id, start_date) or
-           module.route_cancelled?(route_id, start_date) do
-        # single L
-        tu = TripUpdate.update_schedule_relationship(tu, :CANCELED)
-        {tu, Map.put(map, trip_id, route_id)}
-      else
-        {tu, map}
+      cond do
+        is_nil(start_date) ->
+          {tu, map}
+
+        is_binary(trip_id) and module.trip_cancelled?(trip_id, start_date) ->
+          {TripUpdate.cancel(tu), map}
+
+        is_binary(route_id) and module.route_cancelled?(route_id, start_date) ->
+          {TripUpdate.cancel(tu), Map.put(map, trip_id, route_id)}
+
+        true ->
+          {tu, map}
       end
 
     {:cont, tu, {module, map}}
