@@ -6,12 +6,9 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
 
   @one_day 86_400
 
-  setup do
-    start_supervised(Concentrate.Filter.Alert.CancelledTrips)
-    :ok
-  end
-
   describe "trip_cancelled?/2" do
+    setup :supervised
+
     test "returns a boolean indicating whether the trip is cancelled at the given date or time" do
       alert =
         Alert.new(
@@ -82,6 +79,8 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
   end
 
   describe "route_cancelled?/1" do
+    setup :supervised
+
     test "returns a boolean indicating whether the route is cancelled at the given date or time" do
       alert =
         Alert.new(
@@ -102,5 +101,20 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
       refute route_cancelled?("route", 20)
       assert route_cancelled?("route_alone", {1970, 1, 1})
     end
+  end
+
+  describe "missing ETS table" do
+    test "route_cancelled?/2 returns false" do
+      refute route_cancelled?("route", 0)
+    end
+
+    test "trip_cancelled?/2 returns false" do
+      refute trip_cancelled?("route", 0)
+    end
+  end
+
+  defp supervised(_) do
+    start_supervised(Concentrate.Filter.Alert.CancelledTrips)
+    :ok
   end
 end

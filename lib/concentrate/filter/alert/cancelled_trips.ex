@@ -47,6 +47,8 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
       }
 
     :ets.select(@table, [select], 1) != :"$end_of_table"
+  rescue
+    ArgumentError -> false
   end
 
   def init(opts) do
