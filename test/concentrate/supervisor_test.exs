@@ -11,21 +11,10 @@ defmodule Concentrate.SupervisorTest do
 
   describe "children/1" do
     test "builds the right number of children" do
-      # currently, the right number is (number of sources + number of files + 4)
-      config = [
-        sources: [
-          gtfs_realtime: [
-            name: "url",
-            name2: "url2"
-          ]
-        ],
-        encoders: [files: [{"filename", :module}, {"other_file", :other_mod}]],
-        sinks: [filesystem: [directory: "/tmp"]]
-      ]
+      # currently, the right number is 3: alerts, GTFS, pipeline
+      actual = children([])
 
-      actual = children(config)
-
-      assert length(actual) == 8
+      assert length(actual) == 3
     end
   end
 end
