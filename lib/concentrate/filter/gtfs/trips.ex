@@ -16,6 +16,8 @@ defmodule Concentrate.Filter.GTFS.Trips do
       [[route_id]] -> route_id
       [] -> nil
     end
+  rescue
+    ArgumentError -> nil
   end
 
   def direction_id(trip_id) do
@@ -23,6 +25,8 @@ defmodule Concentrate.Filter.GTFS.Trips do
       [[direction_id]] -> direction_id
       [] -> nil
     end
+  rescue
+    ArgumentError -> nil
   end
 
   def init(opts) do
