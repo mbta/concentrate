@@ -6,6 +6,10 @@
 Concentrate combines realtime transit information from multiple sources into
 single output files.
 
+## Architecture
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the overall architecture of the system.
+
 ## Development Setup
 
 ```
@@ -37,3 +41,6 @@ docker build -t concentrate:latest .
 # run
 docker run concentrate:latest
 ```
+
+It can be configured by passing a JSON configuration file as
+`CONCENTRATE_JSON`. An example JSON configuratio can be see in
