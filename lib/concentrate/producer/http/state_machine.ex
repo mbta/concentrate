@@ -75,6 +75,14 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     end
   end
 
+  defp handle_message(%{ref: ref} = machine, {:fetch, _} = message) when is_reference(ref) do
+    Logger.warn(fn ->
+      "#{__MODULE__}: #{inspect(machine.url)}: got #{inspect(message)} when request is in-progress; ignoring"
+    end)
+
+    {machine, [], []}
+  end
+
   defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncStatus{id: ref, code: 200}) do
     {machine, [], []}
   end
@@ -190,12 +198,32 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, bodies, messages}
   end
 
+  defp handle_message(machine, {:ssl_closed, _socket_info}) do
+    message = fetch_message(machine)
+    messages = [{message, delay_after_fetch(machine)}]
+    machine = reset_machine(machine)
+    {machine, [], messages}
+  end
+
+  defp handle_message(%{ref: ref} = machine, %{id: other_ref})
+       when is_reference(other_ref) and ref != other_ref do
+    Logger.warn(fn ->
+      "#{__MODULE__}: #{inspect(machine.url)} got message with the wrong reference: ignoring"
+    end)
+
+    {machine, [], []}
+  end
+
   defp handle_message(machine, unknown) do
     Logger.error(fn ->
       "#{__MODULE__}: #{inspect(machine.url)} got unexpected message: #{inspect(unknown)}"
     end)
 
-    {machine, [], []}
+    message = fetch_message(machine)
+    messages = [{message, delay_after_fetch(machine)}]
+    machine = reset_machine(machine)
+
+    {machine, [], messages}
   end
 
   defp parse_bodies(%{body: body, previous_hash: previous_hash} = machine) when is_binary(body) do

@@ -40,11 +40,25 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
 
         log =
           capture_log([level: :error], fn ->
-            _ = message(machine, error)
+            assert {_machine, [], [{{:fetch, _}, _}]} = message(machine, error)
           end)
 
         assert log == ""
       end
+    end
+
+    test "Does not log an error on SSL closed errors" do
+      error = {:ssl_closed, {:sslsocket, {:gen_tcp, :port, :tls_connection, :undefined}, self()}}
+
+      machine = init("url", [])
+
+      log =
+        capture_log([level: :error], fn ->
+          # sends a message to refetch
+          assert {_machine, [], [{{:fetch, _}, _}]} = message(machine, error)
+        end)
+
+      assert log == ""
     end
 
     test "does log other errors" do
@@ -53,7 +67,7 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
 
       log =
         capture_log([level: :error], fn ->
-          _ = message(machine, error)
+          assert {_machine, [], [{{:fetch, _}, _}]} = message(machine, error)
         end)
 
       assert log =~ ":unknown_error"
@@ -125,20 +139,20 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
       assert bodies == []
     end
 
-    test "messages with the wrong reference log an error" do
+    test "messages with the wrong reference log an warning and don't retry" do
       messages = [
         %HTTPoison.AsyncStatus{id: make_ref(), code: 200}
       ]
 
       log =
-        capture_log([level: :error], fn ->
-          run_machine("url", [], messages)
+        capture_log([level: :warn], fn ->
+          assert {_machine, [], []} = run_machine("url", [], messages)
         end)
 
       refute log == ""
     end
 
-    test "fetch when there's already a request in flight is ignored" do
+    test "fetch when there's already a request in flight is ignored and logs a warning" do
       bypass = Bypass.open()
       Bypass.expect(bypass, &Plug.Conn.send_resp(&1, 200, ""))
       # we don't actually care about the request
@@ -151,8 +165,8 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
       ]
 
       log =
-        capture_log([level: :error], fn ->
-          run_machine(url, [], messages)
+        capture_log([level: :warn], fn ->
+          assert {_, [], []} = run_machine(url, [], messages)
         end)
 
       refute log == ""
