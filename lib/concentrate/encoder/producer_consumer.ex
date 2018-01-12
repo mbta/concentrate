@@ -26,8 +26,6 @@ defmodule Concentrate.Encoder.ProducerConsumer do
         {filename, encoder}
       end
 
-    opts = Keyword.put_new(opts, :dispatcher, GenStage.BroadcastDispatcher)
-
     {:producer_consumer, state, opts}
   end
 

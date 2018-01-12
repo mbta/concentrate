@@ -89,29 +89,30 @@ defmodule Concentrate.Supervisor.Pipeline do
   end
 
   def sinks(config, output_names) do
-    for {sink_type, sink_config} <- config do
-      sink_config(sink_type, sink_config, output_names)
+    for {sink_type, sink_config} <- config,
+        child <- sink_config(sink_type, sink_config, output_names) do
+      child
     end
   end
 
   defp sink_config(:filesystem, config, output_names) do
-    {Concentrate.Sink.Filesystem, [
-      directory: config[:directory],
-      subscribe_to: output_names
-    ]}
+    # filesystem gets serialized anyways, no point in running multiple workers
+    [
+      {Concentrate.Sink.Filesystem, [
+        directory: config[:directory],
+        subscribe_to: output_names
+      ]}
+    ]
   end
 
   defp sink_config(:s3, config, output_names) do
-    {Concentrate.Sink.S3, [subscribe_to: output_names] ++ config}
-  end
-
-  defp sink_config(:visualize, config, output_names) do
-    selector = fn {filename, _} ->
-      Path.extname(filename) == ".pb"
+    # generate a sink per file, so they're distributed
+    for name <- output_names do
+      child_spec(
+        {Concentrate.Sink.S3, [subscribe_to: output_names] ++ config},
+        id: {:s3_sink, name}
+      )
     end
-
-    outputs = outputs_with_options(output_names, selector: selector)
-    {Concentrate.Sink.GTFSRealtimeViz, [subscribe_to: outputs] ++ config}
   end
 
   defp child_ids(children) do
