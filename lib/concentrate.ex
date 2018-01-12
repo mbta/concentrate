@@ -61,6 +61,12 @@ defmodule Concentrate do
     ]
   end
 
+  defp decode_json_key_value({:log_level, level}) do
+    # UNSAFE!
+    Logger.configure(level: String.to_atom(level))
+    []
+  end
+
   defp decode_json_key_value(_unknown) do
     []
   end

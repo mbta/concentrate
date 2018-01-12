@@ -8,7 +8,7 @@ config :logger,
   backends: [:console]
 
 config :logger, :console,
-  level: :info,
+  level: :debug,
   format: "$dateT$time [$level]$levelpad $message\n"
 
 config :ehmon, :report_mf, {:ehmon, :info_report}
