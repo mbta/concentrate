@@ -3,9 +3,10 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   State machine to manage the incoming/outgoing messages for making recurring HTTP requests.
   """
   require Logger
+  @default_timeout 15_000
 
   defstruct url: "",
-            get_opts: [],
+            get_opts: [timeout: @default_timeout, recv_timeout: @default_timeout],
             body: "",
             headers: [],
             ref: nil,
