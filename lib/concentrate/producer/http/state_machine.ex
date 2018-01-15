@@ -7,9 +7,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defstruct url: "",
             get_opts: [timeout: @default_timeout, recv_timeout: @default_timeout],
-            body: "",
             headers: [],
-            ref: nil,
             fetch_after: 5_000,
             content_warning_timeout: 300_000,
             last_success: nil,
@@ -28,15 +26,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   @spec fetch(t) :: return
   def fetch(%__MODULE__{} = machine) do
-    {machine, [], [{fetch_message(machine), fetch_delay(machine)}]}
-  end
-
-  defp fetch_message(%{body: {:redirect, _, new_url}}) do
-    {:fetch, new_url}
-  end
-
-  defp fetch_message(%{url: url}) do
-    {:fetch, url}
+    {machine, [], [{{:fetch, machine.url}, fetch_delay(machine)}]}
   end
 
   defp fetch_delay(%{last_success: nil}) do
@@ -66,85 +56,100 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, bodies, messages}
   end
 
-  defp handle_message(%{ref: nil} = machine, {:fetch, url}) do
-    case HTTPoison.get(url, machine.headers, [stream_to: self()] ++ machine.get_opts) do
-      {:ok, %{id: ref}} ->
-        {%{machine | ref: ref}, [], []}
+  defp handle_message(machine, {:fetch, url}) do
+    case HTTPoison.get(url, machine.headers, machine.get_opts) do
+      {:ok, %HTTPoison.Response{} = response} ->
+        handle_message(machine, {:http_response, response})
 
-      {:error, error} ->
-        handle_message(machine, error)
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        handle_message(machine, {:http_error, reason})
     end
   end
 
-  defp handle_message(%{ref: ref} = machine, {:fetch, _} = message) when is_reference(ref) do
-    Logger.warn(fn ->
-      "#{__MODULE__}: #{inspect(machine.url)}: got #{inspect(message)} when request is in-progress; ignoring"
-    end)
+  defp handle_message(
+         machine,
+         {:http_response, %{status_code: 200, headers: headers, body: body}}
+       ) do
+    {bodies, machine} = parse_bodies(machine, body)
+    machine = update_cache_headers(machine, headers)
+    machine = check_last_success(machine)
+    message = {:fetch, machine.url}
+    messages = [{message, machine.fetch_after}]
 
-    {machine, [], []}
+    {machine, bodies, messages}
   end
 
-  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncStatus{id: ref, code: 200}) do
-    {machine, [], []}
+  defp handle_message(machine, {:http_response, %{status_code: 301, headers: headers}}) do
+    # permanent redirect: save the new URL
+    new_url = find_header(headers, "location")
+    machine = %{machine | url: new_url}
+    machine = check_last_success(machine)
+    message = {:fetch, new_url}
+    messages = [{message, 0}]
+    {machine, [], messages}
   end
 
-  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncStatus{id: ref, code: 301}) do
-    machine = %{machine | body: {:redirect, :permanent}}
-    {machine, [], []}
+  defp handle_message(machine, {:http_response, %{status_code: 302, headers: headers}}) do
+    # temporary redirect: request the new URL but don't save it
+    new_url = find_header(headers, "location")
+    machine = check_last_success(machine)
+    message = {:fetch, new_url}
+    messages = [{message, 0}]
+    {machine, [], messages}
   end
 
-  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncStatus{id: ref, code: 302}) do
-    machine = %{machine | body: {:redirect, :temporary}}
-    {machine, [], []}
-  end
-
-  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncStatus{id: ref, code: 304}) do
+  defp handle_message(machine, {:http_response, %{status_code: 304}}) do
+    # not modified
     Logger.info(fn ->
       "#{__MODULE__}: #{inspect(machine.url)} not modified"
     end)
 
-    machine = %{machine | body: :halt}
-    {machine, [], []}
+    machine = check_last_success(machine)
+    message = {:fetch, machine.url}
+    messages = [{message, machine.fetch_after}]
+    {machine, [], messages}
   end
 
-  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncStatus{id: ref, code: code}) do
+  defp handle_message(machine, {:http_response, %{status_code: code}}) do
     Logger.warn(fn ->
       "#{__MODULE__}: #{inspect(machine.url)} unexpected code #{inspect(code)}"
     end)
 
-    machine = %{machine | body: :halt}
+    machine = check_last_success(machine)
+    message = {:fetch, machine.url}
+    {machine, [], [{message, machine.fetch_after}]}
+  end
+
+  defp handle_message(machine, {:http_error, reason}) do
+    log_level = error_log_level(reason)
+
+    _ =
+      Logger.log(log_level, fn ->
+        "#{__MODULE__}: #{inspect(machine.url)} error: #{inspect(reason)}"
+      end)
+
+    machine = check_last_success(machine)
+    message = {:fetch, machine.url}
+    messages = [{message, machine.fetch_after}]
+    {machine, [], messages}
+  end
+
+  defp handle_message(machine, unknown) do
+    Logger.error(fn ->
+      "#{__MODULE__}: #{inspect(machine.url)} got unexpected message: #{inspect(unknown)}"
+    end)
+
     {machine, [], []}
   end
 
-  defp handle_message(%{ref: ref, body: :halt} = machine, %HTTPoison.AsyncHeaders{id: ref}) do
-    {machine, [], []}
+  defp find_header(headers, match_header) do
+    {_, value} = Enum.find(headers, &(String.downcase(elem(&1, 0)) == match_header))
+    value
   end
 
-  defp handle_message(%{ref: ref, body: {:redirect, type}} = machine, %HTTPoison.AsyncHeaders{
-         id: ref,
-         headers: headers
-       }) do
-    {_, new_location} =
-      Enum.find(headers, fn {header, _} -> String.downcase(header) == "location" end)
-
-    machine =
-      if type == :permanent do
-        %{machine | url: new_location}
-      else
-        machine
-      end
-
-    machine = %{machine | body: {:redirect, type, new_location}}
-    {machine, [], []}
-  end
-
-  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncHeaders{
-         id: ref,
-         headers: resp_headers
-       }) do
-    # grab the cache headers
-    headers =
-      Enum.reduce(resp_headers, [], fn {header, value}, acc ->
+  defp update_cache_headers(machine, headers) do
+    cache_headers =
+      Enum.reduce(headers, [], fn {header, value}, acc ->
         cond do
           String.downcase(header) == "last-modified" ->
             [{:"if-modified-since", value} | acc]
@@ -157,78 +162,11 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
         end
       end)
 
-    machine = %{machine | headers: headers}
-    {machine, [], []}
+    %{machine | headers: cache_headers}
   end
 
-  defp handle_message(%{ref: ref, body: binary} = machine, %HTTPoison.AsyncChunk{
-         id: ref,
-         chunk: chunk
-       })
-       when is_binary(binary) do
-    machine = %{machine | body: binary <> chunk}
-    {machine, [], []}
-  end
-
-  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncChunk{id: ref}) do
-    {machine, [], []}
-  end
-
-  defp handle_message(%{ref: ref} = machine, %HTTPoison.Error{id: ref, reason: reason}) do
-    log_level = error_log_level(reason)
-
-    _ =
-      Logger.log(log_level, fn ->
-        "#{__MODULE__}: #{inspect(machine.url)} error: #{inspect(reason)}"
-      end)
-
-    message = fetch_message(machine)
-    messages = [{message, delay_after_fetch(machine)}]
-    machine = reset_machine(machine)
-    {machine, [], messages}
-  end
-
-  defp handle_message(%{ref: ref} = machine, %HTTPoison.AsyncEnd{id: ref}) do
-    {bodies, machine} = parse_bodies(machine)
-    machine = check_last_success(machine, bodies)
-    delay = delay_after_fetch(machine)
-    message = fetch_message(machine)
-    messages = [{message, delay}]
-    machine = reset_machine(machine)
-
-    {machine, bodies, messages}
-  end
-
-  defp handle_message(machine, {:ssl_closed, _socket_info}) do
-    message = fetch_message(machine)
-    messages = [{message, delay_after_fetch(machine)}]
-    machine = reset_machine(machine)
-    {machine, [], messages}
-  end
-
-  defp handle_message(%{ref: ref} = machine, %{id: other_ref})
-       when is_reference(other_ref) and ref != other_ref do
-    Logger.warn(fn ->
-      "#{__MODULE__}: #{inspect(machine.url)} got message with the wrong reference: ignoring"
-    end)
-
-    {machine, [], []}
-  end
-
-  defp handle_message(machine, unknown) do
-    Logger.error(fn ->
-      "#{__MODULE__}: #{inspect(machine.url)} got unexpected message: #{inspect(unknown)}"
-    end)
-
-    message = fetch_message(machine)
-    messages = [{message, delay_after_fetch(machine)}]
-    machine = reset_machine(machine)
-
-    {machine, [], messages}
-  end
-
-  defp parse_bodies(%{body: body, previous_hash: previous_hash} = machine) when is_binary(body) do
-    case :erlang.phash2(machine.body) do
+  defp parse_bodies(%{previous_hash: previous_hash} = machine, body) do
+    case :erlang.phash2(body) do
       ^previous_hash ->
         Logger.info(fn ->
           "#{__MODULE__}: #{inspect(machine.url)} same content"
@@ -237,15 +175,11 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
         {[], machine}
 
       new_hash ->
-        {[body], %{machine | previous_hash: new_hash}}
+        {[body], %{machine | previous_hash: new_hash, last_success: now()}}
     end
   end
 
-  defp parse_bodies(machine) do
-    {[], machine}
-  end
-
-  defp check_last_success(%{last_success: last_success} = machine, [])
+  defp check_last_success(%{last_success: last_success} = machine)
        when is_integer(last_success) do
     time_since_last_success = now() - last_success
 
@@ -261,22 +195,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     end
   end
 
-  defp check_last_success(machine, _) do
-    %{machine | last_success: now()}
-  end
-
-  defp delay_after_fetch(%{body: {:redirect, _, _}}) do
-    # refetch immediately if we got redirected
-    0
-  end
-
-  defp delay_after_fetch(%{fetch_after: fetch_after}) do
-    # otherwise, schedule a fetch
-    fetch_after
-  end
-
-  defp reset_machine(machine) do
-    %{machine | body: "", ref: nil}
+  defp check_last_success(machine) do
+    machine
   end
 
   defp error_log_level(:closed), do: :warn

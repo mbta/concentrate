@@ -18,14 +18,14 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
 
     test "if we had a success in the past, doesn't refetch immediately" do
       machine = init("url", [])
-      {machine, _, _} = message(machine, %HTTPoison.AsyncEnd{})
+      {machine, _, _} = message(machine, {:http_response, make_resp([])})
       assert {_machine, _, [{_, delay}]} = fetch(machine)
       assert delay > 0
     end
 
     test "if we had a success more than `fetch_after` in the past, fetches immediately" do
       machine = init("url", fetch_after: 10)
-      {machine, _, _} = message(machine, %HTTPoison.AsyncEnd{})
+      {machine, _, _} = message(machine, {:http_response, make_resp([])})
       :timer.sleep(11)
       assert {_machine, _, [{_, 0}]} = fetch(machine)
     end
@@ -36,7 +36,7 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
       machine = init("url", [])
 
       for reason <- [:closed, {:closed, :timeout}] do
-        error = %HTTPoison.Error{reason: reason}
+        error = {:http_error, reason}
 
         log =
           capture_log([level: :error], fn ->
@@ -47,23 +47,9 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
       end
     end
 
-    test "Does not log an error on SSL closed errors" do
-      error = {:ssl_closed, {:sslsocket, {:gen_tcp, :port, :tls_connection, :undefined}, self()}}
-
-      machine = init("url", [])
-
-      log =
-        capture_log([level: :error], fn ->
-          # sends a message to refetch
-          assert {_machine, [], [{{:fetch, _}, _}]} = message(machine, error)
-        end)
-
-      assert log == ""
-    end
-
     test "does log other errors" do
       machine = init("url", [])
-      error = %HTTPoison.Error{reason: :unknown_error}
+      error = {:http_error, :unknown_error}
 
       log =
         capture_log([level: :error], fn ->
@@ -77,14 +63,9 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
       opts = [content_warning_timeout: 0]
 
       messages = [
-        %HTTPoison.AsyncStatus{code: 200},
-        %HTTPoison.AsyncHeaders{headers: []},
-        %HTTPoison.AsyncChunk{chunk: "body"},
-        %HTTPoison.AsyncEnd{},
+        {:http_response, make_resp(body: "body")},
         fn -> :timer.sleep(5) end,
-        %HTTPoison.AsyncStatus{code: 304},
-        %HTTPoison.AsyncHeaders{headers: []},
-        %HTTPoison.AsyncEnd{}
+        {:http_response, make_resp(code: 304)}
       ]
 
       log =
@@ -100,17 +81,10 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
       opts = [content_warning_timeout: 5]
 
       messages = [
-        %HTTPoison.AsyncStatus{code: 200},
-        %HTTPoison.AsyncHeaders{headers: []},
-        %HTTPoison.AsyncChunk{chunk: "body"},
-        %HTTPoison.AsyncEnd{},
+        {:http_response, make_resp(body: "body")},
+        {:http_response, make_resp(code: 304)},
         fn -> :timer.sleep(10) end,
-        %HTTPoison.AsyncStatus{code: 304},
-        %HTTPoison.AsyncHeaders{headers: []},
-        %HTTPoison.AsyncEnd{},
-        %HTTPoison.AsyncStatus{code: 304},
-        %HTTPoison.AsyncHeaders{headers: []},
-        %HTTPoison.AsyncEnd{}
+        {:http_response, make_resp(code: 304)}
       ]
 
       log =
@@ -124,49 +98,28 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
 
     test "receiving the same body twice does not send a second message" do
       messages = [
-        %HTTPoison.AsyncStatus{code: 200},
-        %HTTPoison.AsyncHeaders{headers: []},
-        %HTTPoison.AsyncChunk{chunk: "body"},
-        %HTTPoison.AsyncEnd{},
-        %HTTPoison.AsyncStatus{code: 200},
-        %HTTPoison.AsyncHeaders{headers: []},
-        %HTTPoison.AsyncChunk{chunk: "body"},
-        %HTTPoison.AsyncEnd{}
+        {:http_response, make_resp(body: "body")},
+        {:http_response, make_resp(body: "body")}
       ]
 
-      {_machine, bodies, _messages} = run_machine("url", [], messages)
+      {_machine, bodies, messages} = run_machine("url", [], messages)
 
       assert bodies == []
+      assert [{{:fetch, "url"}, timeout} | _] = messages
+      assert timeout > 0
     end
 
-    test "messages with the wrong reference log an warning and don't retry" do
+    test "receiving an unknown code logs an warning and reschedules a fetch" do
       messages = [
-        %HTTPoison.AsyncStatus{id: make_ref(), code: 200}
+        {:http_response, make_resp(code: 500)}
       ]
+
+      fetch_after = 1000
 
       log =
         capture_log([level: :warn], fn ->
-          assert {_machine, [], []} = run_machine("url", [], messages)
-        end)
-
-      refute log == ""
-    end
-
-    test "fetch when there's already a request in flight is ignored and logs a warning" do
-      bypass = Bypass.open()
-      Bypass.expect(bypass, &Plug.Conn.send_resp(&1, 200, ""))
-      # we don't actually care about the request
-      Bypass.pass(bypass)
-      url = "http://localhost:#{bypass.port}"
-
-      messages = [
-        {:fetch, url},
-        {:fetch, url}
-      ]
-
-      log =
-        capture_log([level: :warn], fn ->
-          assert {_, [], []} = run_machine(url, [], messages)
+          assert {_machine, [], [{{:fetch, "url"}, ^fetch_after} | _]} =
+                   run_machine("url", [fetch_after: fetch_after], messages)
         end)
 
       refute log == ""
@@ -187,5 +140,12 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
           message(machine, message)
       end
     end)
+  end
+
+  defp make_resp(opts) do
+    code = Keyword.get(opts, :code, 200)
+    body = Keyword.get(opts, :body, "")
+    headers = Keyword.get(opts, :headers, [])
+    %HTTPoison.Response{status_code: code, body: body, headers: headers}
   end
 end
