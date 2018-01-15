@@ -15,7 +15,10 @@ defmodule Concentrate.Filter.GTFS.Supervisor do
             Concentrate.Producer.HTTP,
             {
               config[:url],
-              parser: Concentrate.Filter.GTFS.Unzip, fetch_after: @one_hour, name: :gtfs_producer
+              parser: Concentrate.Filter.GTFS.Unzip,
+              fetch_after: @one_hour,
+              content_warning_timeout: :infinity,
+              name: :gtfs_producer
             }
           },
           {Concentrate.Filter.GTFS.Trips, subscribe_to: [:gtfs_producer]},
