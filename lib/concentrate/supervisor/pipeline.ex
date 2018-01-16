@@ -18,8 +18,9 @@ defmodule Concentrate.Supervisor.Pipeline do
     {source_names, source_children} = sources(config[:sources])
     {output_names, output_children} = encoders(config[:encoders])
     merge_filter = merge(source_names, config[:filters])
+    reporters = reporters(config[:reporters])
     sinks = sinks(config[:sinks], output_names)
-    Enum.concat([source_children, merge_filter, output_children, sinks])
+    Enum.concat([source_children, merge_filter, output_children, reporters, sinks])
   end
 
   def sources(config) do
@@ -68,6 +69,16 @@ defmodule Concentrate.Supervisor.Pipeline do
         name: :merge_filter, subscribe_to: sources, buffer_size: 1, filters: filters
       }
     ]
+  end
+
+  def reporters(reporter_modules) when is_list(reporter_modules) do
+    for module <- reporter_modules do
+      child_spec(
+        {Concentrate.Reporter.Consumer,
+         module: module, subscribe_to: [merge_filter: [max_demand: 1]]},
+        id: module
+      )
+    end
   end
 
   def encoders(config) do

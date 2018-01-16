@@ -28,6 +28,10 @@ config :concentrate,
     Concentrate.Filter.CancelledTrip,
     Concentrate.Filter.VehiclePastStop
   ],
+  reporters: [
+    Concentrate.Reporter.VehicleLatency,
+    Concentrate.Reporter.Latency
+  ],
   encoders: [
     files: [
       {"TripUpdates.pb", Concentrate.Encoder.TripUpdates},
