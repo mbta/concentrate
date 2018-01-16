@@ -98,10 +98,11 @@ defmodule Concentrate.Supervisor.Pipeline do
   defp sink_config(:filesystem, config, output_names) do
     # filesystem gets serialized anyways, no point in running multiple workers
     [
-      {Concentrate.Sink.Filesystem, [
-        directory: config[:directory],
-        subscribe_to: output_names
-      ]}
+      {Concentrate.Sink.Filesystem,
+       [
+         directory: config[:directory],
+         subscribe_to: output_names
+       ]}
     ]
   end
 

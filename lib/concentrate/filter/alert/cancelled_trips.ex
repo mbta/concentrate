@@ -36,15 +36,14 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
   end
 
   defp date_overlaps?(trip_id, start, stop) do
-    select =
-      {
-        {trip_id, :"$1", :"$2"},
-        [
-          {:"=<", :"$1", stop},
-          {:"=<", start, :"$2"}
-        ],
-        [@empty_value]
-      }
+    select = {
+      {trip_id, :"$1", :"$2"},
+      [
+        {:"=<", :"$1", stop},
+        {:"=<", start, :"$2"}
+      ],
+      [@empty_value]
+    }
 
     :ets.select(@table, [select], 1) != :"$end_of_table"
   rescue

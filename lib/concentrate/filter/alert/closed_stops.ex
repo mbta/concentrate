@@ -14,16 +14,15 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
 
   @spec stop_closed_for(String.t(), integer) :: [Alert.InformedEntity.t()]
   def stop_closed_for(stop_id, unix) when is_binary(stop_id) do
-    matcher =
-      {
-        {stop_id, :"$1", :"$2", :"$3"},
-        [
-          # DateTime is between the start/end dates
-          {:"=<", :"$1", unix},
-          {:"=<", unix, :"$2"}
-        ],
-        [:"$3"]
-      }
+    matcher = {
+      {stop_id, :"$1", :"$2", :"$3"},
+      [
+        # DateTime is between the start/end dates
+        {:"=<", :"$1", unix},
+        {:"=<", unix, :"$2"}
+      ],
+      [:"$3"]
+    }
 
     :ets.select(@table, [matcher])
   rescue
