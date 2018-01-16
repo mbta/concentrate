@@ -21,7 +21,10 @@ defmodule Concentrate.Sink.Filesystem do
     for {filename, body} <- events do
       path = Path.join(state, filename)
       File.write!(path, body)
-      Logger.info(fn -> "#{__MODULE__}: #{path} updated: #{byte_size(body)} bytes" end)
+
+      Logger.info(fn ->
+        "#{__MODULE__} updated: path=#{inspect(path)} bytes=#{byte_size(body)}"
+      end)
     end
 
     {:noreply, [], state}

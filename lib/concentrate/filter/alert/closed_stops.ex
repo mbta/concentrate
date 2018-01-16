@@ -53,7 +53,7 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
 
       _ =
         Logger.info(fn ->
-          "#{__MODULE__} updated: #{length(inserts)} records"
+          "#{__MODULE__} updated: records=#{length(inserts)}"
         end)
     end
 

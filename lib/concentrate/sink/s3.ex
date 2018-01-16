@@ -40,7 +40,9 @@ defmodule Concentrate.Sink.S3 do
     |> @ex_aws.request!
 
     Logger.info(fn ->
-      "#{__MODULE__}: #{inspect(state.bucket <> "/" <> full_filename)} updated: #{byte_size(body)} bytes"
+      "#{__MODULE__} updated: bucket=#{inspect(state.bucket)} path=#{inspect(full_filename)} bytes=#{
+        byte_size(body)
+      }"
     end)
   end
 

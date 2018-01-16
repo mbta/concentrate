@@ -84,9 +84,9 @@ defmodule Concentrate.Producer.HTTP do
     {time, parsed} = :timer.tc(state.parser, [binary])
 
     Logger.info(fn ->
-      "#{__MODULE__}: #{inspect(state.machine.url)} got #{length(parsed)} records in #{
+      "#{__MODULE__} updated: url=#{inspect(state.machine.url)} records=#{length(parsed)} time=#{
         time / 1000
-      }ms"
+      }"
     end)
 
     [parsed]
