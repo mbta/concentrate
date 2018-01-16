@@ -101,7 +101,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   defp boarding_status(nil), do: nil
 
-  for status <- ~w(ON_TIME DELAYED ARRIVING NOW_BOARDING ALL_ABOARD DEPARTED LATE)a do
+  for status <-
+        ~w(ON_TIME DELAYED ARRIVING NOW_BOARDING ALL_ABOARD DEPARTED LATE BUS_SUBSTITUTION)a do
     defp boarding_status(unquote(Atom.to_string(status))), do: unquote(status)
   end
 
