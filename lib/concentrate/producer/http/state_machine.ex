@@ -195,6 +195,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     end
   end
 
+  defp error_log_level(:timeout), do: :warn
+  defp error_log_level(:timeout), do: :warn
   defp check_last_success(machine) do
     machine
   end

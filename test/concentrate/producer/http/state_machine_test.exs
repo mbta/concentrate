@@ -32,10 +32,10 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
   end
 
   describe "message/2" do
-    test "does not log an error on :closed errors" do
+    test "does not log an error on :closed or :timeout errors" do
       machine = init("url", [])
 
-      for reason <- [:closed, {:closed, :timeout}] do
+      for reason <- [:closed, {:closed, :timeout}, :timeout] do
         error = {:http_error, reason}
 
         log =
