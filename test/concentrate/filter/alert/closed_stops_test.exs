@@ -33,6 +33,32 @@ defmodule Concentrate.Filter.Alert.ClosedStopsTest do
       assert stop_closed_for("stop", 12) == []
       assert stop_closed_for("unknown", 8) == []
     end
+
+    test "for route types 3 and 4, :DETOUR is also a closed stop" do
+      alert =
+        Alert.new(
+          effect: :DETOUR,
+          active_period: [
+            {5, 10}
+          ],
+          informed_entity: [
+            InformedEntity.new(stop_id: "light_rail", route_type: 0),
+            InformedEntity.new(stop_id: "heavy_rail", route_type: 1),
+            InformedEntity.new(stop_id: "commuter_rail", route_type: 2),
+            bus = InformedEntity.new(stop_id: "bus", route_type: 3),
+            ferry = InformedEntity.new(stop_id: "ferry", route_type: 4)
+          ]
+        )
+
+      handle_events([[alert]], :from, :state)
+
+      assert stop_closed_for("bus", 5) == [bus]
+      assert stop_closed_for("ferry", 6) == [ferry]
+
+      for name <- ~w(light_rail heavy_rail commuter_rail) do
+        assert stop_closed_for(name, 6) == []
+      end
+    end
   end
 
   describe "missing ETS table" do

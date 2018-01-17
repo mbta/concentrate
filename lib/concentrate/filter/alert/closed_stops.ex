@@ -39,10 +39,8 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
 
     inserts =
       for alert <- alerts,
-          Alert.effect(alert) == :NO_SERVICE,
-          entity <- Alert.informed_entity(alert),
+          entity <- closed_stop_entities(alert),
           stop_id = InformedEntity.stop_id(entity),
-          not is_nil(stop_id),
           {start, stop} <- Alert.active_period(alert) do
         {stop_id, start, stop, entity}
       end
@@ -58,5 +56,24 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
     end
 
     {:noreply, [], state}
+  end
+
+  defp closed_stop_entities(alert) do
+    cond do
+      Alert.effect(alert) == :NO_SERVICE ->
+        for entity <- Alert.informed_entity(alert), not is_nil(InformedEntity.stop_id(entity)) do
+          entity
+        end
+
+      Alert.effect(alert) == :DETOUR ->
+        for entity <- Alert.informed_entity(alert),
+            not is_nil(InformedEntity.stop_id(entity)),
+            InformedEntity.route_type(entity) in [3, 4] do
+          entity
+        end
+
+      true ->
+        []
+    end
   end
 end
