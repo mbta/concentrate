@@ -74,19 +74,27 @@ defmodule Concentrate do
   defp decode_gtfs_realtime(realtime) do
     # UNSAFE! only call this during startup, and with controlled JSON files.
     for {key, value} <- realtime, into: %{} do
-      value =
-        case value do
-          %{url: url, routes: routes} when is_list(routes) ->
-            {url, routes: routes}
-
-          %{url: url} when is_binary(url) ->
-            url
-
-          url when is_binary(url) ->
-            url
-        end
-
+      value = decode_gtfs_realtime_value(value)
       {key, value}
+    end
+  end
+
+  defp decode_gtfs_realtime_value(url) when is_binary(url) do
+    url
+  end
+
+  defp decode_gtfs_realtime_value(%{url: url} = value) when is_binary(url) do
+    opts =
+      for {key, guard} <- [routes: &is_list/1, fallback_url: &is_binary/1],
+          {:ok, opt_value} <- [Map.fetch(value, key)],
+          guard.(opt_value) do
+        {key, opt_value}
+      end
+
+    if opts == [] do
+      url
+    else
+      {url, opts}
     end
   end
 

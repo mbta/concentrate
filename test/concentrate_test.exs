@@ -18,7 +18,10 @@ defmodule ConcentrateTest do
   "sources": {
     "gtfs_realtime": {
       "name_1": "url_1",
-      "name_2": "url_2"
+      "name_2": {
+        "url": "url_2",
+        "fallback_url": "url_fallback"
+       }
     },
     "gtfs_realtime_enhanced": {
       "enhanced_1": "url_3"
@@ -42,7 +45,7 @@ defmodule ConcentrateTest do
 
       assert config[:sources][:gtfs_realtime] == %{
                name_1: "url_1",
-               name_2: "url_2"
+               name_2: {"url_2", fallback_url: "url_fallback"}
              }
 
       assert config[:sources][:gtfs_realtime_enhanced] == %{
