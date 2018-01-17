@@ -84,7 +84,7 @@ defmodule Concentrate.Producer.HTTP do
     {time, parsed} = :timer.tc(state.parser, [binary])
 
     Logger.info(fn ->
-      "#{__MODULE__} updated: url=#{inspect(state.machine.url)} records=#{length(parsed)} time=#{
+      "#{__MODULE__} updated: url=#{inspect(SM.url(state.machine))} records=#{length(parsed)} time=#{
         time / 1000
       }"
     end)
@@ -98,7 +98,7 @@ defmodule Concentrate.Producer.HTTP do
 
   defp parse_error(error, state, trace) do
     Logger.error(fn ->
-      "#{__MODULE__}: #{inspect(state.machine.url)} parse error: #{inspect(error)}\n#{
+      "#{__MODULE__}: #{inspect(SM.url(state.machine))} parse error: #{inspect(error)}\n#{
         Exception.format_stacktrace(trace)
       }"
     end)

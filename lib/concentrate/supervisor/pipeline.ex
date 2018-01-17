@@ -26,26 +26,26 @@ defmodule Concentrate.Supervisor.Pipeline do
   def sources(config) do
     realtime_children =
       for {source, url} <- config[:gtfs_realtime] || [] do
-        {url, parser} =
+        {url, opts, parser} =
           case url do
-            {url, opts} ->
-              {url, {Concentrate.Parser.GTFSRealtime, opts}}
+            {url, opts} when is_binary(url) ->
+              {url, opts, {Concentrate.Parser.GTFSRealtime, Keyword.take(opts, [:routes])}}
 
-            url ->
-              {url, Concentrate.Parser.GTFSRealtime}
+            url when is_binary(url) ->
+              {url, [], Concentrate.Parser.GTFSRealtime}
           end
 
         child_spec(
           {
             Concentrate.Producer.HTTP,
-            {url, name: source, parser: parser}
+            {url, [name: source, parser: parser] ++ opts}
           },
           id: source
         )
       end
 
     enhanced_children =
-      for {source, url} <- config[:gtfs_realtime_enhanced] || [] do
+      for {source, url} when is_binary(url) <- config[:gtfs_realtime_enhanced] || [] do
         child_spec(
           {
             Concentrate.Producer.HTTP,

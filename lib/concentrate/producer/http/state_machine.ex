@@ -1,6 +1,12 @@
 defmodule Concentrate.Producer.HTTP.StateMachine do
   @moduledoc """
   State machine to manage the incoming/outgoing messages for making recurring HTTP requests.
+
+  Options:
+  * `fetch_after`: number of milliseconds between fetches
+  * `content_warning_timeout`: number of milliseconds after which to log an error that the file is out of date
+  * `fallback_url`: (optional) URL to use once the `content_warning_timeout` is hit.
+  * `get_opts`: (optional) values to pass as options to HTTPoison
   """
   require Logger
   @default_timeout 15_000
@@ -15,7 +21,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
             fetch_after: 5_000,
             content_warning_timeout: 300_000,
             last_success: :never,
-            previous_hash: -1
+            previous_hash: -1,
+            fallback: :undefined
 
   @type t :: %__MODULE__{url: binary}
   @type message :: {term, non_neg_integer}
@@ -26,12 +33,47 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     state = %__MODULE__{url: url}
     state = struct!(state, Keyword.take(opts, ~w(get_opts fetch_after content_warning_timeout)a))
     state = %{state | last_success: now() - state.fetch_after - 1}
-    state
+
+    case Keyword.get(opts, :fallback_url) do
+      url when is_binary(url) ->
+        %{state | fallback: {:not_active, url}}
+
+      _ ->
+        state
+    end
+  end
+
+  @doc """
+  Return the URL for the state machine.
+
+  Returns the original URL, unless the fallback is active.
+  """
+  def url(machine)
+
+  def url(%__MODULE__{fallback: {:active, machine}}) do
+    url(machine)
+  end
+
+  def url(%__MODULE__{url: url}) do
+    url
   end
 
   @spec fetch(t) :: return
   def fetch(%__MODULE__{} = machine) do
-    {machine, [], [{{:fetch, machine.url}, fetch_delay(machine)}]}
+    message = {:fetch, machine.url}
+    delay = fetch_delay(machine)
+
+    other_messages =
+      case machine.fallback do
+        {:active, fallback_machine} ->
+          {_, _, messages} = fetch(fallback_machine)
+          wrap_fallback_messages(messages)
+
+        _ ->
+          []
+      end
+
+    {machine, [], [{message, delay}] ++ other_messages}
   end
 
   defp fetch_delay(machine) do
@@ -53,8 +95,12 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   @spec message(t, term) :: return
   def message(%__MODULE__{} = machine, message) do
-    {machine, bodies, messages} = handle_message(machine, message)
-    {machine, bodies, messages}
+    # {machine, bodies, messages} = handle_message(machine, message)
+    # {machine, bodies, messages}
+    case handle_message(machine, message) do
+      ret = {%__MODULE__{}, bodies, messages} when is_list(bodies) and is_list(messages) ->
+        ret
+    end
   end
 
   defp handle_message(machine, {:fetch, url}) do
@@ -76,9 +122,9 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
        ) do
     {bodies, machine} = parse_bodies(machine, body)
     machine = update_cache_headers(machine, headers)
-    machine = check_last_success(machine)
+    {machine, messages} = check_last_success(machine)
     message = {:fetch, machine.url}
-    messages = [{message, machine.fetch_after}]
+    messages = include_fallback_messages(message, machine.fetch_after, messages)
 
     {machine, bodies, messages}
   end
@@ -87,18 +133,18 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     # permanent redirect: save the new URL
     new_url = find_header(headers, "location")
     machine = %{machine | url: new_url}
-    machine = check_last_success(machine)
+    {machine, messages} = check_last_success(machine)
     message = {:fetch, new_url}
-    messages = [{message, 0}]
+    messages = include_fallback_messages(message, 0, messages)
     {machine, [], messages}
   end
 
   defp handle_message(machine, {:http_response, %{status_code: 302, headers: headers}}) do
     # temporary redirect: request the new URL but don't save it
     new_url = find_header(headers, "location")
-    machine = check_last_success(machine)
+    {machine, messages} = check_last_success(machine)
     message = {:fetch, new_url}
-    messages = [{message, 0}]
+    messages = include_fallback_messages(message, 0, messages)
     {machine, [], messages}
   end
 
@@ -108,9 +154,9 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
       "#{__MODULE__}: #{inspect(machine.url)} not modified"
     end)
 
-    machine = check_last_success(machine)
+    {machine, messages} = check_last_success(machine)
     message = {:fetch, machine.url}
-    messages = [{message, machine.fetch_after}]
+    messages = include_fallback_messages(message, machine.fetch_after, messages)
     {machine, [], messages}
   end
 
@@ -119,9 +165,10 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
       "#{__MODULE__}: #{inspect(machine.url)} unexpected code #{inspect(code)}"
     end)
 
-    machine = check_last_success(machine)
+    {machine, messages} = check_last_success(machine)
     message = {:fetch, machine.url}
-    {machine, [], [{message, machine.fetch_after}]}
+    messages = include_fallback_messages(message, machine.fetch_after, messages)
+    {machine, [], messages}
   end
 
   defp handle_message(machine, {:http_error, reason}) do
@@ -132,10 +179,22 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
         "#{__MODULE__}: #{inspect(machine.url)} error: #{inspect(reason)}"
       end)
 
-    machine = check_last_success(machine)
+    {machine, messages} = check_last_success(machine)
     message = {:fetch, machine.url}
-    messages = [{message, machine.fetch_after}]
+    messages = include_fallback_messages(message, machine.fetch_after, messages)
     {machine, [], messages}
+  end
+
+  defp handle_message(%{fallback: {:active, fallback_machine}} = machine, {:fallback, message}) do
+    {fallback_machine, bodies, messages} = message(fallback_machine, message)
+    machine = %{machine | fallback: {:active, fallback_machine}}
+    messages = wrap_fallback_messages(messages)
+    {machine, bodies, messages}
+  end
+
+  defp handle_message(machine, {:fallback, _}) do
+    # if we aren't in fallback mode, ignore the message
+    {machine, [], []}
   end
 
   defp handle_message(machine, unknown) do
@@ -179,23 +238,71 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
         {[], machine}
 
       new_hash ->
-        {[body], %{machine | previous_hash: new_hash, last_success: now()}}
+        {[body], deactivate_fallback(%{machine | previous_hash: new_hash, last_success: now()})}
     end
   end
 
   defp check_last_success(machine) do
     time_since_last_success = now() - machine.last_success
 
-    if time_since_last_success > machine.content_warning_timeout do
+    if time_since_last_success >= machine.content_warning_timeout do
       Logger.error(fn ->
         delay = div(time_since_last_success, 1000)
         "#{__MODULE__}: #{inspect(machine.url)} has not been updated in #{delay}s"
       end)
 
-      %{machine | last_success: now()}
+      activate_fallback(%{machine | last_success: now()})
     else
-      machine
+      {machine, []}
     end
+  end
+
+  defp activate_fallback(%{fallback: {:not_active, url}} = machine) do
+    Logger.error(fn ->
+      "#{__MODULE__} activating fallback url=#{inspect(machine.url)} fallback_url=#{inspect(url)}"
+    end)
+
+    fallback_machine =
+      init(
+        url,
+        get_opts: machine.get_opts,
+        fetch_after: machine.fetch_after,
+        content_warning_timeout: machine.content_warning_timeout
+      )
+
+    {fallback_machine, _bodies, messages} = fetch(fallback_machine)
+    machine = %{machine | fallback: {:active, fallback_machine}}
+    {machine, wrap_fallback_messages(messages)}
+  end
+
+  defp activate_fallback(machine) do
+    {machine, []}
+  end
+
+  defp deactivate_fallback(%{fallback: {:active, fallback_machine}} = machine) do
+    %{machine | fallback: {:not_active, fallback_machine.url}}
+  end
+
+  defp deactivate_fallback(machine) do
+    machine
+  end
+
+  defp wrap_fallback_messages(messages) do
+    for {message, time} <- messages do
+      {{:fallback, message}, time}
+    end
+  end
+
+  defp include_fallback_messages(message, delay, fallback_messages)
+
+  defp include_fallback_messages(message, delay, []) do
+    # if there are no fallback messages, send the regular one
+    [{message, delay}]
+  end
+
+  defp include_fallback_messages(_, _, fallback_messages) do
+    # otherwise, only use the fallback
+    fallback_messages
   end
 
   defp error_log_level(:closed), do: :warn

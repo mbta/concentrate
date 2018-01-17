@@ -10,6 +10,38 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
     :ok
   end
 
+  describe "url/1" do
+    test "returns the URL for the machine" do
+      machine = init("url", [])
+      assert url(machine) == "url"
+    end
+
+    test "returns the main URL if the fallback is inactive" do
+      machine = init("url", fallback_url: "other url")
+      assert url(machine) == "url"
+    end
+
+    @tag :capture_log
+    test "returns the fallback URL if active" do
+      messages = [
+        {:http_response, make_resp([])},
+        fn -> :timer.sleep(5) end,
+        # activates fallback
+        {:http_response, make_resp(code: 304)},
+        {:fallback, {:http_response, make_resp(body: "fallback")}}
+      ]
+
+      assert {machine, _, _} =
+               run_machine(
+                 "url",
+                 [content_warning_timeout: 5, fallback_url: "other url"],
+                 messages
+               )
+
+      assert url(machine) == "other url"
+    end
+  end
+
   describe "fetch/1" do
     test "fetches immediately the first time" do
       machine = init("url", [])
@@ -139,6 +171,67 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
         end)
 
       refute log == ""
+    end
+
+    @tag :capture_log
+    test "timing out with a fallback URL requests that URL" do
+      messages = [
+        {:http_response, make_resp([])},
+        fn -> :timer.sleep(5) end,
+        # activates fallback
+        {:http_response, make_resp(code: 304)},
+        {:fallback, {:http_response, make_resp(body: "fallback")}}
+      ]
+
+      assert {machine, ["fallback"], [{message, delay}]} =
+               run_machine(
+                 "url",
+                 [content_warning_timeout: 5, fallback_url: "other url"],
+                 messages
+               )
+
+      assert message == {:fallback, {:fetch, "other url"}}
+      assert delay == machine.fetch_after
+    end
+
+    @tag :capture_log
+    test "the parent recovering stops fetching from the fallback" do
+      messages = [
+        {:http_response, make_resp([])},
+        fn -> :timer.sleep(5) end,
+        # activates fallback
+        {:http_response, make_resp(code: 304)},
+        {:http_response, make_resp(body: "body")}
+      ]
+
+      assert {machine, ["body"], _} =
+               run_machine(
+                 "url",
+                 [content_warning_timeout: 5, fallback_url: "other url"],
+                 messages
+               )
+
+      assert machine.fallback == {:not_active, "other url"}
+    end
+
+    @tag :capture_log
+    test "fetch triggers the fallback to fetch as well" do
+      messages = [
+        {:http_response, make_resp([])},
+        fn -> :timer.sleep(5) end,
+        # activates fallback
+        {:http_response, make_resp(code: 304)}
+      ]
+
+      {machine, [], _} =
+        run_machine("url", [content_warning_timeout: 5, fallback_url: "other url"], messages)
+
+      {_, [], messages} = fetch(machine)
+
+      assert [
+               {{:fetch, "url"}, _},
+               {{:fallback, {:fetch, "other url"}}, _}
+             ] = messages
     end
   end
 

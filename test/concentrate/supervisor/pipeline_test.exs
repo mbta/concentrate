@@ -11,7 +11,7 @@ defmodule Concentrate.Supervisor.PipelineTest do
         sources: [
           gtfs_realtime: [
             name: "url",
-            name2: "url2"
+            name2: {"url2", fallback_url: "url fallback"}
           ]
         ],
         reporters: [Concentrate.Reporter.VehicleLatency],
