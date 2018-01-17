@@ -30,7 +30,7 @@ defmodule Concentrate.Filter.RemoveUnneededTimes do
     stu =
       cond do
         pickup? and drop_off? ->
-          stu
+          ensure_both_times(stu)
 
         not (pickup? or drop_off?) ->
           StopTimeUpdate.skip(stu)
@@ -49,6 +49,22 @@ defmodule Concentrate.Filter.RemoveUnneededTimes do
 
   def filter(other, module) do
     {:cont, other, module}
+  end
+
+  defp ensure_both_times(stu) do
+    arrival_time = StopTimeUpdate.arrival_time(stu)
+    departure_time = StopTimeUpdate.departure_time(stu)
+
+    case {arrival_time, departure_time} do
+      {nil, departure_time} when is_integer(departure_time) ->
+        StopTimeUpdate.update_arrival_time(stu, departure_time)
+
+      {arrival_time, nil} when is_integer(arrival_time) ->
+        StopTimeUpdate.update_departure_time(stu, arrival_time)
+
+      _ ->
+        stu
+    end
   end
 
   defp remove_arrival_time(stu) do

@@ -59,6 +59,18 @@ defmodule Concentrate.Filter.RemoveUnneededTimesTest do
       assert {:cont, ^stu, _} = filter(stu, @state)
     end
 
+    test "arrival time is copied if only the departure time is available" do
+      stu = StopTimeUpdate.update(@stu, arrival_time: nil)
+      assert {:cont, stu, _} = filter(stu, @state)
+      assert StopTimeUpdate.arrival_time(stu) == @departure_time
+    end
+
+    test "departure time is copied if only the arrival time is available" do
+      stu = StopTimeUpdate.update(@stu, departure_time: nil)
+      assert {:cont, stu, _} = filter(stu, @state)
+      assert StopTimeUpdate.departure_time(stu) == @arrival_time
+    end
+
     test "if we can neither pickup or drop off, skip the update" do
       stu = StopTimeUpdate.update(@stu, stop_sequence: 6)
       expected = StopTimeUpdate.skip(stu)
