@@ -30,6 +30,7 @@ config :concentrate,
   ],
   reporters: [
     Concentrate.Reporter.VehicleLatency,
+    Concentrate.Reporter.StopTimeUpdateLatency,
     Concentrate.Reporter.Latency
   ],
   encoders: [
