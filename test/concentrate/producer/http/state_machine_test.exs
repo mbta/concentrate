@@ -96,6 +96,22 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
       assert [_, _] = String.split(log, "[error]")
     end
 
+    test "logs a warning if we never receive content before the timeout" do
+      opts = [content_warning_timeout: 5]
+
+      messages = [
+        fn -> :timer.sleep(6) end,
+        {:http_response, make_resp(code: 404)}
+      ]
+
+      log =
+        capture_log([level: :error], fn ->
+          _ = run_machine("url", opts, messages)
+        end)
+
+      refute log == ""
+    end
+
     test "receiving the same body twice does not send a second message" do
       messages = [
         {:http_response, make_resp(body: "body")},

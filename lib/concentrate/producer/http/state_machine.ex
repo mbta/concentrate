@@ -10,7 +10,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
             headers: [],
             fetch_after: 5_000,
             content_warning_timeout: 300_000,
-            last_success: nil,
+            last_success: :never,
             previous_hash: -1
 
   @type t :: %__MODULE__{url: binary}
@@ -21,16 +21,13 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   def init(url, opts) when is_binary(url) and is_list(opts) do
     state = %__MODULE__{url: url}
     state = struct!(state, Keyword.take(opts, ~w(get_opts fetch_after content_warning_timeout)a))
+    state = %{state | last_success: now() - state.fetch_after - 1}
     state
   end
 
   @spec fetch(t) :: return
   def fetch(%__MODULE__{} = machine) do
     {machine, [], [{{:fetch, machine.url}, fetch_delay(machine)}]}
-  end
-
-  defp fetch_delay(%{last_success: nil}) do
-    0
   end
 
   defp fetch_delay(machine) do
@@ -57,13 +54,16 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   end
 
   defp handle_message(machine, {:fetch, url}) do
-    case HTTPoison.get(url, machine.headers, machine.get_opts) do
-      {:ok, %HTTPoison.Response{} = response} ->
-        handle_message(machine, {:http_response, response})
+    message =
+      case HTTPoison.get(url, machine.headers, machine.get_opts) do
+        {:ok, %HTTPoison.Response{} = response} ->
+          {:http_response, response}
 
-      {:error, %HTTPoison.Error{reason: reason}} ->
-        handle_message(machine, {:http_error, reason})
-    end
+        {:error, %HTTPoison.Error{reason: reason}} ->
+          {:http_error, reason}
+      end
+
+    {machine, [], [{message, 0}]}
   end
 
   defp handle_message(
@@ -179,9 +179,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     end
   end
 
-  defp check_last_success(%{last_success: last_success} = machine)
-       when is_integer(last_success) do
-    time_since_last_success = now() - last_success
+  defp check_last_success(machine) do
+    time_since_last_success = now() - machine.last_success
 
     if time_since_last_success > machine.content_warning_timeout do
       Logger.error(fn ->
@@ -195,14 +194,9 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     end
   end
 
-  defp error_log_level(:timeout), do: :warn
-  defp error_log_level(:timeout), do: :warn
-  defp check_last_success(machine) do
-    machine
-  end
-
   defp error_log_level(:closed), do: :warn
   defp error_log_level({:closed, _}), do: :warn
+  defp error_log_level(:timeout), do: :warn
   defp error_log_level(_), do: :error
 
   defp now do
