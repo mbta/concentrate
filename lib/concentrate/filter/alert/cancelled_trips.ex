@@ -4,12 +4,11 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
   """
   use GenStage
   require Logger
+  alias Concentrate.Filter.Alert.TimeTable
   alias Concentrate.{Alert, Alert.InformedEntity}
 
   @table __MODULE__
   @empty_value []
-  @epoch_seconds :calendar.datetime_to_gregorian_seconds({{1970, 1, 1}, {0, 0, 0}})
-  @one_day_minus_one 86_399
 
   def start_link(opts) do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
@@ -23,35 +22,12 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
     date_overlaps?({:trip, trip_id}, date_or_timestamp)
   end
 
-  defp date_overlaps?(key, {_, _, _} = date) do
-    start_of_day_unix =
-      :calendar.datetime_to_gregorian_seconds({date, {0, 0, 0}}) - @epoch_seconds
-
-    end_of_day_unix = start_of_day_unix + @one_day_minus_one
-    date_overlaps?(key, start_of_day_unix, end_of_day_unix)
-  end
-
-  defp date_overlaps?(key, unix) when is_integer(unix) do
-    date_overlaps?(key, unix, unix)
-  end
-
-  defp date_overlaps?(trip_id, start, stop) do
-    select = {
-      {trip_id, :"$1", :"$2"},
-      [
-        {:"=<", :"$1", stop},
-        {:"=<", start, :"$2"}
-      ],
-      [@empty_value]
-    }
-
-    :ets.select(@table, [select], 1) != :"$end_of_table"
-  rescue
-    ArgumentError -> false
+  defp date_overlaps?(key, date_or_timestamp) do
+    TimeTable.date_overlaps(@table, key, date_or_timestamp, count: 1) != []
   end
 
   def init(opts) do
-    :ets.new(@table, [:named_table, :public, :bag])
+    TimeTable.new(@table)
     {:consumer, [], opts}
   end
 
@@ -65,12 +41,11 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
           is_nil(InformedEntity.stop_id(entity)),
           key <- cancellation_type(entity),
           {start, stop} <- Alert.active_period(alert) do
-        {key, start, stop}
+        {key, start, stop, @empty_value}
       end
 
     unless inserts == [] do
-      :ets.delete_all_objects(@table)
-      :ets.insert(@table, inserts)
+      TimeTable.update(@table, inserts)
 
       _ =
         Logger.info(fn ->

@@ -4,6 +4,7 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
   """
   use GenStage
   require Logger
+  alias Concentrate.Filter.Alert.TimeTable
   alias Concentrate.{Alert, Alert.InformedEntity}
 
   @table __MODULE__
@@ -13,24 +14,12 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
   end
 
   @spec stop_closed_for(String.t(), integer) :: [Alert.InformedEntity.t()]
-  def stop_closed_for(stop_id, unix) when is_binary(stop_id) do
-    matcher = {
-      {stop_id, :"$1", :"$2", :"$3"},
-      [
-        # DateTime is between the start/end dates
-        {:"=<", :"$1", unix},
-        {:"=<", unix, :"$2"}
-      ],
-      [:"$3"]
-    }
-
-    :ets.select(@table, [matcher])
-  rescue
-    ArgumentError -> []
+  def stop_closed_for(stop_id, timestamp) when is_binary(stop_id) do
+    TimeTable.date_overlaps(@table, stop_id, timestamp)
   end
 
   def init(opts) do
-    :ets.new(@table, [:named_table, :public, :bag])
+    TimeTable.new(@table)
     {:consumer, [], opts}
   end
 
@@ -46,8 +35,7 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
       end
 
     unless inserts == [] do
-      :ets.delete_all_objects(@table)
-      :ets.insert(@table, inserts)
+      TimeTable.update(@table, inserts)
 
       _ =
         Logger.info(fn ->
