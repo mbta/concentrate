@@ -71,3 +71,15 @@ defmodule Concentrate.Filter.FakeClosedStops do
     []
   end
 end
+
+defmodule Concentrate.Filter.FakeShuttles do
+  @moduledoc "Fake implementation of Filter.Alerts.Shuttles"
+
+  def route_shuttling?("route", {1970, 1, 1}), do: true
+  def route_shuttling?("route", 8), do: true
+  def route_shuttling?(_, _), do: false
+
+  def stop_shuttling_on_route?("route", "shuttle_1", 8), do: true
+  def stop_shuttling_on_route?("route", "shuttle_2", 8), do: true
+  def stop_shuttling_on_route?(_, _, _), do: false
+end

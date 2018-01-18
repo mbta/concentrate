@@ -20,13 +20,14 @@ config :concentrate,
     url: "https://www.mbta.com/uploadedfiles/MBTA_GTFS.zip"
   ],
   filters: [
+    Concentrate.Filter.VehiclePastStop,
     Concentrate.Filter.VehicleWithNoTrip,
     Concentrate.Filter.RoundSpeedToInteger,
     Concentrate.Filter.IncludeRouteDirection,
     Concentrate.Filter.RemoveUnneededTimes,
     Concentrate.Filter.ClosedStop,
     Concentrate.Filter.CancelledTrip,
-    Concentrate.Filter.VehiclePastStop
+    Concentrate.Filter.Shuttle
   ],
   reporters: [
     Concentrate.Reporter.VehicleLatency,

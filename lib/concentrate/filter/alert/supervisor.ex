@@ -22,7 +22,8 @@ defmodule Concentrate.Filter.Alert.Supervisor do
             }
           },
           {Concentrate.Filter.Alert.ClosedStops, subscribe_to: [:alert_producer]},
-          {Concentrate.Filter.Alert.CancelledTrips, subscribe_to: [:alert_producer]}
+          {Concentrate.Filter.Alert.CancelledTrips, subscribe_to: [:alert_producer]},
+          {Concentrate.Filter.Alert.Shuttles, subscribe_to: [:alert_producer]}
         ],
         strategy: :rest_for_one
       )
