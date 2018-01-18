@@ -14,8 +14,8 @@ defmodule Concentrate.Filter.Alert.Shuttles do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def route_shuttling?(route_id, date_or_timestamp) when is_binary(route_id) do
-    date_overlaps?({:route, route_id}, date_or_timestamp)
+  def route_shuttling?(route_id, direction_id, date_or_timestamp) when is_binary(route_id) do
+    date_overlaps?({:route, route_id, direction_id}, date_or_timestamp)
   end
 
   def stop_shuttling_on_route?(route_id, stop_id, date_or_timestamp)
@@ -64,10 +64,19 @@ defmodule Concentrate.Filter.Alert.Shuttles do
     if is_nil(stop_id) or is_nil(route_id) do
       []
     else
-      [
-        {:route, route_id},
+      route_stops = [
         {:route_stop, route_id, stop_id}
       ]
+
+      routes =
+        for direction_id <- direction_ids(InformedEntity.direction_id(entity)) do
+          {:route, route_id, direction_id}
+        end
+
+      route_stops ++ routes
     end
   end
+
+  defp direction_ids(nil), do: [0, 1, nil]
+  defp direction_ids(value), do: [value]
 end

@@ -18,18 +18,26 @@ defmodule Concentrate.Filter.Alert.ShuttlesTest do
           informed_entity: [
             InformedEntity.new(route_type: 1, route_id: "route", stop_id: "stop_id"),
             InformedEntity.new(route_type: 0, route_id: "whole route"),
-            InformedEntity.new(route_type: 3, route_id: "bus")
+            InformedEntity.new(route_type: 3, route_id: "bus"),
+            InformedEntity.new(
+              route_type: 2,
+              route_id: "one_direction",
+              direction_id: 0,
+              stop_id: "stop_id"
+            )
           ]
         )
 
       handle_events([[alert]], :from, :state)
 
-      assert route_shuttling?("route", 5)
+      assert route_shuttling?("route", 0, 5)
       # for now, a whole route shuttle is ignored
-      refute route_shuttling?("whole route", 20)
-      assert route_shuttling?("route", {1970, 1, 1})
+      refute route_shuttling?("whole route", 0, 20)
+      assert route_shuttling?("route", 0, {1970, 1, 1})
       # bus/ferry shuttles are handled differently
-      refute route_shuttling?("bus", 10)
+      refute route_shuttling?("bus", 0, 10)
+      assert route_shuttling?("one_direction", 0, 5)
+      refute route_shuttling?("one_direction", 1, 5)
     end
   end
 
@@ -58,8 +66,8 @@ defmodule Concentrate.Filter.Alert.ShuttlesTest do
   end
 
   describe "missing ETS table" do
-    test "route_shuttling/2 returns false" do
-      refute route_shuttling?("route", 0)
+    test "route_shuttling/3 returns false" do
+      refute route_shuttling?("route", 0, 0)
     end
 
     test "stop_shuttling_on_route?/3 returns false" do

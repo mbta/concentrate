@@ -149,6 +149,38 @@ defmodule Concentrate.Filter.ShuttleTest do
       assert StopTimeUpdate.schedule_relationship(after_shuttle) == :SCHEDULED
     end
 
+    test "single direction shuttles don't affect the other direction" do
+      updates = [
+        TripUpdate.new(
+          trip_id: @trip_id,
+          route_id: "single_direction",
+          direction_id: 0,
+          start_date: {1970, 1, 1}
+        ),
+        TripUpdate.new(
+          trip_id: @trip_id <> "_other_way",
+          route_id: "single_direction",
+          direction_id: 1,
+          start_date: {1970, 1, 1}
+        ),
+        StopTimeUpdate.new(
+          trip_id: @trip_id,
+          stop_id: "shuttle_1",
+          arrival_time: @valid_date_time
+        ),
+        StopTimeUpdate.new(
+          trip_id: @trip_id <> "_other_way",
+          stop_id: "shuttle_1",
+          arrival_time: @valid_date_time
+        )
+      ]
+
+      reduced = run(updates)
+      assert [_tu_0, _tu_1, direction_0, direction_1] = reduced
+      assert StopTimeUpdate.schedule_relationship(direction_0) == :SKIPPED
+      assert StopTimeUpdate.schedule_relationship(direction_1) == :SCHEDULED
+    end
+
     test "other values are returned as-is" do
       assert {:cont, :value, _} = filter(:value, nil, @state)
     end

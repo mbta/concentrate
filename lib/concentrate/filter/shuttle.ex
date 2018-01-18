@@ -19,7 +19,11 @@ defmodule Concentrate.Filter.Shuttle do
     route_id = TripUpdate.route_id(tu)
 
     state =
-      if state.module.route_shuttling?(route_id, TripUpdate.start_date(tu)) do
+      if state.module.route_shuttling?(
+           route_id,
+           TripUpdate.direction_id(tu),
+           TripUpdate.start_date(tu)
+         ) do
         trip_id = TripUpdate.trip_id(tu)
         put_in(state.trip_to_route[trip_id], route_id)
       else
