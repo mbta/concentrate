@@ -47,7 +47,26 @@ defmodule Concentrate.FilterTest do
     end
   end
 
-  alias __MODULE__.{OnlyEvenFilter, AddPreviousFilter}
+  defmodule AddAroundFilter do
+    @moduledoc false
+    @behaviour Concentrate.Filter
+    def init do
+      0
+    end
+
+    def filter(value, next, last) do
+      next = if is_nil(next), do: 0, else: next
+      {:cont, last + value + next, value}
+    end
+
+    def expected(data) do
+      [data, [0 | data], Enum.drop(data, 1) ++ [0]]
+      |> Enum.zip()
+      |> Enum.map(fn {x, y, z} -> x + y + z end)
+    end
+  end
+
+  alias __MODULE__.{OnlyEvenFilter, AddPreviousFilter, AddAroundFilter}
 
   describe "run/2" do
     property "parallel filter removes even numbers" do
@@ -62,6 +81,14 @@ defmodule Concentrate.FilterTest do
       check all data <- list_of(integer()) do
         expected = AddPreviousFilter.expected(data)
         actual = run(data, [AddPreviousFilter])
+        assert actual == expected
+      end
+    end
+
+    property "filter can optionally take the next value as well" do
+      check all data <- list_of(integer()) do
+        expected = AddAroundFilter.expected(data)
+        actual = run(data, [AddAroundFilter])
         assert actual == expected
       end
     end
