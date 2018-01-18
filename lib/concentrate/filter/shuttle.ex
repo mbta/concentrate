@@ -15,7 +15,7 @@ defmodule Concentrate.Filter.Shuttle do
   end
 
   @impl Concentrate.Filter
-  def filter(%TripUpdate{} = tu, state) do
+  def filter(%TripUpdate{} = tu, _next_item, state) do
     route_id = TripUpdate.route_id(tu)
 
     state =
@@ -29,34 +29,59 @@ defmodule Concentrate.Filter.Shuttle do
     {:cont, tu, state}
   end
 
-  def filter(%StopTimeUpdate{} = stu, state) do
-    trip_id = StopTimeUpdate.trip_id(stu)
+  def filter(%StopTimeUpdate{} = stu, %StopTimeUpdate{} = next_stu, state) do
+    {new_stu, state} = maybe_skip(stu, state)
 
-    {stu, state} =
-      with {:ok, route_id} <- Map.fetch(state.trip_to_route, trip_id) do
-        # see if we're shuttling this particular stop
-        time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
+    new_stu =
+      cond do
+        new_stu != stu ->
+          new_stu
 
-        cond do
-          trip_id in state.trips_being_shuttled ->
-            {StopTimeUpdate.skip(stu), state}
+        not Map.has_key?(state.trip_to_route, StopTimeUpdate.trip_id(new_stu)) ->
+          new_stu
 
-          state.module.stop_shuttling_on_route?(route_id, StopTimeUpdate.stop_id(stu), time) ->
-            trips_being_shuttled = MapSet.put(state.trips_being_shuttled, trip_id)
-            state = %{state | trips_being_shuttled: trips_being_shuttled}
-            {StopTimeUpdate.skip(stu), state}
+        match?({^next_stu, _}, maybe_skip(next_stu, state)) ->
+          # not skipping the next one either
+          new_stu
 
-          true ->
-            {stu, state}
-        end
-      else
-        _ -> {stu, state}
+        true ->
+          # remove the departure time from this update
+          StopTimeUpdate.update_departure_time(stu, nil)
       end
 
+    {:cont, new_stu, state}
+  end
+
+  def filter(%StopTimeUpdate{} = stu, _next_item, state) do
+    {stu, state} = maybe_skip(stu, state)
     {:cont, stu, state}
   end
 
-  def filter(item, state) do
+  def filter(item, _next_item, state) do
     {:cont, item, state}
+  end
+
+  defp maybe_skip(%StopTimeUpdate{} = stu, state) do
+    trip_id = StopTimeUpdate.trip_id(stu)
+
+    with {:ok, route_id} <- Map.fetch(state.trip_to_route, trip_id) do
+      # see if we're shuttling this particular stop
+      time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
+
+      cond do
+        trip_id in state.trips_being_shuttled ->
+          {StopTimeUpdate.skip(stu), state}
+
+        state.module.stop_shuttling_on_route?(route_id, StopTimeUpdate.stop_id(stu), time) ->
+          trips_being_shuttled = MapSet.put(state.trips_being_shuttled, trip_id)
+          state = %{state | trips_being_shuttled: trips_being_shuttled}
+          {StopTimeUpdate.skip(stu), state}
+
+        true ->
+          {stu, state}
+      end
+    else
+      _ -> {stu, state}
+    end
   end
 end

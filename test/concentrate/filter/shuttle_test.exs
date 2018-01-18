@@ -21,7 +21,7 @@ defmodule Concentrate.Filter.ShuttleTest do
   # if the vehicle for the trip is not after the shuttle, skip everything after the shuttle starts
   # if the vehicle is after the shuttle, nothing happens
 
-  describe "filter/2" do
+  describe "filter/3" do
     test "unknown stop IDs are ignored" do
       stu =
         StopTimeUpdate.new(
@@ -30,7 +30,7 @@ defmodule Concentrate.Filter.ShuttleTest do
           departure_time: @valid_date_time
         )
 
-      assert {:cont, ^stu, _} = filter(stu, @state)
+      assert {:cont, ^stu, _} = filter(stu, nil, @state)
     end
 
     test "everything after the shuttle is skipped" do
@@ -72,6 +72,32 @@ defmodule Concentrate.Filter.ShuttleTest do
       assert StopTimeUpdate.schedule_relationship(after_shuttle) == :SKIPPED
     end
 
+    test "the last stop before the shuttle has no departure time" do
+      updates = [
+        TripUpdate.new(
+          trip_id: @trip_id,
+          route_id: @route_id,
+          start_date: {1970, 1, 1}
+        ),
+        StopTimeUpdate.new(
+          trip_id: @trip_id,
+          stop_id: "before_shuttle",
+          arrival_time: @valid_date_time,
+          departure_time: @valid_date_time
+        ),
+        StopTimeUpdate.new(
+          trip_id: @trip_id,
+          stop_id: "shuttle_1",
+          arrival_time: @valid_date_time,
+          departure_time: @valid_date_time
+        )
+      ]
+
+      reduced = run(updates)
+      assert [_tu, before, _one] = reduced
+      assert StopTimeUpdate.departure_time(before) == nil
+    end
+
     test "everything is skipped if the first stop is shuttled" do
       updates = [
         TripUpdate.new(
@@ -82,7 +108,6 @@ defmodule Concentrate.Filter.ShuttleTest do
         StopTimeUpdate.new(
           trip_id: @trip_id,
           stop_id: "shuttle_1",
-          arrival_time: @valid_date_time,
           departure_time: @valid_date_time
         ),
         StopTimeUpdate.new(
@@ -125,14 +150,16 @@ defmodule Concentrate.Filter.ShuttleTest do
     end
 
     test "other values are returned as-is" do
-      assert {:cont, :value, _} = filter(:value, @state)
+      assert {:cont, :value, _} = filter(:value, nil, @state)
     end
   end
 
   defp run(updates) do
+    next_updates = Enum.drop(updates, 1) ++ [nil]
+
     {reduced, _} =
-      Enum.flat_map_reduce(updates, @state, fn item, state ->
-        case filter(item, state) do
+      Enum.flat_map_reduce(Enum.zip(updates, next_updates), @state, fn {item, next_item}, state ->
+        case filter(item, next_item, state) do
           {:cont, item, state} -> {[item], state}
         end
       end)
