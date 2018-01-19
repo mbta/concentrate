@@ -4,7 +4,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
   import Concentrate.TestHelpers
   import Concentrate.Encoder.TripUpdatesEnhanced
   alias Concentrate.Parser.GTFSRealtimeEnhanced
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
 
   describe "encode/1" do
     test "decoding and re-encoding TripUpdates_enhanced.json is a no-op" do
@@ -38,6 +38,16 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
         get_in(encoded, ["entity", Access.at(0), "trip_update", "stop_time_update", Access.at(0)])
 
       refute "boarding_status" in Map.keys(update)
+    end
+
+    test "trips with only vehicles aren't encoded" do
+      initial = [
+        TripUpdate.new(trip_id: "1"),
+        VehiclePosition.new(trip_id: "1", latitude: 1, longitude: 1)
+      ]
+
+      decoded = Jason.decode!(encode(initial))
+      assert decoded["entity"] == []
     end
   end
 end

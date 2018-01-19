@@ -45,6 +45,16 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
              ] == decoded
     end
 
+    test "trips with only vehicles aren't encoded" do
+      initial = [
+        TripUpdate.new(trip_id: "1"),
+        VehiclePosition.new(trip_id: "1", latitude: 1, longitude: 1)
+      ]
+
+      decoded = GTFSRealtime.parse(encode(initial), [])
+      assert decoded == []
+    end
+
     test "decoding and re-encoding tripupdates.pb is a no-op" do
       decoded = GTFSRealtime.parse(File.read!(fixture_path("tripupdates.pb")), [])
       round_tripped = GTFSRealtime.parse(encode(decoded), [])

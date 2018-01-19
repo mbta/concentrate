@@ -31,7 +31,7 @@ defmodule Concentrate.Encoder.TripUpdates do
     |> Enum.flat_map(&build_entity/1)
   end
 
-  defp build_entity({%TripUpdate{} = update, _vps, stus}) do
+  defp build_entity({%TripUpdate{} = update, _vps, [_ | _] = stus}) do
     trip_id = TripUpdate.trip_id(update)
 
     [
