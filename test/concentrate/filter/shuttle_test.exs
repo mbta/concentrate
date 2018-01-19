@@ -50,7 +50,13 @@ defmodule Concentrate.Filter.ShuttleTest do
         ),
         StopTimeUpdate.new(
           trip_id: @trip_id,
+          stop_id: "before_before_shuttle",
+          departure_time: @valid_date_time
+        ),
+        StopTimeUpdate.new(
+          trip_id: @trip_id,
           stop_id: "before_shuttle",
+          arrival_time: @valid_date_time,
           departure_time: @valid_date_time
         ),
         StopTimeUpdate.new(
@@ -73,7 +79,9 @@ defmodule Concentrate.Filter.ShuttleTest do
       ]
 
       reduced = run(updates)
-      assert [_tu, before, one, two, after_shuttle] = reduced
+
+      assert [_tu, before_before, before, one, two, after_shuttle] = reduced
+      assert StopTimeUpdate.schedule_relationship(before_before) == :SCHEDULED
       assert StopTimeUpdate.schedule_relationship(before) == :SCHEDULED
       assert StopTimeUpdate.schedule_relationship(one) == :SKIPPED
       assert StopTimeUpdate.schedule_relationship(two) == :SKIPPED
@@ -222,6 +230,16 @@ defmodule Concentrate.Filter.ShuttleTest do
       ]
 
       assert ^updates = run(updates)
+    end
+
+    test "updates on non-shuttles trips are not modified" do
+      updates = [
+        StopTimeUpdate.new(trip_id: "other_trip", stop_id: "1", departure_time: @valid_date_time),
+        StopTimeUpdate.new(trip_id: "other_trip", stop_id: "2", arrival_time: @valid_date_time)
+      ]
+
+      reduced = run(updates)
+      assert updates == reduced
     end
 
     test "other values are returned as-is" do
