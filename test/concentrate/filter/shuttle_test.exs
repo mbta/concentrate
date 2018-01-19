@@ -33,6 +33,14 @@ defmodule Concentrate.Filter.ShuttleTest do
       assert {:cont, ^stu, _} = filter(stu, nil, @state)
     end
 
+    test "trip updates without a date or route are left alone" do
+      tu = TripUpdate.new(route_id: @route_id)
+      assert {:cont, ^tu, _} = filter(tu, nil, @state)
+
+      tu = TripUpdate.new(start_date: {1970, 1, 1})
+      assert {:cont, ^tu, _} = filter(tu, nil, @state)
+    end
+
     test "everything after the shuttle is skipped" do
       updates = [
         TripUpdate.new(

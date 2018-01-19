@@ -78,7 +78,8 @@ defmodule Concentrate.Filter.FakeShuttles do
   def route_shuttling?("route", _, {1970, 1, 1}), do: true
   def route_shuttling?("route", _, 8), do: true
   def route_shuttling?("single_direction", 0, _), do: true
-  def route_shuttling?(_, _, _), do: false
+  def route_shuttling?(_, _, {_, _, _}), do: false
+  def route_shuttling?(_, _, dt) when is_integer(dt), do: false
 
   def stop_shuttling_on_route?("route", "shuttle_1", 8), do: true
   def stop_shuttling_on_route?("route", "shuttle_2", 8), do: true
