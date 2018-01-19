@@ -3,10 +3,11 @@ defmodule Concentrate.Filter.Shuttle do
   Handle shuttles by skipping StopTimeUpdates involving the shuttle.
   """
   @behaviour Concentrate.Filter
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.{TripUpdate, StopTimeUpdate, VehiclePosition}
 
   defstruct module: Concentrate.Filter.Alert.Shuttles,
             trip_to_route: %{},
+            trips_with_vehicles: MapSet.new(),
             trips_being_shuttled: MapSet.new()
 
   @impl Concentrate.Filter
@@ -38,32 +39,48 @@ defmodule Concentrate.Filter.Shuttle do
     {:cont, tu, state}
   end
 
-  def filter(%StopTimeUpdate{} = stu, %StopTimeUpdate{} = next_stu, state) do
-    {new_stu, state} = maybe_skip(stu, state)
+  def filter(%VehiclePosition{} = vp, _next_item, state) do
+    trip_id = VehiclePosition.trip_id(vp)
 
-    new_stu =
-      cond do
-        new_stu != stu ->
-          new_stu
-
-        not Map.has_key?(state.trip_to_route, StopTimeUpdate.trip_id(new_stu)) ->
-          new_stu
-
-        match?({^next_stu, _}, maybe_skip(next_stu, state)) ->
-          # not skipping the next one either
-          new_stu
-
-        true ->
-          # remove the departure time from this update
-          StopTimeUpdate.update_departure_time(stu, nil)
+    state =
+      if Map.has_key?(state.trip_to_route, trip_id) do
+        put_in(state.trips_with_vehicles, MapSet.put(state.trips_with_vehicles, trip_id))
+      else
+        state
       end
 
-    {:cont, new_stu, state}
+    {:cont, vp, state}
+  end
+
+  def filter(%StopTimeUpdate{} = stu, %StopTimeUpdate{} = next_stu, state) do
+    case maybe_skip(stu, state) do
+      {:skip, state} ->
+        {:skip, state}
+
+      {:cont, new_stu, state} ->
+        new_stu =
+          cond do
+            new_stu != stu ->
+              new_stu
+
+            not Map.has_key?(state.trip_to_route, StopTimeUpdate.trip_id(new_stu)) ->
+              new_stu
+
+            match?({:cont, ^next_stu, _}, maybe_skip(next_stu, state)) ->
+              # not skipping the next one either
+              new_stu
+
+            true ->
+              # remove the departure time from this update
+              StopTimeUpdate.update_departure_time(stu, nil)
+          end
+
+        {:cont, new_stu, state}
+    end
   end
 
   def filter(%StopTimeUpdate{} = stu, _next_item, state) do
-    {stu, state} = maybe_skip(stu, state)
-    {:cont, stu, state}
+    maybe_skip(stu, state)
   end
 
   def filter(item, _next_item, state) do
@@ -79,21 +96,24 @@ defmodule Concentrate.Filter.Shuttle do
 
       cond do
         is_nil(time) ->
-          {stu, state}
+          {:cont, stu, state}
+
+        not MapSet.member?(state.trips_with_vehicles, trip_id) ->
+          {:skip, state}
 
         MapSet.member?(state.trips_being_shuttled, trip_id) ->
-          {StopTimeUpdate.skip(stu), state}
+          {:cont, StopTimeUpdate.skip(stu), state}
 
         state.module.stop_shuttling_on_route?(route_id, StopTimeUpdate.stop_id(stu), time) ->
           trips_being_shuttled = MapSet.put(state.trips_being_shuttled, trip_id)
           state = %{state | trips_being_shuttled: trips_being_shuttled}
-          {StopTimeUpdate.skip(stu), state}
+          {:cont, StopTimeUpdate.skip(stu), state}
 
         true ->
-          {stu, state}
+          {:cont, stu, state}
       end
     else
-      _ -> {stu, state}
+      _ -> {:cont, stu, state}
     end
   end
 end
