@@ -3,7 +3,7 @@ defmodule Concentrate.MergeFilterTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
   import Concentrate.MergeFilter
-  alias Concentrate.{Merge, TestMergeable, VehiclePosition}
+  alias Concentrate.{Merge, TestMergeable, TripUpdate, VehiclePosition, StopTimeUpdate}
 
   describe "handle_subscribe/4" do
     test "asks the producer for demand" do
@@ -49,6 +49,24 @@ defmodule Concentrate.MergeFilterTest do
       {_, state} = handle_subscribe(:producer, [], from, state)
       {:noreply, [], state} = handle_events(events, from, state)
       assert {:noreply, [[^expected]], _state} = handle_info(:timeout, state)
+    end
+
+    test "ensures items are in the order TripUpdate, VehiclePosition, StopTimeUpdate" do
+      data = [
+        three = StopTimeUpdate.new(stop_sequence: 1),
+        four = StopTimeUpdate.new(stop_sequence: 2),
+        two = VehiclePosition.new(latitude: 1, longitude: 1),
+        one = TripUpdate.new([])
+      ]
+
+      expected = [one, two, three, four]
+
+      events = [data]
+      from = make_from()
+      {_, state, _} = init([])
+      {_, state} = handle_subscribe(:producer, [], from, state)
+      {:noreply, [], state} = handle_events(events, from, state)
+      assert {:noreply, [^expected], _state} = handle_info(:timeout, state)
     end
 
     property "with multiple sources, returns the merged data" do

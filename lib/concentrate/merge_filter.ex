@@ -11,7 +11,7 @@ defmodule Concentrate.MergeFilter do
   use GenStage
   require Logger
   alias Concentrate.Merge.Table
-  alias Concentrate.Filter
+  alias Concentrate.{Filter, TripUpdate, VehiclePosition, StopTimeUpdate}
   @start_link_opts [:name]
 
   defstruct timeout: 1_000,
@@ -92,7 +92,13 @@ defmodule Concentrate.MergeFilter do
       "#{__MODULE__} merge took #{time / 1_000}ms"
     end)
 
-    {time, filtered} = :timer.tc(Filter, :run, [merged, state.filters])
+    {time, sorted} = :timer.tc(Enum, :sort_by, [merged, &sort_key/1])
+
+    Logger.debug(fn ->
+      "#{__MODULE__} sort took #{time / 1_000}ms"
+    end)
+
+    {time, filtered} = :timer.tc(Filter, :run, [sorted, state.filters])
 
     Logger.debug(fn ->
       "#{__MODULE__} filter took #{time / 1_000}ms"
@@ -120,4 +126,9 @@ defmodule Concentrate.MergeFilter do
       end
     end
   end
+
+  defp sort_key(%TripUpdate{}), do: 0
+  defp sort_key(%VehiclePosition{}), do: 1
+  defp sort_key(%StopTimeUpdate{}), do: 2
+  defp sort_key(_), do: 4
 end
