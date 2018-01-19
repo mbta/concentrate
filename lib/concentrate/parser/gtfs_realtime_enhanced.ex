@@ -49,7 +49,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
           schedule_relationship: stu["schedule_relationship"],
           arrival_time: time_from_event(stu["arrival"]),
           departure_time: time_from_event(stu["departure"]),
-          status: boarding_status(stu["boarding_status"])
+          status: boarding_status(stu["boarding_status"]),
+          platform_id: stu["platform_id"]
         )
       end
 

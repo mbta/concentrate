@@ -13,7 +13,8 @@ defmodule Concentrate.StopTimeUpdateTest do
           stop_sequence: 1,
           arrival_time: 2,
           departure_time: 3,
-          status: "status"
+          status: "status",
+          platform_id: "platform"
         )
 
       second =
@@ -36,7 +37,8 @@ defmodule Concentrate.StopTimeUpdateTest do
           departure_time: 4,
           status: "status",
           track: "track",
-          schedule_relationship: :SKIPPED
+          schedule_relationship: :SKIPPED,
+          platform_id: "platform"
         )
 
       assert Mergeable.merge(first, second) == expected

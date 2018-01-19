@@ -12,6 +12,7 @@ defmodule Concentrate.StopTimeUpdate do
     :stop_sequence,
     :status,
     :track,
+    :platform_id,
     schedule_relationship: :SCHEDULED
   ])
 
@@ -40,7 +41,8 @@ defmodule Concentrate.StopTimeUpdate do
               second.schedule_relationship
             else
               first.schedule_relationship
-            end
+            end,
+          platform_id: first.platform_id || second.platform_id
       }
     end
 
