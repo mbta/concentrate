@@ -20,6 +20,7 @@ config :concentrate,
     url: "https://www.mbta.com/uploadedfiles/MBTA_GTFS.zip"
   ],
   filters: [
+    Concentrate.Filter.TimeOutOfRange,
     Concentrate.Filter.VehiclePastStop,
     Concentrate.Filter.VehicleWithNoTrip,
     Concentrate.Filter.RoundSpeedToInteger,
