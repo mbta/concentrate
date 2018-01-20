@@ -82,7 +82,10 @@ defmodule Concentrate.Filter.Shuttle do
       time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
 
       cond do
-        trip_id in state.trips_being_shuttled ->
+        is_nil(time) ->
+          {stu, state}
+
+        MapSet.member?(state.trips_being_shuttled, trip_id) ->
           {StopTimeUpdate.skip(stu), state}
 
         state.module.stop_shuttling_on_route?(route_id, StopTimeUpdate.stop_id(stu), time) ->
