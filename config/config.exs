@@ -40,6 +40,7 @@ config :concentrate,
       {"TripUpdates.pb", Concentrate.Encoder.TripUpdates},
       {"TripUpdates.json", Concentrate.Encoder.TripUpdates.JSON},
       {"VehiclePositions.pb", Concentrate.Encoder.VehiclePositions},
+      {"VehiclePositions.json", Concentrate.Encoder.VehiclePositions.JSON},
       {"TripUpdates_enhanced.json", Concentrate.Encoder.TripUpdatesEnhanced}
     ]
   ],
