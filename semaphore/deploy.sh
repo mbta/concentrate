@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e -x -u
 
+sudo pip install -U awscli
+
 # bash script should be called with aws environment ($APP-dev / $APP-dev-green / $APP-prod)
 # other required configuration:
 # * APP
@@ -12,10 +14,10 @@ githash=$(git rev-parse --short HEAD)
 
 # get JSON describing task definition currently running on AWS
 # use it as basis for new revision, but replace image with the one built above
-currtask=$(aws ecs describe-task-definition --region us-east-1 --task-definition $awsenv)
-currrole=$(echo $currtask | jq -r '.taskDefinition.taskRoleArn')
-newcontainers=$(echo $currtask | jq ".taskDefinition.containerDefinitions | map(.image=\"$DOCKER_REPO:git-$githash\")")
-aws ecs register-task-definition --family $awsenv --region us-east-1 --task-role-arn $currrole --container-definitions "$newcontainers"
+taskdefinition=$(aws ecs describe-task-definition --region us-east-1 --task-definition $awsenv)
+taskdefinition=$(echo $taskdefinition | jq ".taskDefinition | del(.status) | del(.taskDefinitionArn) | del(.requiresAttributes) | del(.revision) | del(.compatibilities)")
+newcontainers=$(echo $taskdefinition | jq ".containerDefinitions | map(.image=\"$DOCKER_REPO:git-$githash\")")
+aws ecs register-task-definition --region us-east-1 --family $awsenv --cli-input-json "$taskdefinition" --container-definitions "$newcontainers"
 newrevision=$(aws ecs describe-task-definition --region us-east-1 --task-definition $awsenv | jq '.taskDefinition.revision')
 
 function update_service_with_desired_count {
