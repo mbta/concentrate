@@ -13,23 +13,23 @@ defmodule Concentrate.Encoder.VehiclePositions.JSONTest do
         VehiclePosition.new(trip_id: "2", latitude: 2.0, longitude: 2.0)
       ]
 
-      %{"header" =>  _, "entity" => entity} =
+      %{"header" => _, "entity" => entity} =
         initial
         |> encode()
-        |> Jason.decode!
+        |> Jason.decode!()
 
       assert length(entity) == 2
-      assert List.first(entity) ==
-        %{
-          "id" => "1",
-          "vehicle" => %{
-            "current_status" => "IN_TRANSIT_TO",
-            "position" => %{"latitude" => 1.0, "longitude" => 1.0},
-            "trip" => %{"schedule_relationship" => "SCHEDULED", "trip_id" => "1"},
-            "vehicle" => %{}
-          }
-        }
 
+      assert List.first(entity) ==
+               %{
+                 "id" => "1",
+                 "vehicle" => %{
+                   "current_status" => "IN_TRANSIT_TO",
+                   "position" => %{"latitude" => 1.0, "longitude" => 1.0},
+                   "trip" => %{"schedule_relationship" => "SCHEDULED", "trip_id" => "1"},
+                   "vehicle" => %{}
+                 }
+               }
     end
   end
 end

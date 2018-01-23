@@ -20,22 +20,25 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
         ])
 
       initial = trip_updates ++ stop_time_updates
-      %{"header" =>  _, "entity" => entity} =
+
+      %{"header" => _, "entity" => entity} =
         initial
         |> encode()
-        |> Jason.decode!
+        |> Jason.decode!()
 
       assert length(entity) == 3
+
       assert List.first(entity) ==
-        %{"id" => "1",
-          "trip_update" => %{
-            "stop_time_update" => [%{"schedule_relationship" => "SCHEDULED"}],
-            "trip" => %{
-              "schedule_relationship" => "SCHEDULED",
-              "trip_id" => "1"
-            }
-          }
-        }
+               %{
+                 "id" => "1",
+                 "trip_update" => %{
+                   "stop_time_update" => [%{"schedule_relationship" => "SCHEDULED"}],
+                   "trip" => %{
+                     "schedule_relationship" => "SCHEDULED",
+                     "trip_id" => "1"
+                   }
+                 }
+               }
     end
   end
 end
