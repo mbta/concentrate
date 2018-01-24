@@ -92,5 +92,18 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       [_tu, stop_update] = decode_trip_update(update)
       assert StopTimeUpdate.platform_id(stop_update) == "platform"
     end
+
+    test "treats a missing schedule relationship as SCHEDULED" do
+      update = %{
+        "trip" => %{},
+        "stop_time_update" => [
+          %{}
+        ]
+      }
+
+      [tu, stu] = decode_trip_update(update)
+      assert TripUpdate.schedule_relationship(tu) == :SCHEDULED
+      assert StopTimeUpdate.schedule_relationship(stu) == :SCHEDULED
+    end
   end
 end

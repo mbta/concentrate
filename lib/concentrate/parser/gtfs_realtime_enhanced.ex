@@ -46,7 +46,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
           trip_id: if(trip_update["trip"], do: trip_update["trip"]["trip_id"]),
           stop_id: stu["stop_id"],
           stop_sequence: stu["stop_sequence"],
-          schedule_relationship: stu["schedule_relationship"],
+          schedule_relationship: schedule_relationship(stu["schedule_relationship"]),
           arrival_time: time_from_event(stu["arrival"]),
           departure_time: time_from_event(stu["departure"]),
           status: boarding_status(stu["boarding_status"]),
