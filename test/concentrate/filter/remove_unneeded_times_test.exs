@@ -2,7 +2,7 @@ defmodule Concentrate.Filter.RemoveUnneededTimesTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.Filter.RemoveUnneededTimes
-  alias Concentrate.StopTimeUpdate
+  alias Concentrate.{TripUpdate, StopTimeUpdate}
 
   defmodule FakePickupDropOff do
     @moduledoc "Fake implementation of Filter.GTFS.PickupDropOff"
@@ -15,7 +15,7 @@ defmodule Concentrate.Filter.RemoveUnneededTimesTest do
     def drop_off?(_, _), do: true
   end
 
-  @state __MODULE__.FakePickupDropOff
+  @state {__MODULE__.FakePickupDropOff, MapSet.new()}
   @arrival_time 5
   @departure_time 500
   @stu StopTimeUpdate.new(
@@ -75,6 +75,13 @@ defmodule Concentrate.Filter.RemoveUnneededTimesTest do
       stu = StopTimeUpdate.update(@stu, stop_sequence: 6)
       expected = StopTimeUpdate.skip(stu)
       assert {:cont, ^expected, _} = filter(stu, @state)
+    end
+
+    test "non-scheduled TripUpdates aren't modified" do
+      tu = TripUpdate.new(trip_id: "added", schedule_relationship: :ADDED)
+      stu = StopTimeUpdate.update(@stu, trip_id: "added", departure_time: nil)
+      assert {:cont, ^tu, state} = filter(tu, @state)
+      assert {:cont, ^stu, _state} = filter(stu, state)
     end
 
     test "other values are returned as-is" do

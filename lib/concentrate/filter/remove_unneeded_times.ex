@@ -2,53 +2,76 @@ defmodule Concentrate.Filter.RemoveUnneededTimes do
   @moduledoc """
   Removes arrival times from the first stop on a trip, and the departure time from the last stop on a trip.
   """
-  alias Concentrate.StopTimeUpdate
+  alias Concentrate.{TripUpdate, StopTimeUpdate}
   alias Concentrate.Filter.GTFS.PickupDropOff
   @behaviour Concentrate.Filter
 
   @impl Concentrate.Filter
   def init do
-    PickupDropOff
+    {PickupDropOff, MapSet.new()}
   end
 
   @impl Concentrate.Filter
-  def filter(%StopTimeUpdate{} = stu, module) do
-    trip_id = StopTimeUpdate.trip_id(stu)
-
-    stop_sequence =
-      case StopTimeUpdate.stop_sequence(stu) do
-        nil ->
-          StopTimeUpdate.stop_id(stu)
-
-        sequence ->
-          sequence
+  def filter(%TripUpdate{} = tu, {module, set}) do
+    set =
+      if TripUpdate.schedule_relationship(tu) == :SCHEDULED do
+        set
+      else
+        # not a scheduled trip: we won't make any changes
+        MapSet.put(set, TripUpdate.trip_id(tu))
       end
 
-    pickup? = module.pickup?(trip_id, stop_sequence)
-    drop_off? = module.drop_off?(trip_id, stop_sequence)
-
-    stu =
-      cond do
-        pickup? and drop_off? ->
-          ensure_both_times(stu)
-
-        not (pickup? or drop_off?) ->
-          StopTimeUpdate.skip(stu)
-
-        pickup? ->
-          # not drop_off?
-          remove_arrival_time(stu)
-
-        true ->
-          # not pickup?
-          remove_departure_time(stu)
-      end
-
-    {:cont, stu, module}
+    {:cont, tu, {module, set}}
   end
 
-  def filter(other, module) do
-    {:cont, other, module}
+  def filter(%StopTimeUpdate{} = stu, {module, set}) do
+    trip_id = StopTimeUpdate.trip_id(stu)
+
+    stu =
+      if MapSet.member?(set, trip_id) do
+        # not a scheduled trip: don't worry about it
+        stu
+      else
+        ensure_correct_times(stu, module, trip_id)
+      end
+
+    {:cont, stu, {module, set}}
+  end
+
+  def filter(other, state) do
+    {:cont, other, state}
+  end
+
+  defp stop_sequence_or_stop_id(stu) do
+    case StopTimeUpdate.stop_sequence(stu) do
+      nil ->
+        StopTimeUpdate.stop_id(stu)
+
+      sequence ->
+        sequence
+    end
+  end
+
+  defp ensure_correct_times(stu, module, trip_id) do
+    key = stop_sequence_or_stop_id(stu)
+    pickup? = module.pickup?(trip_id, key)
+    drop_off? = module.drop_off?(trip_id, key)
+
+    cond do
+      pickup? and drop_off? ->
+        ensure_both_times(stu)
+
+      not (pickup? or drop_off?) ->
+        StopTimeUpdate.skip(stu)
+
+      pickup? ->
+        # not drop_off?
+        remove_arrival_time(stu)
+
+      true ->
+        # not pickup?
+        remove_departure_time(stu)
+    end
   end
 
   defp ensure_both_times(stu) do
