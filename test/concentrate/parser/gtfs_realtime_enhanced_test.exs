@@ -40,7 +40,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
                     "route_id": "CR-Worcester",
                     "trip": {
                       "route_id": "CR-Worcester",
-                      "trip_id": "CR-Weekday-Fall-17-516"
+                      "trip_id": "CR-Weekday-Fall-17-516",
+                      "direction_id": 1
                     },
                     "stop_id": "Worcester",
                     "activities": [
@@ -58,7 +59,44 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       [entity] = Alert.informed_entity(alert)
       assert InformedEntity.route_type(entity) == 2
       assert InformedEntity.route_id(entity) == "CR-Worcester"
+      assert InformedEntity.direction_id(entity) == 1
       assert InformedEntity.trip_id(entity) == "CR-Weekday-Fall-17-516"
+      assert InformedEntity.stop_id(entity) == "Worcester"
+      assert InformedEntity.activities(entity) == ~w(BOARD EXIT RIDE)
+    end
+
+    test "alerts can decoded the old-format feed" do
+      # top-level "alerts" key
+      # id and alert data in same object
+      # direction ID in the entity directly
+      body = ~s(
+        {
+          "alerts": [
+            {
+              "id": "id",
+              "effect": "STOP_MOVED",
+              "informed_entity": [
+                {
+                  "route_type": 2,
+                  "route_id": "CR-Worcester",
+                  "direction_id": 1,
+                  "stop_id": "Worcester",
+                  "activities": [
+                    "BOARD",
+                    "EXIT",
+                    "RIDE"
+                  ]
+                }
+              ]
+            }
+          ]
+        })
+      [alert] = parse(body, [])
+      assert Alert.id(alert) == "id"
+      [entity] = Alert.informed_entity(alert)
+      assert InformedEntity.route_type(entity) == 2
+      assert InformedEntity.route_id(entity) == "CR-Worcester"
+      assert InformedEntity.direction_id(entity) == 1
       assert InformedEntity.stop_id(entity) == "Worcester"
       assert InformedEntity.activities(entity) == ~w(BOARD EXIT RIDE)
     end

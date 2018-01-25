@@ -11,7 +11,20 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   @impl Concentrate.Parser
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
     for {:ok, json} <- [Jason.decode(binary, strings: :copy)],
-        entity <- Map.get(json, "entity", []),
+        decoded <- decode_entities(json) do
+      decoded
+    end
+  end
+
+  defp decode_entities(%{"alerts" => alerts}) do
+    for %{"id" => id} = alert <- alerts,
+        decoded <- decode_feed_entity(%{"id" => id, "alert" => alert}) do
+      decoded
+    end
+  end
+
+  defp decode_entities(%{"entity" => entities}) do
+    for entity <- entities,
         decoded <- decode_feed_entity(entity) do
       decoded
     end
@@ -157,7 +170,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     InformedEntity.new(
       trip_id: trip["trip_id"],
       route_id: map["route_id"],
-      direction_id: trip["direction_id"],
+      direction_id: trip["direction_id"] || map["direction_id"],
       route_type: map["route_type"],
       stop_id: map["stop_id"],
       activities: map["activities"] || []
