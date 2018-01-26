@@ -56,7 +56,7 @@ defmodule Concentrate.MixProject do
       {:gpb, "~> 3.24", only: :dev},
       {:gtfs_realtime_viz, "~> 0.5", only: :dev},
       {:httpoison, "~> 1.0"},
-      {:jason, "~> 1.0-rc.2"},
+      {:jason, "~> 1.0"},
       {:stream_data, "~> 0.4", only: :test}
     ]
   end
