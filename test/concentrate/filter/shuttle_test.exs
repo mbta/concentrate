@@ -206,6 +206,24 @@ defmodule Concentrate.Filter.ShuttleTest do
       assert StopTimeUpdate.schedule_relationship(direction_1) == :SCHEDULED
     end
 
+    test "shuttles on trips at the same time aren't affected" do
+      updates = [
+        TripUpdate.new(
+          trip_id: "other_trip",
+          route_id: @route_id,
+          direction_id: 0,
+          start_date: {1970, 1, 1}
+        ),
+        StopTimeUpdate.new(
+          trip_id: "other_trip",
+          stop_id: "shuttle_1",
+          arrival_time: @valid_date_time
+        )
+      ]
+
+      assert ^updates = run(updates)
+    end
+
     test "other values are returned as-is" do
       assert {:cont, :value, _} = filter(:value, nil, @state)
     end

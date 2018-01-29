@@ -75,11 +75,9 @@ end
 defmodule Concentrate.Filter.FakeShuttles do
   @moduledoc "Fake implementation of Filter.Alerts.Shuttles"
 
-  def route_shuttling?("route", _, {1970, 1, 1}), do: true
-  def route_shuttling?("route", _, 8), do: true
-  def route_shuttling?("single_direction", 0, _), do: true
-  def route_shuttling?(_, _, {_, _, _}), do: false
-  def route_shuttling?(_, _, dt) when is_integer(dt), do: false
+  def trip_shuttling?("trip", "route", _, {1970, 1, 1}), do: true
+  def trip_shuttling?("trip", "single_direction", 0, {1970, 1, 1}), do: true
+  def trip_shuttling?(_trip_id, _route_id, _direction_id, {_, _, _}), do: false
 
   def stop_shuttling_on_route?("route", "shuttle_1", 8), do: true
   def stop_shuttling_on_route?("route", "shuttle_2", 8), do: true

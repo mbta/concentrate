@@ -16,6 +16,7 @@ defmodule Concentrate.Filter.Shuttle do
 
   @impl Concentrate.Filter
   def filter(%TripUpdate{} = tu, _next_item, state) do
+    trip_id = TripUpdate.trip_id(tu)
     route_id = TripUpdate.route_id(tu)
     date = TripUpdate.start_date(tu)
 
@@ -27,12 +28,7 @@ defmodule Concentrate.Filter.Shuttle do
         is_nil(route_id) ->
           state
 
-        state.module.route_shuttling?(
-          route_id,
-          TripUpdate.direction_id(tu),
-          date
-        ) ->
-          trip_id = TripUpdate.trip_id(tu)
+        state.module.trip_shuttling?(trip_id, route_id, TripUpdate.direction_id(tu), date) ->
           put_in(state.trip_to_route[trip_id], route_id)
 
         true ->

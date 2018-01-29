@@ -14,7 +14,13 @@ defmodule Concentrate.Filter.Alert.Shuttles do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def route_shuttling?(route_id, direction_id, date_or_timestamp) when is_binary(route_id) do
+  def trip_shuttling?(trip_id, route_id, direction_id, date_or_timestamp) when is_binary(trip_id) do
+    date_overlaps?({:trip, trip_id}, date_or_timestamp) or
+      trip_shuttling?(nil, route_id, direction_id, date_or_timestamp)
+  end
+
+  def trip_shuttling?(_trip_id, route_id, direction_id, date_or_timestamp)
+      when is_binary(route_id) do
     date_overlaps?({:route, route_id, direction_id}, date_or_timestamp)
   end
 
@@ -61,20 +67,30 @@ defmodule Concentrate.Filter.Alert.Shuttles do
     stop_id = InformedEntity.stop_id(entity)
     route_id = InformedEntity.route_id(entity)
 
-    if is_nil(stop_id) or is_nil(route_id) do
-      []
-    else
-      route_stops = [
-        {:route_stop, route_id, stop_id}
-      ]
+    route_stops =
+      if is_binary(stop_id) and is_binary(route_id) do
+        [
+          {:route_stop, route_id, stop_id}
+        ]
+      else
+        []
+      end
 
-      routes =
-        for direction_id <- direction_ids(InformedEntity.direction_id(entity)) do
-          {:route, route_id, direction_id}
-        end
+    keys =
+      cond do
+        is_nil(stop_id) or is_nil(route_id) ->
+          []
 
-      route_stops ++ routes
-    end
+        is_nil(InformedEntity.trip_id(entity)) ->
+          for direction_id <- direction_ids(InformedEntity.direction_id(entity)) do
+            {:route, route_id, direction_id}
+          end
+
+        true ->
+          [{:trip, InformedEntity.trip_id(entity)}]
+      end
+
+    route_stops ++ keys
   end
 
   defp direction_ids(nil), do: [0, 1, nil]
