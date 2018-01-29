@@ -17,12 +17,13 @@ defmodule Concentrate.Producer.HTTPTest do
       Application.stop(:hackney)
     end)
 
-    start_supervised!(%{
-      id: :hackney_pool,
-      start: {:hackney_pool, :start_link, [:http_producer_pool, []]},
-      type: :worker,
-      restart: :permanent
-    })
+    {:ok, _} =
+      start_supervised(%{
+        id: :hackney_pool,
+        start: {:hackney_pool, :start_link, [:http_producer_pool, []]},
+        type: :worker,
+        restart: :permanent
+      })
 
     :ok
   end
