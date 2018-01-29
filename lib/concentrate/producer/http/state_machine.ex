@@ -6,7 +6,11 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   @default_timeout 15_000
 
   defstruct url: "",
-            get_opts: [timeout: @default_timeout, recv_timeout: @default_timeout],
+            get_opts: [
+              timeout: @default_timeout,
+              recv_timeout: @default_timeout,
+              hackney: [pool: :http_producer_pool]
+            ],
             headers: [],
             fetch_after: 5_000,
             content_warning_timeout: 300_000,
@@ -150,14 +154,14 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   defp update_cache_headers(machine, headers) do
     cache_headers =
       Enum.reduce(headers, [], fn {header, value}, acc ->
-        cond do
-          String.downcase(header) == "last-modified" ->
+        case String.downcase(header) do
+          "last-modified" ->
             [{:"if-modified-since", value} | acc]
 
-          String.downcase(header) == "etag" ->
+          "etag" ->
             [{:"if-none-match", value} | acc]
 
-          true ->
+          _ ->
             acc
         end
       end)

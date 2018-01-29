@@ -14,10 +14,17 @@ defmodule Concentrate.Supervisor do
   end
 
   def children(config) do
+    pool = pool()
     alerts = alerts(config[:alerts])
     gtfs = gtfs(config[:gtfs])
     pipeline = pipeline(config)
-    Enum.concat([alerts, gtfs, pipeline])
+    Enum.concat([pool, alerts, gtfs, pipeline])
+  end
+
+  def pool do
+    [
+      :hackney_pool.child_spec(:http_producer_pool, timeout: 30_000, max_connections: 100)
+    ]
   end
 
   def alerts(config) do

@@ -10,6 +10,23 @@ defmodule Concentrate.Producer.HTTPTest do
     def parse(_body, _opts), do: []
   end
 
+  setup_all do
+    {:ok, _} = Application.ensure_all_started(:hackney)
+
+    on_exit(fn ->
+      Application.stop(:hackney)
+    end)
+
+    start_supervised!(%{
+      id: :hackney_pool,
+      start: {:hackney_pool, :start_link, [:http_producer_pool, []]},
+      type: :worker,
+      restart: :permanent
+    })
+
+    :ok
+  end
+
   describe "init/1" do
     test "parser can be a module" do
       assert {:producer, state, _} = init({"url", parser: __MODULE__.TestParser})
