@@ -14,7 +14,8 @@ defmodule Concentrate.Filter.Alert.Shuttles do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def trip_shuttling?(trip_id, route_id, direction_id, date_or_timestamp) when is_binary(trip_id) do
+  def trip_shuttling?(trip_id, route_id, direction_id, date_or_timestamp)
+      when is_binary(trip_id) do
     date_overlaps?({:trip, trip_id}, date_or_timestamp) or
       trip_shuttling?(nil, route_id, direction_id, date_or_timestamp)
   end
