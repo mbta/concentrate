@@ -12,30 +12,42 @@ defmodule Concentrate.Reporter.VehicleLatency do
 
   @impl Concentrate.Reporter
   def log(parsed, state) do
-    latest_vehicle_timestamp = Enum.reduce(parsed, nil, &timestamp/2)
+    now = utc_now()
+    latenesses = Enum.flat_map(parsed, &timestamp(&1, now))
 
-    lateness =
-      if latest_vehicle_timestamp do
-        utc_now() - latest_vehicle_timestamp
-      else
+    latest =
+      if latenesses == [] do
         :undefined
+      else
+        Enum.min(latenesses)
       end
 
-    {[latest_vehicle_lateness: lateness], state}
+    {average, count} = average(latenesses)
+
+    {[latest_vehicle_lateness: latest, average_vehicle_lateness: average, vehicle_count: count],
+     state}
   end
 
-  defp timestamp(%VehiclePosition{} = vp, latest_timestamp) do
-    last_updated = VehiclePosition.last_updated(vp)
-
-    if latest_timestamp do
-      max(latest_timestamp, last_updated)
-    else
-      last_updated
+  defp timestamp(%VehiclePosition{} = vp, now) do
+    case VehiclePosition.last_updated(vp) do
+      nil -> []
+      timestamp -> [now - timestamp]
     end
   end
 
-  defp timestamp(_, latest_timestamp) do
-    latest_timestamp
+  defp timestamp(_, _) do
+    []
+  end
+
+  def average([]) do
+    {:undefined, 0}
+  end
+
+  def average(items) do
+    {total, count} =
+      Enum.reduce(items, {0, 0}, fn v, {total, count} -> {total + v, count + 1} end)
+
+    {total / count, count}
   end
 
   defp utc_now do

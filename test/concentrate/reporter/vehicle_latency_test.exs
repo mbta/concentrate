@@ -7,10 +7,16 @@ defmodule Concentrate.Reporter.VehicleLatencyTest do
   describe "log/2" do
     test "logs undefined if there aren't any vehicles with timestamps" do
       state = init()
-      assert {[latest_vehicle_lateness: :undefined], _} = log([], state)
 
-      assert {[latest_vehicle_lateness: :undefined], _} =
-               log([VehiclePosition.new(latitude: 1, longitude: 1)], state)
+      expected = [
+        latest_vehicle_lateness: :undefined,
+        average_vehicle_lateness: :undefined,
+        vehicle_count: 0
+      ]
+
+      assert {^expected, _} = log([], state)
+
+      assert {^expected, _} = log([VehiclePosition.new(latitude: 1, longitude: 1)], state)
     end
 
     test "logs the difference with utc_now from the most-up-to-date vehicle" do
@@ -21,11 +27,19 @@ defmodule Concentrate.Reporter.VehicleLatencyTest do
       vehicles = [
         VehiclePosition.update_last_updated(vp, now - 5),
         VehiclePosition.update_last_updated(vp, now - 3),
-        VehiclePosition.update_last_updated(vp, 0),
+        VehiclePosition.update_last_updated(vp, now - 10),
         Concentrate.TripUpdate.new([])
       ]
 
-      assert {[latest_vehicle_lateness: 3], _} = log(vehicles, state)
+      average_lateness = (5 + 3 + 10) / 3
+
+      expected = [
+        latest_vehicle_lateness: 3,
+        average_vehicle_lateness: average_lateness,
+        vehicle_count: 3
+      ]
+
+      assert {^expected, _} = log(vehicles, state)
     end
   end
 
