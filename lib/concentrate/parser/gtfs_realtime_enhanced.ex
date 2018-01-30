@@ -117,7 +117,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   for status <- ~w(
         ON_TIME DELAYED ARRIVING NOW_BOARDING ALL_ABOARD DEPARTED
-        LATE BUS_SUBSTITUTION CANCELLED)a do
+        LATE BUS_SUBSTITUTION CANCELLED SEE_AGENT)a do
     defp boarding_status(unquote(Atom.to_string(status))), do: unquote(status)
   end
 
