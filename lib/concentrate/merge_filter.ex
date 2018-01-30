@@ -49,8 +49,8 @@ defmodule Concentrate.MergeFilter do
     {:manual, state}
   end
 
-  def handle_subscribe(producer_or_consumer, options, from, state) do
-    super(producer_or_consumer, options, from, state)
+  def handle_subscribe(_, _, _, state) do
+    {:automatic, state}
   end
 
   @impl GenStage
@@ -103,7 +103,11 @@ defmodule Concentrate.MergeFilter do
   end
 
   def handle_info(msg, state) do
-    super(msg, state)
+    Logger.warn(fn ->
+      "unknown message to #{__MODULE__} #{inspect(self())}: #{inspect(msg)}"
+    end)
+
+    {:noreply, [], state}
   end
 
   defp ask_demand(demand_map) do
