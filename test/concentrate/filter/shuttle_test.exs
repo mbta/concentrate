@@ -3,11 +3,12 @@ defmodule Concentrate.Filter.ShuttleTest do
   use ExUnit.Case, async: true
   import Concentrate.Filter.Shuttle
   alias Concentrate.Filter.Shuttle
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.{TripUpdate, StopTimeUpdate, VehiclePosition}
 
   @trip_id "trip"
   @route_id "route"
   @valid_date_time 8
+  @vehicle VehiclePosition.new(trip_id: @trip_id, latitude: 1, longitude: 1)
 
   @state %Shuttle{module: Concentrate.Filter.FakeShuttles}
 
@@ -48,9 +49,16 @@ defmodule Concentrate.Filter.ShuttleTest do
           route_id: @route_id,
           start_date: {1970, 1, 1}
         ),
+        @vehicle,
+        StopTimeUpdate.new(
+          trip_id: @trip_id,
+          stop_id: "before_before_shuttle",
+          departure_time: @valid_date_time
+        ),
         StopTimeUpdate.new(
           trip_id: @trip_id,
           stop_id: "before_shuttle",
+          arrival_time: @valid_date_time,
           departure_time: @valid_date_time
         ),
         StopTimeUpdate.new(
@@ -73,7 +81,8 @@ defmodule Concentrate.Filter.ShuttleTest do
       ]
 
       reduced = run(updates)
-      assert [_tu, before, one, two, after_shuttle] = reduced
+      assert [_tu, _vp, before_before, before, one, two, after_shuttle] = reduced
+      assert StopTimeUpdate.schedule_relationship(before_before) == :SCHEDULED
       assert StopTimeUpdate.schedule_relationship(before) == :SCHEDULED
       assert StopTimeUpdate.schedule_relationship(one) == :SKIPPED
       assert StopTimeUpdate.schedule_relationship(two) == :SKIPPED
@@ -87,6 +96,7 @@ defmodule Concentrate.Filter.ShuttleTest do
           route_id: @route_id,
           start_date: {1970, 1, 1}
         ),
+        @vehicle,
         StopTimeUpdate.new(
           trip_id: @trip_id,
           stop_id: "before_shuttle",
@@ -102,7 +112,7 @@ defmodule Concentrate.Filter.ShuttleTest do
       ]
 
       reduced = run(updates)
-      assert [_tu, before, _one] = reduced
+      assert [_tu, _vp, before, _one] = reduced
       assert StopTimeUpdate.departure_time(before) == nil
     end
 
@@ -113,6 +123,7 @@ defmodule Concentrate.Filter.ShuttleTest do
           route_id: @route_id,
           start_date: {1970, 1, 1}
         ),
+        @vehicle,
         StopTimeUpdate.new(
           trip_id: @trip_id,
           stop_id: "shuttle_1",
@@ -132,7 +143,7 @@ defmodule Concentrate.Filter.ShuttleTest do
       ]
 
       reduced = run(updates)
-      assert [_tu, one, two, after_shuttle] = reduced
+      assert [_tu, _vp, one, two, after_shuttle] = reduced
       assert StopTimeUpdate.schedule_relationship(one) == :SKIPPED
       assert StopTimeUpdate.schedule_relationship(two) == :SKIPPED
       assert StopTimeUpdate.schedule_relationship(after_shuttle) == :SKIPPED
@@ -145,6 +156,7 @@ defmodule Concentrate.Filter.ShuttleTest do
           route_id: @route_id,
           start_date: {1970, 1, 1}
         ),
+        @vehicle,
         StopTimeUpdate.new(
           trip_id: @trip_id,
           stop_id: "after_shuttle",
@@ -153,7 +165,7 @@ defmodule Concentrate.Filter.ShuttleTest do
       ]
 
       reduced = run(updates)
-      assert [_tu, after_shuttle] = reduced
+      assert [_tu, _vp, after_shuttle] = reduced
       assert StopTimeUpdate.schedule_relationship(after_shuttle) == :SCHEDULED
     end
 
@@ -188,6 +200,8 @@ defmodule Concentrate.Filter.ShuttleTest do
           direction_id: 1,
           start_date: {1970, 1, 1}
         ),
+        @vehicle,
+        VehiclePosition.update_trip_id(@vehicle, @trip_id <> "_other_way"),
         StopTimeUpdate.new(
           trip_id: @trip_id,
           stop_id: "shuttle_1",
@@ -201,7 +215,7 @@ defmodule Concentrate.Filter.ShuttleTest do
       ]
 
       reduced = run(updates)
-      assert [_tu_0, _tu_1, direction_0, direction_1] = reduced
+      assert [_tu_0, _tu_1, _vp_0, _vp_1, direction_0, direction_1] = reduced
       assert StopTimeUpdate.schedule_relationship(direction_0) == :SKIPPED
       assert StopTimeUpdate.schedule_relationship(direction_1) == :SCHEDULED
     end
@@ -224,6 +238,34 @@ defmodule Concentrate.Filter.ShuttleTest do
       assert ^updates = run(updates)
     end
 
+    test "updates when the vehicle hasn't started are removed" do
+      updates = [
+        TripUpdate.new(
+          trip_id: @trip_id,
+          route_id: @route_id,
+          start_date: {1970, 1, 1}
+        ),
+        StopTimeUpdate.new(
+          trip_id: @trip_id,
+          stop_id: "before_shuttle",
+          arrival_time: @valid_date_time
+        )
+      ]
+
+      reduced = run(updates)
+      assert [_tu] = reduced
+    end
+
+    test "updates on non-shuttles trips are not modified" do
+      updates = [
+        StopTimeUpdate.new(trip_id: "other_trip", stop_id: "1", departure_time: @valid_date_time),
+        StopTimeUpdate.new(trip_id: "other_trip", stop_id: "2", arrival_time: @valid_date_time)
+      ]
+
+      reduced = run(updates)
+      assert updates == reduced
+    end
+
     test "other values are returned as-is" do
       assert {:cont, :value, _} = filter(:value, nil, @state)
     end
@@ -236,6 +278,7 @@ defmodule Concentrate.Filter.ShuttleTest do
       Enum.flat_map_reduce(Enum.zip(updates, next_updates), @state, fn {item, next_item}, state ->
         case filter(item, next_item, state) do
           {:cont, item, state} -> {[item], state}
+          {:skip, state} -> {[], state}
         end
       end)
 
