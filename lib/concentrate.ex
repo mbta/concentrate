@@ -85,7 +85,11 @@ defmodule Concentrate do
 
   defp decode_gtfs_realtime_value(%{url: url} = value) when is_binary(url) do
     opts =
-      for {key, guard} <- [routes: &is_list/1, fallback_url: &is_binary/1],
+      for {key, guard} <- [
+            routes: &is_list/1,
+            fallback_url: &is_binary/1,
+            max_future_time: &is_integer/1
+          ],
           {:ok, opt_value} <- [Map.fetch(value, key)],
           guard.(opt_value) do
         {key, opt_value}
