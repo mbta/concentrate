@@ -29,7 +29,8 @@ defmodule Concentrate.Supervisor.Pipeline do
         {url, opts, parser} =
           case url do
             {url, opts} when is_binary(url) ->
-              {url, opts, {Concentrate.Parser.GTFSRealtime, Keyword.take(opts, [:routes])}}
+              {url, opts,
+               {Concentrate.Parser.GTFSRealtime, Keyword.take(opts, ~w(routes max_future_time)a)}}
 
             url when is_binary(url) ->
               {url, [], Concentrate.Parser.GTFSRealtime}
