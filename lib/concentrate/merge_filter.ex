@@ -127,8 +127,8 @@ defmodule Concentrate.MergeFilter do
     end
   end
 
-  defp sort_key(%TripUpdate{}), do: 0
-  defp sort_key(%VehiclePosition{}), do: 1
-  defp sort_key(%StopTimeUpdate{}), do: 2
-  defp sort_key(_), do: 4
+  defp sort_key(%TripUpdate{} = tu), do: {0, TripUpdate.trip_id(tu)}
+  defp sort_key(%VehiclePosition{} = vp), do: {1, VehiclePosition.id(vp)}
+  defp sort_key(%StopTimeUpdate{} = stu), do: {2, StopTimeUpdate.stop_sequence(stu)}
+  defp sort_key(_), do: {4, nil}
 end
