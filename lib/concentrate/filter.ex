@@ -32,7 +32,17 @@ defmodule Concentrate.Filter do
   """
   @spec run([data], [module]) :: [data]
   def run(data_list, filter_list) do
-    Enum.reduce(filter_list, data_list, &apply_filter_to_enum/2)
+    Enum.reduce(filter_list, data_list, &timed_apply/2)
+  end
+
+  defp timed_apply(module, enum) do
+    {time, enum} = :timer.tc(&apply_filter_to_enum/2, [module, enum])
+
+    Logger.debug(fn ->
+      "#{__MODULE__} #{module} took #{time / 1000}ms"
+    end)
+
+    enum
   end
 
   defp apply_filter_to_enum(module, enum) do
