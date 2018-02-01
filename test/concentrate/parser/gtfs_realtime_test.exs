@@ -4,6 +4,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtime
   alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate, Alert}
+  alias Concentrate.Parser.GTFSRealtime.Options
 
   describe "parse/1" do
     test "parsing a vehiclepositions.pb file returns only VehiclePosition or TripUpdate structs" do
@@ -51,7 +52,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         stop_time_update: []
       }
 
-      [tu] = decode_trip_update(update, [])
+      [tu] = decode_trip_update(update, %Options{})
 
       assert tu ==
                TripUpdate.new(
@@ -75,7 +76,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         ]
       }
 
-      [_tu, stop_update] = decode_trip_update(update, [])
+      [_tu, stop_update] = decode_trip_update(update, %Options{})
       refute StopTimeUpdate.arrival_time(stop_update)
       refute StopTimeUpdate.departure_time(stop_update)
     end
@@ -90,7 +91,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         ]
       }
 
-      assert [] = decode_trip_update(update, {:ok, ["keeping"]})
+      assert [] = decode_trip_update(update, %Options{routes: {:ok, ["keeping"]}})
     end
 
     test "includes trip/stop update if we're keeping the route" do
@@ -103,7 +104,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         ]
       }
 
-      assert [_, _] = decode_trip_update(update, {:ok, ["keeping"]})
+      assert [_, _] = decode_trip_update(update, %Options{routes: {:ok, ["keeping"]}})
     end
   end
 
@@ -115,7 +116,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         position: %{latitude: 1, longitude: 1}
       }
 
-      assert [] = decode_vehicle(position, {:ok, ["keeping"]})
+      assert [] = decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}})
     end
 
     test "includes trip/vehicle if we're keeping the route" do
@@ -125,7 +126,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         position: %{latitude: 1, longitude: 1}
       }
 
-      assert [_, _] = decode_vehicle(position, {:ok, ["keeping"]})
+      assert [_, _] = decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}})
     end
   end
 end
