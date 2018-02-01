@@ -11,16 +11,27 @@ defmodule Concentrate.Parser.GTFSRealtime do
   @behaviour Concentrate.Parser
   alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate, Alert, Alert.InformedEntity}
 
-  @impl Concentrate.Parser
-  def parse(binary, opts) when is_binary(binary) and is_list(opts) do
-    routes = Keyword.fetch(opts, :routes)
-    message = :gtfs_realtime_proto.decode_msg(binary, :FeedMessage, [])
-    Enum.flat_map(message.entity, &decode_feed_entity(&1, routes))
+  defmodule Options do
+    @moduledoc """
+    Options for parsing a GTFS Realtime file.
+
+    * routes: either :error (don't filter the routes) or {:ok, Enumerable.t} with the route IDs to include
+    """
+    defstruct routes: :error
   end
 
-  def decode_feed_entity(entity, routes) do
-    vp = decode_vehicle(Map.get(entity, :vehicle), routes)
-    stop_updates = decode_trip_update(Map.get(entity, :trip_update), routes)
+  alias __MODULE__.Options
+
+  @impl Concentrate.Parser
+  def parse(binary, opts) when is_binary(binary) and is_list(opts) do
+    options = parse_options(opts)
+    message = :gtfs_realtime_proto.decode_msg(binary, :FeedMessage, [])
+    Enum.flat_map(message.entity, &decode_feed_entity(&1, options))
+  end
+
+  def decode_feed_entity(entity, options) do
+    vp = decode_vehicle(Map.get(entity, :vehicle), options)
+    stop_updates = decode_trip_update(Map.get(entity, :trip_update), options)
     alerts = decode_alert(entity)
     List.flatten([alerts, vp, stop_updates])
   end
@@ -29,12 +40,12 @@ defmodule Concentrate.Parser.GTFSRealtime do
     []
   end
 
-  def decode_vehicle(vp, routes) do
+  def decode_vehicle(vp, options) do
     tu = decode_trip_descriptor(vp)
-    decode_vehicle_position(tu, vp, routes)
+    decode_vehicle_position(tu, vp, options)
   end
 
-  defp decode_vehicle_position([tu], vp, {:ok, routes}) do
+  defp decode_vehicle_position([tu], vp, %{routes: {:ok, routes}}) do
     if TripUpdate.route_id(tu) in routes do
       decode_vehicle_position([tu], vp, :error)
     else
@@ -72,16 +83,30 @@ defmodule Concentrate.Parser.GTFSRealtime do
       ]
   end
 
-  def decode_trip_update(nil, _routes) do
+  def decode_trip_update(nil, _options) do
     []
   end
 
-  def decode_trip_update(trip_update, routes) do
+  def decode_trip_update(trip_update, options) do
     tu = decode_trip_descriptor(trip_update)
-    decode_stop_updates(tu, trip_update, routes)
+    decode_stop_updates(tu, trip_update, options)
   end
 
-  defp decode_stop_updates([tu], trip_update, {:ok, routes}) do
+  defp parse_options(opts, acc \\ %Options{})
+
+  defp parse_options([{:routes, route_ids} | rest], acc) do
+    parse_options(rest, %{acc | routes: {:ok, MapSet.new(route_ids)}})
+  end
+
+  defp parse_options([_ | rest], acc) do
+    parse_options(rest, acc)
+  end
+
+  defp parse_options([], acc) do
+    acc
+  end
+
+  defp decode_stop_updates([tu], trip_update, %{routes: {:ok, routes}}) do
     if TripUpdate.route_id(tu) in routes do
       decode_stop_updates([tu], trip_update, :error)
     else
