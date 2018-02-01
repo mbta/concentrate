@@ -36,6 +36,13 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         assert alert.__struct__ == Alert
       end
     end
+
+    test "options are parsed" do
+      binary = File.read!(fixture_path("tripupdates.pb"))
+      now = :os.system_time(:seconds)
+      assert parse(binary, max_future_time: -now) == []
+      assert parse(binary, routes: []) == []
+    end
   end
 
   describe "decode_trip_update/2" do
@@ -49,10 +56,10 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
           start_time: "26:15:09",
           schedule_relationship: :ADDED
         },
-        stop_time_update: []
+        stop_time_update: [%{}]
       }
 
-      [tu] = decode_trip_update(update, %Options{})
+      [tu, _] = decode_trip_update(update, %Options{})
 
       assert tu ==
                TripUpdate.new(
@@ -105,6 +112,36 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       }
 
       assert [_, _] = decode_trip_update(update, %Options{routes: {:ok, ["keeping"]}})
+    end
+
+    test "only includes trip/stop update if it's under max_time" do
+      update = %{
+        trip: %{},
+        stop_time_update: [
+          %{
+            departure: %{time: 2}
+          }
+        ]
+      }
+
+      assert [] = decode_trip_update(update, %Options{max_time: 1})
+      assert [_, _] = decode_trip_update(update, %Options{max_time: 2})
+    end
+
+    test "keeps the whole trip even if later updates are later than the time" do
+      update = %{
+        trip: %{},
+        stop_time_update: [
+          %{
+            arrival: %{time: 1}
+          },
+          %{
+            departure: %{time: 2}
+          }
+        ]
+      }
+
+      assert [_, _, _] = decode_trip_update(update, %Options{max_time: 1})
     end
   end
 

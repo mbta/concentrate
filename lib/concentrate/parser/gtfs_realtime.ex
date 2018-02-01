@@ -16,8 +16,9 @@ defmodule Concentrate.Parser.GTFSRealtime do
     Options for parsing a GTFS Realtime file.
 
     * routes: either :error (don't filter the routes) or {:ok, Enumerable.t} with the route IDs to include
+    * max_time: the maximum time for a stop time update
     """
-    defstruct routes: :error
+    defstruct routes: :error, max_time: :infinity
   end
 
   alias __MODULE__.Options
@@ -98,6 +99,11 @@ defmodule Concentrate.Parser.GTFSRealtime do
     parse_options(rest, %{acc | routes: {:ok, MapSet.new(route_ids)}})
   end
 
+  defp parse_options([{:max_future_time, seconds} | rest], acc) do
+    max_time = :os.system_time(:seconds) + seconds
+    parse_options(rest, %{acc | max_time: max_time})
+  end
+
   defp parse_options([_ | rest], acc) do
     parse_options(rest, acc)
   end
@@ -106,31 +112,45 @@ defmodule Concentrate.Parser.GTFSRealtime do
     acc
   end
 
-  defp decode_stop_updates([tu], trip_update, %{routes: {:ok, routes}}) do
+  defp decode_stop_updates([tu], trip_update, %{routes: {:ok, routes}} = options) do
     if TripUpdate.route_id(tu) in routes do
-      decode_stop_updates([tu], trip_update, :error)
+      decode_stop_updates([tu], trip_update, %{options | routes: :error})
     else
       []
     end
   end
 
-  defp decode_stop_updates(tu, trip_update, _) do
-    trip_id = Map.get(trip_update.trip, :trip_id)
+  defp decode_stop_updates(tu, %{stop_time_update: [update | _] = updates} = trip_update, options) do
+    max_time = options.max_time
 
-    stop_updates =
-      for stu <- trip_update.stop_time_update do
-        StopTimeUpdate.new(
-          trip_id: trip_id,
-          stop_id: Map.get(stu, :stop_id),
-          stop_sequence: Map.get(stu, :stop_sequence),
-          schedule_relationship: Map.get(stu, :schedule_relationship),
-          arrival_time: time_from_event(Map.get(stu, :arrival)),
-          departure_time: time_from_event(Map.get(stu, :departure))
-        )
-      end
+    arrival_time = time_from_event(Map.get(update, :arrival))
+    departure_time = time_from_event(Map.get(update, :departure))
 
-    tu ++ stop_updates
+    if times_less_than_max?(arrival_time, departure_time, max_time) do
+      trip_id = Map.get(trip_update.trip, :trip_id)
+
+      stop_updates =
+        for stu <- updates do
+          StopTimeUpdate.new(
+            trip_id: trip_id,
+            stop_id: Map.get(stu, :stop_id),
+            stop_sequence: Map.get(stu, :stop_sequence),
+            schedule_relationship: Map.get(stu, :schedule_relationship),
+            arrival_time: time_from_event(Map.get(stu, :arrival)),
+            departure_time: time_from_event(Map.get(stu, :departure))
+          )
+        end
+
+      tu ++ stop_updates
+    else
+      []
+    end
   end
+
+  defp times_less_than_max?(_, _, :infinity), do: true
+  defp times_less_than_max?(nil, nil, _), do: true
+  defp times_less_than_max?(time, nil, max), do: time <= max
+  defp times_less_than_max?(_, time, max), do: time <= max
 
   defp decode_trip_descriptor(%{trip: trip}) do
     [
