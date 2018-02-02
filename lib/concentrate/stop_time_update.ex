@@ -17,6 +17,15 @@ defmodule Concentrate.StopTimeUpdate do
   ])
 
   @doc """
+  Returns a time for the StopTimeUpdate: arrival if present, otherwise departure.
+  """
+  @spec time(%__MODULE__{}) :: non_neg_integer | nil
+  def time(%__MODULE__{arrival_time: time}) when is_integer(time), do: time
+  def time(%__MODULE__{departure_time: time}), do: time
+
+  @compile inline: [time: 1]
+
+  @doc """
   Marks the update as skipped (when the stop is closed, for example).
   """
   @spec skip(%__MODULE__{}) :: t

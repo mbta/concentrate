@@ -12,7 +12,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   def filter({%TripUpdate{} = tu, _vps, [stu | _]} = group, module) do
     trip_id = TripUpdate.trip_id(tu)
     route_id = TripUpdate.route_id(tu)
-    time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
+    time = StopTimeUpdate.time(stu)
 
     cond do
       TripUpdate.schedule_relationship(tu) == :CANCELED ->
