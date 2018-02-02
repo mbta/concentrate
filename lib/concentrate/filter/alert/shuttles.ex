@@ -31,7 +31,7 @@ defmodule Concentrate.Filter.Alert.Shuttles do
   end
 
   defp date_overlaps?(key, date_or_timestamp) do
-    TimeTable.date_overlaps(@table, key, date_or_timestamp, count: 1) != []
+    TimeTable.date_overlaps?(@table, key, date_or_timestamp)
   end
 
   def init(opts) do

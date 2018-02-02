@@ -17,30 +17,32 @@ defmodule Concentrate.Filter.Alert.TimeTable do
   end
 
   @doc "Queries the table for matching keys that overlap the date/timestamp."
-  def date_overlaps(name, key, date_or_timestamp, opts \\ []) do
+  def date_overlaps(name, key, date_or_timestamp) do
     {start, stop} = start_stop_times(date_or_timestamp)
     selector = selector(key, start, stop)
 
-    if count = Keyword.get(opts, :count) do
-      case :ets.select(name, [selector], count) do
-        {match, _} -> match
-        :"$end_of_table" -> []
-      end
-    else
-      :ets.select(name, [selector])
-    end
+    :ets.select(name, [selector])
   rescue
     ArgumentError -> []
+  end
+
+  @doc "Queries the table and returns true if there are any matches."
+  def date_overlaps?(name, key, date_or_timestamp) do
+    {start, stop} = start_stop_times(date_or_timestamp)
+    selector = selector(key, start, stop)
+    :ets.select(name, [selector], 1) != :"$end_of_table"
+  rescue
+    ArgumentError -> false
+  end
+
+  defp start_stop_times(timestamp) when is_integer(timestamp) do
+    {timestamp, timestamp}
   end
 
   defp start_stop_times({_, _, _} = date) do
     start = :calendar.datetime_to_gregorian_seconds({date, {0, 0, 0}}) - @epoch_seconds
     stop = start + @one_day_minus_one
     {start, stop}
-  end
-
-  defp start_stop_times(timestamp) when is_integer(timestamp) do
-    {timestamp, timestamp}
   end
 
   defp start_stop_times({start_timestamp, stop_timestamp} = times)
