@@ -4,12 +4,13 @@ defmodule Concentrate.Encoder.TripUpdates.JSON do
   """
   @behaviour Concentrate.Encoder
   alias Concentrate.Encoder.TripUpdates
+  import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
   def encode(list) when is_list(list) do
     message = %{
-      header: TripUpdates.feed_header(),
-      entity: TripUpdates.feed_entity(list)
+      header: feed_header(),
+      entity: trip_update_feed_entity(list, &TripUpdates.build_stop_time_update/1)
     }
 
     Jason.encode!(message)

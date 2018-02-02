@@ -70,6 +70,49 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     )
   end
 
+  @doc """
+  Header values for a GTFS-RT feed.
+  """
+  def feed_header do
+    timestamp = :erlang.system_time(:seconds)
+
+    %{
+      gtfs_realtime_version: "2.0",
+      timestamp: timestamp
+    }
+  end
+
+  @doc """
+  Builds a list of TripUpdate FeedEntities.
+
+  Takes a function to turn a StopTimeUpdate struct into the GTFS-RT version.
+  """
+  def trip_update_feed_entity(list, stop_time_update_fn) do
+    list
+    |> group
+    |> Enum.flat_map(&build_trip_update_entity(&1, stop_time_update_fn))
+  end
+
+  @doc """
+  Convert a Unix timestamp in a GTFS-RT StopTimeEvent.
+
+  ## Examples
+
+      iex> stop_time_event(123)
+      %{time: 123}
+      iex> stop_time_event(nil)
+      nil
+  """
+  def stop_time_event(nil) do
+    nil
+  end
+
+  def stop_time_event(unix_timestamp) do
+    %{
+      time: unix_timestamp
+    }
+  end
+
   defp group_by_trip_id(%TripUpdate{} = tu, map) do
     case TripUpdate.trip_id(tu) do
       nil ->
@@ -87,9 +130,11 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   end
 
   defp group_by_trip_id(%StopTimeUpdate{} = stu, map) do
-    trip_id = StopTimeUpdate.trip_id(stu)
-
-    Map.update(map, trip_id, {map_size(map), nil, [], [stu]}, &add_stop_time_update(&1, stu))
+    if trip_id = StopTimeUpdate.trip_id(stu) do
+      Map.update(map, trip_id, {map_size(map), nil, [], [stu]}, &add_stop_time_update(&1, stu))
+    else
+      map
+    end
   end
 
   defp add_trip_update({size, _tu, vps, stus}, tu) do
@@ -102,5 +147,31 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
   defp add_stop_time_update({size, tu, vps, stus}, stu) do
     {size, tu, vps, [stu | stus]}
+  end
+
+  defp build_trip_update_entity({update, _vps, [_ | _] = stus}, stop_time_update_fn) do
+    trip_id = TripUpdate.trip_id(update)
+
+    [
+      %{
+        id: trip_id,
+        trip_update: %{
+          trip:
+            drop_nil_values(%{
+              trip_id: trip_id,
+              route_id: TripUpdate.route_id(update),
+              direction_id: TripUpdate.direction_id(update),
+              start_time: TripUpdate.start_time(update),
+              start_date: encode_date(TripUpdate.start_date(update)),
+              schedule_relationship: TripUpdate.schedule_relationship(update)
+            }),
+          stop_time_update: Enum.map(stus, stop_time_update_fn)
+        }
+      }
+    ]
+  end
+
+  defp build_trip_update_entity(_, _) do
+    []
   end
 end

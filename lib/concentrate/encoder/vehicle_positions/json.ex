@@ -4,11 +4,12 @@ defmodule Concentrate.Encoder.VehiclePositions.JSON do
   """
   @behaviour Concentrate.Encoder
   alias Concentrate.Encoder.VehiclePositions
+  import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
   def encode(list) when is_list(list) do
     message = %{
-      header: VehiclePositions.feed_header(),
+      header: feed_header(),
       entity: VehiclePositions.feed_entity(list)
     }
 

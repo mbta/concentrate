@@ -3,61 +3,20 @@ defmodule Concentrate.Encoder.TripUpdates do
   Encodes a list of parsed data into a TripUpdates.pb file.
   """
   @behaviour Concentrate.Encoder
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.StopTimeUpdate
   import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
   def encode(list) when is_list(list) do
     message = %{
       header: feed_header(),
-      entity: feed_entity(list)
+      entity: trip_update_feed_entity(list, &build_stop_time_update/1)
     }
 
     :gtfs_realtime_proto.encode_msg(message, :FeedMessage)
   end
 
-  def feed_header do
-    timestamp = :erlang.system_time(:seconds)
-
-    %{
-      gtfs_realtime_version: "2.0",
-      timestamp: timestamp
-    }
-  end
-
-  def feed_entity(list) do
-    list
-    |> group
-    |> Enum.flat_map(&build_entity/1)
-  end
-
-  defp build_entity({%TripUpdate{} = update, _vps, [_ | _] = stus}) do
-    trip_id = TripUpdate.trip_id(update)
-
-    [
-      %{
-        id: trip_id || "#{:erlang.phash2(update)}",
-        trip_update: %{
-          trip:
-            drop_nil_values(%{
-              trip_id: trip_id,
-              route_id: TripUpdate.route_id(update),
-              direction_id: TripUpdate.direction_id(update),
-              start_time: TripUpdate.start_time(update),
-              start_date: encode_date(TripUpdate.start_date(update)),
-              schedule_relationship: TripUpdate.schedule_relationship(update)
-            }),
-          stop_time_update: Enum.map(stus, &build_stop_time_update/1)
-        }
-      }
-    ]
-  end
-
-  defp build_entity(_) do
-    []
-  end
-
-  defp build_stop_time_update(%StopTimeUpdate{} = update) do
+  def build_stop_time_update(update) do
     drop_nil_values(%{
       stop_id: StopTimeUpdate.stop_id(update),
       stop_sequence: StopTimeUpdate.stop_sequence(update),
@@ -65,15 +24,5 @@ defmodule Concentrate.Encoder.TripUpdates do
       departure: stop_time_event(StopTimeUpdate.departure_time(update)),
       schedule_relationship: StopTimeUpdate.schedule_relationship(update)
     })
-  end
-
-  defp stop_time_event(nil) do
-    nil
-  end
-
-  defp stop_time_event(unix_timestamp) do
-    %{
-      time: unix_timestamp
-    }
   end
 end
