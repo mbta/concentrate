@@ -21,7 +21,7 @@ defmodule Concentrate.Reporter.StopTimeUpdateLatency do
   end
 
   defp timestamp(%StopTimeUpdate{} = stu, {earliest, latest}) do
-    time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
+    time = StopTimeUpdate.time(stu)
 
     earliest =
       case time do

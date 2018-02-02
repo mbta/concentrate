@@ -37,7 +37,7 @@ defmodule Concentrate.GroupFilter.TimeOutOfRange do
   end
 
   defp maybe_drop_stu(stu, false, min_time, max_time) do
-    time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
+    time = StopTimeUpdate.time(stu)
 
     cond do
       is_nil(time) ->

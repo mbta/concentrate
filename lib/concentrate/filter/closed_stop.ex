@@ -14,7 +14,7 @@ defmodule Concentrate.Filter.ClosedStop do
   def filter(update, modules \\ @modules)
 
   def filter(%StopTimeUpdate{} = stu, {stops_module, trips_module}) do
-    time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
+    time = StopTimeUpdate.time(stu)
 
     stu =
       if is_nil(time) do

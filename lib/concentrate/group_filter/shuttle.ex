@@ -39,7 +39,7 @@ defmodule Concentrate.GroupFilter.Shuttle do
   end
 
   defp shuttle_stop(route_id, module, stu, false) do
-    time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
+    time = StopTimeUpdate.time(stu)
     stop_id = StopTimeUpdate.stop_id(stu)
 
     if is_integer(time) and module.stop_shuttling_on_route?(route_id, stop_id, time) do
