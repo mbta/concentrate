@@ -74,6 +74,10 @@ defmodule Concentrate.StructHelpers do
     quote do
       @compile [inline: [{unquote(name), 2}]]
       @spec unquote(name)(%__MODULE__{} | t, any) :: t
+      def unquote(name)(%__MODULE__{unquote(field) => value} = struct, value) do
+        struct
+      end
+
       def unquote(name)(%__MODULE__{} = struct, new_value) do
         %{struct | unquote(field) => new_value}
       end
