@@ -20,13 +20,14 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     parsed
     |> Enum.reduce(%{}, &group_by_trip_id/2)
     |> Map.values()
-    |> Enum.reject(&match?({_, _, [], []}, &1))
-    |> Enum.sort()
-    |> Enum.map(fn {_, tu, vps, stus} ->
-      vps = Enum.reverse(vps)
-      stus = Enum.sort_by(stus, &StopTimeUpdate.stop_sequence/1)
+    |> Enum.flat_map(fn
+      {_, [], []} ->
+        []
 
-      {tu, vps, stus}
+      {tu, vps, stus} ->
+        stus = Enum.sort_by(stus, &StopTimeUpdate.stop_sequence/1)
+
+        [{tu, vps, stus}]
     end)
   end
 
@@ -124,39 +125,35 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   def schedule_relationship(relationship), do: relationship
 
   defp group_by_trip_id(%TripUpdate{} = tu, map) do
-    case TripUpdate.trip_id(tu) do
-      nil ->
-        map
-
-      id ->
-        Map.update(map, id, {map_size(map), tu, [], []}, &add_trip_update(&1, tu))
+    if trip_id = TripUpdate.trip_id(tu) do
+      Map.update(map, trip_id, {tu, [], []}, &add_trip_update(&1, tu))
+    else
+      map
     end
   end
 
   defp group_by_trip_id(%VehiclePosition{} = vp, map) do
     trip_id = VehiclePosition.trip_id(vp)
 
-    Map.update(map, trip_id, {map_size(map), nil, [vp], []}, &add_vehicle_position(&1, vp))
+    Map.update(map, trip_id, {nil, [vp], []}, &add_vehicle_position(&1, vp))
   end
 
   defp group_by_trip_id(%StopTimeUpdate{} = stu, map) do
-    if trip_id = StopTimeUpdate.trip_id(stu) do
-      Map.update(map, trip_id, {map_size(map), nil, [], [stu]}, &add_stop_time_update(&1, stu))
-    else
-      map
-    end
+    trip_id = StopTimeUpdate.trip_id(stu)
+
+    Map.update(map, trip_id, {nil, [], [stu]}, &add_stop_time_update(&1, stu))
   end
 
-  defp add_trip_update({size, _tu, vps, stus}, tu) do
-    {size, tu, vps, stus}
+  defp add_trip_update({_tu, vps, stus}, tu) do
+    {tu, vps, stus}
   end
 
-  defp add_vehicle_position({size, tu, vps, stus}, vp) do
-    {size, tu, [vp | vps], stus}
+  defp add_vehicle_position({tu, vps, stus}, vp) do
+    {tu, [vp | vps], stus}
   end
 
-  defp add_stop_time_update({size, tu, vps, stus}, stu) do
-    {size, tu, vps, [stu | stus]}
+  defp add_stop_time_update({tu, vps, stus}, stu) do
+    {tu, vps, [stu | stus]}
   end
 
   defp build_trip_update_entity({update, vps, [_ | _] = stus}, stop_time_update_fn) do

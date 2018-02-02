@@ -22,24 +22,20 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
     test "can handle a vehicle w/o a trip" do
       data = [
         trip = TripUpdate.new(trip_id: "trip"),
-        no_trip_vehicle = VehiclePosition.new(latitude: 1.0, longitude: 1.0),
-        trip_vehicle = VehiclePosition.new(trip_id: "trip", latitude: 2.0, longitude: 2.0)
+        vehicle = VehiclePosition.new(latitude: 1.0, longitude: 1.0),
+        vehicle_no_trip = VehiclePosition.new(trip_id: "trip", latitude: 2.0, longitude: 2.0)
       ]
 
       # the trip and trip vehicle are re-arranged in the output
-      assert round_trip(data) == [
-               trip,
-               trip_vehicle,
-               no_trip_vehicle
-             ]
+      assert Enum.sort(round_trip(data)) == Enum.sort([trip, vehicle, vehicle_no_trip])
     end
 
     test "uses the vehicle's ID as the entity ID, or the trip ID, or unique data" do
       data = [
         TripUpdate.new(trip_id: "trip"),
-        VehiclePosition.new(id: "1234", trip_id: "trip", latitude: 1, longitude: 1),
-        TripUpdate.new(trip_id: "5678"),
-        VehiclePosition.new(trip_id: "5678", latitude: 1, longitude: 1),
+        VehiclePosition.new(id: "y1234", trip_id: "trip", latitude: 1, longitude: 1),
+        TripUpdate.new(trip_id: "a5678"),
+        VehiclePosition.new(trip_id: "a5678", latitude: 1, longitude: 1),
         VehiclePosition.new(latitude: 1, longitude: 1)
       ]
 
@@ -48,9 +44,9 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
 
       assert %{
                entity: [
-                 %{id: "1234"},
-                 %{id: "5678"},
-                 %{id: binary_id}
+                 %{id: binary_id},
+                 %{id: "a5678"},
+                 %{id: "y1234"}
                ]
              } = proto
 
@@ -108,7 +104,7 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
 
     test "decoding and re-encoding vehiclepositions.pb is a no-op" do
       decoded = GTFSRealtime.parse(File.read!(fixture_path("vehiclepositions.pb")), [])
-      assert round_trip(decoded) == decoded
+      assert Enum.sort(round_trip(decoded)) == Enum.sort(decoded)
     end
   end
 
