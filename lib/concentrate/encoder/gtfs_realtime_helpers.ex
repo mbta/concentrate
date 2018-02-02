@@ -74,6 +74,47 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   end
 
   @doc """
+  Header values for a GTFS-RT feed.
+  """
+  def feed_header do
+    timestamp = :erlang.system_time(:seconds)
+
+    %{
+      gtfs_realtime_version: "2.0",
+      timestamp: timestamp
+    }
+  end
+
+  @doc """
+  Builds a list of TripUpdate FeedEntities.
+
+  Takes a function to turn a StopTimeUpdate struct into the GTFS-RT version.
+  """
+  def trip_update_feed_entity(groups, stop_time_update_fn) do
+    Enum.flat_map(groups, &build_trip_update_entity(&1, stop_time_update_fn))
+  end
+
+  @doc """
+  Convert a Unix timestamp in a GTFS-RT StopTimeEvent.
+
+  ## Examples
+
+      iex> stop_time_event(123)
+      %{time: 123}
+      iex> stop_time_event(nil)
+      nil
+  """
+  def stop_time_event(nil) do
+    nil
+  end
+
+  def stop_time_event(unix_timestamp) do
+    %{
+      time: unix_timestamp
+    }
+  end
+
+  @doc """
   Renders the schedule relationship field.
 
   SCHEDULED is the default and is rendered as `nil`. Other relationships are
@@ -99,9 +140,11 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   end
 
   defp group_by_trip_id(%StopTimeUpdate{} = stu, map) do
-    trip_id = StopTimeUpdate.trip_id(stu)
-
-    Map.update(map, trip_id, {map_size(map), nil, [], [stu]}, &add_stop_time_update(&1, stu))
+    if trip_id = StopTimeUpdate.trip_id(stu) do
+      Map.update(map, trip_id, {map_size(map), nil, [], [stu]}, &add_stop_time_update(&1, stu))
+    else
+      map
+    end
   end
 
   defp add_trip_update({size, _tu, vps, stus}, tu) do
@@ -114,5 +157,50 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
   defp add_stop_time_update({size, tu, vps, stus}, stu) do
     {size, tu, vps, [stu | stus]}
+  end
+
+  defp build_trip_update_entity({update, vps, [_ | _] = stus}, stop_time_update_fn) do
+    trip_id = TripUpdate.trip_id(update)
+
+    trip =
+      drop_nil_values(%{
+        trip_id: trip_id,
+        route_id: TripUpdate.route_id(update),
+        direction_id: TripUpdate.direction_id(update),
+        start_time: TripUpdate.start_time(update),
+        start_date: encode_date(TripUpdate.start_date(update)),
+        schedule_relationship: schedule_relationship(TripUpdate.schedule_relationship(update))
+      })
+
+    vehicle = trip_update_vehicle(vps)
+    stop_time_update = Enum.map(stus, stop_time_update_fn)
+
+    [
+      %{
+        id: trip_id || "#{:erlang.phash2(update)}",
+        trip_update:
+          drop_nil_values(%{
+            trip: trip,
+            stop_time_update: stop_time_update,
+            vehicle: vehicle
+          })
+      }
+    ]
+  end
+
+  defp build_trip_update_entity(_, _) do
+    []
+  end
+
+  defp trip_update_vehicle([]) do
+    nil
+  end
+
+  defp trip_update_vehicle([vp | _]) do
+    drop_nil_values(%{
+      id: VehiclePosition.id(vp),
+      label: VehiclePosition.label(vp),
+      license_plate: VehiclePosition.license_plate(vp)
+    })
   end
 end
