@@ -12,6 +12,7 @@ defmodule Concentrate.MergeFilter do
   require Logger
   alias Concentrate.Merge.Table
   alias Concentrate.Filter
+
   @start_link_opts [:name]
 
   defstruct timeout: 1_000,
