@@ -75,7 +75,7 @@ defmodule Concentrate.Filter.Shuttle do
 
     with {:ok, route_id} <- Map.fetch(state.trip_to_route, trip_id) do
       # see if we're shuttling this particular stop
-      time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
+      time = StopTimeUpdate.time(stu)
 
       cond do
         is_nil(time) ->

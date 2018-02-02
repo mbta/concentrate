@@ -13,7 +13,7 @@ defmodule Concentrate.Filter.CancelledTrip do
 
   @impl Concentrate.Filter
   def filter(%StopTimeUpdate{} = stu, {module, map}) do
-    time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
+    time = StopTimeUpdate.time(stu)
     trip_id = StopTimeUpdate.trip_id(stu)
 
     stu =

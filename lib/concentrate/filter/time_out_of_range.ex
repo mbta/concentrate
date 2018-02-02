@@ -18,7 +18,7 @@ defmodule Concentrate.Filter.TimeOutOfRange do
 
   @impl Concentrate.Filter
   def filter(%StopTimeUpdate{} = stu, {min_time, max_time, included_trips} = state) do
-    time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
+    time = StopTimeUpdate.time(stu)
     trip_id = StopTimeUpdate.trip_id(stu)
 
     cond do
