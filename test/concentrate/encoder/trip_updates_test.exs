@@ -58,7 +58,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
     test "decoding and re-encoding tripupdates.pb is a no-op" do
       decoded = GTFSRealtime.parse(File.read!(fixture_path("tripupdates.pb")), [])
       round_tripped = GTFSRealtime.parse(encode(decoded), [])
-      assert round_tripped == decoded
+      assert Enum.sort(round_tripped) == Enum.sort(decoded)
     end
 
     test "interspersing VehiclePositions doesn't affect the output (with non-matching trips)" do
@@ -71,7 +71,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         )
 
       round_tripped = GTFSRealtime.parse(encode(interspersed), [])
-      assert round_tripped == decoded
+      assert Enum.sort(round_tripped) == Enum.sort(decoded)
     end
   end
 end
