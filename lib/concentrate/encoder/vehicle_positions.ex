@@ -16,15 +16,6 @@ defmodule Concentrate.Encoder.VehiclePositions do
     :gtfs_realtime_proto.encode_msg(message, :FeedMessage)
   end
 
-  def feed_header do
-    timestamp = :erlang.system_time(:seconds)
-
-    %{
-      gtfs_realtime_version: "2.0",
-      timestamp: timestamp
-    }
-  end
-
   def feed_entity(list) do
     list
     |> group
@@ -88,7 +79,8 @@ defmodule Concentrate.Encoder.VehiclePositions do
   end
 
   defp entity_id(vp) do
-    VehiclePosition.id(vp) || VehiclePosition.trip_id(vp) || "#{:erlang.phash2(vp)}"
+    VehiclePosition.id(vp) || VehiclePosition.trip_id(vp) ||
+      Integer.to_string(:erlang.unique_integer())
   end
 
   defp trip_descriptor(update) do
