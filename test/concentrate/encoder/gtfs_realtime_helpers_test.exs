@@ -18,16 +18,16 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpersTest do
         tu,
         vehicle,
         vehicle_no_trip,
-        stu2,
-        stu
+        stu,
+        stu2
       ]
 
       expected = [
-        {tu, [vehicle], [stu, stu2]},
-        {nil, [vehicle_no_trip], []}
+        {nil, [vehicle_no_trip], []},
+        {tu, [vehicle], [stu, stu2]}
       ]
 
-      actual = group(parsed)
+      actual = Enum.sort(group(parsed))
       assert actual == expected
     end
 

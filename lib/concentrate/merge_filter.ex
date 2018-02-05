@@ -11,7 +11,7 @@ defmodule Concentrate.MergeFilter do
   use GenStage
   require Logger
   alias Concentrate.Merge.Table
-  alias Concentrate.{Filter, TripUpdate, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{Filter, VehiclePosition, StopTimeUpdate}
   @start_link_opts [:name]
 
   defstruct timeout: 1_000,
@@ -127,8 +127,8 @@ defmodule Concentrate.MergeFilter do
     end
   end
 
-  defp sort_key(%TripUpdate{}), do: 0
-  defp sort_key(%VehiclePosition{}), do: 1
-  defp sort_key(%StopTimeUpdate{}), do: 2
-  defp sort_key(_), do: 4
+  @compile inline: [sort_key: 1]
+  def sort_key(%VehiclePosition{}), do: -1
+  def sort_key(%StopTimeUpdate{} = stu), do: StopTimeUpdate.stop_sequence(stu)
+  def sort_key(_), do: -2
 end

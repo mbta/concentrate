@@ -38,8 +38,8 @@ defmodule Concentrate.MergeFilterTest do
 
     test "runs the events through the filter" do
       data = [
-        VehiclePosition.new(latitude: 1, longitude: 1),
-        expected = VehiclePosition.new(trip_id: "trip", latitude: 2, longitude: 2)
+        VehiclePosition.new(id: "one", latitude: 1, longitude: 1),
+        expected = VehiclePosition.new(id: "two", trip_id: "trip", latitude: 2, longitude: 2)
       ]
 
       events = [data]
