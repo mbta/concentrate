@@ -70,6 +70,15 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     )
   end
 
+  @doc """
+  Renders the schedule relationship field.
+
+  SCHEDULED is the default and is rendered as `nil`. Other relationships are
+  rendered as-is.
+  """
+  def schedule_relationship(:SCHEDULED), do: nil
+  def schedule_relationship(relationship), do: relationship
+
   defp group_by_trip_id(%TripUpdate{} = tu, map) do
     case TripUpdate.trip_id(tu) do
       nil ->
