@@ -45,7 +45,8 @@ defmodule Concentrate.Encoder.TripUpdates do
               direction_id: TripUpdate.direction_id(update),
               start_time: TripUpdate.start_time(update),
               start_date: encode_date(TripUpdate.start_date(update)),
-              schedule_relationship: TripUpdate.schedule_relationship(update)
+              schedule_relationship:
+                schedule_relationship(TripUpdate.schedule_relationship(update))
             }),
           stop_time_update: Enum.map(stus, &build_stop_time_update/1)
         }
@@ -63,7 +64,7 @@ defmodule Concentrate.Encoder.TripUpdates do
       stop_sequence: StopTimeUpdate.stop_sequence(update),
       arrival: stop_time_event(StopTimeUpdate.arrival_time(update)),
       departure: stop_time_event(StopTimeUpdate.departure_time(update)),
-      schedule_relationship: StopTimeUpdate.schedule_relationship(update)
+      schedule_relationship: schedule_relationship(StopTimeUpdate.schedule_relationship(update))
     })
   end
 

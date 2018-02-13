@@ -77,7 +77,4 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
       time: unix_timestamp
     }
   end
-
-  defp schedule_relationship(:SCHEDULED), do: nil
-  defp schedule_relationship(relationship), do: relationship
 end
