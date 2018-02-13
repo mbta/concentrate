@@ -135,7 +135,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
             trip_id: trip_id,
             stop_id: Map.get(stu, :stop_id),
             stop_sequence: Map.get(stu, :stop_sequence),
-            schedule_relationship: Map.get(stu, :schedule_relationship),
+            schedule_relationship: Map.get(stu, :schedule_relationship, :SCHEDULED),
             arrival_time: time_from_event(Map.get(stu, :arrival)),
             departure_time: time_from_event(Map.get(stu, :departure))
           )
@@ -160,7 +160,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
         direction_id: Map.get(trip, :direction_id),
         start_date: date(Map.get(trip, :start_date)),
         start_time: Map.get(trip, :start_time),
-        schedule_relationship: Map.get(trip, :schedule_relationship)
+        schedule_relationship: Map.get(trip, :schedule_relationship, :SCHEDULED)
       )
     ]
   end

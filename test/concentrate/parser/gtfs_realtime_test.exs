@@ -72,7 +72,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
                )
     end
 
-    test "test can handle nil times as well as nil events" do
+    test "can handle nil times as well as nil events" do
       update = %{
         trip: %{},
         stop_time_update: [
@@ -86,6 +86,17 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       [_tu, stop_update] = decode_trip_update(update, %Options{})
       refute StopTimeUpdate.arrival_time(stop_update)
       refute StopTimeUpdate.departure_time(stop_update)
+    end
+
+    test "can handle missing schedule_relationship" do
+      update = %{
+        trip: %{},
+        stop_time_update: [%{}]
+      }
+
+      [tu, stu] = decode_trip_update(update, %Options{})
+      assert TripUpdate.schedule_relationship(tu) == :SCHEDULED
+      assert StopTimeUpdate.schedule_relationship(stu) == :SCHEDULED
     end
 
     test "does not include trip or stop update if we're ignoring the route" do
