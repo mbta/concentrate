@@ -49,5 +49,28 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
       decoded = Jason.decode!(encode(initial))
       assert decoded["entity"] == []
     end
+
+    test "trips/updates with schedule_relationship SCHEDULED don't have that field" do
+      parsed = [
+        TripUpdate.new(trip_id: "trip", schedule_relationship: :SCHEDULED),
+        StopTimeUpdate.new(trip_id: "trip", stop_id: "stop", schedule_relationship: :SCHEDULED)
+      ]
+
+      encoded = Jason.decode!(encode(parsed))
+
+      %{
+        "entity" => [
+          %{
+            "trip_update" => %{
+              "trip" => trip,
+              "stop_time_update" => [update]
+            }
+          }
+        ]
+      } = encoded
+
+      refute "schedule_relationship" in Map.keys(trip)
+      refute "schedule_relationship" in Map.keys(update)
+    end
   end
 end
