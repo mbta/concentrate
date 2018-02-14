@@ -25,7 +25,7 @@ defmodule Concentrate.Sink.S3Test do
       assert first_message.headers["content-type"] == "application/json"
       assert second_message.path == "b.pb"
       assert second_message.body == "b body"
-      assert second_message.headers["content-type"] == "application/octet-stream"
+      assert second_message.headers["content-type"] == "application/x-protobuf"
     end
   end
 
