@@ -20,6 +20,8 @@ defmodule Concentrate.Sink.Filesystem do
   def handle_events(events, _from, state) do
     for {filename, body} <- events do
       path = Path.join(state, filename)
+      directory = Path.dirname(path)
+      File.mkdir_p!(directory)
       File.write!(path, body)
 
       Logger.info(fn ->

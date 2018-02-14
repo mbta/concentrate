@@ -17,10 +17,11 @@ defmodule Concentrate.Supervisor.Pipeline do
   def children(config) do
     {source_names, source_children} = sources(config[:sources])
     {output_names, output_children} = encoders(config[:encoders])
+    file_tap = [{Concentrate.Producer.FileTap, config[:file_tap]}]
     merge_filter = merge(source_names, config[:filters])
     reporters = reporters(config[:reporters])
-    sinks = sinks(config[:sinks], output_names)
-    Enum.concat([source_children, merge_filter, output_children, reporters, sinks])
+    sinks = sinks(config[:sinks], [Concentrate.Producer.FileTap] ++ output_names)
+    Enum.concat([source_children, file_tap, merge_filter, output_children, reporters, sinks])
   end
 
   def sources(config) do
