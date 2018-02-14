@@ -4,6 +4,7 @@ defmodule Concentrate.Producer.HTTP do
   """
   use GenStage
   alias Concentrate.Producer.HTTP.StateMachine, as: SM
+  alias Concentrate.Producer.FileTap
   require Logger
   @start_link_opts [:name]
 
@@ -81,6 +82,7 @@ defmodule Concentrate.Producer.HTTP do
   end
 
   defp parse_bodies([binary], state) do
+    FileTap.log_body(binary, SM.url(state.machine), DateTime.utc_now())
     {time, parsed} = :timer.tc(state.parser, [binary])
 
     Logger.info(fn ->

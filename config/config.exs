@@ -46,6 +46,9 @@ config :concentrate,
   ],
   sinks: [
     filesystem: [directory: "/tmp"]
+  ],
+  file_tap: [
+    enabled?: false
   ]
 
 import_config "#{Mix.env()}.exs"

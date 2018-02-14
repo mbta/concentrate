@@ -46,6 +46,9 @@ defmodule ConcentrateTest do
       "bucket": "s3-bucket",
       "prefix": "bucket_prefix"
     }
+  },
+  "file_tap": {
+    "enabled": true
   }
 }
       )
@@ -67,6 +70,7 @@ defmodule ConcentrateTest do
       assert config[:sinks][:s3][:bucket] == "s3-bucket"
       assert config[:sinks][:s3][:prefix] == "bucket_prefix"
       assert is_list(config[:sinks][:s3])
+      assert config[:file_tap][:enabled?]
     end
 
     test "missing keys aren't configured" do
