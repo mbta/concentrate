@@ -51,5 +51,6 @@ defmodule Concentrate.Sink.S3 do
   end
 
   defp do_content_type(".json"), do: "application/json"
+  defp do_content_type(".pb"), do: "application/x-protobuf"
   defp do_content_type(_), do: "application/octet-stream"
 end
