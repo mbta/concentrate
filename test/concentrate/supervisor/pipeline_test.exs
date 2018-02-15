@@ -23,5 +23,36 @@ defmodule Concentrate.Supervisor.PipelineTest do
 
       assert length(actual) == 8
     end
+
+    test "s3 sink generates a child for each source and output" do
+      config = [
+        sources: [
+          gtfs_realtime: [
+            name: "url",
+            name2: {"url2", fallback_url: "url fallback"}
+          ],
+          gtfs_realtime_enhanced: [
+            name3: "url3"
+          ]
+        ],
+        reporters: [],
+        encoders: [files: [{"filename", :module}, {"other_file", :other_mod}]],
+        sinks: [s3: []],
+        file_tap: [
+          enabled?: true
+        ]
+      ]
+
+      source_count =
+        length(config[:sources][:gtfs_realtime]) +
+          length(config[:sources][:gtfs_realtime_enhanced])
+
+      encoder_count = length(config[:encoders][:files])
+      sink_count = source_count + encoder_count + 1
+
+      actual = children(config)
+      # extra two are MergeFilter and FileTap
+      assert length(actual) == source_count + 2 + encoder_count + sink_count
+    end
   end
 end
