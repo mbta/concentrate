@@ -20,7 +20,7 @@ defmodule Concentrate.Supervisor.Pipeline do
     file_tap = [{Concentrate.Producer.FileTap, config[:file_tap]}]
     merge_filter = merge(source_names, config[:filters])
     reporters = reporters(config[:reporters])
-    sinks = sinks(config[:sinks], [Concentrate.Producer.FileTap] ++ output_names)
+    sinks = sinks(config[:sinks], [Concentrate.Producer.FileTap] ++ output_names, source_names)
     Enum.concat([source_children, file_tap, merge_filter, output_children, reporters, sinks])
   end
 
@@ -101,14 +101,14 @@ defmodule Concentrate.Supervisor.Pipeline do
     {child_ids(children), children}
   end
 
-  def sinks(config, output_names) do
+  def sinks(config, output_names, source_names) do
     for {sink_type, sink_config} <- config,
-        child <- sink_config(sink_type, sink_config, output_names) do
+        child <- sink_config(sink_type, sink_config, output_names, source_names) do
       child
     end
   end
 
-  defp sink_config(:filesystem, config, output_names) do
+  defp sink_config(:filesystem, config, output_names, _source_names) do
     # filesystem gets serialized anyways, no point in running multiple workers
     [
       {Concentrate.Sink.Filesystem,
@@ -119,12 +119,15 @@ defmodule Concentrate.Supervisor.Pipeline do
     ]
   end
 
-  defp sink_config(:s3, config, output_names) do
-    # generate a sink per file, so they're distributed
-    for name <- output_names do
+  defp sink_config(:s3, config, output_names, source_names) do
+    # generate a sink per output name and source name, so that there's at
+    # least a sink per file we're uploading
+    count = length(output_names) + length(source_names)
+
+    for id <- 1..count do
       child_spec(
         {Concentrate.Sink.S3, [subscribe_to: output_names] ++ config},
-        id: {:s3_sink, name}
+        id: {:s3_sink, id}
       )
     end
   end
