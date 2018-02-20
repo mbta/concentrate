@@ -9,6 +9,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   * `get_opts`: (optional) values to pass as options to HTTPoison
   """
   require Logger
+  alias Concentrate.Producer.FileTap
   @default_timeout 15_000
 
   defstruct url: "",
@@ -22,7 +23,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
             content_warning_timeout: 300_000,
             last_success: :never,
             previous_hash: -1,
-            fallback: :undefined
+            fallback: :undefined,
+            parser: :undefined
 
   @type t :: %__MODULE__{url: binary}
   @type message :: {term, non_neg_integer}
@@ -30,7 +32,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   @spec init(binary, Keyword.t()) :: t
   def init(url, opts) when is_binary(url) and is_list(opts) do
-    state = %__MODULE__{url: url}
+    state = %__MODULE__{url: url, parser: Keyword.fetch!(opts, :parser)}
     state = struct!(state, Keyword.take(opts, ~w(get_opts fetch_after content_warning_timeout)a))
     state = %{state | last_success: now() - state.fetch_after - 1}
 
@@ -120,7 +122,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
          machine,
          {:http_response, %{status_code: 200, headers: headers, body: body}}
        ) do
-    {bodies, machine} = parse_bodies(machine, body)
+    {bodies, machine} = parse_bodies_if_changed(machine, body)
     machine = update_cache_headers(machine, headers)
     {machine, messages} = check_last_success(machine)
     message = {:fetch, machine.url}
@@ -228,7 +230,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     %{machine | headers: cache_headers}
   end
 
-  defp parse_bodies(%{previous_hash: previous_hash} = machine, body) do
+  defp parse_bodies_if_changed(%{previous_hash: previous_hash} = machine, body) do
     case :erlang.phash2(body) do
       ^previous_hash ->
         Logger.info(fn ->
@@ -238,8 +240,47 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
         {[], machine}
 
       new_hash ->
-        {[body], deactivate_fallback(%{machine | previous_hash: new_hash, last_success: now()})}
+        FileTap.log_body(body, url(machine), DateTime.utc_now())
+        parse_body(%{machine | previous_hash: new_hash}, body)
     end
+  end
+
+  defp parse_body(machine, body) do
+    {time, parsed} = :timer.tc(machine.parser, [body])
+
+    Logger.info(fn ->
+      "#{__MODULE__} updated: url=#{inspect(url(machine))} records=#{length(parsed)} time=#{
+        time / 1000
+      }"
+    end)
+
+    machine =
+      if parsed == [] do
+        # don't log a success if there wasn't any data
+        machine
+      else
+        deactivate_fallback(%{machine | last_success: now()})
+      end
+
+    {[parsed], machine}
+  rescue
+    error ->
+      log_parse_error(error, machine, System.stacktrace())
+      {[], machine}
+  catch
+    error ->
+      log_parse_error(error, machine, System.stacktrace())
+      {[], machine}
+  end
+
+  defp log_parse_error(error, machine, trace) do
+    Logger.error(fn ->
+      "#{__MODULE__}: #{inspect(url(machine))} parse error: #{inspect(error)}\n#{
+        Exception.format_stacktrace(trace)
+      }"
+    end)
+
+    []
   end
 
   defp check_last_success(machine) do
@@ -265,6 +306,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     fallback_machine =
       init(
         url,
+        parser: machine.parser,
         get_opts: machine.get_opts,
         fetch_after: machine.fetch_after,
         content_warning_timeout: machine.content_warning_timeout

@@ -12,12 +12,12 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
 
   describe "url/1" do
     test "returns the URL for the machine" do
-      machine = init("url", [])
+      machine = init("url", parser: &List.wrap/1)
       assert url(machine) == "url"
     end
 
     test "returns the main URL if the fallback is inactive" do
-      machine = init("url", fallback_url: "other url")
+      machine = init("url", fallback_url: "other url", parser: &List.wrap/1)
       assert url(machine) == "url"
     end
 
@@ -44,19 +44,19 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
 
   describe "fetch/1" do
     test "fetches immediately the first time" do
-      machine = init("url", [])
+      machine = init("url", parser: &List.wrap/1)
       assert {_machine, [], [{_, 0}]} = fetch(machine)
     end
 
     test "if we had a success in the past, doesn't refetch immediately" do
-      machine = init("url", [])
+      machine = init("url", parser: &List.wrap/1)
       {machine, _, _} = message(machine, {:http_response, make_resp([])})
       assert {_machine, _, [{_, delay}]} = fetch(machine)
       assert delay > 0
     end
 
     test "if we had a success more than `fetch_after` in the past, fetches immediately" do
-      machine = init("url", fetch_after: 10)
+      machine = init("url", fetch_after: 10, parser: &List.wrap/1)
       {machine, _, _} = message(machine, {:http_response, make_resp([])})
       :timer.sleep(11)
       assert {_machine, _, [{_, 0}]} = fetch(machine)
@@ -65,7 +65,7 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
 
   describe "message/2" do
     test "does not log an error on :closed or :timeout errors" do
-      machine = init("url", [])
+      machine = init("url", parser: &List.wrap/1)
 
       for reason <- [:closed, {:closed, :timeout}, :timeout] do
         error = {:http_error, reason}
@@ -80,7 +80,7 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
     end
 
     test "does log other errors" do
-      machine = init("url", [])
+      machine = init("url", parser: &List.wrap/1)
       error = {:http_error, :unknown_error}
 
       log =
@@ -92,12 +92,30 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
     end
 
     test "logs a error if we have't gotten content since a timeout" do
-      opts = [content_warning_timeout: 0]
+      opts = [content_warning_timeout: 1]
 
       messages = [
         {:http_response, make_resp(body: "body")},
         fn -> :timer.sleep(5) end,
         {:http_response, make_resp(code: 304)}
+      ]
+
+      log =
+        capture_log([level: :error], fn ->
+          _ = run_machine("url", opts, messages)
+        end)
+
+      assert log =~ ~s("url")
+      assert log =~ "has not been updated in"
+    end
+
+    test "logs an error if we haven't gotten records (post-parse) since a timeout" do
+      opts = [content_warning_timeout: 1, parser: fn _ -> [] end]
+
+      messages = [
+        {:http_response, make_resp(body: "body")},
+        fn -> :timer.sleep(5) end,
+        {:http_response, make_resp(body: "body 2")}
       ]
 
       log =
@@ -183,7 +201,7 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
         {:fallback, {:http_response, make_resp(body: "fallback")}}
       ]
 
-      assert {machine, ["fallback"], [{message, delay}]} =
+      assert {machine, [["fallback"]], [{message, delay}]} =
                run_machine(
                  "url",
                  [content_warning_timeout: 5, fallback_url: "other url"],
@@ -204,7 +222,7 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
         {:http_response, make_resp(body: "body")}
       ]
 
-      assert {machine, ["body"], _} =
+      assert {machine, [["body"]], _} =
                run_machine(
                  "url",
                  [content_warning_timeout: 5, fallback_url: "other url"],
@@ -236,6 +254,7 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
   end
 
   defp run_machine(url, opts, messages) do
+    opts = Keyword.put_new(opts, :parser, &List.wrap/1)
     machine = init(url, opts)
     initial = {machine, [], []}
 
