@@ -53,7 +53,7 @@ defmodule Concentrate.MixProject do
       {:ex_aws_s3, "~> 2.0"},
       {:excoveralls, "~> 0.7", only: :test},
       {:gen_stage, "~> 0.13 and != 0.13.1"},
-      {:gpb, "~> 4.1.2", only: :dev},
+      {:gpb, "~> 4.1.2", only: :dev, runtime: false},
       {:httpoison, "~> 1.0"},
       {:jason, "~> 1.0"},
       {:stream_data, "~> 0.4", only: :test}
