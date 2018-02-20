@@ -4,7 +4,6 @@ defmodule Concentrate.Producer.HTTP do
   """
   use GenStage
   alias Concentrate.Producer.HTTP.StateMachine, as: SM
-  alias Concentrate.Producer.FileTap
   require Logger
   @start_link_opts [:name]
 
@@ -12,7 +11,7 @@ defmodule Concentrate.Producer.HTTP do
     @moduledoc """
     Module for keeping track of the state for an HTTP producer.
     """
-    defstruct [:machine, :parser, demand: 0]
+    defstruct [:machine, demand: 0]
   end
 
   alias __MODULE__.State
@@ -26,7 +25,7 @@ defmodule Concentrate.Producer.HTTP do
   @impl GenStage
   def init({url, opts}) do
     parser =
-      case Keyword.get(opts, :parser) do
+      case Keyword.fetch!(opts, :parser) do
         module when is_atom(module) ->
           fn binary -> module.parse(binary, []) end
 
@@ -37,20 +36,19 @@ defmodule Concentrate.Producer.HTTP do
           fun
       end
 
-    opts = Keyword.drop(opts, [:parser])
+    opts = Keyword.put(opts, :parser, parser)
     machine = SM.init(url, opts)
 
     {
       :producer,
-      %State{machine: machine, parser: parser},
+      %State{machine: machine},
       dispatcher: GenStage.BroadcastDispatcher
     }
   end
 
   @impl GenStage
   def handle_info(message, %{machine: machine, demand: demand} = state) do
-    {machine, bodies, outgoing_messages} = SM.message(machine, message)
-    events = parse_bodies(bodies, state)
+    {machine, events, outgoing_messages} = SM.message(machine, message)
     new_demand = demand - length(events)
 
     if new_demand > 0 do
@@ -75,37 +73,6 @@ defmodule Concentrate.Producer.HTTP do
     end
 
     {:noreply, [], %{state | machine: machine, demand: new_demand + existing_demand}}
-  end
-
-  defp parse_bodies([], _state) do
-    []
-  end
-
-  defp parse_bodies([binary], state) do
-    FileTap.log_body(binary, SM.url(state.machine), DateTime.utc_now())
-    {time, parsed} = :timer.tc(state.parser, [binary])
-
-    Logger.info(fn ->
-      "#{__MODULE__} updated: url=#{inspect(SM.url(state.machine))} records=#{length(parsed)} time=#{
-        time / 1000
-      }"
-    end)
-
-    [parsed]
-  rescue
-    error -> parse_error(error, state, System.stacktrace())
-  catch
-    error -> parse_error(error, state, System.stacktrace())
-  end
-
-  defp parse_error(error, state, trace) do
-    Logger.error(fn ->
-      "#{__MODULE__}: #{inspect(SM.url(state.machine))} parse error: #{inspect(error)}\n#{
-        Exception.format_stacktrace(trace)
-      }"
-    end)
-
-    []
   end
 
   defp send_outgoing_messages(outgoing_messages) do

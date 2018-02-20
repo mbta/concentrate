@@ -31,19 +31,19 @@ defmodule Concentrate.Producer.HTTPTest do
   describe "init/1" do
     test "parser can be a module" do
       assert {:producer, state, _} = init({"url", parser: __MODULE__.TestParser})
-      assert is_function(state.parser, 1)
+      assert is_function(state.machine.parser, 1)
     end
 
     test "parser can be a module with options" do
       assert {:producer, state, _} = init({"url", parser: {__MODULE__.TestParser, [opt: 1]}})
-      assert is_function(state.parser, 1)
+      assert is_function(state.machine.parser, 1)
     end
   end
 
   describe "handle_info/2" do
     @tag :capture_log
     test "ignores unknown messages" do
-      machine = StateMachine.init("url", [])
+      machine = StateMachine.init("url", parser: & &1)
       state = %Concentrate.Producer.HTTP.State{machine: machine}
       assert {:noreply, [], ^state} = handle_info(:unknown, state)
     end
@@ -51,7 +51,7 @@ defmodule Concentrate.Producer.HTTPTest do
 
   describe "handle_demand/3" do
     test "only send messages if there was no previous demand" do
-      {_, state, _} = init({"url", []})
+      {_, state, _} = init({"url", parser: & &1})
       {:noreply, _, state} = handle_demand(1, state)
       assert_receive {:fetch, "url"}
       # there's demand now, so more incoming demand shouldn't reschedule
@@ -250,7 +250,7 @@ defmodule Concentrate.Producer.HTTPTest do
 
     @tag :capture_log
     test "a fetch error is not fatal" do
-      {:ok, pid} = start_supervised({Concentrate.Producer.HTTP, {"nodomain.dne", []}})
+      {:ok, pid} = start_supervised({Concentrate.Producer.HTTP, {"nodomain.dne", parser: & &1}})
       # this will never finish, so run it in a separate process
       Task.async(fn -> take_events(pid, 1) end)
       :timer.sleep(50)
