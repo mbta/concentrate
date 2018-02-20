@@ -11,6 +11,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   require Logger
   alias Concentrate.Producer.FileTap
   @default_timeout 15_000
+  @default_fetch_after 5_000
+  @default_content_warning_timeout 600_000
 
   defstruct url: "",
             get_opts: [
@@ -19,8 +21,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
               hackney: [pool: :http_producer_pool]
             ],
             headers: [],
-            fetch_after: 5_000,
-            content_warning_timeout: 300_000,
+            fetch_after: @default_fetch_after,
+            content_warning_timeout: @default_content_warning_timeout,
             last_success: :never,
             previous_hash: -1,
             fallback: :undefined,
