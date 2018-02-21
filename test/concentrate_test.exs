@@ -29,7 +29,11 @@ defmodule ConcentrateTest do
       "name_4": {
         "url": "url_4",
         "max_future_time": 3600
-       }
+      },
+      "name_5": {
+        "url": "url_5",
+        "content_warning_timeout": 3600
+      }
     },
     "gtfs_realtime_enhanced": {
       "enhanced_1": "url_3"
@@ -58,7 +62,8 @@ defmodule ConcentrateTest do
                name_1: "url_1",
                name_2: {"url_2", fallback_url: "url_fallback"},
                name_3: {"url_3", routes: ~w(a b)},
-               name_4: {"url_4", max_future_time: 3600}
+               name_4: {"url_4", max_future_time: 3600},
+               name_5: {"url_5", content_warning_timeout: 3600}
              }
 
       assert config[:sources][:gtfs_realtime_enhanced] == %{
