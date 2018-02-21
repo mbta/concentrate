@@ -105,8 +105,8 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
           _ = run_machine("url", opts, messages)
         end)
 
-      assert log =~ ~s("url")
-      assert log =~ "has not been updated in"
+      assert log =~ ~s(url="url")
+      assert log =~ "feed has not been updated"
     end
 
     test "logs an error if we haven't gotten records (post-parse) since a timeout" do
@@ -123,8 +123,8 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
           _ = run_machine("url", opts, messages)
         end)
 
-      assert log =~ ~s("url")
-      assert log =~ "has not been updated in"
+      assert log =~ ~s(url="url")
+      assert log =~ "feed has not been updated"
     end
 
     test "does not log multiple warnings after the first timeout" do
