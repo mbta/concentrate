@@ -291,7 +291,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     if time_since_last_success >= machine.content_warning_timeout do
       Logger.error(fn ->
         delay = div(time_since_last_success, 1000)
-        "#{__MODULE__}: #{inspect(machine.url)} has not been updated in #{delay}s"
+        "#{__MODULE__}: feed has not been updated url=#{inspect(machine.url)} delay=#{delay}"
       end)
 
       activate_fallback(%{machine | last_success: now()})
