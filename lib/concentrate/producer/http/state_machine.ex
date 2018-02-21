@@ -180,7 +180,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
     _ =
       Logger.log(log_level, fn ->
-        "#{__MODULE__}: #{inspect(machine.url)} error: #{inspect(reason)}"
+        "#{__MODULE__}: url=#{inspect(machine.url)} error=#{inspect(reason)}"
       end)
 
     {machine, messages} = check_last_success(machine)
@@ -203,7 +203,9 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defp handle_message(machine, unknown) do
     Logger.error(fn ->
-      "#{__MODULE__}: #{inspect(machine.url)} got unexpected message: #{inspect(unknown)}"
+      "#{__MODULE__}: got unexpected message url=#{inspect(machine.url)} message=#{
+        inspect(unknown)
+      }"
     end)
 
     {machine, [], []}
@@ -277,7 +279,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defp log_parse_error(error, machine, trace) do
     Logger.error(fn ->
-      "#{__MODULE__}: #{inspect(url(machine))} parse error: #{inspect(error)}\n#{
+      "#{__MODULE__}: parse error url=#{inspect(machine.url)} error=#{inspect(error)}\n#{
         Exception.format_stacktrace(trace)
       }"
     end)
