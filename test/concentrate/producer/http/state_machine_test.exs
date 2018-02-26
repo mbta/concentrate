@@ -80,7 +80,7 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
     end
 
     test "does not log an error on :ssl_closed errors" do
-      machine = init("url", [])
+      machine = init("url", parser: &List.wrap/1)
 
       error = {:ssl_closed, :closed}
 
