@@ -197,6 +197,11 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, [], []}
   end
 
+  defp handle_message(machine, {:ssl_closed, _} = message) do
+    # treat it as a regular HTTP error
+    handle_message(machine, {:http_error, message})
+  end
+
   defp handle_message(machine, unknown) do
     Logger.error(fn ->
       "#{__MODULE__}: #{inspect(machine.url)} got unexpected message: #{inspect(unknown)}"
@@ -307,6 +312,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defp error_log_level(:closed), do: :warn
   defp error_log_level({:closed, _}), do: :warn
+  defp error_log_level({:ssl_closed, _}), do: :warn
   defp error_log_level(:timeout), do: :warn
   defp error_log_level(_), do: :error
 
