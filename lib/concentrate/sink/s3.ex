@@ -31,6 +31,27 @@ defmodule Concentrate.Sink.S3 do
     {:noreply, [], state}
   end
 
+  @impl GenStage
+  def handle_info({:ssl_closed, _}, state) do
+    Logger.info(fn ->
+      "#{__MODULE__} SSL closed error bucket=#{inspect(state.bucket)} prefix=#{
+        inspect(state.prefix)
+      }"
+    end)
+
+    {:noreply, [], state}
+  end
+
+  def handle_info(message, state) do
+    Logger.warn(fn ->
+      "#{__MODULE__} unexpected message bucket=#{inspect(state.bucket)} prefix=#{
+        inspect(state.prefix)
+      } message=#{inspect(message)}"
+    end)
+
+    {:noreply, [], state}
+  end
+
   defp upload_to_s3({filename, body}, state) do
     full_filename = Path.join(state.prefix, filename)
     opts = [acl: state.acl, content_type: content_type(filename)]

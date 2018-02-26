@@ -1,6 +1,7 @@
 defmodule Concentrate.Sink.S3Test do
   @moduledoc false
-  use ExUnit.Case, async: true
+  use ExUnit.Case
+  import ExUnit.CaptureLog
   import Concentrate.Sink.S3
 
   describe "handle_events/1" do
@@ -26,6 +27,31 @@ defmodule Concentrate.Sink.S3Test do
       assert second_message.path == "b.pb"
       assert second_message.body == "b body"
       assert second_message.headers["content-type"] == "application/x-protobuf"
+    end
+  end
+
+  describe "handle_info/2" do
+    test "does not log a warning for ssl_closed messages" do
+      {_, state, _} = init(bucket: "bucket")
+
+      log =
+        capture_log([level: :warn], fn ->
+          assert {:noreply, [], ^state} = handle_info({:ssl_closed, :closed}, state)
+        end)
+
+      assert log == ""
+    end
+
+    test "logs a warning for other unknown messages" do
+      {_, state, _} = init(bucket: "bucket")
+
+      log =
+        capture_log([level: :warn], fn ->
+          assert {:noreply, [], ^state} = handle_info({:message, :unknown}, state)
+        end)
+
+      assert log =~ "unexpected message"
+      assert log =~ ~s({:message, :unknown})
     end
   end
 
