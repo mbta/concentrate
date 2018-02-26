@@ -79,6 +79,19 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
       end
     end
 
+    test "does not log an error on :ssl_closed errors" do
+      machine = init("url", [])
+
+      error = {:ssl_closed, :closed}
+
+      log =
+        capture_log([level: :error], fn ->
+          assert {_machine, [], [{{:fetch, _}, _}]} = message(machine, error)
+        end)
+
+      assert log == ""
+    end
+
     test "does log other errors" do
       machine = init("url", parser: &List.wrap/1)
       error = {:http_error, :unknown_error}
