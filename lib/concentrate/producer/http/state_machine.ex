@@ -77,7 +77,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
           []
       end
 
-    {machine, [], [{message, delay}] ++ other_messages}
+    {machine, [], include_fallback_messages(message, delay, other_messages)}
   end
 
   defp fetch_delay(machine) do
@@ -99,8 +99,6 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   @spec message(t, term) :: return
   def message(%__MODULE__{} = machine, message) do
-    # {machine, bodies, messages} = handle_message(machine, message)
-    # {machine, bodies, messages}
     case handle_message(machine, message) do
       ret = {%__MODULE__{}, bodies, messages} when is_list(bodies) and is_list(messages) ->
         ret
@@ -344,16 +342,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     end
   end
 
-  defp include_fallback_messages(message, delay, fallback_messages)
-
-  defp include_fallback_messages(message, delay, []) do
-    # if there are no fallback messages, send the regular one
-    [{message, delay}]
-  end
-
-  defp include_fallback_messages(_, _, fallback_messages) do
-    # otherwise, only use the fallback
-    fallback_messages
+  defp include_fallback_messages(message, delay, fallback_messages) do
+    [{message, delay} | fallback_messages]
   end
 
   defp error_log_level(:closed), do: :warn
