@@ -49,6 +49,7 @@ defmodule Concentrate.Producer.HTTP do
   @impl GenStage
   def handle_info(message, %{machine: machine, demand: demand} = state) do
     {machine, events, outgoing_messages} = SM.message(machine, message)
+    events = Enum.take(events, demand)
     new_demand = demand - length(events)
 
     if new_demand > 0 do
@@ -66,9 +67,9 @@ defmodule Concentrate.Producer.HTTP do
 
   @impl GenStage
   def handle_demand(new_demand, %{machine: machine, demand: existing_demand} = state) do
-    {machine, [], outgoing_messages} = SM.fetch(machine)
-
     if existing_demand == 0 do
+      {^machine, [], outgoing_messages} = SM.fetch(machine)
+
       send_outgoing_messages(outgoing_messages)
     end
 
