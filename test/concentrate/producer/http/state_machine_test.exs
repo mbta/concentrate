@@ -210,19 +210,19 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
         {:http_response, make_resp([])},
         fn -> :timer.sleep(5) end,
         # activates fallback
-        {:http_response, make_resp(code: 304)},
-        {:fallback, {:http_response, make_resp(body: "fallback")}}
+        {:http_response, make_resp(code: 304)}
       ]
 
-      assert {machine, [["fallback"]], [{message, delay}]} =
+      assert {machine, [], [normal_fetch, fallback_fetch]} =
                run_machine(
                  "url",
                  [content_warning_timeout: 5, fallback_url: "other url"],
                  messages
                )
 
-      assert message == {:fallback, {:fetch, "other url"}}
-      assert delay == machine.fetch_after
+      assert normal_fetch == {{:fetch, "url"}, machine.fetch_after}
+      # fallback is fetched immediately
+      assert fallback_fetch == {{:fallback, {:fetch, "other url"}}, 0}
     end
 
     @tag :capture_log
