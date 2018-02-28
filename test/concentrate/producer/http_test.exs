@@ -47,6 +47,19 @@ defmodule Concentrate.Producer.HTTPTest do
       state = %Concentrate.Producer.HTTP.State{machine: machine}
       assert {:noreply, [], ^state} = handle_info(:unknown, state)
     end
+
+    @tag :capture_log
+    test "does not send more demand than requested" do
+      machine = StateMachine.init("url", parser: &[&1])
+      state = %Concentrate.Producer.HTTP.State{machine: machine, demand: 1}
+      response = %HTTPoison.Response{status_code: 200, body: "body"}
+      assert {:noreply, [_], state, :hibernate} = handle_info({:http_response, response}, state)
+
+      assert {:noreply, [], state} =
+               handle_info({:http_response, %{response | body: "new body"}}, state)
+
+      assert state.demand == 0
+    end
   end
 
   describe "handle_demand/3" do
