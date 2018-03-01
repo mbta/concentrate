@@ -3,7 +3,7 @@ defmodule Concentrate.Encoder.TripUpdates do
   Encodes a list of parsed data into a TripUpdates.pb file.
   """
   @behaviour Concentrate.Encoder
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.{TripUpdate, StopTimeUpdate, VehiclePosition}
   import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
@@ -31,25 +31,31 @@ defmodule Concentrate.Encoder.TripUpdates do
     |> Enum.flat_map(&build_entity/1)
   end
 
-  defp build_entity({%TripUpdate{} = update, _vps, [_ | _] = stus}) do
+  defp build_entity({%TripUpdate{} = update, vps, [_ | _] = stus}) do
     trip_id = TripUpdate.trip_id(update)
+
+    trip =
+      drop_nil_values(%{
+        trip_id: trip_id,
+        route_id: TripUpdate.route_id(update),
+        direction_id: TripUpdate.direction_id(update),
+        start_time: TripUpdate.start_time(update),
+        start_date: encode_date(TripUpdate.start_date(update)),
+        schedule_relationship: schedule_relationship(TripUpdate.schedule_relationship(update))
+      })
+
+    stop_time_update = Enum.map(stus, &build_stop_time_update/1)
+    vehicle = vehicle(vps)
 
     [
       %{
         id: trip_id || "#{:erlang.phash2(update)}",
-        trip_update: %{
-          trip:
-            drop_nil_values(%{
-              trip_id: trip_id,
-              route_id: TripUpdate.route_id(update),
-              direction_id: TripUpdate.direction_id(update),
-              start_time: TripUpdate.start_time(update),
-              start_date: encode_date(TripUpdate.start_date(update)),
-              schedule_relationship:
-                schedule_relationship(TripUpdate.schedule_relationship(update))
-            }),
-          stop_time_update: Enum.map(stus, &build_stop_time_update/1)
-        }
+        trip_update:
+          drop_nil_values(%{
+            trip: trip,
+            stop_time_update: stop_time_update,
+            vehicle: vehicle
+          })
       }
     ]
   end
@@ -76,5 +82,17 @@ defmodule Concentrate.Encoder.TripUpdates do
     %{
       time: unix_timestamp
     }
+  end
+
+  defp vehicle([]) do
+    nil
+  end
+
+  defp vehicle([vp | _]) do
+    drop_nil_values(%{
+      id: VehiclePosition.id(vp),
+      label: VehiclePosition.label(vp),
+      license_plate: VehiclePosition.license_plate(vp)
+    })
   end
 end

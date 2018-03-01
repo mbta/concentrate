@@ -55,6 +55,29 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
       assert decoded == []
     end
 
+    test "trips include part of vehicles" do
+      initial = [
+        TripUpdate.new(trip_id: "1"),
+        StopTimeUpdate.new(trip_id: "1"),
+        VehiclePosition.new(
+          trip_id: "1",
+          latitude: 1,
+          longitude: 1,
+          id: "id",
+          label: "label",
+          license_plate: "plate"
+        )
+      ]
+
+      decoded = :gtfs_realtime_proto.decode_msg(encode(initial), :FeedMessage, [])
+
+      assert %{
+               entity: [
+                 %{trip_update: %{vehicle: %{id: "id", label: "label", license_plate: "plate"}}}
+               ]
+             } = decoded
+    end
+
     test "decoding and re-encoding tripupdates.pb is a no-op" do
       decoded = GTFSRealtime.parse(File.read!(fixture_path("tripupdates.pb")), [])
       round_tripped = GTFSRealtime.parse(encode(decoded), [])
