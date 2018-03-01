@@ -28,7 +28,8 @@ config :concentrate,
     Concentrate.Filter.RemoveUnneededTimes,
     Concentrate.Filter.ClosedStop,
     Concentrate.Filter.CancelledTrip,
-    Concentrate.Filter.Shuttle
+    Concentrate.Filter.Shuttle,
+    Concentrate.Filter.SkippedStopOnAddedTrip
   ],
   reporters: [
     Concentrate.Reporter.VehicleLatency,
