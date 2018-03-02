@@ -163,14 +163,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   end
 
   defp handle_message(machine, {:http_response, %{status_code: code}}) do
-    Logger.warn(fn ->
-      "#{__MODULE__}: #{inspect(machine.url)} unexpected code #{inspect(code)}"
-    end)
-
-    {machine, messages} = check_last_success(machine)
-    message = {:fetch, machine.url}
-    messages = include_fallback_messages(message, machine.fetch_after, messages)
-    {machine, [], messages}
+    handle_message(machine, {:http_error, {:unexpected_code, code}})
   end
 
   defp handle_message(machine, {:http_error, reason}) do
@@ -350,6 +343,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   defp error_log_level({:closed, _}), do: :warn
   defp error_log_level({:ssl_closed, _}), do: :warn
   defp error_log_level(:timeout), do: :warn
+  defp error_log_level({:unexpected_code, _}), do: :warn
   defp error_log_level(_), do: :error
 
   defp now do
