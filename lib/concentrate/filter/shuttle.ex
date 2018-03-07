@@ -15,7 +15,7 @@ defmodule Concentrate.Filter.Shuttle do
   end
 
   @impl Concentrate.Filter
-  def filter(%TripUpdate{} = tu, _next_item, state) do
+  def filter(%TripUpdate{} = tu, state) do
     trip_id = TripUpdate.trip_id(tu)
     route_id = TripUpdate.route_id(tu)
     date = TripUpdate.start_date(tu)
@@ -38,35 +38,13 @@ defmodule Concentrate.Filter.Shuttle do
     {:cont, tu, state}
   end
 
-  def filter(%StopTimeUpdate{} = stu, %StopTimeUpdate{} = next_stu, state) do
+  def filter(%StopTimeUpdate{} = stu, state) do
     {new_stu, state} = maybe_skip(stu, state)
-
-    new_stu =
-      cond do
-        new_stu != stu ->
-          new_stu
-
-        not Map.has_key?(state.trip_to_route, StopTimeUpdate.trip_id(new_stu)) ->
-          new_stu
-
-        match?({^next_stu, _}, maybe_skip(next_stu, state)) ->
-          # not skipping the next one either
-          new_stu
-
-        true ->
-          # remove the departure time from this update
-          StopTimeUpdate.update_departure_time(stu, nil)
-      end
 
     {:cont, new_stu, state}
   end
 
-  def filter(%StopTimeUpdate{} = stu, _next_item, state) do
-    {stu, state} = maybe_skip(stu, state)
-    {:cont, stu, state}
-  end
-
-  def filter(item, _next_item, state) do
+  def filter(item, state) do
     {:cont, item, state}
   end
 
