@@ -5,8 +5,8 @@ defmodule Concentrate.Supervisor.PipelineTest do
 
   describe "children/1" do
     test "builds the right number of children" do
-      # currently, the right number is 8 (2 urls + 1 merge/filter + 2
-      # encoders + 1 sink + 1 reporter + file tap)
+      # currently, the right number is 899 (2 urls + 1 merge/filter + 1 group
+      # encoder + 2 encoders + 1 sink + 1 reporter + file tap)
       config = [
         sources: [
           gtfs_realtime: [
@@ -21,7 +21,7 @@ defmodule Concentrate.Supervisor.PipelineTest do
 
       actual = children(config)
 
-      assert length(actual) == 8
+      assert length(actual) == 9
     end
 
     test "s3 sink generates a child for each source and output" do
@@ -51,8 +51,8 @@ defmodule Concentrate.Supervisor.PipelineTest do
       sink_count = source_count + encoder_count + 1
 
       actual = children(config)
-      # extra two are MergeFilter and FileTap
-      assert length(actual) == source_count + 2 + encoder_count + sink_count
+      # extra 3 are MergeFilter, FileTap, and GroupProducerConsumer
+      assert length(actual) == source_count + 3 + encoder_count + sink_count
     end
   end
 end
