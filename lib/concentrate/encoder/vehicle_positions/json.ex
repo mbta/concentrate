@@ -14,4 +14,14 @@ defmodule Concentrate.Encoder.VehiclePositions.JSON do
 
     Jason.encode!(message)
   end
+
+  @impl Concentrate.Encoder
+  def encode_groups(groups) when is_list(groups) do
+    message = %{
+      header: VehiclePositions.feed_header(),
+      entity: Enum.flat_map(groups, &VehiclePositions.build_entity/1)
+    }
+
+    Jason.encode!(message)
+  end
 end

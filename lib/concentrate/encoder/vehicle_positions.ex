@@ -16,6 +16,16 @@ defmodule Concentrate.Encoder.VehiclePositions do
     :gtfs_realtime_proto.encode_msg(message, :FeedMessage)
   end
 
+  @impl Concentrate.Encoder
+  def encode_groups(groups) when is_list(groups) do
+    message = %{
+      header: feed_header(),
+      entity: Enum.flat_map(groups, &build_entity/1)
+    }
+
+    :gtfs_realtime_proto.encode_msg(message, :FeedMessage)
+  end
+
   def feed_header do
     timestamp = :erlang.system_time(:seconds)
 
@@ -31,7 +41,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
     |> Enum.flat_map(&build_entity/1)
   end
 
-  defp build_entity({%TripUpdate{} = update, vps, _stus}) do
+  def build_entity({%TripUpdate{} = update, vps, _stus}) do
     trip = trip_descriptor(update)
 
     for vp <- vps do
@@ -42,7 +52,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
     end
   end
 
-  defp build_entity({nil, vps, _stus}) do
+  def build_entity({nil, vps, _stus}) do
     # vehicles without a trip
     for vp <- vps do
       trip =
