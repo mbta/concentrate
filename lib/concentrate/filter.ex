@@ -5,12 +5,14 @@ defmodule Concentrate.Filter do
   Each filter gets called for each parsed item, along with some (optional)
   state that's passed along.
 
-  The init/0 callback indicates whether the filter can be run in parallel. If
-  it can, the returned state from filter/2 is ignored: the same initial state
-  is passed in for each call.
+  The init/0 callback returns an initial term that's passed to each filter.
 
-  The filter can return a new parsed item to replace the one passed in. In
-  this way, you can also map over the parsed data.
+  Filter modules define one of two callbacks:
+  * `filter/2` takes the item and the state
+  * `filter/3` takes the current item, the next item, and the state
+
+  Both callbacks return either `{:cont, new_item, new_state}` or `{:skip,
+  new_state}`.
 
   The cleanup/1 callback is optional: it's called after the filter is used to
   clean up the state.
