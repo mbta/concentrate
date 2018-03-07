@@ -5,6 +5,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
   import Calendar.ISO, only: [date_to_iso8601: 4]
 
+  @type trip_group :: {TripUpdate.t() | nil, [VehiclePosition.t()], [StopTimeUpdate.t()]}
+
   @doc """
   Given a list of parsed data, returns a list of tuples:
 
@@ -12,6 +14,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
   The VehiclePositions/StopTimeUpdates will share the same trip ID.
   """
+  @spec group([TripUpdate.t() | VehiclePosition.t() | StopTimeUpdate.t()]) :: [trip_group]
   def group(parsed) do
     # we sort by the initial size, which keeps the trip updates in their original ordering
     parsed
