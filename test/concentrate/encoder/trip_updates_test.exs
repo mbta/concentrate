@@ -3,6 +3,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
   use ExUnit.Case, async: true
   import Concentrate.TestHelpers
   import Concentrate.Encoder.TripUpdates
+  import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
   alias Concentrate.Parser.GTFSRealtime
 
@@ -95,6 +96,15 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
 
       round_tripped = GTFSRealtime.parse(encode(interspersed), [])
       assert round_tripped == decoded
+    end
+  end
+
+  describe "encode_groups/1" do
+    test "is the same as encoding non-grouped data" do
+      decoded = GTFSRealtime.parse(File.read!(fixture_path("tripupdates.pb")), [])
+      expected = encode(decoded)
+      actual = decoded |> group |> encode_groups
+      assert expected == actual
     end
   end
 end

@@ -16,6 +16,16 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
     Jason.encode!(message)
   end
 
+  @impl Concentrate.Encoder
+  def encode_groups(groups) when is_list(groups) do
+    message = %{
+      header: feed_header(),
+      entity: Enum.flat_map(groups, &build_entity/1)
+    }
+
+    Jason.encode!(message)
+  end
+
   def feed_header do
     timestamp = :erlang.system_time(:seconds)
 

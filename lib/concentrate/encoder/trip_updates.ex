@@ -16,6 +16,16 @@ defmodule Concentrate.Encoder.TripUpdates do
     :gtfs_realtime_proto.encode_msg(message, :FeedMessage)
   end
 
+  @impl Concentrate.Encoder
+  def encode_groups(groups) when is_list(groups) do
+    message = %{
+      header: feed_header(),
+      entity: Enum.flat_map(groups, &build_entity/1)
+    }
+
+    :gtfs_realtime_proto.encode_msg(message, :FeedMessage)
+  end
+
   def feed_header do
     timestamp = :erlang.system_time(:seconds)
 
@@ -31,7 +41,7 @@ defmodule Concentrate.Encoder.TripUpdates do
     |> Enum.flat_map(&build_entity/1)
   end
 
-  defp build_entity({%TripUpdate{} = update, vps, [_ | _] = stus}) do
+  def build_entity({%TripUpdate{} = update, vps, [_ | _] = stus}) do
     trip_id = TripUpdate.trip_id(update)
 
     trip =
@@ -60,7 +70,7 @@ defmodule Concentrate.Encoder.TripUpdates do
     ]
   end
 
-  defp build_entity(_) do
+  def build_entity(_) do
     []
   end
 

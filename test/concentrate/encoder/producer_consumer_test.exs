@@ -2,6 +2,7 @@ defmodule Concentrate.Encoder.ProducerConsumerTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.Encoder.ProducerConsumer
+  import Concentrate.Encoder.GTFSRealtimeHelpers
   alias Concentrate.{TripUpdate, StopTimeUpdate}
   alias Concentrate.Encoder.{TripUpdates, VehiclePositions}
 
@@ -10,7 +11,7 @@ defmodule Concentrate.Encoder.ProducerConsumerTest do
       {_, state, _} =
         init(files: [{"TripUpdates.pb", TripUpdates}, {"VehiclePositions.pb", VehiclePositions}])
 
-      data = [TripUpdate.new(trip_id: "trip"), StopTimeUpdate.new(trip_id: "trip")]
+      data = group([TripUpdate.new(trip_id: "trip"), StopTimeUpdate.new(trip_id: "trip")])
       {:noreply, events, _state, :hibernate} = handle_events([[], data], :from, state)
 
       assert [{"TripUpdates.pb", trip_update}, {"VehiclePositions.pb", vehicle_positions}] =
