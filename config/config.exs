@@ -30,6 +30,7 @@ config :concentrate,
   group_filters: [
     Concentrate.GroupFilter.VehiclePastStop,
     Concentrate.GroupFilter.Shuttle,
+    Concentrate.GroupFilter.SkippedDepartures,
     Concentrate.GroupFilter.CancelledTrip,
     Concentrate.GroupFilter.SkippedStopOnAddedTrip
   ],
