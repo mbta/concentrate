@@ -31,6 +31,7 @@ config :concentrate,
     Concentrate.Filter.Shuttle,
     Concentrate.Filter.SkippedStopOnAddedTrip
   ],
+  group_filters: [],
   reporters: [
     Concentrate.Reporter.VehicleLatency,
     Concentrate.Reporter.StopTimeUpdateLatency,
