@@ -25,12 +25,12 @@ config :concentrate,
     Concentrate.Filter.RoundSpeedToInteger,
     Concentrate.Filter.IncludeRouteDirection,
     Concentrate.Filter.RemoveUnneededTimes,
-    Concentrate.Filter.ClosedStop,
-    Concentrate.Filter.Shuttle
+    Concentrate.Filter.ClosedStop
   ],
   group_filters: [
     Concentrate.GroupFilter.VehiclePastStop,
-    Concentrate.GroupFilter.CancelledTrip
+    Concentrate.GroupFilter.Shuttle,
+    Concentrate.GroupFilter.CancelledTrip,
     Concentrate.GroupFilter.SkippedStopOnAddedTrip
   ],
   reporters: [
