@@ -7,16 +7,6 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
   import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
-  def encode(list) when is_list(list) do
-    message = %{
-      header: feed_header(),
-      entity: feed_entity(list)
-    }
-
-    Jason.encode!(message)
-  end
-
-  @impl Concentrate.Encoder
   def encode_groups(groups) when is_list(groups) do
     message = %{
       header: feed_header(),

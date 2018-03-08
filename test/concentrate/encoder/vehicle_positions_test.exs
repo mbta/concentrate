@@ -3,6 +3,7 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
   use ExUnit.Case, async: true
   import Concentrate.TestHelpers
   import Concentrate.Encoder.VehiclePositions
+  import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
   alias Concentrate.Parser.GTFSRealtime
 
@@ -42,7 +43,7 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
         VehiclePosition.new(latitude: 1, longitude: 1)
       ]
 
-      encoded = encode(data)
+      encoded = encode_groups(group(data))
       proto = :gtfs_realtime_proto.decode_msg(encoded, :FeedMessage)
 
       assert %{
@@ -113,6 +114,6 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
 
   defp round_trip(data) do
     # return the result of decoding the encoded data
-    GTFSRealtime.parse(encode(data), [])
+    GTFSRealtime.parse(encode_groups(group(data)), [])
   end
 end

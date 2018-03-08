@@ -2,10 +2,11 @@ defmodule Concentrate.Encoder.VehiclePositions.JSONTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.Encoder.VehiclePositions.JSON
+  import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.{TripUpdate, VehiclePosition}
 
-  describe "encode/1" do
-    test "same output as Encoder.VehiclePositions.encode/1 but in JSON" do
+  describe "encode_groups/1" do
+    test "same output as Encoder.VehiclePositions.encode_groups/1 but in JSON" do
       initial = [
         TripUpdate.new(trip_id: "1"),
         TripUpdate.new(trip_id: "2"),
@@ -15,7 +16,8 @@ defmodule Concentrate.Encoder.VehiclePositions.JSONTest do
 
       %{"header" => _, "entity" => entity} =
         initial
-        |> encode()
+        |> group()
+        |> encode_groups()
         |> Jason.decode!()
 
       assert length(entity) == 2

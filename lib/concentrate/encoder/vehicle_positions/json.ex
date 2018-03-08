@@ -6,16 +6,6 @@ defmodule Concentrate.Encoder.VehiclePositions.JSON do
   alias Concentrate.Encoder.VehiclePositions
 
   @impl Concentrate.Encoder
-  def encode(list) when is_list(list) do
-    message = %{
-      header: VehiclePositions.feed_header(),
-      entity: VehiclePositions.feed_entity(list)
-    }
-
-    Jason.encode!(message)
-  end
-
-  @impl Concentrate.Encoder
   def encode_groups(groups) when is_list(groups) do
     message = %{
       header: VehiclePositions.feed_header(),

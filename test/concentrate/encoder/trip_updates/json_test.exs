@@ -2,10 +2,11 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.Encoder.TripUpdates.JSON
+  import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.{TripUpdate, StopTimeUpdate}
 
-  describe "encode/1" do
-    test "same output as EncoderTripUpdates.encode/1 but in JSON" do
+  describe "encode_groups/1" do
+    test "same output as EncoderTripUpdates.encode_groups/1 but in JSON" do
       trip_updates = [
         TripUpdate.new(trip_id: "1", schedule_relationship: :ADDED),
         TripUpdate.new(trip_id: "2"),
@@ -23,7 +24,8 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
 
       %{"header" => _, "entity" => entity} =
         initial
-        |> encode()
+        |> group()
+        |> encode_groups()
         |> Jason.decode!()
 
       assert length(entity) == 3
@@ -47,7 +49,7 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
         StopTimeUpdate.new(trip_id: "trip", stop_id: "stop", schedule_relationship: :SCHEDULED)
       ]
 
-      encoded = Jason.decode!(encode(parsed))
+      encoded = parsed |> group() |> encode_groups() |> Jason.decode!()
 
       %{
         "entity" => [
