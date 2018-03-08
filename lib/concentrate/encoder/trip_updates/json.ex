@@ -6,16 +6,6 @@ defmodule Concentrate.Encoder.TripUpdates.JSON do
   alias Concentrate.Encoder.TripUpdates
 
   @impl Concentrate.Encoder
-  def encode(list) when is_list(list) do
-    message = %{
-      header: TripUpdates.feed_header(),
-      entity: TripUpdates.feed_entity(list)
-    }
-
-    Jason.encode!(message)
-  end
-
-  @impl Concentrate.Encoder
   def encode_groups(groups) when is_list(groups) do
     message = %{
       header: TripUpdates.feed_header(),

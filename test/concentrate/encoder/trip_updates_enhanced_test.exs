@@ -3,15 +3,16 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
   use ExUnit.Case, async: true
   import Concentrate.TestHelpers
   import Concentrate.Encoder.TripUpdatesEnhanced
+  import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.Parser.GTFSRealtimeEnhanced
   alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
 
-  describe "encode/1" do
+  describe "encode_groups/1" do
     test "decoding and re-encoding TripUpdates_enhanced.json is a no-op" do
       decoded =
         GTFSRealtimeEnhanced.parse(File.read!(fixture_path("TripUpdates_enhanced.json")), [])
 
-      round_tripped = GTFSRealtimeEnhanced.parse(encode(decoded), [])
+      round_tripped = GTFSRealtimeEnhanced.parse(encode_groups(group(decoded)), [])
       assert round_tripped == decoded
     end
 
@@ -21,7 +22,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
         StopTimeUpdate.new(trip_id: "trip", stop_id: "5")
       ]
 
-      encoded = Jason.decode!(encode(parsed))
+      encoded = Jason.decode!(encode_groups(group(parsed)))
       update = get_in(encoded, ["entity", Access.at(0), "trip_update", "trip"])
       refute "start_time" in Map.keys(update)
     end
@@ -32,7 +33,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
         StopTimeUpdate.new(trip_id: "trip", stop_id: "5")
       ]
 
-      encoded = Jason.decode!(encode(parsed))
+      encoded = Jason.decode!(encode_groups(group(parsed)))
 
       update =
         get_in(encoded, ["entity", Access.at(0), "trip_update", "stop_time_update", Access.at(0)])
@@ -46,7 +47,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
         VehiclePosition.new(trip_id: "1", latitude: 1, longitude: 1)
       ]
 
-      decoded = Jason.decode!(encode(initial))
+      decoded = Jason.decode!(encode_groups(group(initial)))
       assert decoded["entity"] == []
     end
 
@@ -56,7 +57,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
         StopTimeUpdate.new(trip_id: "trip", stop_id: "stop", schedule_relationship: :SCHEDULED)
       ]
 
-      encoded = Jason.decode!(encode(parsed))
+      encoded = Jason.decode!(encode_groups(group(parsed)))
 
       %{
         "entity" => [

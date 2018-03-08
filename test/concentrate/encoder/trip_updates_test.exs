@@ -7,7 +7,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
   alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
   alias Concentrate.Parser.GTFSRealtime
 
-  describe "encode/1" do
+  describe "encode_groups/1" do
     test "order of trip updates doesn't matter" do
       initial = [
         TripUpdate.new(trip_id: "1"),
@@ -15,7 +15,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         StopTimeUpdate.new(trip_id: "1")
       ]
 
-      decoded = GTFSRealtime.parse(encode(initial), [])
+      decoded = GTFSRealtime.parse(encode_groups(group(initial)), [])
       assert [TripUpdate.new(trip_id: "1"), StopTimeUpdate.new(trip_id: "1")] == decoded
     end
 
@@ -34,7 +34,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         ])
 
       initial = trip_updates ++ stop_time_updates
-      decoded = GTFSRealtime.parse(encode(initial), [])
+      decoded = GTFSRealtime.parse(encode_groups(group(initial)), [])
 
       assert [
                TripUpdate.new(trip_id: "1"),
@@ -52,7 +52,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         VehiclePosition.new(trip_id: "1", latitude: 1, longitude: 1)
       ]
 
-      decoded = GTFSRealtime.parse(encode(initial), [])
+      decoded = GTFSRealtime.parse(encode_groups(group(initial)), [])
       assert decoded == []
     end
 
@@ -70,7 +70,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         )
       ]
 
-      decoded = :gtfs_realtime_proto.decode_msg(encode(initial), :FeedMessage, [])
+      decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
 
       assert %{
                entity: [
@@ -81,7 +81,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
 
     test "decoding and re-encoding tripupdates.pb is a no-op" do
       decoded = GTFSRealtime.parse(File.read!(fixture_path("tripupdates.pb")), [])
-      round_tripped = GTFSRealtime.parse(encode(decoded), [])
+      round_tripped = GTFSRealtime.parse(encode_groups(group(decoded)), [])
       assert round_tripped == decoded
     end
 
@@ -94,17 +94,8 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
           VehiclePosition.new(trip_id: "non_matching", latitude: 1, longitude: 1)
         )
 
-      round_tripped = GTFSRealtime.parse(encode(interspersed), [])
+      round_tripped = GTFSRealtime.parse(encode_groups(group(interspersed)), [])
       assert round_tripped == decoded
-    end
-  end
-
-  describe "encode_groups/1" do
-    test "is the same as encoding non-grouped data" do
-      decoded = GTFSRealtime.parse(File.read!(fixture_path("tripupdates.pb")), [])
-      expected = encode(decoded)
-      actual = decoded |> group |> encode_groups
-      assert expected == actual
     end
   end
 end

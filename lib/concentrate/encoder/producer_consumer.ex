@@ -17,22 +17,7 @@ defmodule Concentrate.Encoder.ProducerConsumer do
 
     state =
       for {filename, encoder} <- files do
-        encoder =
-          case encoder do
-            module when is_atom(module) ->
-              Code.ensure_loaded(module)
-
-              if function_exported?(module, :encode_groups, 1) do
-                &module.encode_groups/1
-              else
-                &module.encode/1
-              end
-
-            fun when is_function(fun, 1) ->
-              fun
-          end
-
-        {filename, encoder}
+        {filename, &encoder.encode_groups/1}
       end
 
     {:producer_consumer, state, opts}

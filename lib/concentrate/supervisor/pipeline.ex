@@ -90,21 +90,12 @@ defmodule Concentrate.Supervisor.Pipeline do
 
     children =
       for {filename, encoder} <- config[:files] do
-        Code.ensure_loaded(encoder)
-
-        subscribe_to =
-          if function_exported?(encoder, :encode_groups, 1) do
-            [group_pc: [max_demand: 1]]
-          else
-            [merge_filter: [max_demand: 1]]
-          end
-
         child_spec(
           {
             Concentrate.Encoder.ProducerConsumer,
             name: encoder,
             files: [{filename, encoder}],
-            subscribe_to: subscribe_to,
+            subscribe_to: [group_pc: [max_demand: 1]],
             buffer_size: 1
           },
           id: encoder
