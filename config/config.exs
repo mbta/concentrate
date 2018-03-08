@@ -26,12 +26,12 @@ config :concentrate,
     Concentrate.Filter.IncludeRouteDirection,
     Concentrate.Filter.RemoveUnneededTimes,
     Concentrate.Filter.ClosedStop,
-    Concentrate.Filter.Shuttle,
-    Concentrate.Filter.SkippedStopOnAddedTrip
+    Concentrate.Filter.Shuttle
   ],
   group_filters: [
     Concentrate.GroupFilter.VehiclePastStop,
     Concentrate.GroupFilter.CancelledTrip
+    Concentrate.GroupFilter.SkippedStopOnAddedTrip
   ],
   reporters: [
     Concentrate.Reporter.VehicleLatency,
