@@ -1,46 +1,25 @@
-defmodule Concentrate.Filter.RemoveUnneededTimes do
+defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
   @moduledoc """
   Removes arrival times from the first stop on a trip, and the departure time from the last stop on a trip.
   """
   alias Concentrate.{TripUpdate, StopTimeUpdate}
   alias Concentrate.Filter.GTFS.PickupDropOff
-  @behaviour Concentrate.Filter
+  @behaviour Concentrate.GroupFilter
 
-  @impl Concentrate.Filter
-  def init do
-    {PickupDropOff, MapSet.new()}
+  @impl Concentrate.GroupFilter
+  def filter(trip_group, module \\ PickupDropOff)
+
+  def filter({%TripUpdate{} = tu, vps, stus} = group, module) do
+    if TripUpdate.schedule_relationship(tu) == :SCHEDULED do
+      trip_id = TripUpdate.trip_id(tu)
+      stus = Enum.map(stus, &ensure_correct_times(&1, module, trip_id))
+      {tu, vps, stus}
+    else
+      group
+    end
   end
 
-  @impl Concentrate.Filter
-  def filter(%TripUpdate{} = tu, {module, set}) do
-    set =
-      if TripUpdate.schedule_relationship(tu) == :SCHEDULED do
-        set
-      else
-        # not a scheduled trip: we won't make any changes
-        MapSet.put(set, TripUpdate.trip_id(tu))
-      end
-
-    {:cont, tu, {module, set}}
-  end
-
-  def filter(%StopTimeUpdate{} = stu, {module, set}) do
-    trip_id = StopTimeUpdate.trip_id(stu)
-
-    stu =
-      if MapSet.member?(set, trip_id) do
-        # not a scheduled trip: don't worry about it
-        stu
-      else
-        ensure_correct_times(stu, module, trip_id)
-      end
-
-    {:cont, stu, {module, set}}
-  end
-
-  def filter(other, state) do
-    {:cont, other, state}
-  end
+  def filter(other, _module), do: other
 
   defp stop_sequence_or_stop_id(stu) do
     case StopTimeUpdate.stop_sequence(stu) do
