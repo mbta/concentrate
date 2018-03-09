@@ -89,19 +89,19 @@ defmodule Concentrate.MergeFilter do
     {time, merged} = :timer.tc(&Table.items/1, [state.table])
 
     Logger.debug(fn ->
-      "#{__MODULE__} merge took #{time / 1_000}ms"
+      "#{__MODULE__} merge time=#{time / 1_000}"
     end)
 
     {time, sorted} = :timer.tc(&Enum.sort_by/2, [merged, &sort_key/1])
 
     Logger.debug(fn ->
-      "#{__MODULE__} sort took #{time / 1_000}ms"
+      "#{__MODULE__} sort time=#{time / 1_000}"
     end)
 
     {time, filtered} = :timer.tc(&Filter.run/2, [sorted, state.filters])
 
     Logger.debug(fn ->
-      "#{__MODULE__} filter took #{time / 1_000}ms"
+      "#{__MODULE__} filter time=#{time / 1_000}"
     end)
 
     state = %{state | timer: nil, demand: ask_demand(state.demand)}
