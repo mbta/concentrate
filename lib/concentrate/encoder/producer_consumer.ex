@@ -32,7 +32,7 @@ defmodule Concentrate.Encoder.ProducerConsumer do
         {time, encoded} = :timer.tc(encoder, [data])
 
         Logger.debug(fn ->
-          "#{__MODULE__} encoded #{inspect(filename)} in #{time / 1000}ms"
+          "#{__MODULE__} encoded filename=#{inspect(filename)} time=#{time / 1000}"
         end)
 
         {filename, encoded}
