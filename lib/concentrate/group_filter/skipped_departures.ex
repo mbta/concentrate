@@ -12,16 +12,20 @@ defmodule Concentrate.GroupFilter.SkippedDepartures do
   def filter({trip_update, vehicle_positions, stop_time_updates}) do
     reverse_updates = Enum.reverse(stop_time_updates)
 
-    last_index =
-      Enum.find_index(reverse_updates, &(StopTimeUpdate.schedule_relationship(&1) != :SKIPPED))
+    {skipped, rest} =
+      Enum.split_while(reverse_updates, &(StopTimeUpdate.schedule_relationship(&1) == :SKIPPED))
 
     new_updates =
-      if last_index do
-        reverse_updates
-        |> List.update_at(last_index, &StopTimeUpdate.update_departure_time(&1, nil))
-        |> Enum.reverse()
-      else
-        stop_time_updates
+      case {skipped, rest} do
+        {[_ | _], [last_departure | rest]} ->
+          last_departure = StopTimeUpdate.update_departure_time(last_departure, nil)
+          # Reverse the rest (start of the trip), with the last departures
+          # and the skipped stops (also reversed) at the end. This is 25%
+          # faster than the naive `Enum.concat |> Enum.reverse`.
+          Enum.reverse(rest, [last_departure | Enum.reverse(skipped)])
+
+        _ ->
+          stop_time_updates
       end
 
     {trip_update, vehicle_positions, new_updates}
