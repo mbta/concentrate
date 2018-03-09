@@ -11,16 +11,41 @@ defmodule Concentrate.GroupFilter.SkippedDeparturesTest do
         group = {nil, [], updates}
         {_, _, new_updates} = filter(group)
 
-        last_departure =
-          new_updates |> Enum.reverse()
-          |> Enum.find(&(StopTimeUpdate.schedule_relationship(&1) != :SKIPPED))
+        if StopTimeUpdate.schedule_relationship(Enum.at(updates, -1)) == :SKIPPED do
+          last_departure =
+            new_updates |> Enum.reverse()
+            |> Enum.find(&(StopTimeUpdate.schedule_relationship(&1) != :SKIPPED))
 
-        if last_departure, do: refute(StopTimeUpdate.departure_time(last_departure))
+          if last_departure do
+            refute(StopTimeUpdate.departure_time(last_departure))
+          else
+            assert Enum.all?(updates, &(StopTimeUpdate.schedule_relationship(&1) == :SKIPPED))
+          end
+        else
+          assert new_updates == updates
+        end
       end
     end
 
+    test "keeps stops in the same order" do
+      group = {
+        nil,
+        [],
+        [
+          StopTimeUpdate.new(stop_sequence: 1, departure_time: 1),
+          StopTimeUpdate.new(stop_sequence: 2, departure_time: 2),
+          StopTimeUpdate.new(stop_sequence: 3, departure_time: 3),
+          StopTimeUpdate.new(stop_sequence: 4, schedule_relationship: :SKIPPED),
+          StopTimeUpdate.new(stop_sequence: 5, schedule_relationship: :SKIPPED)
+        ]
+      }
+
+      {_, _, new_updates} = filter(group)
+      assert Enum.map(new_updates, &StopTimeUpdate.stop_sequence/1) == [1, 2, 3, 4, 5]
+    end
+
     test "if no stops are skipped, returns the same data" do
-      group = {nil, [], [StopTimeUpdate.new([])]}
+      group = {nil, [], [StopTimeUpdate.new(departure_time: 9)]}
       assert filter(group) == group
     end
   end
