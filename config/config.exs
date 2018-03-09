@@ -20,13 +20,13 @@ config :concentrate,
     url: "https://www.mbta.com/uploadedfiles/MBTA_GTFS.zip"
   ],
   filters: [
-    Concentrate.Filter.TimeOutOfRange,
     Concentrate.Filter.VehicleWithNoTrip,
     Concentrate.Filter.RoundSpeedToInteger,
     Concentrate.Filter.IncludeRouteDirection,
     Concentrate.Filter.ClosedStop
   ],
   group_filters: [
+    Concentrate.GroupFilter.TimeOutOfRange,
     Concentrate.GroupFilter.RemoveUnneededTimes,
     Concentrate.GroupFilter.VehiclePastStop,
     Concentrate.GroupFilter.Shuttle,
