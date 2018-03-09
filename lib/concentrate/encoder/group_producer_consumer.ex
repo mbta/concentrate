@@ -21,7 +21,7 @@ defmodule Concentrate.Encoder.GroupProducerConsumer do
   @impl GenStage
   def init(opts) do
     state = build_filters(Keyword.get(opts, :filters, @filters))
-    opts = Keyword.take(opts, [:subscribe_to, :dispatcher])
+    opts = Keyword.take(opts, ~w(subscribe_to buffer_size dispatcher)a)
     opts = Keyword.put_new(opts, :dispatcher, GenStage.BroadcastDispatcher)
     {:producer_consumer, state, opts}
   end

@@ -9,6 +9,8 @@ defmodule Concentrate.Supervisor.Pipeline do
   * one per sink to save files
   """
   import Supervisor, only: [child_spec: 2]
+  @buffer_size 2
+  @max_demand 5
 
   def start_link(config) do
     Supervisor.start_link(children(config), strategy: :rest_for_one)
@@ -63,12 +65,12 @@ defmodule Concentrate.Supervisor.Pipeline do
   end
 
   def merge(source_names, filters) do
-    sources = outputs_with_options(source_names, max_demand: 1)
+    sources = outputs_with_options(source_names, max_demand: @max_demand)
 
     [
       {
         Concentrate.MergeFilter,
-        name: :merge_filter, subscribe_to: sources, buffer_size: 1, filters: filters
+        name: :merge_filter, subscribe_to: sources, buffer_size: @buffer_size, filters: filters
       }
     ]
   end
@@ -77,7 +79,7 @@ defmodule Concentrate.Supervisor.Pipeline do
     for module <- reporter_modules do
       child_spec(
         {Concentrate.Reporter.Consumer,
-         module: module, subscribe_to: [merge_filter: [max_demand: 1]]},
+         module: module, subscribe_to: [merge_filter: [max_demand: @max_demand]]},
         id: module
       )
     end
@@ -86,7 +88,9 @@ defmodule Concentrate.Supervisor.Pipeline do
   def encoders(config) do
     group =
       {Concentrate.Encoder.GroupProducerConsumer,
-       name: :group_pc, subscribe_to: [merge_filter: [max_demand: 1]]}
+       name: :group_pc,
+       buffer_size: @buffer_size,
+       subscribe_to: [merge_filter: [max_demand: @max_demand]]}
 
     children =
       for {filename, encoder} <- config[:files] do
@@ -95,7 +99,7 @@ defmodule Concentrate.Supervisor.Pipeline do
             Concentrate.Encoder.ProducerConsumer,
             name: encoder,
             files: [{filename, encoder}],
-            subscribe_to: [group_pc: [max_demand: 1]],
+            subscribe_to: [group_pc: [max_demand: @max_demand]],
             buffer_size: 1
           },
           id: encoder
