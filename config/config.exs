@@ -24,10 +24,10 @@ config :concentrate,
     Concentrate.Filter.VehicleWithNoTrip,
     Concentrate.Filter.RoundSpeedToInteger,
     Concentrate.Filter.IncludeRouteDirection,
-    Concentrate.Filter.RemoveUnneededTimes,
     Concentrate.Filter.ClosedStop
   ],
   group_filters: [
+    Concentrate.GroupFilter.RemoveUnneededTimes,
     Concentrate.GroupFilter.VehiclePastStop,
     Concentrate.GroupFilter.Shuttle,
     Concentrate.GroupFilter.SkippedDepartures,
