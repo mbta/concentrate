@@ -26,14 +26,17 @@ defmodule Concentrate.Producer.HttpPropertyTest do
   property "returns all the bodies" do
     check all bodies <- list_of(bodies(), min_length: 1, max_length: 10),
               demand <- demand() do
-      url = url_for_bodies(bodies)
+      {bypass, url} = url_for_bodies(bodies)
 
       {:ok, producer} =
         start_supervised({Concentrate.Producer.HTTP, {url, parser: &parser/1, fetch_after: 1}})
 
       expected_body_count = expected_count(bodies)
 
-      assert receive_count?(producer, demand, expected_body_count)
+      passed? = receive_count?(producer, demand, expected_body_count)
+      stop_supervised(producer)
+      Bypass.down(bypass)
+      assert passed?
     end
   end
 
@@ -41,8 +44,8 @@ defmodule Concentrate.Producer.HttpPropertyTest do
     check all bodies <- list_of(bodies(), min_length: 1, max_length: 10),
               fallback_bodies <- list_of(bodies(), min_length: 1, max_length: 10),
               demand <- demand() do
-      url = url_for_bodies(bodies)
-      fallback_url = url_for_bodies(fallback_bodies)
+      {bypass, url} = url_for_bodies(bodies)
+      {fallback_bypass, fallback_url} = url_for_bodies(fallback_bodies)
 
       {:ok, producer} =
         start_supervised(
@@ -55,7 +58,11 @@ defmodule Concentrate.Producer.HttpPropertyTest do
         )
 
       expected_body_count = expected_count(bodies) + expected_count(fallback_bodies)
-      assert receive_count?(producer, demand, expected_body_count)
+      passed? = receive_count?(producer, demand, expected_body_count)
+      stop_supervised(producer)
+      Bypass.down(bypass)
+      Bypass.down(fallback_bypass)
+      assert passed?
     end
   end
 
@@ -89,7 +96,7 @@ defmodule Concentrate.Producer.HttpPropertyTest do
     end)
 
     Bypass.pass(bypass)
-    "http://127.0.0.1:#{bypass.port}/"
+    {bypass, "http://127.0.0.1:#{bypass.port}/"}
   end
 
   defp expected_count(bodies) do
