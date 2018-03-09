@@ -25,7 +25,7 @@ defmodule Concentrate.Producer.HttpPropertyTest do
 
   property "returns all the bodies" do
     check all bodies <- list_of(bodies(), min_length: 1, max_length: 10),
-              demand <- demand() do
+              demand <- demand(bodies) do
       {bypass, url} = url_for_bodies(bodies)
 
       {:ok, producer} =
@@ -43,7 +43,7 @@ defmodule Concentrate.Producer.HttpPropertyTest do
   property "returns all the bodies even with a fallback" do
     check all bodies <- list_of(bodies(), min_length: 1, max_length: 10),
               fallback_bodies <- list_of(bodies(), min_length: 1, max_length: 10),
-              demand <- demand() do
+              demand <- demand(bodies ++ fallback_bodies) do
       {bypass, url} = url_for_bodies(bodies)
       {fallback_bypass, fallback_url} = url_for_bodies(fallback_bodies)
 
@@ -77,13 +77,15 @@ defmodule Concentrate.Producer.HttpPropertyTest do
     ])
   end
 
-  defp demand do
-    StreamData.integer(1..5)
+  defp demand(bodies) do
+    # don't request more demand than we have bodies
+    max_demand = min(length(bodies), 5)
+    StreamData.integer(1..max_demand)
   end
 
   defp url_for_bodies(bodies) do
     {:ok, agent} = Agent.start_link(fn -> bodies end)
-    bypass = Bypass.open()
+    bypass = open_bypass()
     # return each body in turn
     Bypass.expect(bypass, fn conn ->
       body =
@@ -97,6 +99,15 @@ defmodule Concentrate.Producer.HttpPropertyTest do
 
     Bypass.pass(bypass)
     {bypass, "http://127.0.0.1:#{bypass.port}/"}
+  end
+
+  defp open_bypass do
+    # sometimes Bypass tries to re-use a port, causing an error. This retries
+    # in that case.
+    case Bypass.open() do
+      %Bypass{} = bypass -> bypass
+      _ -> open_bypass()
+    end
   end
 
   defp expected_count(bodies) do
