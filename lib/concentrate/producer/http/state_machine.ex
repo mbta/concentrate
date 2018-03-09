@@ -91,7 +91,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
       end
 
     Logger.debug(fn ->
-      "#{__MODULE__} #{inspect(machine.url)} scheduling fetch after #{time}ms"
+      "#{__MODULE__} scheduling fetch url=#{inspect(machine.url)} after=#{time}"
     end)
 
     time
@@ -153,7 +153,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   defp handle_message(machine, {:http_response, %{status_code: 304}}) do
     # not modified
     Logger.info(fn ->
-      "#{__MODULE__}: #{inspect(machine.url)} not modified"
+      "#{__MODULE__}: not modified url=#{inspect(machine.url)}"
     end)
 
     {machine, messages} = check_last_success(machine)
@@ -234,7 +234,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     case :erlang.phash2(body) do
       ^previous_hash ->
         Logger.info(fn ->
-          "#{__MODULE__}: #{inspect(machine.url)} same content"
+          "#{__MODULE__}: same content url=#{inspect(machine.url)}"
         end)
 
         {[], machine}
