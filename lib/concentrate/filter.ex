@@ -5,19 +5,18 @@ defmodule Concentrate.Filter do
   Each filter gets called for each parsed item, along with some (optional)
   state that's passed along.
 
-  Filter modules have two callbacks:
-  * `init/0` callback returns an initial term that's passed to each filter.
-  * `filter/2` takes the item and the state, returning either `{:cont,
-    new_item, new_state}` or `{:skip, new_state}`.
+  Filter modules have one callback:
+  * `filter/1`: takes the item and returns either:
+    * `{:cont, new_item}`
+    * `:skip`
   """
   require Logger
 
   @type data :: term
-  @type state :: term
-  @type return :: {:cont, data, state} | {:skip, state}
+  @type return :: {:cont, data} | :skip
 
-  @callback init() :: state
-  @callback filter(data, state) :: return
+  @callback filter(data) :: return
+
   @doc """
   Given a list of Concentrate.Filter modules, applies them to the list of data.
   """
@@ -27,17 +26,13 @@ defmodule Concentrate.Filter do
   end
 
   defp apply_filter_to_enum(module, enum) do
-    state = module.init()
-
-    {enum, _state} = Enum.flat_map_reduce(enum, state, &transform(module, &1, &2))
-
-    enum
+    Enum.flat_map(enum, &transform(module, &1))
   end
 
-  defp transform(module, item, state) do
-    case module.filter(item, state) do
-      {:cont, item, state} -> {[item], state}
-      {:skip, state} -> {[], state}
+  defp transform(module, item) do
+    case module.filter(item) do
+      {:cont, item} -> [item]
+      :skip -> []
     end
   end
 end

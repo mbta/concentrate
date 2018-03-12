@@ -7,12 +7,12 @@ defmodule Concentrate.Filter.ClosedStopTest do
   @valid_date_time 8
   @invalid_date_time 4
 
-  @state {Concentrate.Filter.FakeClosedStops, Concentrate.Filter.FakeTrips}
+  @modules {Concentrate.Filter.FakeClosedStops, Concentrate.Filter.FakeTrips}
 
   describe "filter/2" do
     test "unknown stop IDs are ignored" do
       stu = StopTimeUpdate.new(stop_id: "unknown", departure_time: @valid_date_time)
-      assert {:cont, ^stu, _} = filter(stu, @state)
+      assert {:cont, ^stu} = filter(stu, @modules)
     end
 
     test "skips the stop time if the stop is closed during the timeframe" do
@@ -24,7 +24,7 @@ defmodule Concentrate.Filter.ClosedStopTest do
           departure_time: @valid_date_time
         )
 
-      assert {:cont, new_stu, _} = filter(stu, @state)
+      assert {:cont, new_stu} = filter(stu, @modules)
       assert StopTimeUpdate.schedule_relationship(new_stu) == :SKIPPED
       assert StopTimeUpdate.arrival_time(new_stu) == nil
       assert StopTimeUpdate.departure_time(new_stu) == nil
@@ -38,7 +38,7 @@ defmodule Concentrate.Filter.ClosedStopTest do
           departure_time: @invalid_date_time
         )
 
-      assert {:cont, ^stu, _} = filter(stu, @state)
+      assert {:cont, ^stu} = filter(stu, @modules)
     end
 
     test "does not skip the stop time if the stop is closed on a different route" do
@@ -49,7 +49,7 @@ defmodule Concentrate.Filter.ClosedStopTest do
           departure_time: @valid_date_time
         )
 
-      assert {:cont, ^stu, _} = filter(stu, @state)
+      assert {:cont, ^stu} = filter(stu, @modules)
     end
 
     test "does not modify the update if there are no times" do
@@ -59,11 +59,11 @@ defmodule Concentrate.Filter.ClosedStopTest do
           stop_id: "route_stop"
         )
 
-      assert {:cont, ^stu, _} = filter(stu, @state)
+      assert {:cont, ^stu} = filter(stu, @modules)
     end
 
     test "other values are returned as-is" do
-      assert {:cont, :value, _} = filter(:value, @state)
+      assert {:cont, :value} = filter(:value)
     end
   end
 end

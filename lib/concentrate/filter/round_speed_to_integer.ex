@@ -6,12 +6,7 @@ defmodule Concentrate.Filter.RoundSpeedToInteger do
   alias Concentrate.VehiclePosition
 
   @impl Concentrate.Filter
-  def init do
-    []
-  end
-
-  @impl Concentrate.Filter
-  def filter(%VehiclePosition{} = vp, state) do
+  def filter(%VehiclePosition{} = vp) do
     speed =
       case VehiclePosition.speed(vp) do
         nil -> nil
@@ -26,10 +21,10 @@ defmodule Concentrate.Filter.RoundSpeedToInteger do
         nil
       end
 
-    {:cont, VehiclePosition.update(vp, %{speed: speed, bearing: bearing}), state}
+    {:cont, VehiclePosition.update(vp, %{speed: speed, bearing: bearing})}
   end
 
-  def filter(other, state) do
-    {:cont, other, state}
+  def filter(other) do
+    {:cont, other}
   end
 end

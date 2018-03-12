@@ -8,12 +8,12 @@ defmodule Concentrate.Filter.ClosedStop do
   alias Concentrate.Filter.GTFS.Trips
 
   @impl Concentrate.Filter
-  def init do
-    {ClosedStops, Trips}
-  end
+  @modules {ClosedStops, Trips}
 
   @impl Concentrate.Filter
-  def filter(%StopTimeUpdate{} = stu, {stops_module, trips_module} = modules) do
+  def filter(update, modules \\ @modules)
+
+  def filter(%StopTimeUpdate{} = stu, {stops_module, trips_module}) do
     time = StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu)
 
     stu =
@@ -24,11 +24,11 @@ defmodule Concentrate.Filter.ClosedStop do
         update_stu_from_closed_entities(stu, entities, trips_module)
       end
 
-    {:cont, stu, modules}
+    {:cont, stu}
   end
 
-  def filter(other, modules) do
-    {:cont, other, modules}
+  def filter(other, _modules) do
+    {:cont, other}
   end
 
   defp update_stu_from_closed_entities(stu, [], _) do
