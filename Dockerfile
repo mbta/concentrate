@@ -30,4 +30,5 @@ WORKDIR /root/
 
 COPY --from=builder /root/_build/prod/rel /root/rel
 
+HEALTHCHECK CMD ["/root/rel/concentrate/bin/concentrate", "ping"]
 CMD ["/root/rel/concentrate/bin/concentrate", "foreground"]
