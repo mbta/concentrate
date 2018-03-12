@@ -17,11 +17,11 @@ defmodule Concentrate.Filter.ClosedStop do
     time = StopTimeUpdate.time(stu)
 
     stu =
-      if is_nil(time) do
-        stu
-      else
+      if is_integer(time) do
         entities = stops_module.stop_closed_for(StopTimeUpdate.stop_id(stu), time)
         update_stu_from_closed_entities(stu, entities, trips_module)
+      else
+        stu
       end
 
     {:cont, stu}

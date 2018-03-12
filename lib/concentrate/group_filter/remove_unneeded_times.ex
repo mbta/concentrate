@@ -23,11 +23,11 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
 
   defp stop_sequence_or_stop_id(stu) do
     case StopTimeUpdate.stop_sequence(stu) do
-      nil ->
-        StopTimeUpdate.stop_id(stu)
-
-      sequence ->
+      sequence when is_integer(sequence) ->
         sequence
+
+      _ ->
+        StopTimeUpdate.stop_id(stu)
     end
   end
 
@@ -36,20 +36,20 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
     pickup? = module.pickup?(trip_id, key)
     drop_off? = module.drop_off?(trip_id, key)
 
-    cond do
-      pickup? and drop_off? ->
+    case {pickup?, drop_off?} do
+      {true, true} ->
         ensure_both_times(stu)
 
-      not (pickup? or drop_off?) ->
-        StopTimeUpdate.skip(stu)
-
-      pickup? ->
+      {true, false} ->
         # not drop_off?
         remove_arrival_time(stu)
 
-      true ->
+      {false, true} ->
         # not pickup?
         remove_departure_time(stu)
+
+      {false, false} ->
+        StopTimeUpdate.skip(stu)
     end
   end
 
@@ -58,14 +58,15 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
     departure_time = StopTimeUpdate.departure_time(stu)
 
     case {arrival_time, departure_time} do
+      {arrival_time, departure_time}
+      when is_integer(departure_time) and is_integer(arrival_time) ->
+        stu
+
       {nil, departure_time} when is_integer(departure_time) ->
         StopTimeUpdate.update_arrival_time(stu, departure_time)
 
-      {arrival_time, nil} when is_integer(arrival_time) ->
-        StopTimeUpdate.update_departure_time(stu, arrival_time)
-
       _ ->
-        stu
+        StopTimeUpdate.update_departure_time(stu, arrival_time)
     end
   end
 
