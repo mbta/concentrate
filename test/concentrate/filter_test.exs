@@ -8,15 +8,11 @@ defmodule Concentrate.FilterTest do
     @moduledoc false
     @behaviour Concentrate.Filter
 
-    def init do
-      :state
-    end
-
-    def filter(value, state) do
+    def filter(value) do
       if Integer.mod(value, 2) == 0 do
-        {:cont, value, state}
+        {:cont, value}
       else
-        {:skip, state}
+        :skip
       end
     end
 
@@ -26,28 +22,23 @@ defmodule Concentrate.FilterTest do
     end
   end
 
-  defmodule AddPreviousFilter do
+  defmodule AddOneFilter do
     @moduledoc false
     @behaviour Concentrate.Filter
 
-    def init do
-      0
-    end
-
-    def filter(value, previous) do
-      # adds the previous value to this value
-      {:cont, value + previous, value}
+    def filter(value) do
+      {:cont, value + 1}
     end
 
     @doc "test helper to process the data as expected"
     def expected(data) do
-      [data, [0 | data]]
-      |> Enum.zip()
-      |> Enum.map(fn {x, y} -> x + y end)
+      for d <- data do
+        d + 1
+      end
     end
   end
 
-  alias __MODULE__.{OnlyEvenFilter, AddPreviousFilter}
+  alias __MODULE__.{OnlyEvenFilter, AddOneFilter}
 
   describe "run/2" do
     property "parallel filter removes even numbers" do
@@ -60,19 +51,19 @@ defmodule Concentrate.FilterTest do
 
     property "serial filter adds the previous value" do
       check all data <- list_of(integer()) do
-        expected = AddPreviousFilter.expected(data)
-        actual = run(data, [AddPreviousFilter])
+        expected = AddOneFilter.expected(data)
+        actual = run(data, [AddOneFilter])
         assert actual == expected
       end
     end
 
     property "filters are applied first to last" do
       check all data <- list_of(integer()) do
-        assert run(data, [OnlyEvenFilter, AddPreviousFilter]) ==
-                 data |> OnlyEvenFilter.expected() |> AddPreviousFilter.expected()
+        assert run(data, [OnlyEvenFilter, AddOneFilter]) ==
+                 data |> OnlyEvenFilter.expected() |> AddOneFilter.expected()
 
-        assert run(data, [AddPreviousFilter, OnlyEvenFilter]) ==
-                 data |> AddPreviousFilter.expected() |> OnlyEvenFilter.expected()
+        assert run(data, [AddOneFilter, OnlyEvenFilter]) ==
+                 data |> AddOneFilter.expected() |> OnlyEvenFilter.expected()
       end
     end
   end

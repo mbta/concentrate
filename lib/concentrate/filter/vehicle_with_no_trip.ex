@@ -6,20 +6,15 @@ defmodule Concentrate.Filter.VehicleWithNoTrip do
   @behaviour Concentrate.Filter
 
   @impl Concentrate.Filter
-  def init do
-    []
-  end
-
-  @impl Concentrate.Filter
-  def filter(%VehiclePosition{} = vp, state) do
+  def filter(%VehiclePosition{} = vp) do
     if VehiclePosition.trip_id(vp) do
-      {:cont, vp, state}
+      {:cont, vp}
     else
-      {:skip, state}
+      :skip
     end
   end
 
-  def filter(other, state) do
-    {:cont, other, state}
+  def filter(other) do
+    {:cont, other}
   end
 end
