@@ -43,4 +43,4 @@ docker run concentrate:latest
 ```
 
 It can be configured by passing a JSON configuration file as
-`CONCENTRATE_JSON`. An example JSON configuratio can be see in
+`CONCENTRATE_JSON`. An example JSON configuration can be seen in [test/concentrate_test.exs](https://github.com/mbta/concentrate/blob/master/test/concentrate_test.exs#L17-L57).
