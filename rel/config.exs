@@ -2,7 +2,8 @@
 # They can then be used by adding `plugin MyPlugin` to
 # either an environment, or release definition, where
 # `MyPlugin` is the name of the plugin module.
-Path.join(["rel", "plugins", "*.exs"])
+["rel", "plugins", "*.exs"]
+|> Path.join()
 |> Path.wildcard()
 |> Enum.map(&Code.eval_file(&1))
 
@@ -23,7 +24,7 @@ use Mix.Releases.Config,
 environment :prod do
   set include_erts: true
   set include_src: false
-  set cookie: :"8,k,(;B$bAZD<U45tlWMj!z,rbbieW:2WP7N;;%IaWEWmDDAB>k.ql_iy[~7JnoS"
+  set cookie: :"${ERLANG_COOKIE}"
 end
 
 # You may define one or more releases in this file.
