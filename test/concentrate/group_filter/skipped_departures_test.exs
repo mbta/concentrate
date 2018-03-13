@@ -13,7 +13,8 @@ defmodule Concentrate.GroupFilter.SkippedDeparturesTest do
 
         if StopTimeUpdate.schedule_relationship(Enum.at(updates, -1)) == :SKIPPED do
           last_departure =
-            new_updates |> Enum.reverse()
+            new_updates
+            |> Enum.reverse()
             |> Enum.find(&(StopTimeUpdate.schedule_relationship(&1) != :SKIPPED))
 
           if last_departure do
