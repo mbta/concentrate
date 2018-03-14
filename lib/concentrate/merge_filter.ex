@@ -12,6 +12,7 @@ defmodule Concentrate.MergeFilter do
   require Logger
   alias Concentrate.Merge.Table
   alias Concentrate.Filter
+  alias Concentrate.Encoder.GTFSRealtimeHelpers
 
   @start_link_opts [:name]
 
@@ -19,7 +20,8 @@ defmodule Concentrate.MergeFilter do
             timer: nil,
             table: Table.new(),
             demand: %{},
-            filters: []
+            filters: [],
+            group_filters: []
 
   def start_link(opts \\ []) do
     start_link_opts = Keyword.take(opts, @start_link_opts)
@@ -30,7 +32,8 @@ defmodule Concentrate.MergeFilter do
   @impl GenStage
   def init(opts) do
     filters = Keyword.get(opts, :filters, [])
-    state = %__MODULE__{filters: filters}
+    group_filters = build_group_filters(Keyword.get(opts, :group_filters, []))
+    state = %__MODULE__{filters: filters, group_filters: group_filters}
 
     state =
       case Keyword.fetch(opts, :timeout) do
@@ -99,8 +102,20 @@ defmodule Concentrate.MergeFilter do
       "#{__MODULE__} filter time=#{time / 1_000}"
     end)
 
+    {time, grouped} = :timer.tc(&GTFSRealtimeHelpers.group/1, [filtered])
+
+    Logger.debug(fn ->
+      "#{__MODULE__} group time=#{time / 1_000}"
+    end)
+
+    {time, group_filtered} = :timer.tc(&group_filter/2, [grouped, state.group_filters])
+
+    Logger.debug(fn ->
+      "#{__MODULE__} group_filter time=#{time / 1_000}"
+    end)
+
     state = %{state | timer: nil, demand: ask_demand(state.demand)}
-    {:noreply, [filtered], state}
+    {:noreply, [group_filtered], state}
   end
 
   def handle_info(msg, state) do
@@ -120,5 +135,33 @@ defmodule Concentrate.MergeFilter do
         {from, demand}
       end
     end
+  end
+
+  defp build_group_filters(filters) do
+    for filter <- filters do
+      fun =
+        case filter do
+          filter when is_atom(filter) ->
+            &filter.filter/1
+
+          filter when is_function(filter, 1) ->
+            filter
+        end
+
+      flat_mapper(fun)
+    end
+  end
+
+  defp flat_mapper(fun) do
+    fn value ->
+      case fun.(value) do
+        {_, [], []} -> []
+        other -> [other]
+      end
+    end
+  end
+
+  defp group_filter(groups, filters) do
+    Enum.reduce(filters, groups, fn filter, groups -> Enum.flat_map(groups, filter) end)
   end
 end

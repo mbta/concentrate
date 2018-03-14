@@ -12,7 +12,7 @@ defmodule Concentrate.Merge.TableTest do
         table = new()
         table = add(table, from)
         table = update(table, from, mergeables)
-        assert Enum.sort(items(table)) == Enum.sort(mergeables)
+        assert Enum.sort(items(table)) == Enum.sort(Merge.merge(mergeables))
       end
     end
 

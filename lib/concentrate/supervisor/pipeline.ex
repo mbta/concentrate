@@ -18,7 +18,7 @@ defmodule Concentrate.Supervisor.Pipeline do
     {source_names, source_children} = sources(config[:sources])
     {output_names, output_children} = encoders(config[:encoders])
     file_tap = [{Concentrate.Producer.FileTap, config[:file_tap]}]
-    merge_filter = merge(source_names, config[:filters])
+    merge_filter = merge(source_names, config)
     reporters = reporters(config[:reporters])
     sinks = sinks(config[:sinks], [Concentrate.Producer.FileTap] ++ output_names, source_names)
     Enum.concat([source_children, file_tap, merge_filter, output_children, reporters, sinks])
@@ -62,13 +62,17 @@ defmodule Concentrate.Supervisor.Pipeline do
     {child_ids(children), children}
   end
 
-  def merge(source_names, filters) do
+  def merge(source_names, config) do
     sources = outputs_with_options(source_names, max_demand: 1)
 
     [
       {
         Concentrate.MergeFilter,
-        name: :merge_filter, subscribe_to: sources, buffer_size: 1, filters: filters
+        name: :merge_filter,
+        subscribe_to: sources,
+        buffer_size: 1,
+        filters: Keyword.get(config, :filters, []),
+        group_filters: Keyword.get(config, :group_filters, [])
       }
     ]
   end
@@ -77,17 +81,13 @@ defmodule Concentrate.Supervisor.Pipeline do
     for module <- reporter_modules do
       child_spec(
         {Concentrate.Reporter.Consumer,
-         module: module, subscribe_to: [group_pc: [max_demand: 1]]},
+         module: module, subscribe_to: [merge_filter: [max_demand: 1]]},
         id: module
       )
     end
   end
 
   def encoders(config) do
-    group =
-      {Concentrate.Encoder.GroupProducerConsumer,
-       name: :group_pc, subscribe_to: [merge_filter: [max_demand: 1]]}
-
     children =
       for {filename, encoder} <- config[:files] do
         child_spec(
@@ -95,14 +95,14 @@ defmodule Concentrate.Supervisor.Pipeline do
             Concentrate.Encoder.ProducerConsumer,
             name: encoder,
             files: [{filename, encoder}],
-            subscribe_to: [group_pc: [max_demand: 1]],
+            subscribe_to: [merge_filter: [max_demand: 1]],
             buffer_size: 1
           },
           id: encoder
         )
       end
 
-    {child_ids(children), [group | children]}
+    {child_ids(children), children}
   end
 
   def sinks(config, output_names, source_names) do
