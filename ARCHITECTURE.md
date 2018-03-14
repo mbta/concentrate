@@ -26,19 +26,26 @@ Each type of struct is responsible for merging, through an implementation of
 the Mergeable protocol.
 
 Filters implement the Filter behavior. Each one can modify or remove the
-provided struct, as well as maintain state during the filtering. Some filters
-depend on outside data such as alerts or GTFS: those filters maintain
-external state and refer to it during the filtering.
+provided struc. Some filters depend on outside data such as alerts or GTFS:
+those filters maintain external state and refer to it during the filtering.
+
+After the first pass of filtering, the data are grouped by their trip
+ID. This more closely matches the GTFS-RT format, by having a TripUpdate
+grouped with the VehiclePositions and StopTimeUpdates for that trip.
+
+The groups are then passed through modules implementing the GroupFilter
+behavior. These filters are more holistic, looking at the entire state of the
+trip to filter or adjust the group.
 
 ## Encoder
 
-The merged/filtered data is passed to the Encoder stages, one per file:
+The merged/filtered/grouped data are passed to the Encoder stages, one per file:
 
 * TripUpdates.pb
 * TripUpdates_enhanced.json
 * VehiclePositions.pb
 
-The encoders implement the Encoder protocol, and turn the list of structs
+The encoders implement the Encoder protocol, and turn the list of groups
 into a binary.
 
 ## Sinks
