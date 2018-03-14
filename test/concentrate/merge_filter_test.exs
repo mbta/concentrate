@@ -3,7 +3,8 @@ defmodule Concentrate.MergeFilterTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
   import Concentrate.MergeFilter
-  alias Concentrate.{Merge, TestMergeable, VehiclePosition}
+  alias Concentrate.{Merge, TripUpdate, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.Encoder.GTFSRealtimeHelpers
 
   describe "handle_subscribe/4" do
     test "asks the producer for demand" do
@@ -48,7 +49,49 @@ defmodule Concentrate.MergeFilterTest do
       {_, state, _} = init(filters: filters)
       {_, state} = handle_subscribe(:producer, [], from, state)
       {:noreply, [], state} = handle_events(events, from, state)
-      assert {:noreply, [[^expected]], _state} = handle_info(:timeout, state)
+      assert {:noreply, [[{nil, [^expected], []}]], _state} = handle_info(:timeout, state)
+    end
+
+    test "can filter the grouped data" do
+      defmodule Filter do
+        @moduledoc false
+        @behaviour Concentrate.GroupFilter
+        def filter({trip, _vehicles, stop_updates}) do
+          {trip, [], stop_updates}
+        end
+      end
+
+      from = make_from()
+      {_, state, _} = init(group_filters: [__MODULE__.Filter])
+      {_, state} = handle_subscribe(:producer, [], from, state)
+
+      data = [
+        trip = TripUpdate.new(trip_id: "trip"),
+        VehiclePosition.new(trip_id: "trip", latitude: 1, longitude: 1),
+        stu = StopTimeUpdate.new(trip_id: "trip")
+      ]
+
+      expected = [{trip, [], [stu]}]
+      {:noreply, [], state} = handle_events([data], from, state)
+      {:noreply, events, _state} = handle_info(:timeout, state)
+      assert events == [expected]
+    end
+
+    test "removes empty results post-filter" do
+      filter = fn {_, _, _} -> {nil, [], []} end
+      from = make_from()
+      {_, state, _} = init(group_filters: [filter])
+      {_, state} = handle_subscribe(:producer, [], from, state)
+
+      data = [
+        TripUpdate.new(trip_id: "trip"),
+        StopTimeUpdate.new(trip_id: "trip")
+      ]
+
+      expected = []
+      {:noreply, [], state} = handle_events([data], from, state)
+      {:noreply, events, _state} = handle_info(:timeout, state)
+      assert events == [expected]
     end
 
     property "with multiple sources, returns the merged data" do
@@ -59,6 +102,7 @@ defmodule Concentrate.MergeFilterTest do
           multi_source_mergeables
           |> List.flatten()
           |> Merge.merge()
+          |> GTFSRealtimeHelpers.group()
 
         acc = {:noreply, [], state}
 
@@ -94,7 +138,25 @@ defmodule Concentrate.MergeFilterTest do
   end
 
   defp list_of_mergeables do
-    list_of(TestMergeable.mergeables(), min_length: 1, max_length: 3)
+    list_of(list_of_vehicles(), min_length: 1, max_length: 3)
+  end
+
+  defp list_of_vehicles do
+    gen all vehicles <- list_of(vehicle()) do
+      Enum.uniq_by(vehicles, &VehiclePosition.id/1)
+    end
+  end
+
+  defp vehicle do
+    gen all last_updated <- StreamData.positive_integer(),
+            vehicle_id <- StreamData.string(:ascii) do
+      VehiclePosition.new(
+        id: vehicle_id,
+        last_updated: last_updated,
+        latitude: 1.0,
+        longitude: 1.0
+      )
+    end
   end
 
   defp clear_mailbox do
