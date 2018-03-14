@@ -9,12 +9,13 @@ defmodule Concentrate.Reporter do
   ## Callbacks
 
   * `init/0`: returns an initial state
-  * `log/2`: receives the list of filtered data and the current state;
+  * `log/2`: receives the list of trip groups and the current state;
     returns a keyword list of stats and the new state
   """
+  alias Concentrate.Encoder.GTFSRealtimeHelpers
   @type state :: term
   @type stats :: [{atom, term}]
 
   @callback init() :: state
-  @callback log([Concentrate.Parser.parsed()], state) :: {stats, state}
+  @callback log([GTFSRealtimeHelpers.trip_group()], state) :: {stats, state}
 end

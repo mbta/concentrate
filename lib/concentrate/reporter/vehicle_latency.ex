@@ -11,9 +11,14 @@ defmodule Concentrate.Reporter.VehicleLatency do
   end
 
   @impl Concentrate.Reporter
-  def log(parsed, state) do
+  def log(groups, state) do
     now = utc_now()
-    latenesses = Enum.flat_map(parsed, &timestamp(&1, now))
+
+    latenesses =
+      groups
+      # get the vehicle positions
+      |> Enum.flat_map(&elem(&1, 1))
+      |> Enum.flat_map(&timestamp(&1, now))
 
     latest =
       if latenesses == [] do

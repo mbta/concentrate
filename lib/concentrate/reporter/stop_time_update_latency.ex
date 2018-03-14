@@ -11,8 +11,11 @@ defmodule Concentrate.Reporter.StopTimeUpdateLatency do
   end
 
   @impl Concentrate.Reporter
-  def log(parsed, state) do
-    {earliest_time, latest_time} = Enum.reduce(parsed, {:infinity, 0}, &timestamp/2)
+  def log(groups, state) do
+    {earliest_time, latest_time} =
+      groups
+      |> Enum.flat_map(&elem(&1, 2))
+      |> Enum.reduce({:infinity, 0}, &timestamp/2)
 
     earliest_time = optional_time(earliest_time, :infinity)
     latest_time = optional_time(latest_time, 0)
