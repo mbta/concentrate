@@ -77,7 +77,7 @@ defmodule Concentrate.Supervisor.Pipeline do
     for module <- reporter_modules do
       child_spec(
         {Concentrate.Reporter.Consumer,
-         module: module, subscribe_to: [merge_filter: [max_demand: 1]]},
+         module: module, subscribe_to: [group_pc: [max_demand: 1]]},
         id: module
       )
     end

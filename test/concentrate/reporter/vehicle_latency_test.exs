@@ -14,9 +14,10 @@ defmodule Concentrate.Reporter.VehicleLatencyTest do
         vehicle_count: 0
       ]
 
-      assert {^expected, _} = log([], state)
+      assert {^expected, _} = log([{nil, [], []}], state)
 
-      assert {^expected, _} = log([VehiclePosition.new(latitude: 1, longitude: 1)], state)
+      assert {^expected, _} =
+               log([{nil, [VehiclePosition.new(latitude: 1, longitude: 1)], []}], state)
     end
 
     test "logs the difference with utc_now from the most-up-to-date vehicle" do
@@ -24,12 +25,15 @@ defmodule Concentrate.Reporter.VehicleLatencyTest do
       vp = VehiclePosition.new(latitude: 1, longitude: 1)
       now = utc_now()
 
-      vehicles = [
-        VehiclePosition.update_last_updated(vp, now - 5),
-        VehiclePosition.update_last_updated(vp, now - 3),
-        VehiclePosition.update_last_updated(vp, now - 10),
-        Concentrate.TripUpdate.new([])
-      ]
+      group = {
+        Concentrate.TripUpdate.new([]),
+        [
+          VehiclePosition.update_last_updated(vp, now - 5),
+          VehiclePosition.update_last_updated(vp, now - 3),
+          VehiclePosition.update_last_updated(vp, now - 10)
+        ],
+        []
+      }
 
       average_lateness = (5 + 3 + 10) / 3
 
@@ -39,7 +43,7 @@ defmodule Concentrate.Reporter.VehicleLatencyTest do
         vehicle_count: 3
       ]
 
-      assert {^expected, _} = log(vehicles, state)
+      assert {^expected, _} = log([group], state)
     end
   end
 

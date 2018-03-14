@@ -10,7 +10,7 @@ defmodule Concentrate.Reporter.Latency do
   end
 
   @impl Concentrate.Reporter
-  def log(_parsed, last_update) do
+  def log(_groups, last_update) do
     new_now = now()
     {[update_latency_ms: new_now - last_update], new_now}
   end
