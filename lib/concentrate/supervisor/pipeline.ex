@@ -6,7 +6,7 @@ defmodule Concentrate.Supervisor.Pipeline do
   * one per file we're fetching
   * one to merge multiple files into a single output stream
   * one per file to build output files
-  * one per sink to save files
+  * one supervisor sink to save files
   """
   import Supervisor, only: [child_spec: 2]
 
@@ -20,7 +20,7 @@ defmodule Concentrate.Supervisor.Pipeline do
     file_tap = [{Concentrate.Producer.FileTap, config[:file_tap]}]
     merge_filter = merge(source_names, config)
     reporters = reporters(config[:reporters])
-    sinks = sinks(config[:sinks], [Concentrate.Producer.FileTap] ++ output_names, source_names)
+    sinks = sinks(config[:sinks], [Concentrate.Producer.FileTap] ++ output_names)
     Enum.concat([source_children, file_tap, merge_filter, output_children, reporters, sinks])
   end
 
@@ -105,36 +105,19 @@ defmodule Concentrate.Supervisor.Pipeline do
     {child_ids(children), children}
   end
 
-  def sinks(config, output_names, source_names) do
-    for {sink_type, sink_config} <- config,
-        child <- sink_config(sink_type, sink_config, output_names, source_names) do
-      child
+  def sinks(config, output_names) do
+    opts = [subscribe_to: output_names]
+
+    for {sink_type, sink_config} <- config do
+      child_module = sink_child(sink_type)
+      child_opts = opts ++ sink_config
+
+      {Concentrate.Sink.ConsumerSupervisor, {child_module, child_opts}}
     end
   end
 
-  defp sink_config(:filesystem, config, output_names, _source_names) do
-    # filesystem gets serialized anyways, no point in running multiple workers
-    [
-      {Concentrate.Sink.Filesystem,
-       [
-         directory: config[:directory],
-         subscribe_to: output_names
-       ]}
-    ]
-  end
-
-  defp sink_config(:s3, config, output_names, source_names) do
-    # generate a sink per output name and source name, so that there's at
-    # least a sink per file we're uploading
-    count = length(output_names) + length(source_names)
-
-    for id <- 1..count do
-      child_spec(
-        {Concentrate.Sink.S3, [subscribe_to: output_names] ++ config},
-        id: {:s3_sink, id}
-      )
-    end
-  end
+  defp sink_child(:filesystem), do: Concentrate.Sink.Filesystem
+  defp sink_child(:s3), do: Concentrate.Sink.S3
 
   defp child_ids(children) do
     for child <- children, do: child.id
