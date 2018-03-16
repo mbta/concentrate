@@ -3,15 +3,14 @@ defmodule Concentrate.Sink.FilesystemTest do
   use ExUnit.Case, async: true
   import Concentrate.Sink.Filesystem
 
-  describe "handle_events/1" do
+  describe "start_link/2" do
     setup :temp_dir
 
-    test "writes to each file", %{directory: directory} do
-      {_, state, _} = init(directory: directory)
-      _ = handle_events([{"a", "a"}, {"b", "b"}], :from, state)
+    test "writes to a file", %{directory: directory} do
+      {:ok, pid} = start_link([directory: directory], {"a", "a body"})
+      await_down(pid)
 
-      assert File.read!(Path.join(directory, "a")) == "a"
-      assert File.read!(Path.join(directory, "b")) == "b"
+      assert File.read!(Path.join(directory, "a")) == "a body"
     end
   end
 
@@ -28,6 +27,15 @@ defmodule Concentrate.Sink.FilesystemTest do
 
       {:error, :eexist} ->
         temp_dir(nil)
+    end
+  end
+
+  def await_down(pid) do
+    ref = Process.monitor(pid)
+
+    receive do
+      {:DOWN, ^ref, :process, _, _} ->
+        :ok
     end
   end
 end

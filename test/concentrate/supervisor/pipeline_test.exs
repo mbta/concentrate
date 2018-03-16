@@ -6,7 +6,7 @@ defmodule Concentrate.Supervisor.PipelineTest do
   describe "children/1" do
     test "builds the right number of children" do
       # currently, the right number is 8 (2 urls + 1 merge/filter/grouper +
-      # 2 encoders + 1 sink + 1 reporter + file tap)
+      # 2 encoders + 1 sink supervisor + 1 reporter + file tap)
       config = [
         sources: [
           gtfs_realtime: [
@@ -22,37 +22,6 @@ defmodule Concentrate.Supervisor.PipelineTest do
       actual = children(config)
 
       assert length(actual) == 8
-    end
-
-    test "s3 sink generates a child for each source and output" do
-      config = [
-        sources: [
-          gtfs_realtime: [
-            name: "url",
-            name2: {"url2", fallback_url: "url fallback"}
-          ],
-          gtfs_realtime_enhanced: [
-            name3: "url3"
-          ]
-        ],
-        reporters: [],
-        encoders: [files: [{"filename", :module}, {"other_file", :other_mod}]],
-        sinks: [s3: []],
-        file_tap: [
-          enabled?: true
-        ]
-      ]
-
-      source_count =
-        length(config[:sources][:gtfs_realtime]) +
-          length(config[:sources][:gtfs_realtime_enhanced])
-
-      encoder_count = length(config[:encoders][:files])
-      sink_count = source_count + encoder_count + 1
-
-      actual = children(config)
-      # extra 2 are MergeFilter, FileTap
-      assert length(actual) == source_count + 2 + encoder_count + sink_count
     end
   end
 end
