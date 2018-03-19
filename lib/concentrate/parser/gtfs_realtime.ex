@@ -15,10 +15,11 @@ defmodule Concentrate.Parser.GTFSRealtime do
     @moduledoc """
     Options for parsing a GTFS Realtime file.
 
-    * routes: either :error (don't filter the routes) or {:ok, Enumerable.t} with the route IDs to include
+    * routes: either :all (don't filter the routes) or {:ok, Enumerable.t} with the route IDs to include
+    * excluded_routes: either :none (don't filter) or {:ok, Enumerable.t} with the route IDs to exclude
     * max_time: the maximum time for a stop time update
     """
-    defstruct routes: :error, max_time: :infinity
+    defstruct routes: :all, excluded_routes: :none, max_time: :infinity
   end
 
   alias __MODULE__.Options
@@ -46,42 +47,50 @@ defmodule Concentrate.Parser.GTFSRealtime do
     decode_vehicle_position(tu, vp, options)
   end
 
-  defp decode_vehicle_position([tu], vp, %{routes: {:ok, routes}}) do
-    if TripUpdate.route_id(tu) in routes do
-      decode_vehicle_position([tu], vp, :error)
+  defp decode_vehicle_position(tu, vp, options) do
+    if tu == [] or valid_route_id?(options, TripUpdate.route_id(List.first(tu))) do
+      trip_id =
+        case vp do
+          %{trip: %{trip_id: id}} -> id
+          _ -> nil
+        end
+
+      vehicle = vp.vehicle
+      position = vp.position
+
+      tu ++
+        [
+          VehiclePosition.new(
+            id: Map.get(vehicle, :id),
+            trip_id: trip_id,
+            stop_id: Map.get(vp, :stop_id),
+            label: Map.get(vehicle, :label),
+            license_plate: Map.get(vehicle, :license_plate),
+            latitude: Map.get(position, :latitude),
+            longitude: Map.get(position, :longitude),
+            bearing: Map.get(position, :bearing),
+            speed: Map.get(position, :speed),
+            odometer: Map.get(position, :odometer),
+            status: Map.get(vp, :current_status),
+            stop_sequence: Map.get(vp, :current_stop_sequence),
+            last_updated: Map.get(vp, :timestamp)
+          )
+        ]
     else
       []
     end
   end
 
-  defp decode_vehicle_position(tu, vp, _) do
-    trip_id =
-      case vp do
-        %{trip: %{trip_id: id}} -> id
-        _ -> nil
-      end
+  defp valid_route_id?(%{routes: {:ok, route_ids}}, route_id) do
+    route_id in route_ids
+  end
 
-    vehicle = vp.vehicle
-    position = vp.position
+  defp valid_route_id?(%{excluded_routes: {:ok, route_ids}}, route_id) do
+    not (route_id in route_ids)
+  end
 
-    tu ++
-      [
-        VehiclePosition.new(
-          id: Map.get(vehicle, :id),
-          trip_id: trip_id,
-          stop_id: Map.get(vp, :stop_id),
-          label: Map.get(vehicle, :label),
-          license_plate: Map.get(vehicle, :license_plate),
-          latitude: Map.get(position, :latitude),
-          longitude: Map.get(position, :longitude),
-          bearing: Map.get(position, :bearing),
-          speed: Map.get(position, :speed),
-          odometer: Map.get(position, :odometer),
-          status: Map.get(vp, :current_status),
-          stop_sequence: Map.get(vp, :current_stop_sequence),
-          last_updated: Map.get(vp, :timestamp)
-        )
-      ]
+  defp valid_route_id?(_, _) do
+    true
   end
 
   def decode_trip_update(nil, _options) do
@@ -99,6 +108,10 @@ defmodule Concentrate.Parser.GTFSRealtime do
     parse_options(rest, %{acc | routes: {:ok, MapSet.new(route_ids)}})
   end
 
+  defp parse_options([{:excluded_routes, route_ids} | rest], acc) do
+    parse_options(rest, %{acc | excluded_routes: {:ok, MapSet.new(route_ids)}})
+  end
+
   defp parse_options([{:max_future_time, seconds} | rest], acc) do
     max_time = :os.system_time(:seconds) + seconds
     parse_options(rest, %{acc | max_time: max_time})
@@ -112,38 +125,33 @@ defmodule Concentrate.Parser.GTFSRealtime do
     acc
   end
 
-  defp decode_stop_updates([tu], trip_update, %{routes: {:ok, routes}} = options) do
-    if TripUpdate.route_id(tu) in routes do
-      decode_stop_updates([tu], trip_update, %{options | routes: :error})
-    else
-      []
-    end
-  end
-
   defp decode_stop_updates(tu, %{stop_time_update: [update | _] = updates} = trip_update, options) do
     max_time = options.max_time
 
     arrival_time = time_from_event(Map.get(update, :arrival))
     departure_time = time_from_event(Map.get(update, :departure))
 
-    if times_less_than_max?(arrival_time, departure_time, max_time) do
-      trip_id = Map.get(trip_update.trip, :trip_id)
+    cond do
+      tu != [] and not valid_route_id?(options, TripUpdate.route_id(List.first(tu))) ->
+        []
 
-      stop_updates =
-        for stu <- updates do
-          StopTimeUpdate.new(
-            trip_id: trip_id,
-            stop_id: Map.get(stu, :stop_id),
-            stop_sequence: Map.get(stu, :stop_sequence),
-            schedule_relationship: Map.get(stu, :schedule_relationship, :SCHEDULED),
-            arrival_time: time_from_event(Map.get(stu, :arrival)),
-            departure_time: time_from_event(Map.get(stu, :departure))
-          )
-        end
+      not times_less_than_max?(arrival_time, departure_time, max_time) ->
+        []
 
-      tu ++ stop_updates
-    else
-      []
+      true ->
+        stop_updates =
+          for stu <- updates do
+            StopTimeUpdate.new(
+              trip_id: Map.get(trip_update.trip, :trip_id),
+              stop_id: Map.get(stu, :stop_id),
+              stop_sequence: Map.get(stu, :stop_sequence),
+              schedule_relationship: Map.get(stu, :schedule_relationship, :SCHEDULED),
+              arrival_time: time_from_event(Map.get(stu, :arrival)),
+              departure_time: time_from_event(Map.get(stu, :departure))
+            )
+          end
+
+        tu ++ stop_updates
     end
   end
 
