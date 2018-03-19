@@ -95,6 +95,7 @@ defmodule Concentrate do
     opts =
       for {key, guard} <- [
             routes: &is_list/1,
+            excluded_routes: &is_list/1,
             fallback_url: &is_binary/1,
             max_future_time: &is_integer/1,
             content_warning_timeout: &is_integer/1

@@ -42,6 +42,9 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       now = :os.system_time(:seconds)
       assert parse(binary, max_future_time: -now) == []
       assert parse(binary, routes: []) == []
+      with_excluded = parse(binary, excluded_routes: ["Green-D"])
+      refute with_excluded == []
+      refute with_excluded == parse(binary, [])
     end
   end
 
@@ -123,6 +126,32 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       }
 
       assert [_, _] = decode_trip_update(update, %Options{routes: {:ok, ["keeping"]}})
+    end
+
+    test "does not include trip or stop update if we're not excluding the route" do
+      update = %{
+        trip: %{route_id: "ignored"},
+        stop_time_update: [
+          %{
+            departure: %{time: 1}
+          }
+        ]
+      }
+
+      assert [] = decode_trip_update(update, %Options{excluded_routes: {:ok, ["ignored"]}})
+    end
+
+    test "includes trip or stop update if we're not excluding the route" do
+      update = %{
+        trip: %{route_id: "keeping"},
+        stop_time_update: [
+          %{
+            departure: %{time: 1}
+          }
+        ]
+      }
+
+      assert [_, _] = decode_trip_update(update, %Options{excluded_routes: {:ok, ["ignored"]}})
     end
 
     test "only includes trip/stop update if it's under max_time" do
