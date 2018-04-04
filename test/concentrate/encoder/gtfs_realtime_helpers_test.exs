@@ -53,9 +53,14 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpersTest do
       assert actual == expected
     end
 
-    test "trip updates without a vehicle or stop time are ignored" do
+    test "SCHEDULED trip updates without a vehicle or stop time are ignored" do
       tu = TripUpdate.new(trip_id: "trip")
       assert [] = group([tu])
+    end
+
+    test "CANCELED trip updates without a vehicle or stop time are kept" do
+      tu = TripUpdate.new(trip_id: "trip", schedule_relationship: :CANCELED)
+      assert [{^tu, [], []}] = group([tu])
     end
   end
 end

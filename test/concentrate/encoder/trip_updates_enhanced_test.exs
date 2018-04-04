@@ -51,6 +51,18 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
       assert decoded["entity"] == []
     end
 
+    test "trips with a non-SCHEDULED relationship can appear alone" do
+      initial = [
+        TripUpdate.new(trip_id: "1", schedule_relationship: :CANCELED)
+      ]
+
+      decoded = Jason.decode!(encode_groups(group(initial)))
+      trip_update = get_in(decoded, ["entity", Access.at(0), "trip_update"])
+      assert trip_update
+      assert trip_update["trip"]["schedule_relationship"] == "CANCELED"
+      refute "stop_time_update" in Map.keys(trip_update)
+    end
+
     test "trips/updates with schedule_relationship SCHEDULED don't have that field" do
       parsed = [
         TripUpdate.new(trip_id: "trip", schedule_relationship: :SCHEDULED),

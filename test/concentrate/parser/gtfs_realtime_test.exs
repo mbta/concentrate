@@ -183,6 +183,24 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
 
       assert [_, _, _] = decode_trip_update(update, %Options{max_time: 1})
     end
+
+    test "keeps the trip even without stop time updates" do
+      update = %{
+        trip: %{},
+        stop_time_update: []
+      }
+
+      assert [_] = decode_trip_update(update, %Options{})
+    end
+
+    test "ignores the trip when we're excluding the route even without stop time updates" do
+      update = %{
+        trip: %{route_id: "ignored"},
+        stop_time_update: []
+      }
+
+      assert [] = decode_trip_update(update, %Options{routes: {:ok, ["keeping"]}})
+    end
   end
 
   describe "decode_vehicle/2" do
