@@ -155,6 +155,14 @@ defmodule Concentrate.Parser.GTFSRealtime do
     end
   end
 
+  defp decode_stop_updates(tu, %{stop_time_update: []}, options) do
+    if tu != [] and not valid_route_id?(options, TripUpdate.route_id(List.first(tu))) do
+      []
+    else
+      tu
+    end
+  end
+
   defp times_less_than_max?(_, _, :infinity), do: true
   defp times_less_than_max?(nil, nil, _), do: true
   defp times_less_than_max?(time, nil, max), do: time <= max

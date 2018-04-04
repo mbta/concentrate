@@ -21,12 +21,15 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     |> Enum.reduce(%{}, &group_by_trip_id/2)
     |> Map.values()
     |> Enum.flat_map(fn
-      {_, [], []} ->
-        []
+      {%TripUpdate{} = tu, [], []} ->
+        if TripUpdate.schedule_relationship(tu) == :SCHEDULED do
+          []
+        else
+          [{tu, [], []}]
+        end
 
       {tu, vps, stus} ->
         stus = Enum.sort_by(stus, &StopTimeUpdate.stop_sequence/1)
-
         [{tu, vps, stus}]
     end)
   end
@@ -156,8 +159,9 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     {tu, vps, [stu | stus]}
   end
 
-  defp build_trip_update_entity({update, vps, [_ | _] = stus}, stop_time_update_fn) do
+  defp build_trip_update_entity({%TripUpdate{} = update, vps, stus}, stop_time_update_fn) do
     trip_id = TripUpdate.trip_id(update)
+    id = trip_id || "#{:erlang.phash2(update)}"
 
     trip =
       drop_nil_values(%{
@@ -170,19 +174,38 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
       })
 
     vehicle = trip_update_vehicle(vps)
-    stop_time_update = Enum.map(stus, stop_time_update_fn)
 
-    [
-      %{
-        id: trip_id || "#{:erlang.phash2(update)}",
-        trip_update:
-          drop_nil_values(%{
-            trip: trip,
-            stop_time_update: stop_time_update,
-            vehicle: vehicle
-          })
-      }
-    ]
+    stop_time_update =
+      case stus do
+        [_ | _] -> Enum.map(stus, stop_time_update_fn)
+        [] -> nil
+      end
+
+    cond do
+      is_list(stop_time_update) ->
+        [
+          %{
+            id: id,
+            trip_update:
+              drop_nil_values(%{
+                trip: trip,
+                stop_time_update: stop_time_update,
+                vehicle: vehicle
+              })
+          }
+        ]
+
+      is_nil(stop_time_update) and TripUpdate.schedule_relationship(update) != :SCHEDULED ->
+        [
+          %{
+            id: id,
+            trip_update: drop_nil_values(%{trip: trip, vehicle: vehicle})
+          }
+        ]
+
+      true ->
+        []
+    end
   end
 
   defp build_trip_update_entity(_, _) do
