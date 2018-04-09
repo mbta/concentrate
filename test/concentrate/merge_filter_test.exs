@@ -28,7 +28,11 @@ defmodule Concentrate.MergeFilterTest do
   describe "handle_events/2" do
     test "schedules a timeout" do
       from = make_from()
-      {_, state, _} = init(timeout: 100)
+      {_, state, _} = init(initial_timeout: 100, timeout: 100)
+      assert state.timer
+      assert_receive :timeout, 500
+      {:noreply, _, state} = handle_info(:timeout, state)
+
       {_, state} = handle_subscribe(:producer, [], from, state)
       {:noreply, [], state} = handle_events([[], [], []], from, state)
       assert state.timer

@@ -15,6 +15,8 @@ defmodule Concentrate.MergeFilter do
   alias Concentrate.Encoder.GTFSRealtimeHelpers
 
   @start_link_opts [:name]
+  # allow sources some time to load
+  @initial_timeout 5_000
 
   defstruct timeout: 1_000,
             timer: nil,
@@ -41,8 +43,10 @@ defmodule Concentrate.MergeFilter do
         _ -> state
       end
 
+    initial_timeout = Keyword.get(opts, :initial_timeout, @initial_timeout)
     opts = Keyword.take(opts, [:subscribe_to, :dispatcher])
     opts = Keyword.put_new(opts, :dispatcher, GenStage.BroadcastDispatcher)
+    state = %{state | timer: Process.send_after(self(), :timeout, initial_timeout)}
     {:producer_consumer, state, opts}
   end
 
