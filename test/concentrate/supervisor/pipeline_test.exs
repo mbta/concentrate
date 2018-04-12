@@ -11,7 +11,12 @@ defmodule Concentrate.Supervisor.PipelineTest do
         sources: [
           gtfs_realtime: [
             name: "url",
-            name2: {"url2", fallback_url: "url fallback"}
+            name2:
+              {"url2",
+               fallback_url: "url fallback",
+               routes: ["1"],
+               excluded_routes: ["2"],
+               max_future_time: 3600}
           ]
         ],
         reporters: [Concentrate.Reporter.VehicleLatency],
@@ -22,6 +27,37 @@ defmodule Concentrate.Supervisor.PipelineTest do
       actual = children(config)
 
       assert length(actual) == 8
+    end
+
+    test "correctly passes parse options to the parser" do
+      config = [
+        sources: [
+          gtfs_realtime: [
+            name:
+              {"url",
+               fallback_url: "url fallback",
+               routes: ["1"],
+               excluded_routes: ["2"],
+               max_future_time: 3600}
+          ]
+        ],
+        reporters: [],
+        encoders: [files: []],
+        sinks: []
+      ]
+
+      [url_child | _] = children(config)
+
+      assert {_, _, [{"url", url_opts}]} = url_child.start
+
+      assert url_opts[:parser] == {
+               Concentrate.Parser.GTFSRealtime,
+               [
+                 routes: ~w(1),
+                 excluded_routes: ~w(2),
+                 max_future_time: 3600
+               ]
+             }
     end
   end
 end
