@@ -45,6 +45,18 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimesTest do
       assert {_, [], [^expected]} = filter(group, @module)
     end
 
+    test "a departure_time is not removed if there are stops added afterward" do
+      # stop sequence 6 is skipped
+      stus =
+        for seq <- [5, 7] do
+          StopTimeUpdate.update(@stu, stop_sequence: seq)
+        end
+
+      group = {@tu, [], stus}
+      # no chanages
+      assert filter(group, @module) == group
+    end
+
     test "if the departure time is missing from the first stop, use the arrival time" do
       stu = StopTimeUpdate.update(@stu, stop_sequence: 1, departure_time: nil)
       group = {@tu, [], [stu]}
