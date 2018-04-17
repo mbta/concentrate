@@ -12,7 +12,7 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
   def filter({%TripUpdate{} = tu, vps, stus} = group, module) do
     if TripUpdate.schedule_relationship(tu) == :SCHEDULED do
       trip_id = TripUpdate.trip_id(tu)
-      stus = Enum.map(stus, &ensure_correct_times(&1, module, trip_id))
+      stus = ensure_all_correct_times(stus, module, trip_id)
       {tu, vps, stus}
     else
       group
@@ -20,6 +20,17 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
   end
 
   def filter(other, _module), do: other
+
+  defp ensure_all_correct_times([_ | _] = stus, module, trip_id) do
+    [last | rest] = Enum.reverse(stus)
+    last = ensure_correct_times_for_last_stu(last, module, trip_id)
+    rest = Enum.map(rest, &ensure_correct_times(&1, module, trip_id))
+    Enum.reverse(rest, [last])
+  end
+
+  defp ensure_all_correct_times([], _, _) do
+    []
+  end
 
   defp stop_sequence_or_stop_id(stu) do
     case StopTimeUpdate.stop_sequence(stu) do
@@ -31,22 +42,32 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
     end
   end
 
+  defp ensure_correct_times_for_last_stu(stu, module, trip_id) do
+    # we only remove the departure time from the last stop (excepting SKIPPED stops)
+    key = stop_sequence_or_stop_id(stu)
+    pickup? = module.pickup?(trip_id, key)
+    drop_off? = module.drop_off?(trip_id, key)
+
+    case {pickup?, drop_off?} do
+      {true, true} -> ensure_both_times(stu)
+      {true, false} -> remove_arrival_time(stu)
+      {false, true} -> remove_departure_time(stu)
+      {false, false} -> StopTimeUpdate.skip(stu)
+    end
+  end
+
   defp ensure_correct_times(stu, module, trip_id) do
     key = stop_sequence_or_stop_id(stu)
     pickup? = module.pickup?(trip_id, key)
     drop_off? = module.drop_off?(trip_id, key)
 
     case {pickup?, drop_off?} do
-      {true, true} ->
+      {_, true} ->
         ensure_both_times(stu)
 
       {true, false} ->
         # not drop_off?
         remove_arrival_time(stu)
-
-      {false, true} ->
-        # not pickup?
-        remove_departure_time(stu)
 
       {false, false} ->
         StopTimeUpdate.skip(stu)
