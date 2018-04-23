@@ -45,7 +45,6 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
                     },
                     "stop_id": "Worcester",
                     "activities": [
-                      "BOARD",
                       "EXIT",
                       "RIDE"
                     ]
@@ -62,7 +61,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert InformedEntity.direction_id(entity) == 1
       assert InformedEntity.trip_id(entity) == "CR-Weekday-Fall-17-516"
       assert InformedEntity.stop_id(entity) == "Worcester"
-      assert InformedEntity.activities(entity) == ~w(BOARD EXIT RIDE)
+      assert InformedEntity.activities(entity) == ~w(EXIT RIDE)
     end
 
     test "alerts can decoded the old-format feed" do
