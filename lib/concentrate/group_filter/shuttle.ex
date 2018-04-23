@@ -42,7 +42,7 @@ defmodule Concentrate.GroupFilter.Shuttle do
     time = StopTimeUpdate.time(stu)
     stop_id = StopTimeUpdate.stop_id(stu)
 
-    if is_integer(time) and module.stop_shuttling_on_route?(route_id, stop_id, time) do
+    if is_integer(time) and module.stop_shuttling_on_route(route_id, stop_id, time) == :through do
       {[StopTimeUpdate.skip(stu)], true}
     else
       {[stu], false}
