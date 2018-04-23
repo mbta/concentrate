@@ -79,8 +79,10 @@ defmodule Concentrate.Filter.FakeShuttles do
   def trip_shuttling?("trip", "single_direction", 0, {1970, 1, 1}), do: true
   def trip_shuttling?(_trip_id, _route_id, _direction_id, {_, _, _}), do: false
 
-  def stop_shuttling_on_route?("route", "shuttle_1", 8), do: true
-  def stop_shuttling_on_route?("route", "shuttle_2", 8), do: true
-  def stop_shuttling_on_route?("single_direction", "shuttle_1", 8), do: true
-  def stop_shuttling_on_route?(_, _, dt) when is_integer(dt), do: false
+  def stop_shuttling_on_route("route", "shuttle_1", 8), do: :through
+  def stop_shuttling_on_route("route", "shuttle_2", 8), do: :through
+  def stop_shuttling_on_route("route", "shuttle_start", 8), do: :start
+  def stop_shuttling_on_route("route", "shuttle_stop", 8), do: :stop
+  def stop_shuttling_on_route("single_direction", "shuttle_1", 8), do: :through
+  def stop_shuttling_on_route(_, _, dt) when is_integer(dt), do: nil
 end

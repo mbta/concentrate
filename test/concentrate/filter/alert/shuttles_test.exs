@@ -54,7 +54,7 @@ defmodule Concentrate.Filter.Alert.ShuttlesTest do
   describe "stop_shuttling_on_route?/1" do
     setup :supervised
 
-    test "returns a boolean indicating whether the route is shuttling a particular stop" do
+    test "returns a atom indicating whether the route is shuttling a particular stop" do
       alert =
         Alert.new(
           effect: :DETOUR,
@@ -63,15 +63,29 @@ defmodule Concentrate.Filter.Alert.ShuttlesTest do
             {15, 20}
           ],
           informed_entity: [
-            InformedEntity.new(route_type: 2, route_id: "route", stop_id: "stop")
+            InformedEntity.new(route_type: 2, route_id: "route", stop_id: "through"),
+            InformedEntity.new(
+              route_type: 2,
+              route_id: "route",
+              stop_id: "start",
+              activities: ["BOARD", "RIDE"]
+            ),
+            InformedEntity.new(
+              route_type: 2,
+              route_id: "route",
+              stop_id: "stop",
+              activities: ["RIDE", "EXIT"]
+            )
           ]
         )
 
       handle_events([[alert]], :from, :state)
 
-      assert stop_shuttling_on_route?("route", "stop", 5)
-      refute stop_shuttling_on_route?("route", "stop", 21)
-      assert stop_shuttling_on_route?("route", "stop", {1970, 1, 1})
+      assert stop_shuttling_on_route("route", "through", 5) == :through
+      assert stop_shuttling_on_route("route", "through", 21) == nil
+      assert stop_shuttling_on_route("route", "through", {1970, 1, 1}) == :through
+      assert stop_shuttling_on_route("route", "start", 5) == :start
+      assert stop_shuttling_on_route("route", "stop", 5) == :stop
     end
   end
 
@@ -80,8 +94,8 @@ defmodule Concentrate.Filter.Alert.ShuttlesTest do
       refute trip_shuttling?("trip", "route", 0, 0)
     end
 
-    test "stop_shuttling_on_route?/3 returns false" do
-      refute stop_shuttling_on_route?("route", "stop", 0)
+    test "stop_shuttling_on_route/3 returns nil" do
+      assert stop_shuttling_on_route("route", "stop", 0) == nil
     end
   end
 
