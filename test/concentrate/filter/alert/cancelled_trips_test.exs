@@ -76,6 +76,26 @@ defmodule Concentrate.Filter.Alert.CancelledTripsTest do
         assert trip_cancelled?("trip", @one_day * i)
       end
     end
+
+    test "clearing the alert no longer cancels the trip" do
+      alert =
+        Alert.new(
+          effect: :NO_SERVICE,
+          active_period: [
+            {5, 10}
+          ],
+          informed_entity: [
+            InformedEntity.new(trip_id: "trip_with_stop", stop_id: "stop"),
+            InformedEntity.new(trip_id: "trip_with_route", route_id: "route")
+          ]
+        )
+
+      handle_events([[alert]], :from, :state)
+      handle_events([[]], :from, :state)
+
+      refute trip_cancelled?("trip_with_route", 5)
+      refute trip_cancelled?("trip_with_route", {1970, 1, 1})
+    end
   end
 
   describe "route_cancelled?/1" do

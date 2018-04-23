@@ -16,6 +16,10 @@ defmodule Concentrate.Filter.Alert.TimeTable do
     :ets.insert(name, records)
   end
 
+  def update(name, []) do
+    :ets.delete_all_objects(name)
+  end
+
   @doc "Queries the table for matching keys that overlap the date/timestamp."
   def date_overlaps(name, key, date_or_timestamp) do
     {start, stop} = start_stop_times(date_or_timestamp)
