@@ -11,7 +11,7 @@ defmodule Concentrate.Alert.InformedEntity do
     :route_id,
     :direction_id,
     :stop_id,
-    activities: []
+    activities: ["BOARD", "EXIT", "RIDE"]
   ])
 
   @spec match?(t, Keyword.t()) :: boolean
