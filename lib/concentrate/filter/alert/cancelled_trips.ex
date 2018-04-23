@@ -44,14 +44,12 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
         {key, start, stop, @empty_value}
       end
 
-    unless inserts == [] do
-      TimeTable.update(@table, inserts)
+    TimeTable.update(@table, inserts)
 
-      _ =
-        Logger.info(fn ->
-          "#{__MODULE__} updated: records=#{length(inserts)}"
-        end)
-    end
+    _ =
+      Logger.info(fn ->
+        "#{__MODULE__} updated: records=#{length(inserts)}"
+      end)
 
     {:noreply, [], state}
   end
