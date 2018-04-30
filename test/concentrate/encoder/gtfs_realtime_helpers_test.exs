@@ -53,9 +53,11 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpersTest do
       assert actual == expected
     end
 
-    test "SCHEDULED trip updates without a vehicle or stop time are ignored" do
-      tu = TripUpdate.new(trip_id: "trip")
-      assert [] = group([tu])
+    test "non-CANCELED trip updates without a vehicle or stop time are ignored" do
+      for relationship <- ~w(SCHEDULED ADDED)a do
+        tu = TripUpdate.new(trip_id: "trip", schedule_relationship: relationship)
+        assert {relationship, []} == {relationship, group([tu])}
+      end
     end
 
     test "CANCELED trip updates without a vehicle or stop time are kept" do

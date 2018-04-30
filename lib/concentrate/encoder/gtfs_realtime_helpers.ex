@@ -22,10 +22,10 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     |> Map.values()
     |> Enum.flat_map(fn
       {%TripUpdate{} = tu, [], []} ->
-        if TripUpdate.schedule_relationship(tu) == :SCHEDULED do
-          []
-        else
+        if TripUpdate.schedule_relationship(tu) == :CANCELED do
           [{tu, [], []}]
+        else
+          []
         end
 
       {tu, vps, stus} ->
@@ -195,7 +195,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
           }
         ]
 
-      is_nil(stop_time_update) and TripUpdate.schedule_relationship(update) != :SCHEDULED ->
+      TripUpdate.schedule_relationship(update) == :CANCELED ->
         [
           %{
             id: id,
