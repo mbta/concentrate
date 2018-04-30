@@ -85,7 +85,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
     %{
       gtfs_realtime_version: "2.0",
-      timestamp: timestamp
+      timestamp: timestamp,
+      incrementality: :FULL_DATASET
     }
   end
 
