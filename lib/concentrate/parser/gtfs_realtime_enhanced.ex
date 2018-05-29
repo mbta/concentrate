@@ -38,10 +38,14 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     [
       Alert.new(
         id: id,
-        effect: alert_effect(alert["effect"]),
+        effect: alert_effect(Map.get(alert, "effect")),
         active_period:
-          Enum.map(alert["active_period"] || @default_active_period, &decode_active_period/1),
-        informed_entity: Enum.map(alert["informed_entity"] || [], &decode_informed_entity/1)
+          Enum.map(
+            Map.get(alert, "active_period") || @default_active_period,
+            &decode_active_period/1
+          ),
+        informed_entity:
+          Enum.map(Map.get(alert, "informed_entity") || [], &decode_informed_entity/1)
       )
     ]
   end
@@ -51,19 +55,20 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   def decode_trip_update(trip_update) do
-    tu = decode_trip_descriptor(trip_update["trip"])
+    tu = decode_trip_descriptor(Map.get(trip_update, "trip"))
 
     stop_updates =
-      for stu <- trip_update["stop_time_update"] do
+      for stu <- Map.get(trip_update, "stop_time_update") do
         StopTimeUpdate.new(
-          trip_id: if(trip_update["trip"], do: trip_update["trip"]["trip_id"]),
-          stop_id: stu["stop_id"],
-          stop_sequence: stu["stop_sequence"],
-          schedule_relationship: schedule_relationship(stu["schedule_relationship"]),
-          arrival_time: time_from_event(stu["arrival"]),
-          departure_time: time_from_event(stu["departure"]),
-          status: boarding_status(stu["boarding_status"]),
-          platform_id: stu["platform_id"]
+          trip_id:
+            if(descriptor = Map.get(trip_update, "trip"), do: Map.get(descriptor, "trip_id")),
+          stop_id: Map.get(stu, "stop_id"),
+          stop_sequence: Map.get(stu, "stop_sequence"),
+          schedule_relationship: schedule_relationship(Map.get(stu, "schedule_relationship")),
+          arrival_time: time_from_event(Map.get(stu, "arrival")),
+          departure_time: time_from_event(Map.get(stu, "departure")),
+          status: boarding_status(Map.get(stu, "boarding_status")),
+          platform_id: Map.get(stu, "platform_id")
         )
       end
 
@@ -77,12 +82,12 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   defp decode_trip_descriptor(trip) do
     [
       TripUpdate.new(
-        trip_id: trip["trip_id"],
-        route_id: trip["route_id"],
-        direction_id: trip["direction_id"],
-        start_date: date(trip["start_date"]),
-        start_time: trip["start_time"],
-        schedule_relationship: schedule_relationship(trip["schedule_relationship"])
+        trip_id: Map.get(trip, "trip_id"),
+        route_id: Map.get(trip, "route_id"),
+        direction_id: Map.get(trip, "direction_id"),
+        start_date: date(Map.get(trip, "start_date")),
+        start_time: Map.get(trip, "start_time"),
+        schedule_relationship: schedule_relationship(Map.get(trip, "schedule_relationship"))
       )
     ]
   end
@@ -152,10 +157,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp decode_active_period(map) do
-    start = map["start"] || 0
+    start = Map.get(map, "start") || 0
 
     stop =
-      if stop = map["end"] do
+      if stop = Map.get(map, "end") do
         stop
       else
         # 2 ^ 32 - 1
@@ -166,15 +171,15 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp decode_informed_entity(map) do
-    trip = map["trip"] || %{}
+    trip = Map.get(map, "trip") || %{}
 
     InformedEntity.new(
-      trip_id: trip["trip_id"],
-      route_id: map["route_id"],
-      direction_id: trip["direction_id"] || map["direction_id"],
-      route_type: map["route_type"],
-      stop_id: map["stop_id"],
-      activities: map["activities"] || []
+      trip_id: Map.get(trip, "trip_id"),
+      route_id: Map.get(map, "route_id"),
+      direction_id: Map.get(trip, "direction_id") || Map.get(map, "direction_id"),
+      route_type: Map.get(map, "route_type"),
+      stop_id: Map.get(map, "stop_id"),
+      activities: Map.get(map, "activities") || []
     )
   end
 end
