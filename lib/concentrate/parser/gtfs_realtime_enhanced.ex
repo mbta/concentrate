@@ -4,7 +4,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   """
   @behaviour Concentrate.Parser
   require Logger
-  alias Concentrate.{TripUpdate, StopTimeUpdate, Alert, Alert.InformedEntity}
+  alias Concentrate.{TripUpdate, StopTimeUpdate, VehiclePosition, Alert, Alert.InformedEntity}
 
   @default_active_period [%{"start" => nil, "end" => nil}]
 
@@ -32,6 +32,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   defp decode_feed_entity(%{"trip_update" => trip_update}) do
     decode_trip_update(trip_update)
+  end
+
+  defp decode_feed_entity(%{"vehicle" => vehicle}) do
+    decode_vehicle(vehicle)
   end
 
   defp decode_feed_entity(%{"id" => id, "alert" => alert}) do
@@ -73,6 +77,36 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
       end
 
     tu ++ stop_updates
+  end
+
+  def decode_vehicle(vp) do
+    position = Map.get(vp, "position", %{})
+    vehicle = Map.get(vp, "vehicle", %{})
+
+    case decode_trip_descriptor(Map.get(vp, "trip")) do
+      [trip] ->
+        [
+          trip,
+          VehiclePosition.new(
+            id: Map.get(vehicle, "id"),
+            trip_id: TripUpdate.trip_id(trip),
+            stop_id: Map.get(vp, "stop_id"),
+            label: Map.get(vehicle, "label"),
+            license_plate: Map.get(vehicle, "license_plate"),
+            latitude: Map.get(position, "latitude"),
+            longitude: Map.get(position, "longitude"),
+            bearing: Map.get(position, "bearing"),
+            speed: Map.get(position, "speed"),
+            odometer: Map.get(position, "odometer"),
+            status: Map.get(vp, "current_status"),
+            stop_sequence: Map.get(vp, "current_stop_sequence"),
+            last_updated: Map.get(vp, "timestamp")
+          )
+        ]
+
+      [] ->
+        []
+    end
   end
 
   defp decode_trip_descriptor(nil) do
