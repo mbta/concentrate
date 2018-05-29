@@ -3,7 +3,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
   use ExUnit.Case, async: true
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtimeEnhanced
-  alias Concentrate.{TripUpdate, StopTimeUpdate, Alert, Alert.InformedEntity}
+  alias Concentrate.{TripUpdate, StopTimeUpdate, VehiclePosition, Alert, Alert.InformedEntity}
 
   describe "parse/1" do
     test "parsing a TripUpdate enhanced JSON file returns only StopTimeUpdate or TripUpdate structs" do
@@ -23,6 +23,16 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
       for alert <- parsed do
         assert alert.__struct__ == Alert
+      end
+    end
+
+    test "parsing an enhanced VehiclePositions JSON file returns only VehiclePosition or TripUpdate structs" do
+      binary = File.read!(fixture_path("VehiclePositions_enhanced.json"))
+      parsed = parse(binary, [])
+      assert [_ | _] = parsed
+
+      for update <- parsed do
+        assert update.__struct__ in [VehiclePosition, TripUpdate]
       end
     end
 
@@ -141,6 +151,12 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       [tu, stu] = decode_trip_update(update)
       assert TripUpdate.schedule_relationship(tu) == :SCHEDULED
       assert StopTimeUpdate.schedule_relationship(stu) == :SCHEDULED
+    end
+  end
+
+  describe "decode_vehicle/1" do
+    test "returns nothing if there's an empty map" do
+      assert decode_vehicle(%{}) == []
     end
   end
 end
