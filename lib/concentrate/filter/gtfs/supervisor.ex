@@ -22,6 +22,7 @@ defmodule Concentrate.Filter.GTFS.Supervisor do
             }
           },
           {Concentrate.Filter.GTFS.Trips, subscribe_to: [:gtfs_producer]},
+          {Concentrate.Filter.GTFS.Stops, subscribe_to: [:gtfs_producer]},
           {Concentrate.Filter.GTFS.PickupDropOff, subscribe_to: [:gtfs_producer]}
         ],
         strategy: :rest_for_one
