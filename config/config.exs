@@ -33,6 +33,7 @@ config :concentrate,
     Concentrate.GroupFilter.SkippedDepartures,
     Concentrate.GroupFilter.CancelledTrip,
     Concentrate.GroupFilter.VehicleAtSkippedStop,
+    Concentrate.GroupFilter.VehicleStopMatch,
     Concentrate.GroupFilter.SkippedStopOnAddedTrip
   ],
   reporters: [
