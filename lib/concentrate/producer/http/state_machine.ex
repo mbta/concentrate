@@ -214,18 +214,28 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defp update_cache_headers(machine, headers) do
     cache_headers =
-      Enum.reduce(headers, [], fn {header, value}, acc ->
+      Enum.reduce(headers, %{}, fn {header, value}, acc ->
         case String.downcase(header) do
           "last-modified" ->
-            [{:"if-modified-since", value} | acc]
+            Map.put(acc, :"if-modified-since", value)
 
           "etag" ->
-            [{:"if-none-match", value} | acc]
+            Map.put(acc, :"if-none-match", value)
 
           _ ->
             acc
         end
       end)
+
+    # don't use if-none-match if we already have if-modified-since
+    cache_headers =
+      case cache_headers do
+        %{:"if-modified-since" => _, :"if-none-match" => _} ->
+          Map.delete(cache_headers, :"if-none-match")
+
+        _ ->
+          cache_headers
+      end
 
     %{machine | headers: cache_headers}
   end

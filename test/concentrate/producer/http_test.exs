@@ -141,7 +141,7 @@ defmodule Concentrate.Producer.HTTPTest do
       Bypass.pass(bypass)
     end
 
-    test "if there's a cached response, retries again", %{bypass: bypass} do
+    test "if there's a cached response, retries again with last-modified", %{bypass: bypass} do
       {:ok, agent} = response_agent()
 
       agent
@@ -153,11 +153,36 @@ defmodule Concentrate.Producer.HTTPTest do
       end)
       |> add_response(fn conn ->
         assert get_req_header(conn, "if-modified-since") == ["last mod"]
-        assert get_req_header(conn, "if-none-match") == ["tag"]
+        assert get_req_header(conn, "if-none-match") == []
         send_resp(conn, 304, "not modified")
       end)
       |> add_response(fn conn ->
         assert get_req_header(conn, "if-modified-since") == ["last mod"]
+        assert get_req_header(conn, "if-none-match") == []
+        send_resp(conn, 200, "second")
+      end)
+
+      Bypass.expect(bypass, fn conn -> agent_response(agent, conn) end)
+
+      {:ok, producer} = start_producer(bypass, fetch_after: 50)
+      assert take_events(producer, 3) == [["first"], ["second"], ["agent"]]
+    end
+
+    test "if there's a cached response, retries again with etag if there isn't a last-modified header",
+         %{bypass: bypass} do
+      {:ok, agent} = response_agent()
+
+      agent
+      |> add_response(fn conn ->
+        conn
+        |> put_resp_header("ETag", "tag")
+        |> send_resp(200, "first")
+      end)
+      |> add_response(fn conn ->
+        assert get_req_header(conn, "if-none-match") == ["tag"]
+        send_resp(conn, 304, "not modified")
+      end)
+      |> add_response(fn conn ->
         assert get_req_header(conn, "if-none-match") == ["tag"]
         send_resp(conn, 200, "second")
       end)
