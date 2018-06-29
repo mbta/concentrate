@@ -97,7 +97,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
       assert StopTimeUpdate.schedule_relationship(after_shuttle) == :SKIPPED
     end
 
-    test "everything is skipped if the first stop is shuttled" do
+    test "only the first part is skipped if the first stop is shuttled" do
       group =
         {TripUpdate.new(
            trip_id: @trip_id,
@@ -112,22 +112,58 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
            ),
            StopTimeUpdate.new(
              trip_id: @trip_id,
-             stop_id: "shuttle_2",
+             stop_id: "after_shuttle",
              arrival_time: @valid_date_time,
              departure_time: @valid_date_time
            ),
            StopTimeUpdate.new(
              trip_id: @trip_id,
-             stop_id: "after_shuttle",
+             stop_id: "after_after_shuttle",
              arrival_time: @valid_date_time
            )
          ]}
 
       {_tu, [], reduced} = filter(group, @module)
-      assert [one, two, after_shuttle] = reduced
+      assert [one, after_shuttle, after_after_shuttle] = reduced
       assert StopTimeUpdate.schedule_relationship(one) == :SKIPPED
-      assert StopTimeUpdate.schedule_relationship(two) == :SKIPPED
-      assert StopTimeUpdate.schedule_relationship(after_shuttle) == :SKIPPED
+      assert StopTimeUpdate.schedule_relationship(after_shuttle) == :SCHEDULED
+      assert StopTimeUpdate.arrival_time(after_shuttle) == nil
+      assert StopTimeUpdate.schedule_relationship(after_after_shuttle) == :SCHEDULED
+    end
+
+    test "adjusts arrival time if you can board at the first shuttled stop" do
+      group =
+        {TripUpdate.new(
+           trip_id: @trip_id,
+           route_id: @route_id,
+           start_date: {1970, 1, 1}
+         ), [],
+         [
+           StopTimeUpdate.new(
+             trip_id: @trip_id,
+             stop_id: "shuttle_1",
+             departure_time: @valid_date_time
+           ),
+           StopTimeUpdate.new(
+             trip_id: @trip_id,
+             stop_id: "shuttle_stop",
+             departure_time: @valid_date_time,
+             arrival_time: @valid_date_time
+           ),
+           StopTimeUpdate.new(
+             trip_id: @trip_id,
+             stop_id: "after_shuttle",
+             arrival_time: @valid_date_time,
+             departure_time: @valid_date_time
+           )
+         ]}
+
+      {_tu, [], reduced} = filter(group, @module)
+      assert [start, stop, after_shuttle] = reduced
+      assert StopTimeUpdate.schedule_relationship(start) == :SKIPPED
+      assert StopTimeUpdate.schedule_relationship(stop) == :SCHEDULED
+      assert StopTimeUpdate.arrival_time(stop) == nil
+      assert StopTimeUpdate.schedule_relationship(after_shuttle) == :SCHEDULED
     end
 
     test "updates are left alone if they're past the shuttle" do
