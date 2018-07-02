@@ -9,15 +9,15 @@ config :ex_aws, json_codec: Jason
 config :concentrate,
   sources: [
     gtfs_realtime: [
-      vehicle_positions: "http://developer.mbta.com/lib/GTRTFS/Alerts/VehiclePositions.pb",
-      trip_updates: "http://developer.mbta.com/lib/GTRTFS/Alerts/TripUpdates.pb"
+      vehicle_positions: "https://cdn.mbta.com/realtime/VehiclePositions.pb",
+      trip_updates: "https://cdn.mbta.com/realtime/TripUpdates.pb"
     ]
   ],
   alerts: [
-    url: "http://developer.mbta.com/lib/GTRTFS/Alerts/Alerts.pb"
+    url: "https://cdn.mbta.com/realtime/Alerts.pb"
   ],
   gtfs: [
-    url: "https://www.mbta.com/uploadedfiles/MBTA_GTFS.zip"
+    url: "https://cdn.mbta.com/MBTA_GTFS.zip"
   ],
   filters: [
     Concentrate.Filter.VehicleWithNoTrip,
