@@ -13,10 +13,7 @@ defmodule Concentrate.Filter.GTFS.Stops do
 
   @doc "Returns the parent station ID for a stop"
   def parent_station_id(stop_id) when is_binary(stop_id) do
-    case :ets.match(@table, {stop_id, :"$1"}) do
-      [] -> stop_id
-      [[parent_station_id]] -> parent_station_id
-    end
+    hd(:ets.lookup_element(@table, stop_id, 2))
   rescue
     ArgumentError -> stop_id
   end

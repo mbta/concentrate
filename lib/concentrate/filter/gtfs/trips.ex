@@ -12,19 +12,13 @@ defmodule Concentrate.Filter.GTFS.Trips do
   end
 
   def route_id(trip_id) do
-    case :ets.match(@table, {trip_id, {:"$1", :_}}) do
-      [[route_id]] -> route_id
-      [] -> nil
-    end
+    hd(:ets.lookup_element(@table, trip_id, 2))
   rescue
     ArgumentError -> nil
   end
 
   def direction_id(trip_id) do
-    case :ets.match(@table, {trip_id, {:_, :"$1"}}) do
-      [[direction_id]] -> direction_id
-      [] -> nil
-    end
+    hd(:ets.lookup_element(@table, trip_id, 3))
   rescue
     ArgumentError -> nil
   end
@@ -40,7 +34,7 @@ defmodule Concentrate.Filter.GTFS.Trips do
           {"trips.txt", trip_body} <- event,
           lines = String.split(trip_body, "\n"),
           {:ok, row} <- CSV.decode(lines, headers: true) do
-        {copy(row["trip_id"]), {copy(row["route_id"]), String.to_integer(row["direction_id"])}}
+        {copy(row["trip_id"]), copy(row["route_id"]), String.to_integer(row["direction_id"])}
       end
 
     _ =
