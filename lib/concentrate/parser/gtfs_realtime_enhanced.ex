@@ -71,7 +71,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
           schedule_relationship: schedule_relationship(Map.get(stu, "schedule_relationship")),
           arrival_time: time_from_event(Map.get(stu, "arrival")),
           departure_time: time_from_event(Map.get(stu, "departure")),
-          status: boarding_status(Map.get(stu, "boarding_status")),
+          status: Map.get(stu, "boarding_status"),
           platform_id: Map.get(stu, "platform_id")
         )
       end
@@ -150,23 +150,6 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   for relationship <- ~w(SCHEDULED ADDED UNSCHEDULED CANCELED SKIPPED NO_DATA)a do
     defp schedule_relationship(unquote(Atom.to_string(relationship))), do: unquote(relationship)
-  end
-
-  defp boarding_status(nil), do: nil
-
-  for status <- ~w(
-        ON_TIME DELAYED ARRIVING NOW_BOARDING ALL_ABOARD DEPARTED
-        LATE BUS_SUBSTITUTION CANCELLED SEE_AGENT NOT_STOPPING_HERE
-        ARRIVED INFO_TO_FOLLOW)a do
-    defp boarding_status(unquote(Atom.to_string(status))), do: unquote(status)
-  end
-
-  defp boarding_status(unknown) do
-    Logger.error(fn ->
-      "#{__MODULE__}: unknown boarding status #{inspect(unknown)}"
-    end)
-
-    nil
   end
 
   for effect <- ~w(
