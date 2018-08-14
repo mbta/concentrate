@@ -6,6 +6,7 @@
   },
   "entity": [
     {
+      "trip_update": null,
       "vehicle": {
         "vehicle": {
           "id": "0806"

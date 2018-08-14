@@ -30,15 +30,15 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     end
   end
 
-  defp decode_feed_entity(%{"trip_update" => trip_update}) do
+  defp decode_feed_entity(%{"trip_update" => %{} = trip_update}) do
     decode_trip_update(trip_update)
   end
 
-  defp decode_feed_entity(%{"vehicle" => vehicle}) do
+  defp decode_feed_entity(%{"vehicle" => %{} = vehicle}) do
     decode_vehicle(vehicle)
   end
 
-  defp decode_feed_entity(%{"id" => id, "alert" => alert}) do
+  defp decode_feed_entity(%{"id" => id, "alert" => %{} = alert}) do
     [
       Alert.new(
         id: id,
