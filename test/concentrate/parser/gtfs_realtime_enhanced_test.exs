@@ -158,5 +158,61 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     test "returns nothing if there's an empty map" do
       assert decode_vehicle(%{}) == []
     end
+
+    test "decodes a VehiclePosition JSON map" do
+      map = %{
+        "congestion_level" => nil,
+        "current_status" => "STOPPED_AT",
+        "current_stop_sequence" => 670,
+        "occupancy_status" => nil,
+        "position" => %{
+          "bearing" => 135,
+          "latitude" => 42.32951,
+          "longitude" => -71.11109,
+          "odometer" => nil,
+          "speed" => nil
+        },
+        "stop_id" => "70257",
+        "timestamp" => 1_534_340_406,
+        "trip" => %{
+          "direction_id" => 0,
+          "route_id" => "Green-E",
+          "schedule_relationship" => "SCHEDULED",
+          "start_date" => "20180815",
+          "start_time" => nil,
+          "trip_id" => "37165437-X"
+        },
+        "vehicle" => %{
+          "id" => "G-10098",
+          "label" => "3823-3605",
+          "license_plate" => nil
+        }
+      }
+
+      assert [tu, vp] = decode_vehicle(map)
+
+      assert tu ==
+               TripUpdate.new(
+                 trip_id: "37165437-X",
+                 route_id: "Green-E",
+                 direction_id: 0,
+                 start_date: {2018, 8, 15},
+                 schedule_relationship: :SCHEDULED
+               )
+
+      assert vp ==
+               VehiclePosition.new(
+                 id: "G-10098",
+                 label: "3823-3605",
+                 latitude: 42.32951,
+                 longitude: -71.11109,
+                 bearing: 135,
+                 stop_id: "70257",
+                 trip_id: "37165437-X",
+                 stop_sequence: 670,
+                 status: :STOPPED_AT,
+                 last_updated: 1_534_340_406
+               )
+    end
   end
 end
