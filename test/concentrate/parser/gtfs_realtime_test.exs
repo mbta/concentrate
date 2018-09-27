@@ -91,6 +91,21 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       refute StopTimeUpdate.departure_time(stop_update)
     end
 
+    test "can handle uncertainty" do
+      update = %{
+        trip: %{},
+        stop_time_update: [
+          %{
+            arrival: nil,
+            departure: %{time: 1, uncertainty: 300}
+          }
+        ]
+      }
+
+      [_tu, stop_update] = decode_trip_update(update, %Options{})
+      assert StopTimeUpdate.uncertainty(stop_update) == 300
+    end
+
     test "can handle missing schedule_relationship" do
       update = %{
         trip: %{},

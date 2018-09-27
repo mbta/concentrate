@@ -128,8 +128,8 @@ defmodule Concentrate.Parser.GTFSRealtime do
   defp decode_stop_updates(tu, %{stop_time_update: [update | _] = updates} = trip_update, options) do
     max_time = options.max_time
 
-    arrival_time = time_from_event(Map.get(update, :arrival))
-    departure_time = time_from_event(Map.get(update, :departure))
+    {arrival_time, _} = time_from_event(Map.get(update, :arrival))
+    {departure_time, _} = time_from_event(Map.get(update, :departure))
 
     cond do
       tu != [] and not valid_route_id?(options, TripUpdate.route_id(List.first(tu))) ->
@@ -141,13 +141,17 @@ defmodule Concentrate.Parser.GTFSRealtime do
       true ->
         stop_updates =
           for stu <- updates do
+            {arrival_time, arrival_uncertainty} = time_from_event(Map.get(update, :arrival))
+            {departure_time, departure_uncertainty} = time_from_event(Map.get(update, :departure))
+
             StopTimeUpdate.new(
               trip_id: Map.get(trip_update.trip, :trip_id),
               stop_id: Map.get(stu, :stop_id),
               stop_sequence: Map.get(stu, :stop_sequence),
               schedule_relationship: Map.get(stu, :schedule_relationship, :SCHEDULED),
-              arrival_time: time_from_event(Map.get(stu, :arrival)),
-              departure_time: time_from_event(Map.get(stu, :departure))
+              arrival_time: arrival_time,
+              departure_time: departure_time,
+              uncertainty: arrival_uncertainty || departure_uncertainty
             )
           end
 
@@ -231,6 +235,6 @@ defmodule Concentrate.Parser.GTFSRealtime do
     )
   end
 
-  defp time_from_event(%{time: time}), do: time
-  defp time_from_event(_), do: nil
+  defp time_from_event(%{time: time} = map), do: {time, Map.get(map, :uncertainty, nil)}
+  defp time_from_event(_), do: {nil, nil}
 end
