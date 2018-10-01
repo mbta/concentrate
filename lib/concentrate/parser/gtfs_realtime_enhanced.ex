@@ -63,14 +63,18 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
     stop_updates =
       for stu <- Map.get(trip_update, "stop_time_update") do
+        {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, "arrival"))
+        {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
+
         StopTimeUpdate.new(
           trip_id:
             if(descriptor = Map.get(trip_update, "trip"), do: Map.get(descriptor, "trip_id")),
           stop_id: Map.get(stu, "stop_id"),
           stop_sequence: Map.get(stu, "stop_sequence"),
           schedule_relationship: schedule_relationship(Map.get(stu, "schedule_relationship")),
-          arrival_time: time_from_event(Map.get(stu, "arrival")),
-          departure_time: time_from_event(Map.get(stu, "departure")),
+          arrival_time: arrival_time,
+          departure_time: departure_time,
+          uncertainty: arrival_uncertainty || departure_uncertainty,
           status: Map.get(stu, "boarding_status"),
           platform_id: Map.get(stu, "platform_id")
         )
@@ -143,8 +147,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     Date.to_erl(date)
   end
 
-  defp time_from_event(nil), do: nil
-  defp time_from_event(%{"time" => time}), do: time
+  defp time_from_event(nil), do: {nil, nil}
+  defp time_from_event(%{"time" => time} = map), do: {time, Map.get(map, "uncertainty", nil)}
 
   defp schedule_relationship(nil), do: :SCHEDULED
 

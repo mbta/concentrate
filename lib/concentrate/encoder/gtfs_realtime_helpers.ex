@@ -108,12 +108,24 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
       %{time: 123}
       iex> stop_time_event(nil)
       nil
+      iex> stop_time_event(123, 300)
+      %{time: 123, uncertainty: 300}
   """
-  def stop_time_event(nil) do
+  def stop_time_event(time, uncertainty \\ nil)
+
+  def stop_time_event(nil, _) do
     nil
   end
 
-  def stop_time_event(unix_timestamp) do
+  def stop_time_event(unix_timestamp, uncertainty)
+      when is_integer(uncertainty) and uncertainty > 0 do
+    %{
+      time: unix_timestamp,
+      uncertainty: uncertainty
+    }
+  end
+
+  def stop_time_event(unix_timestamp, _) do
     %{
       time: unix_timestamp
     }
