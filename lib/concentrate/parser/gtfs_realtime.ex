@@ -141,8 +141,8 @@ defmodule Concentrate.Parser.GTFSRealtime do
       true ->
         stop_updates =
           for stu <- updates do
-            {arrival_time, arrival_uncertainty} = time_from_event(Map.get(update, :arrival))
-            {departure_time, departure_uncertainty} = time_from_event(Map.get(update, :departure))
+            {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, :arrival))
+            {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, :departure))
 
             StopTimeUpdate.new(
               trip_id: Map.get(trip_update.trip, :trip_id),

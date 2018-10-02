@@ -98,12 +98,21 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
           %{
             arrival: nil,
             departure: %{time: 1, uncertainty: 300}
+          },
+          %{
+            arrival: %{uncertainty: 4, time: 2},
+            departure: %{time: 3}
           }
         ]
       }
 
-      [_tu, stop_update] = decode_trip_update(update, %Options{})
-      assert StopTimeUpdate.uncertainty(stop_update) == 300
+      [_tu, stop_update_1, stop_update_2] = decode_trip_update(update, %Options{})
+      assert StopTimeUpdate.arrival_time(stop_update_1) == nil
+      assert StopTimeUpdate.departure_time(stop_update_1) == 1
+      assert StopTimeUpdate.uncertainty(stop_update_1) == 300
+      assert StopTimeUpdate.arrival_time(stop_update_2) == 2
+      assert StopTimeUpdate.departure_time(stop_update_2) == 3
+      assert StopTimeUpdate.uncertainty(stop_update_2) == 4
     end
 
     test "can handle missing schedule_relationship" do
