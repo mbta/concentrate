@@ -20,7 +20,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
               recv_timeout: @default_timeout,
               hackney: [pool: :http_producer_pool]
             ],
-            headers: [],
+            headers: %{},
             fetch_after: @default_fetch_after,
             content_warning_timeout: @default_content_warning_timeout,
             last_success: :never,
@@ -35,7 +35,13 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   @spec init(binary, Keyword.t()) :: t
   def init(url, opts) when is_binary(url) and is_list(opts) do
     state = %__MODULE__{url: url, parser: Keyword.fetch!(opts, :parser)}
-    state = struct!(state, Keyword.take(opts, ~w(get_opts fetch_after content_warning_timeout)a))
+
+    state =
+      struct!(
+        state,
+        Keyword.take(opts, ~w(get_opts fetch_after content_warning_timeout headers)a)
+      )
+
     state = %{state | last_success: now() - state.fetch_after - 1}
 
     case Keyword.get(opts, :fallback_url) do
@@ -214,13 +220,13 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defp update_cache_headers(machine, headers) do
     cache_headers =
-      Enum.reduce(headers, %{}, fn {header, value}, acc ->
+      Enum.reduce(headers, machine.headers, fn {header, value}, acc ->
         case String.downcase(header) do
           "last-modified" ->
-            Map.put(acc, :"if-modified-since", value)
+            Map.put(acc, "if-modified-since", value)
 
           "etag" ->
-            Map.put(acc, :"if-none-match", value)
+            Map.put(acc, "if-none-match", value)
 
           _ ->
             acc
@@ -230,8 +236,8 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     # don't use if-none-match if we already have if-modified-since
     cache_headers =
       case cache_headers do
-        %{:"if-modified-since" => _, :"if-none-match" => _} ->
-          Map.delete(cache_headers, :"if-none-match")
+        %{"if-modified-since" => _, "if-none-match" => _} ->
+          Map.delete(cache_headers, "if-none-match")
 
         _ ->
           cache_headers
