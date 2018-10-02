@@ -25,42 +25,36 @@ defmodule Concentrate.Supervisor.Pipeline do
   end
 
   def sources(config) do
-    realtime_children =
-      for {source, url} <- config[:gtfs_realtime] || [] do
-        {url, opts, parser} =
-          case url do
-            {url, opts} when is_binary(url) ->
-              {url, opts,
-               {Concentrate.Parser.GTFSRealtime,
-                Keyword.take(opts, ~w(routes excluded_routes max_future_time)a)}}
-
-            url when is_binary(url) ->
-              {url, [], Concentrate.Parser.GTFSRealtime}
-          end
-
-        child_spec(
-          {
-            Concentrate.Producer.HTTP,
-            {url, [name: source, parser: parser] ++ opts}
-          },
-          id: source
-        )
-      end
+    realtime_children = source_children(config, :gtfs_realtime, Concentrate.Parser.GTFSRealtime)
 
     enhanced_children =
-      for {source, url} when is_binary(url) <- config[:gtfs_realtime_enhanced] || [] do
-        child_spec(
-          {
-            Concentrate.Producer.HTTP,
-            {url, name: source, parser: Concentrate.Parser.GTFSRealtimeEnhanced}
-          },
-          id: source
-        )
-      end
+      source_children(config, :gtfs_realtime_enhanced, Concentrate.Parser.GTFSRealtimeEnhanced)
 
     children = realtime_children ++ enhanced_children
 
     {child_ids(children), children}
+  end
+
+  defp source_children(config, key, parser) do
+    for {source, url} <- Keyword.get(config, key, []) do
+      {url, opts, parser} =
+        case url do
+          {url, opts} when is_binary(url) ->
+            {url, opts,
+             {parser, Keyword.take(opts, ~w(routes excluded_routes max_future_time headers)a)}}
+
+          url when is_binary(url) ->
+            {url, [], parser}
+        end
+
+      child_spec(
+        {
+          Concentrate.Producer.HTTP,
+          {url, [name: source, parser: parser] ++ opts}
+        },
+        id: source
+      )
+    end
   end
 
   def merge(source_names, config) do
