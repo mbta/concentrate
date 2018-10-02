@@ -33,6 +33,12 @@ defmodule ConcentrateTest do
       "name_5": {
         "url": "url_5",
         "content_warning_timeout": 3600
+      },
+      "name_6": {
+        "url": "url_6",
+        "headers": {
+          "Authorization": "auth"
+        }
       }
     },
     "gtfs_realtime_enhanced": {
@@ -48,7 +54,8 @@ defmodule ConcentrateTest do
   "sinks": {
     "s3": {
       "bucket": "s3-bucket",
-      "prefix": "bucket_prefix"
+      "prefix": "bucket_prefix",
+      "ignored": "value"
     }
   },
   "file_tap": {
@@ -63,7 +70,8 @@ defmodule ConcentrateTest do
                name_2: {"url_2", fallback_url: "url_fallback"},
                name_3: {"url_3", routes: ~w(a b)},
                name_4: {"url_4", max_future_time: 3600},
-               name_5: {"url_5", content_warning_timeout: 3600}
+               name_5: {"url_5", content_warning_timeout: 3600},
+               name_6: {"url_6", headers: %{"Authorization" => "auth"}}
              }
 
       assert config[:sources][:gtfs_realtime_enhanced] == %{
@@ -109,6 +117,22 @@ defmodule ConcentrateTest do
       config = parse_json_configuration(body)
       assert config[:sources][:gtfs_realtime][:name] == {"url", routes: ~w(a b)}
       assert config[:sources][:gtfs_realtime][:name_2] == "only_url"
+    end
+
+    test "log_level sets Logger.level" do
+      old_level = Logger.level()
+
+      on_exit(fn ->
+        Logger.configure(level: old_level)
+      end)
+
+      body = ~s({"log_level": "info"})
+      _ = parse_json_configuration(body)
+      assert Logger.level() == :info
+
+      body = ~s({"log_level": "debug"})
+      _ = parse_json_configuration(body)
+      assert Logger.level() == :debug
     end
   end
 end
