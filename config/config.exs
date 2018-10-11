@@ -29,6 +29,7 @@ config :concentrate,
     Concentrate.GroupFilter.TimeOutOfRange,
     Concentrate.GroupFilter.RemoveUnneededTimes,
     Concentrate.GroupFilter.VehiclePastStop,
+    Concentrate.GroupFilter.VehicleBeforeStop,
     Concentrate.GroupFilter.Shuttle,
     Concentrate.GroupFilter.SkippedDepartures,
     Concentrate.GroupFilter.CancelledTrip,
@@ -39,7 +40,8 @@ config :concentrate,
   reporters: [
     Concentrate.Reporter.VehicleLatency,
     Concentrate.Reporter.StopTimeUpdateLatency,
-    Concentrate.Reporter.Latency
+    Concentrate.Reporter.Latency,
+    Concentrate.Reporter.VehicleGoingFirstStop
   ],
   encoders: [
     files: [

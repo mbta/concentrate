@@ -15,10 +15,10 @@ defmodule Concentrate.SupervisorTest do
 
   describe "children/1" do
     test "builds the right number of children" do
-      # currently, the right number is 4: HTTP pool, alerts, GTFS, pipeline
+      # currently, the right number is 5: HTTP pool, alerts, GTFS, cache, pipeline
       actual = children([])
 
-      assert length(actual) == 4
+      assert length(actual) == 5
     end
   end
 end
