@@ -47,5 +47,23 @@ defmodule Concentrate.GroupFilter.VehicleStopMatchTest do
       vp = VehiclePosition.new(stop_id: "child1", stop_sequence: 1, latitude: 1, longitude: 2)
       assert {_, [^vp], _} = filter({nil, [vp], []})
     end
+
+    test "does nothing if either of the stop IDs are nil" do
+      vp = VehiclePosition.new(stop_id: nil, stop_sequence: 1, latitude: 1, longitude: 2)
+
+      stus = [
+        StopTimeUpdate.new(stop_id: "other", stop_sequence: 1)
+      ]
+
+      assert {_, [^vp], _} = filter({nil, [vp], stus})
+
+      vp = VehiclePosition.new(stop_id: "other", stop_sequence: 1, latitude: 1, longitude: 2)
+
+      stus = [
+        StopTimeUpdate.new(stop_id: nil, stop_sequence: 1)
+      ]
+
+      assert {_, [^vp], _} = filter({nil, [vp], stus})
+    end
   end
 end
