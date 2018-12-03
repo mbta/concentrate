@@ -32,7 +32,7 @@ defmodule Concentrate.GroupFilter.VehicleStopMatch do
     vp_stop_id = VehiclePosition.stop_id(vp)
     stu_stop_id = StopTimeUpdate.stop_id(stu)
 
-    if vp_stop_id != stu_stop_id and
+    if is_binary(vp_stop_id) and is_binary(stu_stop_id) and vp_stop_id != stu_stop_id and
          Stops.parent_station_id(vp_stop_id) == Stops.parent_station_id(stu_stop_id) do
       VehiclePosition.update_stop_id(vp, stu_stop_id)
     else
