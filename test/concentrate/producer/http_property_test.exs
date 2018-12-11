@@ -127,7 +127,7 @@ defmodule Concentrate.Producer.HttpPropertyTest do
       end)
 
     passed? =
-      case Task.yield(task, 500) || Task.shutdown(task) do
+      case Task.yield(task, 5000) || Task.shutdown(task) do
         {:ok, _} ->
           true
 
