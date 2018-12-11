@@ -43,7 +43,7 @@ defmodule Concentrate.MixProject do
   defp deps do
     [
       {:benchee, ">= 0.0.0", runtime: false, only: :dev},
-      {:bypass, "~> 0.8", only: :test},
+      {:bypass, "~> 1.0", only: :test},
       {:credo, "~> 1.0", runtime: false, only: :dev},
       {:csv, "~> 2.1"},
       {:dialyxir, "~> 0.5", runtime: false, only: :dev},
