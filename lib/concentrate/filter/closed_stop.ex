@@ -7,7 +7,6 @@ defmodule Concentrate.Filter.ClosedStop do
   alias Concentrate.Filter.Alert.ClosedStops
   alias Concentrate.Filter.GTFS.Trips
 
-  @impl Concentrate.Filter
   @modules {ClosedStops, Trips}
 
   @impl Concentrate.Filter
