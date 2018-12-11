@@ -48,7 +48,7 @@ defmodule Concentrate.MixProject do
       {:csv, "~> 2.1"},
       {:dialyxir, "~> 0.5", runtime: false, only: :dev},
       {:distillery, "~> 1.4", runtime: false, only: :prod},
-      {:ehmon, git: "https://github.com/heroku/ehmon.git", tag: "v4", only: :prod},
+      {:ehmon, git: "https://github.com/mbta/ehmon.git", branch: "master", only: :prod},
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:excoveralls, "~> 0.7", only: :test},
