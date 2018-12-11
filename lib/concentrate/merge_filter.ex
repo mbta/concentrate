@@ -10,9 +10,9 @@ defmodule Concentrate.MergeFilter do
   """
   use GenStage
   require Logger
-  alias Concentrate.Merge.Table
-  alias Concentrate.Filter
   alias Concentrate.Encoder.GTFSRealtimeHelpers
+  alias Concentrate.Filter
+  alias Concentrate.Merge.Table
 
   @start_link_opts [:name]
   # allow sources some time to load

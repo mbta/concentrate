@@ -3,7 +3,7 @@ defmodule Concentrate.GroupFilter.SkippedStopOnAddedTrip do
   Removes SKIPPED stops from ADDED/UNSCHEDULED trips.
   """
   @behaviour Concentrate.GroupFilter
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripUpdate}
 
   @impl Concentrate.GroupFilter
   def filter({%TripUpdate{} = tu, vps, stus}) do

@@ -8,8 +8,8 @@ defmodule Concentrate.GroupFilter.VehicleStopMatch do
   of the StopTimeUpdate with the same stop sequence (if they share a parent).
   """
   @behaviour Concentrate.GroupFilter
-  alias Concentrate.{StopTimeUpdate, VehiclePosition}
   alias Concentrate.Filter.GTFS.Stops
+  alias Concentrate.{StopTimeUpdate, VehiclePosition}
 
   @impl Concentrate.GroupFilter
   def filter({tu, vps, stus}) do

@@ -3,7 +3,7 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStop do
   Updates a VehiclePosition to not have a stop_id at a SKIPPED stop.
   """
   @behaviour Concentrate.GroupFilter
-  alias Concentrate.{VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, VehiclePosition}
 
   @impl Concentrate.GroupFilter
   def filter({tu, vps, stus}) do
