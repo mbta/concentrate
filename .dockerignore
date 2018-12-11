@@ -4,3 +4,5 @@
 /.git
 /config/*.local.exs
 /aws
+/cover
+*~

@@ -2,7 +2,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   @moduledoc """
   Helper functions for encoding GTFS-Realtime files.
   """
-  alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripUpdate, VehiclePosition}
   import Calendar.ISO, only: [date_to_iso8601: 4]
 
   @type trip_group :: {TripUpdate.t() | nil, [VehiclePosition.t()], [StopTimeUpdate.t()]}

@@ -9,7 +9,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
   """
   @behaviour Concentrate.Parser
-  alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate, Alert, Alert.InformedEntity}
+  alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripUpdate, VehiclePosition}
 
   defmodule Options do
     @moduledoc """

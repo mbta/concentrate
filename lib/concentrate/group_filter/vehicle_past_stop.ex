@@ -3,7 +3,7 @@ defmodule Concentrate.GroupFilter.VehiclePastStop do
   Removes stop times if there's a vehicle on the trip that's already left the stop.
   """
   @behaviour Concentrate.GroupFilter
-  alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripUpdate, VehiclePosition}
 
   @impl Concentrate.GroupFilter
   def filter({%TripUpdate{} = tu, [vp], stus}) do
