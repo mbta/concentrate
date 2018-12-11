@@ -109,6 +109,7 @@ defmodule Concentrate do
             excluded_routes: &is_list/1,
             fallback_url: &is_binary/1,
             max_future_time: &is_integer/1,
+            fetch_after: &is_integer/1,
             content_warning_timeout: &is_integer/1,
             headers: &is_map/1
           ],
