@@ -41,7 +41,8 @@ defmodule Concentrate.Supervisor.Pipeline do
         case url do
           {url, opts} when is_binary(url) ->
             {url, opts,
-             {parser, Keyword.take(opts, ~w(routes excluded_routes max_future_time headers)a)}}
+             {parser,
+              Keyword.take(opts, ~w(routes excluded_routes max_future_time headers fetch_after)a)}}
 
           url when is_binary(url) ->
             {url, [], parser}
