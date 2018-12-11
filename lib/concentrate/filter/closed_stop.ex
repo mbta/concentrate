@@ -3,7 +3,7 @@ defmodule Concentrate.Filter.ClosedStop do
   Skips StopTimeUpdates for closed stops.
   """
   @behaviour Concentrate.Filter
-  alias Concentrate.{StopTimeUpdate, Alert.InformedEntity}
+  alias Concentrate.{Alert.InformedEntity, StopTimeUpdate}
   alias Concentrate.Filter.Alert.ClosedStops
   alias Concentrate.Filter.GTFS.Trips
 

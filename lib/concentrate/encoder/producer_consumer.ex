@@ -1,5 +1,6 @@
 defmodule Concentrate.Encoder.ProducerConsumer do
   @moduledoc """
+  GenStage to encode different file types.
   """
   use GenStage
   require Logger

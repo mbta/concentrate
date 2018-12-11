@@ -3,8 +3,8 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   Cancels TripUpdates and and skips StopTimeUpdates for cancelled trips.
   """
   @behaviour Concentrate.GroupFilter
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
   alias Concentrate.Filter.Alert.CancelledTrips
+  alias Concentrate.{StopTimeUpdate, TripUpdate}
 
   @impl Concentrate.GroupFilter
   def filter(trip_group, module \\ CancelledTrips)

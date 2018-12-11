@@ -4,7 +4,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   """
   @behaviour Concentrate.Parser
   require Logger
-  alias Concentrate.{TripUpdate, StopTimeUpdate, VehiclePosition, Alert, Alert.InformedEntity}
+  alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripUpdate, VehiclePosition}
 
   @default_active_period [%{"start" => nil, "end" => nil}]
 

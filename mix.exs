@@ -44,7 +44,7 @@ defmodule Concentrate.MixProject do
     [
       {:benchee, ">= 0.0.0", runtime: false, only: :dev},
       {:bypass, "~> 0.8", only: :test},
-      {:credo, "~> 0.8", runtime: false, only: :dev},
+      {:credo, "~> 1.0", runtime: false, only: :dev},
       {:csv, "~> 2.1"},
       {:dialyxir, "~> 0.5", runtime: false, only: :dev},
       {:distillery, "~> 1.4", runtime: false, only: :prod},

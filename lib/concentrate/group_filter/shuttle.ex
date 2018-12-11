@@ -3,7 +3,7 @@ defmodule Concentrate.GroupFilter.Shuttle do
   Handle shuttles by skipping StopTimeUpdates involving the shuttle.
   """
   @behaviour Concentrate.GroupFilter
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripUpdate}
 
   @impl Concentrate.GroupFilter
   def filter(trip_group, shuttle_module \\ Concentrate.Filter.Alert.Shuttles)

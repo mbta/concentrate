@@ -6,7 +6,7 @@ defmodule Concentrate.Parser do
   StopTimeUpdate data, but other data can be returned as well.
 
   """
-  alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripUpdate, VehiclePosition}
   @type parsed :: VehiclePosition.t() | TripUpdate.t() | StopTimeUpdate.t()
   @callback parse(binary, Keyword.t()) :: [term]
 end
