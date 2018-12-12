@@ -18,10 +18,11 @@ defmodule Concentrate.Sink.S3 do
 
   def upload_to_s3({filename, body}, state) do
     full_filename = Path.join(state.prefix, filename)
-    opts = [acl: state.acl, content_type: content_type(filename)]
+    gzip_body = :zlib.gzip(body)
+    opts = [acl: state.acl, content_type: content_type(filename), content_encoding: "gzip"]
 
     state.bucket
-    |> S3.put_object(full_filename, body, opts)
+    |> S3.put_object(full_filename, gzip_body, opts)
     |> @ex_aws.request!
 
     Logger.info(fn ->

@@ -11,8 +11,9 @@ defmodule Concentrate.Sink.S3Test do
       assert_receive {:ex_aws, first_message}
 
       assert first_message.path == "a.json"
-      assert first_message.body == "a body"
+      assert :zlib.gunzip(first_message.body) == "a body"
       assert first_message.headers["content-type"] == "application/json"
+      assert first_message.headers["content-encoding"] == "gzip"
     end
 
     test "writes a protobuf file" do
@@ -20,8 +21,9 @@ defmodule Concentrate.Sink.S3Test do
       assert_receive {:ex_aws, second_message}
 
       assert second_message.path == "b.pb"
-      assert second_message.body == "b body"
+      assert :zlib.gunzip(second_message.body) == "b body"
       assert second_message.headers["content-type"] == "application/x-protobuf"
+      assert second_message.headers["content-encoding"] == "gzip"
     end
   end
 
