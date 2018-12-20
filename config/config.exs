@@ -6,6 +6,9 @@ config :logger, level: :debug
 
 config :ex_aws, json_codec: Jason
 
+# per https://github.com/edgurgel/httpoison/issues/130, set the SSL version to pick a better default
+config :ssl, protocol_version: :"tlsv1.2"
+
 config :concentrate,
   sources: [
     gtfs_realtime: [
