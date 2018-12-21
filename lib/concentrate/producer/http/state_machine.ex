@@ -198,9 +198,16 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, [], []}
   end
 
-  defp handle_message(machine, {:ssl_closed, _} = message) do
-    # treat it as a regular HTTP error
-    handle_message(machine, {:http_error, message})
+  defp handle_message(machine, {:ssl_closed, _} = reason) do
+    # log, but otherwise ignore
+    log_level = error_log_level(reason)
+
+    _ =
+      Logger.log(log_level, fn ->
+        "#{__MODULE__}: url=#{inspect(machine.url)} error=#{inspect(reason)}"
+      end)
+
+    {machine, [], []}
   end
 
   defp handle_message(machine, unknown) do
