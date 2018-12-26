@@ -63,6 +63,26 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
     end
   end
 
+  describe "decode_body/2" do
+    test "decodes a gzipped body if that is the encoding" do
+      headers =
+        Enum.shuffle([
+          {"ETag", "hello"},
+          {"Content-Encoding", "gzip"}
+        ])
+
+      body = "body"
+      encoded_body = :zlib.gzip(body)
+      assert decode_body(headers, encoded_body) == body
+    end
+
+    test "defaults to not decoding" do
+      headers = [{"ETag", "hello"}]
+      body = "body"
+      assert decode_body(headers, body) == body
+    end
+  end
+
   describe "message/2" do
     test "does not log an error on :closed or :timeout errors" do
       machine = init("url", parser: &List.wrap/1)

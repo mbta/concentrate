@@ -20,7 +20,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
               recv_timeout: @default_timeout,
               hackney: [pool: :http_producer_pool]
             ],
-            headers: %{},
+            headers: %{"accept-encoding" => "gzip"},
             fetch_after: @default_fetch_after,
             content_warning_timeout: @default_content_warning_timeout,
             last_success: :never,
@@ -128,6 +128,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
          machine,
          {:http_response, %{status_code: 200, headers: headers, body: body}}
        ) do
+    body = decode_body(headers, body)
     {bodies, machine} = parse_bodies_if_changed(machine, body)
     machine = update_cache_headers(machine, headers)
     {machine, messages} = check_last_success(machine)
@@ -139,7 +140,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defp handle_message(machine, {:http_response, %{status_code: 301, headers: headers}}) do
     # permanent redirect: save the new URL
-    new_url = find_header(headers, "location")
+    {:ok, new_url} = find_header(headers, "location")
     machine = %{machine | url: new_url}
     {machine, messages} = check_last_success(machine)
     message = {:fetch, new_url}
@@ -149,7 +150,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defp handle_message(machine, {:http_response, %{status_code: 302, headers: headers}}) do
     # temporary redirect: request the new URL but don't save it
-    new_url = find_header(headers, "location")
+    {:ok, new_url} = find_header(headers, "location")
     {machine, messages} = check_last_success(machine)
     message = {:fetch, new_url}
     messages = include_fallback_messages(message, 0, messages)
@@ -220,9 +221,24 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     {machine, [], []}
   end
 
+  def decode_body(headers, body) do
+    case find_header(headers, "content-encoding") do
+      :error ->
+        body
+
+      {:ok, "gzip"} ->
+        :zlib.gunzip(body)
+    end
+  end
+
   defp find_header(headers, match_header) do
-    {_, value} = Enum.find(headers, &(String.downcase(elem(&1, 0)) == match_header))
-    value
+    case Enum.find(headers, &(String.downcase(elem(&1, 0)) == match_header)) do
+      {_, value} ->
+        {:ok, value}
+
+      _ ->
+        :error
+    end
   end
 
   defp update_cache_headers(machine, headers) do
