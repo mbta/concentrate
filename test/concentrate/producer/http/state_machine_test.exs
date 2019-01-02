@@ -86,7 +86,7 @@ defmodule Concentrate.Producer.HTTP.StateMachineTest do
 
       log =
         capture_log([level: :error], fn ->
-          assert {_machine, [], [{{:fetch, _}, _}]} = message(machine, error)
+          assert {_machine, [], _} = message(machine, error)
         end)
 
       assert log == ""
