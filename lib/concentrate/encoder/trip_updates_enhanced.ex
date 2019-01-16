@@ -13,7 +13,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
       entity: trip_update_feed_entity(groups, &build_stop_time_update/1)
     }
 
-    Jason.encode!(message)
+    Jason.encode_to_iodata!(message)
   end
 
   defp build_stop_time_update(update) do

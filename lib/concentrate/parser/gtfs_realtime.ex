@@ -26,6 +26,14 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
   @impl Concentrate.Parser
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
+    do_parse(binary, opts)
+  end
+
+  def parse(iodata, opts) when is_list(iodata) and is_list(opts) do
+    do_parse(IO.iodata_to_binary(iodata), opts)
+  end
+
+  defp do_parse(binary, opts) do
     options = parse_options(opts)
     message = :gtfs_realtime_proto.decode_msg(binary, :FeedMessage, [])
     Enum.flat_map(message.entity, &decode_feed_entity(&1, options))

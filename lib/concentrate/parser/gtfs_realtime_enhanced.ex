@@ -9,8 +9,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   @default_active_period [%{"start" => nil, "end" => nil}]
 
   @impl Concentrate.Parser
-  def parse(binary, opts) when is_binary(binary) and is_list(opts) do
-    for {:ok, json} <- [Jason.decode(binary, strings: :copy)],
+  def parse(iodata, opts) when (is_binary(iodata) or is_list(iodata)) and is_list(opts) do
+    for {:ok, json} <- [Jason.decode(iodata, strings: :copy)],
         decoded <- decode_entities(json) do
       decoded
     end

@@ -13,6 +13,6 @@ defmodule Concentrate.Encoder.VehiclePositions.JSON do
       entity: Enum.flat_map(groups, &VehiclePositions.build_entity/1)
     }
 
-    Jason.encode!(message)
+    Jason.encode_to_iodata!(message)
   end
 end
