@@ -18,7 +18,7 @@ WORKDIR /root
 RUN elixir --erl "-smp enable" /usr/local/bin/mix do deps.get --only prod, compile, release --verbose
 
 # Second stage: uses the built .tgz to get the files over
-FROM alpine:latest
+FROM alpine:3.8
 
 RUN apk add --update libssl1.0 ncurses-libs bash \
 	&& rm -rf /var/cache/apk
