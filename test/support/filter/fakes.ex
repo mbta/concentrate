@@ -56,7 +56,7 @@ defmodule Concentrate.Filter.FakeClosedStops do
 
       true ->
         [
-          InformedEntity.new(trip_id: "trip")
+          InformedEntity.new(trip_id: "trip", route_id: "route")
         ]
     end
   end
