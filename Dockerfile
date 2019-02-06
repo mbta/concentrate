@@ -18,9 +18,9 @@ WORKDIR /root
 RUN elixir --erl "-smp enable" /usr/local/bin/mix do deps.get --only prod, compile, release --verbose
 
 # Second stage: uses the built .tgz to get the files over
-FROM alpine:3.8
+FROM alpine:3.9
 
-RUN apk add --update libssl1.0 ncurses-libs bash \
+RUN apk add --update bash \
 	&& rm -rf /var/cache/apk
 
 # Set environment
@@ -29,6 +29,9 @@ ENV MIX_ENV=prod TERM=xterm LANG=C.UTF-8 REPLACE_OS_VARS=true
 WORKDIR /root/
 
 COPY --from=builder /root/_build/prod/rel /root/rel
+
+# Ensure SSL support is enabled
+RUN /root/rel/concentrate/bin/concentrate eval ":crypto.supports()"
 
 HEALTHCHECK CMD ["/root/rel/concentrate/bin/concentrate", "ping"]
 CMD ["/root/rel/concentrate/bin/concentrate", "foreground"]
