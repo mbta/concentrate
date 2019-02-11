@@ -35,6 +35,8 @@ end
 release :concentrate do
   set version: current_version(:concentrate)
   set applications: [
-    :runtime_tools
+    :runtime_tools,
+    concentrate: :permanent,
+    ex_aws: :permanent
   ]
 end
