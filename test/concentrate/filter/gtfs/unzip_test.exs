@@ -20,6 +20,16 @@ defmodule Concentrate.Filter.GTFS.UnzipTest do
     end
   end
 
+  describe "strip_bom/1" do
+    test "does nothing when there's no BOM" do
+      assert strip_bom("1234") == "1234"
+    end
+
+    test "strips a leading BOM" do
+      assert strip_bom("\uFEFF1234") == "1234"
+    end
+  end
+
   defp find_body(files, file_name) do
     Enum.find_value(files, fn
       {^file_name, value} -> value
