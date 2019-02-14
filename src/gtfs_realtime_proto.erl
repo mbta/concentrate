@@ -23,6 +23,7 @@
 -export(['enum_symbol_by_value_VehiclePosition.OccupancyStatus'/1, 'enum_value_by_symbol_VehiclePosition.OccupancyStatus'/1]).
 -export(['enum_symbol_by_value_Alert.Cause'/1, 'enum_value_by_symbol_Alert.Cause'/1]).
 -export(['enum_symbol_by_value_Alert.Effect'/1, 'enum_value_by_symbol_Alert.Effect'/1]).
+-export(['enum_symbol_by_value_Alert.SeverityLevel'/1, 'enum_value_by_symbol_Alert.SeverityLevel'/1]).
 -export(['enum_symbol_by_value_TripDescriptor.ScheduleRelationship'/1, 'enum_value_by_symbol_TripDescriptor.ScheduleRelationship'/1]).
 -export([get_service_names/0]).
 -export([get_service_def/1]).
@@ -45,9 +46,10 @@
 -type 'VehiclePosition.CongestionLevel'() :: 'UNKNOWN_CONGESTION_LEVEL' | 'RUNNING_SMOOTHLY' | 'STOP_AND_GO' | 'CONGESTION' | 'SEVERE_CONGESTION'.
 -type 'VehiclePosition.OccupancyStatus'() :: 'EMPTY' | 'MANY_SEATS_AVAILABLE' | 'FEW_SEATS_AVAILABLE' | 'STANDING_ROOM_ONLY' | 'CRUSHED_STANDING_ROOM_ONLY' | 'FULL' | 'NOT_ACCEPTING_PASSENGERS'.
 -type 'Alert.Cause'() :: 'UNKNOWN_CAUSE' | 'OTHER_CAUSE' | 'TECHNICAL_PROBLEM' | 'STRIKE' | 'DEMONSTRATION' | 'ACCIDENT' | 'HOLIDAY' | 'WEATHER' | 'MAINTENANCE' | 'CONSTRUCTION' | 'POLICE_ACTIVITY' | 'MEDICAL_EMERGENCY'.
--type 'Alert.Effect'() :: 'NO_SERVICE' | 'REDUCED_SERVICE' | 'SIGNIFICANT_DELAYS' | 'DETOUR' | 'ADDITIONAL_SERVICE' | 'MODIFIED_SERVICE' | 'OTHER_EFFECT' | 'UNKNOWN_EFFECT' | 'STOP_MOVED'.
+-type 'Alert.Effect'() :: 'NO_SERVICE' | 'REDUCED_SERVICE' | 'SIGNIFICANT_DELAYS' | 'DETOUR' | 'ADDITIONAL_SERVICE' | 'MODIFIED_SERVICE' | 'OTHER_EFFECT' | 'UNKNOWN_EFFECT' | 'STOP_MOVED' | 'NO_EFFECT'.
+-type 'Alert.SeverityLevel'() :: 'UNKNOWN_SEVERITY' | 'INFO' | 'WARNING' | 'SEVERE'.
 -type 'TripDescriptor.ScheduleRelationship'() :: 'SCHEDULED' | 'ADDED' | 'UNSCHEDULED' | 'CANCELED'.
--export_type(['FeedHeader.Incrementality'/0, 'TripUpdate.StopTimeUpdate.ScheduleRelationship'/0, 'VehiclePosition.VehicleStopStatus'/0, 'VehiclePosition.CongestionLevel'/0, 'VehiclePosition.OccupancyStatus'/0, 'Alert.Cause'/0, 'Alert.Effect'/0, 'TripDescriptor.ScheduleRelationship'/0]).
+-export_type(['FeedHeader.Incrementality'/0, 'TripUpdate.StopTimeUpdate.ScheduleRelationship'/0, 'VehiclePosition.VehicleStopStatus'/0, 'VehiclePosition.CongestionLevel'/0, 'VehiclePosition.OccupancyStatus'/0, 'Alert.Cause'/0, 'Alert.Effect'/0, 'Alert.SeverityLevel'/0, 'TripDescriptor.ScheduleRelationship'/0]).
 
 %% message types
 -type 'FeedMessage'() ::
@@ -80,7 +82,8 @@
         stop_id                 => iodata(),        % = 4
         arrival                 => 'TripUpdate.StopTimeEvent'(), % = 2
         departure               => 'TripUpdate.StopTimeEvent'(), % = 3
-        schedule_relationship   => 'SCHEDULED' | 'SKIPPED' | 'NO_DATA' | integer() % = 5, enum TripUpdate.StopTimeUpdate.ScheduleRelationship
+        schedule_relationship   => 'SCHEDULED' | 'SKIPPED' | 'NO_DATA' | integer(), % = 5, enum TripUpdate.StopTimeUpdate.ScheduleRelationship
+        status                  => iodata()         % = 6
        }.
 
 -type 'TripUpdate'() ::
@@ -107,10 +110,13 @@
       #{active_period           => ['TimeRange'()], % = 1
         informed_entity         => ['EntitySelector'()], % = 5
         cause                   => 'UNKNOWN_CAUSE' | 'OTHER_CAUSE' | 'TECHNICAL_PROBLEM' | 'STRIKE' | 'DEMONSTRATION' | 'ACCIDENT' | 'HOLIDAY' | 'WEATHER' | 'MAINTENANCE' | 'CONSTRUCTION' | 'POLICE_ACTIVITY' | 'MEDICAL_EMERGENCY' | integer(), % = 6, enum Alert.Cause
-        effect                  => 'NO_SERVICE' | 'REDUCED_SERVICE' | 'SIGNIFICANT_DELAYS' | 'DETOUR' | 'ADDITIONAL_SERVICE' | 'MODIFIED_SERVICE' | 'OTHER_EFFECT' | 'UNKNOWN_EFFECT' | 'STOP_MOVED' | integer(), % = 7, enum Alert.Effect
+        effect                  => 'NO_SERVICE' | 'REDUCED_SERVICE' | 'SIGNIFICANT_DELAYS' | 'DETOUR' | 'ADDITIONAL_SERVICE' | 'MODIFIED_SERVICE' | 'OTHER_EFFECT' | 'UNKNOWN_EFFECT' | 'STOP_MOVED' | 'NO_EFFECT' | integer(), % = 7, enum Alert.Effect
         url                     => 'TranslatedString'(), % = 8
         header_text             => 'TranslatedString'(), % = 10
-        description_text        => 'TranslatedString'() % = 11
+        description_text        => 'TranslatedString'(), % = 11
+        tts_header_text         => 'TranslatedString'(), % = 12
+        tts_description_text    => 'TranslatedString'(), % = 13
+        severity_level          => 'UNKNOWN_SEVERITY' | 'INFO' | 'WARNING' | 'SEVERE' | integer() % = 14, enum Alert.SeverityLevel
        }.
 
 -type 'TimeRange'() ::
@@ -386,16 +392,24 @@ encode_msg_FeedEntity(#{id := F1} = M, Bin,
 	       end;
 	   _ -> B3
 	 end,
+    B5 = case M of
+	   #{schedule_relationship := F5} ->
+	       begin
+		 TrF5 = id(F5, TrUserData),
+		 'e_enum_TripUpdate.StopTimeUpdate.ScheduleRelationship'(TrF5,
+									 <<B4/binary,
+									   40>>,
+									 TrUserData)
+	       end;
+	   _ -> B4
+	 end,
     case M of
-      #{schedule_relationship := F5} ->
+      #{status := F6} ->
 	  begin
-	    TrF5 = id(F5, TrUserData),
-	    'e_enum_TripUpdate.StopTimeUpdate.ScheduleRelationship'(TrF5,
-								    <<B4/binary,
-								      40>>,
-								    TrUserData)
+	    TrF6 = id(F6, TrUserData),
+	    e_type_string(TrF6, <<B5/binary, 50>>, TrUserData)
 	  end;
-      _ -> B4
+      _ -> B5
     end.
 
 encode_msg_TripUpdate(Msg, TrUserData) ->
@@ -591,14 +605,42 @@ encode_msg_Alert(#{} = M, Bin, TrUserData) ->
 	       end;
 	   _ -> B5
 	 end,
+    B7 = case M of
+	   #{description_text := F7} ->
+	       begin
+		 TrF7 = id(F7, TrUserData),
+		 e_mfield_Alert_description_text(TrF7, <<B6/binary, 90>>,
+						 TrUserData)
+	       end;
+	   _ -> B6
+	 end,
+    B8 = case M of
+	   #{tts_header_text := F8} ->
+	       begin
+		 TrF8 = id(F8, TrUserData),
+		 e_mfield_Alert_tts_header_text(TrF8, <<B7/binary, 98>>,
+						TrUserData)
+	       end;
+	   _ -> B7
+	 end,
+    B9 = case M of
+	   #{tts_description_text := F9} ->
+	       begin
+		 TrF9 = id(F9, TrUserData),
+		 e_mfield_Alert_tts_description_text(TrF9,
+						     <<B8/binary, 106>>,
+						     TrUserData)
+	       end;
+	   _ -> B8
+	 end,
     case M of
-      #{description_text := F7} ->
+      #{severity_level := F10} ->
 	  begin
-	    TrF7 = id(F7, TrUserData),
-	    e_mfield_Alert_description_text(TrF7, <<B6/binary, 90>>,
-					    TrUserData)
+	    TrF10 = id(F10, TrUserData),
+	    'e_enum_Alert.SeverityLevel'(TrF10, <<B9/binary, 112>>,
+					 TrUserData)
 	  end;
-      _ -> B6
+      _ -> B9
     end.
 
 encode_msg_TimeRange(Msg, TrUserData) ->
@@ -983,6 +1025,19 @@ e_mfield_Alert_description_text(Msg, Bin, TrUserData) ->
     Bin2 = e_varint(byte_size(SubBin), Bin),
     <<Bin2/binary, SubBin/binary>>.
 
+e_mfield_Alert_tts_header_text(Msg, Bin, TrUserData) ->
+    SubBin = encode_msg_TranslatedString(Msg, <<>>,
+					 TrUserData),
+    Bin2 = e_varint(byte_size(SubBin), Bin),
+    <<Bin2/binary, SubBin/binary>>.
+
+e_mfield_Alert_tts_description_text(Msg, Bin,
+				    TrUserData) ->
+    SubBin = encode_msg_TranslatedString(Msg, <<>>,
+					 TrUserData),
+    Bin2 = e_varint(byte_size(SubBin), Bin),
+    <<Bin2/binary, SubBin/binary>>.
+
 e_mfield_EntitySelector_trip(Msg, Bin, TrUserData) ->
     SubBin = encode_msg_TripDescriptor(Msg, <<>>,
 				       TrUserData),
@@ -1145,7 +1200,24 @@ e_field_TranslatedString_translation([], Bin,
     <<Bin/binary, 8>>;
 'e_enum_Alert.Effect'('STOP_MOVED', Bin, _TrUserData) ->
     <<Bin/binary, 9>>;
+'e_enum_Alert.Effect'('NO_EFFECT', Bin, _TrUserData) ->
+    <<Bin/binary, 10>>;
 'e_enum_Alert.Effect'(V, Bin, _TrUserData) ->
+    e_varint(V, Bin).
+
+'e_enum_Alert.SeverityLevel'('UNKNOWN_SEVERITY', Bin,
+			     _TrUserData) ->
+    <<Bin/binary, 1>>;
+'e_enum_Alert.SeverityLevel'('INFO', Bin,
+			     _TrUserData) ->
+    <<Bin/binary, 2>>;
+'e_enum_Alert.SeverityLevel'('WARNING', Bin,
+			     _TrUserData) ->
+    <<Bin/binary, 3>>;
+'e_enum_Alert.SeverityLevel'('SEVERE', Bin,
+			     _TrUserData) ->
+    <<Bin/binary, 4>>;
+'e_enum_Alert.SeverityLevel'(V, Bin, _TrUserData) ->
     e_varint(V, Bin).
 
 'e_enum_TripDescriptor.ScheduleRelationship'('SCHEDULED',
@@ -2127,47 +2199,57 @@ skip_64_FeedEntity(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
 						   id('$undef', TrUserData),
 						   id('$undef', TrUserData),
 						   id('SCHEDULED', TrUserData),
+						   id('$undef', TrUserData),
 						   TrUserData).
 
 'dfp_read_field_def_TripUpdate.StopTimeUpdate'(<<8,
 						 Rest/binary>>,
 					       Z1, Z2, F@_1, F@_2, F@_3, F@_4,
-					       F@_5, TrUserData) ->
+					       F@_5, F@_6, TrUserData) ->
     'd_field_TripUpdate.StopTimeUpdate_stop_sequence'(Rest,
 						      Z1, Z2, F@_1, F@_2, F@_3,
-						      F@_4, F@_5, TrUserData);
+						      F@_4, F@_5, F@_6,
+						      TrUserData);
 'dfp_read_field_def_TripUpdate.StopTimeUpdate'(<<34,
 						 Rest/binary>>,
 					       Z1, Z2, F@_1, F@_2, F@_3, F@_4,
-					       F@_5, TrUserData) ->
+					       F@_5, F@_6, TrUserData) ->
     'd_field_TripUpdate.StopTimeUpdate_stop_id'(Rest, Z1,
 						Z2, F@_1, F@_2, F@_3, F@_4,
-						F@_5, TrUserData);
+						F@_5, F@_6, TrUserData);
 'dfp_read_field_def_TripUpdate.StopTimeUpdate'(<<18,
 						 Rest/binary>>,
 					       Z1, Z2, F@_1, F@_2, F@_3, F@_4,
-					       F@_5, TrUserData) ->
+					       F@_5, F@_6, TrUserData) ->
     'd_field_TripUpdate.StopTimeUpdate_arrival'(Rest, Z1,
 						Z2, F@_1, F@_2, F@_3, F@_4,
-						F@_5, TrUserData);
+						F@_5, F@_6, TrUserData);
 'dfp_read_field_def_TripUpdate.StopTimeUpdate'(<<26,
 						 Rest/binary>>,
 					       Z1, Z2, F@_1, F@_2, F@_3, F@_4,
-					       F@_5, TrUserData) ->
+					       F@_5, F@_6, TrUserData) ->
     'd_field_TripUpdate.StopTimeUpdate_departure'(Rest, Z1,
 						  Z2, F@_1, F@_2, F@_3, F@_4,
-						  F@_5, TrUserData);
+						  F@_5, F@_6, TrUserData);
 'dfp_read_field_def_TripUpdate.StopTimeUpdate'(<<40,
 						 Rest/binary>>,
 					       Z1, Z2, F@_1, F@_2, F@_3, F@_4,
-					       F@_5, TrUserData) ->
+					       F@_5, F@_6, TrUserData) ->
     'd_field_TripUpdate.StopTimeUpdate_schedule_relationship'(Rest,
 							      Z1, Z2, F@_1,
 							      F@_2, F@_3, F@_4,
-							      F@_5, TrUserData);
+							      F@_5, F@_6,
+							      TrUserData);
+'dfp_read_field_def_TripUpdate.StopTimeUpdate'(<<50,
+						 Rest/binary>>,
+					       Z1, Z2, F@_1, F@_2, F@_3, F@_4,
+					       F@_5, F@_6, TrUserData) ->
+    'd_field_TripUpdate.StopTimeUpdate_status'(Rest, Z1, Z2,
+					       F@_1, F@_2, F@_3, F@_4, F@_5,
+					       F@_6, TrUserData);
 'dfp_read_field_def_TripUpdate.StopTimeUpdate'(<<>>, 0,
 					       0, F@_1, F@_2, F@_3, F@_4, F@_5,
-					       _) ->
+					       F@_6, _) ->
     S1 = #{},
     S2 = if F@_1 == '$undef' -> S1;
 	    true -> S1#{stop_sequence => F@_1}
@@ -2181,83 +2263,94 @@ skip_64_FeedEntity(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
     S5 = if F@_4 == '$undef' -> S4;
 	    true -> S4#{departure => F@_4}
 	 end,
-    if F@_5 == '$undef' -> S5;
-       true -> S5#{schedule_relationship => F@_5}
+    S6 = if F@_5 == '$undef' -> S5;
+	    true -> S5#{schedule_relationship => F@_5}
+	 end,
+    if F@_6 == '$undef' -> S6;
+       true -> S6#{status => F@_6}
     end;
 'dfp_read_field_def_TripUpdate.StopTimeUpdate'(Other,
 					       Z1, Z2, F@_1, F@_2, F@_3, F@_4,
-					       F@_5, TrUserData) ->
+					       F@_5, F@_6, TrUserData) ->
     'dg_read_field_def_TripUpdate.StopTimeUpdate'(Other, Z1,
 						  Z2, F@_1, F@_2, F@_3, F@_4,
-						  F@_5, TrUserData).
+						  F@_5, F@_6, TrUserData).
 
 'dg_read_field_def_TripUpdate.StopTimeUpdate'(<<1:1,
 						X:7, Rest/binary>>,
 					      N, Acc, F@_1, F@_2, F@_3, F@_4,
-					      F@_5, TrUserData)
+					      F@_5, F@_6, TrUserData)
     when N < 32 - 7 ->
     'dg_read_field_def_TripUpdate.StopTimeUpdate'(Rest,
 						  N + 7, X bsl N + Acc, F@_1,
-						  F@_2, F@_3, F@_4, F@_5,
+						  F@_2, F@_3, F@_4, F@_5, F@_6,
 						  TrUserData);
 'dg_read_field_def_TripUpdate.StopTimeUpdate'(<<0:1,
 						X:7, Rest/binary>>,
 					      N, Acc, F@_1, F@_2, F@_3, F@_4,
-					      F@_5, TrUserData) ->
+					      F@_5, F@_6, TrUserData) ->
     Key = X bsl N + Acc,
     case Key of
       8 ->
 	  'd_field_TripUpdate.StopTimeUpdate_stop_sequence'(Rest,
 							    0, 0, F@_1, F@_2,
 							    F@_3, F@_4, F@_5,
-							    TrUserData);
+							    F@_6, TrUserData);
       34 ->
 	  'd_field_TripUpdate.StopTimeUpdate_stop_id'(Rest, 0, 0,
 						      F@_1, F@_2, F@_3, F@_4,
-						      F@_5, TrUserData);
+						      F@_5, F@_6, TrUserData);
       18 ->
 	  'd_field_TripUpdate.StopTimeUpdate_arrival'(Rest, 0, 0,
 						      F@_1, F@_2, F@_3, F@_4,
-						      F@_5, TrUserData);
+						      F@_5, F@_6, TrUserData);
       26 ->
 	  'd_field_TripUpdate.StopTimeUpdate_departure'(Rest, 0,
 							0, F@_1, F@_2, F@_3,
-							F@_4, F@_5, TrUserData);
+							F@_4, F@_5, F@_6,
+							TrUserData);
       40 ->
 	  'd_field_TripUpdate.StopTimeUpdate_schedule_relationship'(Rest,
 								    0, 0, F@_1,
 								    F@_2, F@_3,
 								    F@_4, F@_5,
+								    F@_6,
 								    TrUserData);
+      50 ->
+	  'd_field_TripUpdate.StopTimeUpdate_status'(Rest, 0, 0,
+						     F@_1, F@_2, F@_3, F@_4,
+						     F@_5, F@_6, TrUserData);
       _ ->
 	  case Key band 7 of
 	    0 ->
 		'skip_varint_TripUpdate.StopTimeUpdate'(Rest, 0, 0,
 							F@_1, F@_2, F@_3, F@_4,
-							F@_5, TrUserData);
+							F@_5, F@_6, TrUserData);
 	    1 ->
 		'skip_64_TripUpdate.StopTimeUpdate'(Rest, 0, 0, F@_1,
 						    F@_2, F@_3, F@_4, F@_5,
-						    TrUserData);
+						    F@_6, TrUserData);
 	    2 ->
 		'skip_length_delimited_TripUpdate.StopTimeUpdate'(Rest,
 								  0, 0, F@_1,
 								  F@_2, F@_3,
 								  F@_4, F@_5,
+								  F@_6,
 								  TrUserData);
 	    3 ->
 		'skip_group_TripUpdate.StopTimeUpdate'(Rest, Key bsr 3,
 						       0, F@_1, F@_2, F@_3,
-						       F@_4, F@_5, TrUserData);
+						       F@_4, F@_5, F@_6,
+						       TrUserData);
 	    5 ->
 		'skip_32_TripUpdate.StopTimeUpdate'(Rest, 0, 0, F@_1,
 						    F@_2, F@_3, F@_4, F@_5,
-						    TrUserData)
+						    F@_6, TrUserData)
 	  end
     end;
 'dg_read_field_def_TripUpdate.StopTimeUpdate'(<<>>, 0,
 					      0, F@_1, F@_2, F@_3, F@_4, F@_5,
-					      _) ->
+					      F@_6, _) ->
     S1 = #{},
     S2 = if F@_1 == '$undef' -> S1;
 	    true -> S1#{stop_sequence => F@_1}
@@ -2271,41 +2364,45 @@ skip_64_FeedEntity(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
     S5 = if F@_4 == '$undef' -> S4;
 	    true -> S4#{departure => F@_4}
 	 end,
-    if F@_5 == '$undef' -> S5;
-       true -> S5#{schedule_relationship => F@_5}
+    S6 = if F@_5 == '$undef' -> S5;
+	    true -> S5#{schedule_relationship => F@_5}
+	 end,
+    if F@_6 == '$undef' -> S6;
+       true -> S6#{status => F@_6}
     end.
 
 'd_field_TripUpdate.StopTimeUpdate_stop_sequence'(<<1:1,
 						    X:7, Rest/binary>>,
 						  N, Acc, F@_1, F@_2, F@_3,
-						  F@_4, F@_5, TrUserData)
+						  F@_4, F@_5, F@_6, TrUserData)
     when N < 57 ->
     'd_field_TripUpdate.StopTimeUpdate_stop_sequence'(Rest,
 						      N + 7, X bsl N + Acc,
 						      F@_1, F@_2, F@_3, F@_4,
-						      F@_5, TrUserData);
+						      F@_5, F@_6, TrUserData);
 'd_field_TripUpdate.StopTimeUpdate_stop_sequence'(<<0:1,
 						    X:7, Rest/binary>>,
 						  N, Acc, _, F@_2, F@_3, F@_4,
-						  F@_5, TrUserData) ->
+						  F@_5, F@_6, TrUserData) ->
     {NewFValue, RestF} = {id(X bsl N + Acc, TrUserData),
 			  Rest},
     'dfp_read_field_def_TripUpdate.StopTimeUpdate'(RestF, 0,
 						   0, NewFValue, F@_2, F@_3,
-						   F@_4, F@_5, TrUserData).
+						   F@_4, F@_5, F@_6,
+						   TrUserData).
 
 'd_field_TripUpdate.StopTimeUpdate_stop_id'(<<1:1, X:7,
 					      Rest/binary>>,
 					    N, Acc, F@_1, F@_2, F@_3, F@_4,
-					    F@_5, TrUserData)
+					    F@_5, F@_6, TrUserData)
     when N < 57 ->
     'd_field_TripUpdate.StopTimeUpdate_stop_id'(Rest, N + 7,
 						X bsl N + Acc, F@_1, F@_2, F@_3,
-						F@_4, F@_5, TrUserData);
+						F@_4, F@_5, F@_6, TrUserData);
 'd_field_TripUpdate.StopTimeUpdate_stop_id'(<<0:1, X:7,
 					      Rest/binary>>,
 					    N, Acc, F@_1, _, F@_3, F@_4, F@_5,
-					    TrUserData) ->
+					    F@_6, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bytes:Len/binary, Rest2/binary>> = Rest,
@@ -2313,20 +2410,21 @@ skip_64_FeedEntity(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
 			 end,
     'dfp_read_field_def_TripUpdate.StopTimeUpdate'(RestF, 0,
 						   0, F@_1, NewFValue, F@_3,
-						   F@_4, F@_5, TrUserData).
+						   F@_4, F@_5, F@_6,
+						   TrUserData).
 
 'd_field_TripUpdate.StopTimeUpdate_arrival'(<<1:1, X:7,
 					      Rest/binary>>,
 					    N, Acc, F@_1, F@_2, F@_3, F@_4,
-					    F@_5, TrUserData)
+					    F@_5, F@_6, TrUserData)
     when N < 57 ->
     'd_field_TripUpdate.StopTimeUpdate_arrival'(Rest, N + 7,
 						X bsl N + Acc, F@_1, F@_2, F@_3,
-						F@_4, F@_5, TrUserData);
+						F@_4, F@_5, F@_6, TrUserData);
 'd_field_TripUpdate.StopTimeUpdate_arrival'(<<0:1, X:7,
 					      Rest/binary>>,
 					    N, Acc, F@_1, F@_2, Prev, F@_4,
-					    F@_5, TrUserData) ->
+					    F@_5, F@_6, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -2344,21 +2442,22 @@ skip_64_FeedEntity(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
 											       NewFValue,
 											       TrUserData)
 						   end,
-						   F@_4, F@_5, TrUserData).
+						   F@_4, F@_5, F@_6,
+						   TrUserData).
 
 'd_field_TripUpdate.StopTimeUpdate_departure'(<<1:1,
 						X:7, Rest/binary>>,
 					      N, Acc, F@_1, F@_2, F@_3, F@_4,
-					      F@_5, TrUserData)
+					      F@_5, F@_6, TrUserData)
     when N < 57 ->
     'd_field_TripUpdate.StopTimeUpdate_departure'(Rest,
 						  N + 7, X bsl N + Acc, F@_1,
-						  F@_2, F@_3, F@_4, F@_5,
+						  F@_2, F@_3, F@_4, F@_5, F@_6,
 						  TrUserData);
 'd_field_TripUpdate.StopTimeUpdate_departure'(<<0:1,
 						X:7, Rest/binary>>,
 					      N, Acc, F@_1, F@_2, F@_3, Prev,
-					      F@_5, TrUserData) ->
+					      F@_5, F@_6, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -2376,24 +2475,24 @@ skip_64_FeedEntity(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
 											       NewFValue,
 											       TrUserData)
 						   end,
-						   F@_5, TrUserData).
+						   F@_5, F@_6, TrUserData).
 
 'd_field_TripUpdate.StopTimeUpdate_schedule_relationship'(<<1:1,
 							    X:7, Rest/binary>>,
 							  N, Acc, F@_1, F@_2,
 							  F@_3, F@_4, F@_5,
-							  TrUserData)
+							  F@_6, TrUserData)
     when N < 57 ->
     'd_field_TripUpdate.StopTimeUpdate_schedule_relationship'(Rest,
 							      N + 7,
 							      X bsl N + Acc,
 							      F@_1, F@_2, F@_3,
-							      F@_4, F@_5,
+							      F@_4, F@_5, F@_6,
 							      TrUserData);
 'd_field_TripUpdate.StopTimeUpdate_schedule_relationship'(<<0:1,
 							    X:7, Rest/binary>>,
 							  N, Acc, F@_1, F@_2,
-							  F@_3, F@_4, _,
+							  F@_3, F@_4, _, F@_6,
 							  TrUserData) ->
     {NewFValue, RestF} =
 	{id('d_enum_TripUpdate.StopTimeUpdate.ScheduleRelationship'(begin
@@ -2410,65 +2509,87 @@ skip_64_FeedEntity(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
 	 Rest},
     'dfp_read_field_def_TripUpdate.StopTimeUpdate'(RestF, 0,
 						   0, F@_1, F@_2, F@_3, F@_4,
-						   NewFValue, TrUserData).
+						   NewFValue, F@_6, TrUserData).
+
+'d_field_TripUpdate.StopTimeUpdate_status'(<<1:1, X:7,
+					     Rest/binary>>,
+					   N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
+					   F@_6, TrUserData)
+    when N < 57 ->
+    'd_field_TripUpdate.StopTimeUpdate_status'(Rest, N + 7,
+					       X bsl N + Acc, F@_1, F@_2, F@_3,
+					       F@_4, F@_5, F@_6, TrUserData);
+'d_field_TripUpdate.StopTimeUpdate_status'(<<0:1, X:7,
+					     Rest/binary>>,
+					   N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
+					   _, TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Bytes:Len/binary, Rest2/binary>> = Rest,
+			   {id(binary:copy(Bytes), TrUserData), Rest2}
+			 end,
+    'dfp_read_field_def_TripUpdate.StopTimeUpdate'(RestF, 0,
+						   0, F@_1, F@_2, F@_3, F@_4,
+						   F@_5, NewFValue, TrUserData).
 
 'skip_varint_TripUpdate.StopTimeUpdate'(<<1:1, _:7,
 					  Rest/binary>>,
 					Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5,
-					TrUserData) ->
+					F@_6, TrUserData) ->
     'skip_varint_TripUpdate.StopTimeUpdate'(Rest, Z1, Z2,
-					    F@_1, F@_2, F@_3, F@_4, F@_5,
+					    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
 					    TrUserData);
 'skip_varint_TripUpdate.StopTimeUpdate'(<<0:1, _:7,
 					  Rest/binary>>,
 					Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5,
-					TrUserData) ->
+					F@_6, TrUserData) ->
     'dfp_read_field_def_TripUpdate.StopTimeUpdate'(Rest, Z1,
 						   Z2, F@_1, F@_2, F@_3, F@_4,
-						   F@_5, TrUserData).
+						   F@_5, F@_6, TrUserData).
 
 'skip_length_delimited_TripUpdate.StopTimeUpdate'(<<1:1,
 						    X:7, Rest/binary>>,
 						  N, Acc, F@_1, F@_2, F@_3,
-						  F@_4, F@_5, TrUserData)
+						  F@_4, F@_5, F@_6, TrUserData)
     when N < 57 ->
     'skip_length_delimited_TripUpdate.StopTimeUpdate'(Rest,
 						      N + 7, X bsl N + Acc,
 						      F@_1, F@_2, F@_3, F@_4,
-						      F@_5, TrUserData);
+						      F@_5, F@_6, TrUserData);
 'skip_length_delimited_TripUpdate.StopTimeUpdate'(<<0:1,
 						    X:7, Rest/binary>>,
 						  N, Acc, F@_1, F@_2, F@_3,
-						  F@_4, F@_5, TrUserData) ->
+						  F@_4, F@_5, F@_6,
+						  TrUserData) ->
     Length = X bsl N + Acc,
     <<_:Length/binary, Rest2/binary>> = Rest,
     'dfp_read_field_def_TripUpdate.StopTimeUpdate'(Rest2, 0,
 						   0, F@_1, F@_2, F@_3, F@_4,
-						   F@_5, TrUserData).
+						   F@_5, F@_6, TrUserData).
 
 'skip_group_TripUpdate.StopTimeUpdate'(Bin, FNum, Z2,
-				       F@_1, F@_2, F@_3, F@_4, F@_5,
+				       F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
 				       TrUserData) ->
     {_, Rest} = read_group(Bin, FNum),
     'dfp_read_field_def_TripUpdate.StopTimeUpdate'(Rest, 0,
 						   Z2, F@_1, F@_2, F@_3, F@_4,
-						   F@_5, TrUserData).
+						   F@_5, F@_6, TrUserData).
 
 'skip_32_TripUpdate.StopTimeUpdate'(<<_:32,
 				      Rest/binary>>,
-				    Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5,
+				    Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
 				    TrUserData) ->
     'dfp_read_field_def_TripUpdate.StopTimeUpdate'(Rest, Z1,
 						   Z2, F@_1, F@_2, F@_3, F@_4,
-						   F@_5, TrUserData).
+						   F@_5, F@_6, TrUserData).
 
 'skip_64_TripUpdate.StopTimeUpdate'(<<_:64,
 				      Rest/binary>>,
-				    Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5,
+				    Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
 				    TrUserData) ->
     'dfp_read_field_def_TripUpdate.StopTimeUpdate'(Rest, Z1,
 						   Z2, F@_1, F@_2, F@_3, F@_4,
-						   F@_5, TrUserData).
+						   F@_5, F@_6, TrUserData).
 
 decode_msg_TripUpdate(Bin, TrUserData) ->
     dfp_read_field_def_TripUpdate(Bin, 0, 0,
@@ -3224,45 +3345,69 @@ decode_msg_Alert(Bin, TrUserData) ->
 			     id('UNKNOWN_CAUSE', TrUserData),
 			     id('UNKNOWN_EFFECT', TrUserData),
 			     id('$undef', TrUserData), id('$undef', TrUserData),
-			     id('$undef', TrUserData), TrUserData).
+			     id('$undef', TrUserData), id('$undef', TrUserData),
+			     id('$undef', TrUserData),
+			     id('UNKNOWN_SEVERITY', TrUserData), TrUserData).
 
 dfp_read_field_def_Alert(<<10, Rest/binary>>, Z1, Z2,
-			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			 TrUserData) ->
+			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			 F@_10, TrUserData) ->
     d_field_Alert_active_period(Rest, Z1, Z2, F@_1, F@_2,
-				F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+				F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+				TrUserData);
 dfp_read_field_def_Alert(<<42, Rest/binary>>, Z1, Z2,
-			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			 TrUserData) ->
+			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			 F@_10, TrUserData) ->
     d_field_Alert_informed_entity(Rest, Z1, Z2, F@_1, F@_2,
-				  F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+				  F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+				  F@_10, TrUserData);
 dfp_read_field_def_Alert(<<48, Rest/binary>>, Z1, Z2,
-			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			 TrUserData) ->
+			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			 F@_10, TrUserData) ->
     d_field_Alert_cause(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			F@_4, F@_5, F@_6, F@_7, TrUserData);
+			F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
 dfp_read_field_def_Alert(<<56, Rest/binary>>, Z1, Z2,
-			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			 TrUserData) ->
+			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			 F@_10, TrUserData) ->
     d_field_Alert_effect(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			 F@_4, F@_5, F@_6, F@_7, TrUserData);
+			 F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
 dfp_read_field_def_Alert(<<66, Rest/binary>>, Z1, Z2,
-			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			 TrUserData) ->
+			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			 F@_10, TrUserData) ->
     d_field_Alert_url(Rest, Z1, Z2, F@_1, F@_2, F@_3, F@_4,
-		      F@_5, F@_6, F@_7, TrUserData);
+		      F@_5, F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
 dfp_read_field_def_Alert(<<82, Rest/binary>>, Z1, Z2,
-			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			 TrUserData) ->
+			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			 F@_10, TrUserData) ->
     d_field_Alert_header_text(Rest, Z1, Z2, F@_1, F@_2,
-			      F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+			      F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			      TrUserData);
 dfp_read_field_def_Alert(<<90, Rest/binary>>, Z1, Z2,
-			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			 TrUserData) ->
+			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			 F@_10, TrUserData) ->
     d_field_Alert_description_text(Rest, Z1, Z2, F@_1, F@_2,
-				   F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+				   F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+				   F@_10, TrUserData);
+dfp_read_field_def_Alert(<<98, Rest/binary>>, Z1, Z2,
+			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			 F@_10, TrUserData) ->
+    d_field_Alert_tts_header_text(Rest, Z1, Z2, F@_1, F@_2,
+				  F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+				  F@_10, TrUserData);
+dfp_read_field_def_Alert(<<106, Rest/binary>>, Z1, Z2,
+			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			 F@_10, TrUserData) ->
+    d_field_Alert_tts_description_text(Rest, Z1, Z2, F@_1,
+				       F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+				       F@_9, F@_10, TrUserData);
+dfp_read_field_def_Alert(<<112, Rest/binary>>, Z1, Z2,
+			 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			 F@_10, TrUserData) ->
+    d_field_Alert_severity_level(Rest, Z1, Z2, F@_1, F@_2,
+				 F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+				 F@_10, TrUserData);
 dfp_read_field_def_Alert(<<>>, 0, 0, R1, R2, F@_3, F@_4,
-			 F@_5, F@_6, F@_7, TrUserData) ->
+			 F@_5, F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     S1 = #{},
     S2 = if R1 == '$undef' -> S1;
 	    true ->
@@ -3284,71 +3429,98 @@ dfp_read_field_def_Alert(<<>>, 0, 0, R1, R2, F@_3, F@_4,
     S7 = if F@_6 == '$undef' -> S6;
 	    true -> S6#{header_text => F@_6}
 	 end,
-    if F@_7 == '$undef' -> S7;
-       true -> S7#{description_text => F@_7}
+    S8 = if F@_7 == '$undef' -> S7;
+	    true -> S7#{description_text => F@_7}
+	 end,
+    S9 = if F@_8 == '$undef' -> S8;
+	    true -> S8#{tts_header_text => F@_8}
+	 end,
+    S10 = if F@_9 == '$undef' -> S9;
+	     true -> S9#{tts_description_text => F@_9}
+	  end,
+    if F@_10 == '$undef' -> S10;
+       true -> S10#{severity_level => F@_10}
     end;
 dfp_read_field_def_Alert(Other, Z1, Z2, F@_1, F@_2,
-			 F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+			 F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			 TrUserData) ->
     dg_read_field_def_Alert(Other, Z1, Z2, F@_1, F@_2, F@_3,
-			    F@_4, F@_5, F@_6, F@_7, TrUserData).
+			    F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			    TrUserData).
 
 dg_read_field_def_Alert(<<1:1, X:7, Rest/binary>>, N,
-			Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			TrUserData)
+			Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+			F@_9, F@_10, TrUserData)
     when N < 32 - 7 ->
     dg_read_field_def_Alert(Rest, N + 7, X bsl N + Acc,
-			    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			    TrUserData);
+			    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+			    F@_9, F@_10, TrUserData);
 dg_read_field_def_Alert(<<0:1, X:7, Rest/binary>>, N,
-			Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			TrUserData) ->
+			Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+			F@_9, F@_10, TrUserData) ->
     Key = X bsl N + Acc,
     case Key of
       10 ->
 	  d_field_Alert_active_period(Rest, 0, 0, F@_1, F@_2,
-				      F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+				      F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+				      F@_10, TrUserData);
       42 ->
 	  d_field_Alert_informed_entity(Rest, 0, 0, F@_1, F@_2,
-					F@_3, F@_4, F@_5, F@_6, F@_7,
-					TrUserData);
+					F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+					F@_9, F@_10, TrUserData);
       48 ->
 	  d_field_Alert_cause(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
-			      F@_5, F@_6, F@_7, TrUserData);
+			      F@_5, F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
       56 ->
 	  d_field_Alert_effect(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
-			       F@_5, F@_6, F@_7, TrUserData);
+			       F@_5, F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
       66 ->
 	  d_field_Alert_url(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
-			    F@_5, F@_6, F@_7, TrUserData);
+			    F@_5, F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
       82 ->
 	  d_field_Alert_header_text(Rest, 0, 0, F@_1, F@_2, F@_3,
-				    F@_4, F@_5, F@_6, F@_7, TrUserData);
+				    F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+				    TrUserData);
       90 ->
 	  d_field_Alert_description_text(Rest, 0, 0, F@_1, F@_2,
-					 F@_3, F@_4, F@_5, F@_6, F@_7,
-					 TrUserData);
+					 F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+					 F@_9, F@_10, TrUserData);
+      98 ->
+	  d_field_Alert_tts_header_text(Rest, 0, 0, F@_1, F@_2,
+					F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+					F@_9, F@_10, TrUserData);
+      106 ->
+	  d_field_Alert_tts_description_text(Rest, 0, 0, F@_1,
+					     F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+					     F@_8, F@_9, F@_10, TrUserData);
+      112 ->
+	  d_field_Alert_severity_level(Rest, 0, 0, F@_1, F@_2,
+				       F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+				       F@_10, TrUserData);
       _ ->
 	  case Key band 7 of
 	    0 ->
 		skip_varint_Alert(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
-				  F@_5, F@_6, F@_7, TrUserData);
+				  F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+				  TrUserData);
 	    1 ->
 		skip_64_Alert(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4, F@_5,
-			      F@_6, F@_7, TrUserData);
+			      F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
 	    2 ->
 		skip_length_delimited_Alert(Rest, 0, 0, F@_1, F@_2,
-					    F@_3, F@_4, F@_5, F@_6, F@_7,
-					    TrUserData);
+					    F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+					    F@_9, F@_10, TrUserData);
 	    3 ->
 		skip_group_Alert(Rest, Key bsr 3, 0, F@_1, F@_2, F@_3,
-				 F@_4, F@_5, F@_6, F@_7, TrUserData);
+				 F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+				 TrUserData);
 	    5 ->
 		skip_32_Alert(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4, F@_5,
-			      F@_6, F@_7, TrUserData)
+			      F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData)
 	  end
     end;
 dg_read_field_def_Alert(<<>>, 0, 0, R1, R2, F@_3, F@_4,
-			F@_5, F@_6, F@_7, TrUserData) ->
+			F@_5, F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     S1 = #{},
     S2 = if R1 == '$undef' -> S1;
 	    true ->
@@ -3370,20 +3542,29 @@ dg_read_field_def_Alert(<<>>, 0, 0, R1, R2, F@_3, F@_4,
     S7 = if F@_6 == '$undef' -> S6;
 	    true -> S6#{header_text => F@_6}
 	 end,
-    if F@_7 == '$undef' -> S7;
-       true -> S7#{description_text => F@_7}
+    S8 = if F@_7 == '$undef' -> S7;
+	    true -> S7#{description_text => F@_7}
+	 end,
+    S9 = if F@_8 == '$undef' -> S8;
+	    true -> S8#{tts_header_text => F@_8}
+	 end,
+    S10 = if F@_9 == '$undef' -> S9;
+	     true -> S9#{tts_description_text => F@_9}
+	  end,
+    if F@_10 == '$undef' -> S10;
+       true -> S10#{severity_level => F@_10}
     end.
 
 d_field_Alert_active_period(<<1:1, X:7, Rest/binary>>,
 			    N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			    TrUserData)
+			    F@_8, F@_9, F@_10, TrUserData)
     when N < 57 ->
     d_field_Alert_active_period(Rest, N + 7, X bsl N + Acc,
-				F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-				TrUserData);
+				F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+				F@_9, F@_10, TrUserData);
 d_field_Alert_active_period(<<0:1, X:7, Rest/binary>>,
 			    N, Acc, Prev, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			    TrUserData) ->
+			    F@_8, F@_9, F@_10, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -3393,18 +3574,19 @@ d_field_Alert_active_period(<<0:1, X:7, Rest/binary>>,
 			 end,
     dfp_read_field_def_Alert(RestF, 0, 0,
 			     cons(NewFValue, Prev, TrUserData), F@_2, F@_3,
-			     F@_4, F@_5, F@_6, F@_7, TrUserData).
+			     F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			     TrUserData).
 
 d_field_Alert_informed_entity(<<1:1, X:7, Rest/binary>>,
 			      N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			      TrUserData)
+			      F@_8, F@_9, F@_10, TrUserData)
     when N < 57 ->
     d_field_Alert_informed_entity(Rest, N + 7,
 				  X bsl N + Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
-				  F@_6, F@_7, TrUserData);
+				  F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
 d_field_Alert_informed_entity(<<0:1, X:7, Rest/binary>>,
 			      N, Acc, F@_1, Prev, F@_3, F@_4, F@_5, F@_6, F@_7,
-			      TrUserData) ->
+			      F@_8, F@_9, F@_10, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -3414,15 +3596,18 @@ d_field_Alert_informed_entity(<<0:1, X:7, Rest/binary>>,
 			 end,
     dfp_read_field_def_Alert(RestF, 0, 0, F@_1,
 			     cons(NewFValue, Prev, TrUserData), F@_3, F@_4,
-			     F@_5, F@_6, F@_7, TrUserData).
+			     F@_5, F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData).
 
 d_field_Alert_cause(<<1:1, X:7, Rest/binary>>, N, Acc,
-		    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData)
+		    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+		    F@_10, TrUserData)
     when N < 57 ->
     d_field_Alert_cause(Rest, N + 7, X bsl N + Acc, F@_1,
-			F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+			F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			TrUserData);
 d_field_Alert_cause(<<0:1, X:7, Rest/binary>>, N, Acc,
-		    F@_1, F@_2, _, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+		    F@_1, F@_2, _, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+		    F@_10, TrUserData) ->
     {NewFValue, RestF} = {id('d_enum_Alert.Cause'(begin
 						    <<Res:32/signed-native>> =
 							<<(X bsl N +
@@ -3432,15 +3617,19 @@ d_field_Alert_cause(<<0:1, X:7, Rest/binary>>, N, Acc,
 			     TrUserData),
 			  Rest},
     dfp_read_field_def_Alert(RestF, 0, 0, F@_1, F@_2,
-			     NewFValue, F@_4, F@_5, F@_6, F@_7, TrUserData).
+			     NewFValue, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			     F@_10, TrUserData).
 
 d_field_Alert_effect(<<1:1, X:7, Rest/binary>>, N, Acc,
-		     F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData)
+		     F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+		     F@_10, TrUserData)
     when N < 57 ->
     d_field_Alert_effect(Rest, N + 7, X bsl N + Acc, F@_1,
-			 F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+			 F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			 TrUserData);
 d_field_Alert_effect(<<0:1, X:7, Rest/binary>>, N, Acc,
-		     F@_1, F@_2, F@_3, _, F@_5, F@_6, F@_7, TrUserData) ->
+		     F@_1, F@_2, F@_3, _, F@_5, F@_6, F@_7, F@_8, F@_9,
+		     F@_10, TrUserData) ->
     {NewFValue, RestF} = {id('d_enum_Alert.Effect'(begin
 						     <<Res:32/signed-native>> =
 							 <<(X bsl N +
@@ -3450,15 +3639,19 @@ d_field_Alert_effect(<<0:1, X:7, Rest/binary>>, N, Acc,
 			     TrUserData),
 			  Rest},
     dfp_read_field_def_Alert(RestF, 0, 0, F@_1, F@_2, F@_3,
-			     NewFValue, F@_5, F@_6, F@_7, TrUserData).
+			     NewFValue, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			     TrUserData).
 
 d_field_Alert_url(<<1:1, X:7, Rest/binary>>, N, Acc,
-		  F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData)
+		  F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+		  F@_10, TrUserData)
     when N < 57 ->
     d_field_Alert_url(Rest, N + 7, X bsl N + Acc, F@_1,
-		      F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+		      F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+		      TrUserData);
 d_field_Alert_url(<<0:1, X:7, Rest/binary>>, N, Acc,
-		  F@_1, F@_2, F@_3, F@_4, Prev, F@_6, F@_7, TrUserData) ->
+		  F@_1, F@_2, F@_3, F@_4, Prev, F@_6, F@_7, F@_8, F@_9,
+		  F@_10, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -3473,18 +3666,18 @@ d_field_Alert_url(<<0:1, X:7, Rest/binary>>, N, Acc,
 				    merge_msg_TranslatedString(Prev, NewFValue,
 							       TrUserData)
 			     end,
-			     F@_6, F@_7, TrUserData).
+			     F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData).
 
 d_field_Alert_header_text(<<1:1, X:7, Rest/binary>>, N,
-			  Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			  TrUserData)
+			  Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+			  F@_9, F@_10, TrUserData)
     when N < 57 ->
     d_field_Alert_header_text(Rest, N + 7, X bsl N + Acc,
-			      F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			      TrUserData);
+			      F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+			      F@_9, F@_10, TrUserData);
 d_field_Alert_header_text(<<0:1, X:7, Rest/binary>>, N,
-			  Acc, F@_1, F@_2, F@_3, F@_4, F@_5, Prev, F@_7,
-			  TrUserData) ->
+			  Acc, F@_1, F@_2, F@_3, F@_4, F@_5, Prev, F@_7, F@_8,
+			  F@_9, F@_10, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -3499,20 +3692,20 @@ d_field_Alert_header_text(<<0:1, X:7, Rest/binary>>, N,
 				    merge_msg_TranslatedString(Prev, NewFValue,
 							       TrUserData)
 			     end,
-			     F@_7, TrUserData).
+			     F@_7, F@_8, F@_9, F@_10, TrUserData).
 
 d_field_Alert_description_text(<<1:1, X:7,
 				 Rest/binary>>,
 			       N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			       TrUserData)
+			       F@_8, F@_9, F@_10, TrUserData)
     when N < 57 ->
     d_field_Alert_description_text(Rest, N + 7,
 				   X bsl N + Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
-				   F@_6, F@_7, TrUserData);
+				   F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
 d_field_Alert_description_text(<<0:1, X:7,
 				 Rest/binary>>,
 			       N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, Prev,
-			       TrUserData) ->
+			       F@_8, F@_9, F@_10, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -3527,47 +3720,134 @@ d_field_Alert_description_text(<<0:1, X:7,
 				    merge_msg_TranslatedString(Prev, NewFValue,
 							       TrUserData)
 			     end,
+			     F@_8, F@_9, F@_10, TrUserData).
+
+d_field_Alert_tts_header_text(<<1:1, X:7, Rest/binary>>,
+			      N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			      F@_8, F@_9, F@_10, TrUserData)
+    when N < 57 ->
+    d_field_Alert_tts_header_text(Rest, N + 7,
+				  X bsl N + Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
+				  F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
+d_field_Alert_tts_header_text(<<0:1, X:7, Rest/binary>>,
+			      N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			      Prev, F@_9, F@_10, TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Bs:Len/binary, Rest2/binary>> = Rest,
+			   {id(decode_msg_TranslatedString(Bs, TrUserData),
+			       TrUserData),
+			    Rest2}
+			 end,
+    dfp_read_field_def_Alert(RestF, 0, 0, F@_1, F@_2, F@_3,
+			     F@_4, F@_5, F@_6, F@_7,
+			     if Prev == '$undef' -> NewFValue;
+				true ->
+				    merge_msg_TranslatedString(Prev, NewFValue,
+							       TrUserData)
+			     end,
+			     F@_9, F@_10, TrUserData).
+
+d_field_Alert_tts_description_text(<<1:1, X:7,
+				     Rest/binary>>,
+				   N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
+				   F@_7, F@_8, F@_9, F@_10, TrUserData)
+    when N < 57 ->
+    d_field_Alert_tts_description_text(Rest, N + 7,
+				       X bsl N + Acc, F@_1, F@_2, F@_3, F@_4,
+				       F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+				       TrUserData);
+d_field_Alert_tts_description_text(<<0:1, X:7,
+				     Rest/binary>>,
+				   N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
+				   F@_7, F@_8, Prev, F@_10, TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Bs:Len/binary, Rest2/binary>> = Rest,
+			   {id(decode_msg_TranslatedString(Bs, TrUserData),
+			       TrUserData),
+			    Rest2}
+			 end,
+    dfp_read_field_def_Alert(RestF, 0, 0, F@_1, F@_2, F@_3,
+			     F@_4, F@_5, F@_6, F@_7, F@_8,
+			     if Prev == '$undef' -> NewFValue;
+				true ->
+				    merge_msg_TranslatedString(Prev, NewFValue,
+							       TrUserData)
+			     end,
+			     F@_10, TrUserData).
+
+d_field_Alert_severity_level(<<1:1, X:7, Rest/binary>>,
+			     N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			     F@_8, F@_9, F@_10, TrUserData)
+    when N < 57 ->
+    d_field_Alert_severity_level(Rest, N + 7, X bsl N + Acc,
+				 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+				 F@_9, F@_10, TrUserData);
+d_field_Alert_severity_level(<<0:1, X:7, Rest/binary>>,
+			     N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			     F@_8, F@_9, _, TrUserData) ->
+    {NewFValue, RestF} =
+	{id('d_enum_Alert.SeverityLevel'(begin
+					   <<Res:32/signed-native>> = <<(X bsl N
+									   +
+									   Acc):32/unsigned-native>>,
+					   id(Res, TrUserData)
+					 end),
+	    TrUserData),
+	 Rest},
+    dfp_read_field_def_Alert(RestF, 0, 0, F@_1, F@_2, F@_3,
+			     F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, NewFValue,
 			     TrUserData).
 
 skip_varint_Alert(<<1:1, _:7, Rest/binary>>, Z1, Z2,
-		  F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+		  F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+		  F@_10, TrUserData) ->
     skip_varint_Alert(Rest, Z1, Z2, F@_1, F@_2, F@_3, F@_4,
-		      F@_5, F@_6, F@_7, TrUserData);
+		      F@_5, F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
 skip_varint_Alert(<<0:1, _:7, Rest/binary>>, Z1, Z2,
-		  F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+		  F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+		  F@_10, TrUserData) ->
     dfp_read_field_def_Alert(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			     F@_4, F@_5, F@_6, F@_7, TrUserData).
+			     F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			     TrUserData).
 
 skip_length_delimited_Alert(<<1:1, X:7, Rest/binary>>,
 			    N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			    TrUserData)
+			    F@_8, F@_9, F@_10, TrUserData)
     when N < 57 ->
     skip_length_delimited_Alert(Rest, N + 7, X bsl N + Acc,
-				F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-				TrUserData);
+				F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+				F@_9, F@_10, TrUserData);
 skip_length_delimited_Alert(<<0:1, X:7, Rest/binary>>,
 			    N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			    TrUserData) ->
+			    F@_8, F@_9, F@_10, TrUserData) ->
     Length = X bsl N + Acc,
     <<_:Length/binary, Rest2/binary>> = Rest,
     dfp_read_field_def_Alert(Rest2, 0, 0, F@_1, F@_2, F@_3,
-			     F@_4, F@_5, F@_6, F@_7, TrUserData).
+			     F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			     TrUserData).
 
 skip_group_Alert(Bin, FNum, Z2, F@_1, F@_2, F@_3, F@_4,
-		 F@_5, F@_6, F@_7, TrUserData) ->
+		 F@_5, F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     {_, Rest} = read_group(Bin, FNum),
     dfp_read_field_def_Alert(Rest, 0, Z2, F@_1, F@_2, F@_3,
-			     F@_4, F@_5, F@_6, F@_7, TrUserData).
+			     F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			     TrUserData).
 
 skip_32_Alert(<<_:32, Rest/binary>>, Z1, Z2, F@_1, F@_2,
-	      F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+	      F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+	      TrUserData) ->
     dfp_read_field_def_Alert(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			     F@_4, F@_5, F@_6, F@_7, TrUserData).
+			     F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			     TrUserData).
 
 skip_64_Alert(<<_:64, Rest/binary>>, Z1, Z2, F@_1, F@_2,
-	      F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+	      F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+	      TrUserData) ->
     dfp_read_field_def_Alert(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			     F@_4, F@_5, F@_6, F@_7, TrUserData).
+			     F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+			     TrUserData).
 
 decode_msg_TimeRange(Bin, TrUserData) ->
     dfp_read_field_def_TimeRange(Bin, 0, 0,
@@ -5094,7 +5374,14 @@ skip_64_TranslatedString(<<_:64, Rest/binary>>, Z1, Z2,
 'd_enum_Alert.Effect'(7) -> 'OTHER_EFFECT';
 'd_enum_Alert.Effect'(8) -> 'UNKNOWN_EFFECT';
 'd_enum_Alert.Effect'(9) -> 'STOP_MOVED';
+'d_enum_Alert.Effect'(10) -> 'NO_EFFECT';
 'd_enum_Alert.Effect'(V) -> V.
+
+'d_enum_Alert.SeverityLevel'(1) -> 'UNKNOWN_SEVERITY';
+'d_enum_Alert.SeverityLevel'(2) -> 'INFO';
+'d_enum_Alert.SeverityLevel'(3) -> 'WARNING';
+'d_enum_Alert.SeverityLevel'(4) -> 'SEVERE';
+'d_enum_Alert.SeverityLevel'(V) -> V.
 
 'd_enum_TripDescriptor.ScheduleRelationship'(0) ->
     'SCHEDULED';
@@ -5346,14 +5633,19 @@ merge_msg_FeedEntity(#{} = PMsg, #{id := NFid} = NMsg,
 	       S4#{departure => PFdeparture};
 	   {_, _} -> S4
 	 end,
+    S6 = case {PMsg, NMsg} of
+	   {_,
+	    #{schedule_relationship := NFschedule_relationship}} ->
+	       S5#{schedule_relationship => NFschedule_relationship};
+	   {#{schedule_relationship := PFschedule_relationship},
+	    _} ->
+	       S5#{schedule_relationship => PFschedule_relationship};
+	   _ -> S5
+	 end,
     case {PMsg, NMsg} of
-      {_,
-       #{schedule_relationship := NFschedule_relationship}} ->
-	  S5#{schedule_relationship => NFschedule_relationship};
-      {#{schedule_relationship := PFschedule_relationship},
-       _} ->
-	  S5#{schedule_relationship => PFschedule_relationship};
-      _ -> S5
+      {_, #{status := NFstatus}} -> S6#{status => NFstatus};
+      {#{status := PFstatus}, _} -> S6#{status => PFstatus};
+      _ -> S6
     end.
 
 -compile({nowarn_unused_function,merge_msg_TripUpdate/3}).
@@ -5532,17 +5824,53 @@ merge_msg_Alert(PMsg, NMsg, TrUserData) ->
 	       S6#{header_text => PFheader_text};
 	   {_, _} -> S6
 	 end,
+    S8 = case {PMsg, NMsg} of
+	   {#{description_text := PFdescription_text},
+	    #{description_text := NFdescription_text}} ->
+	       S7#{description_text =>
+		       merge_msg_TranslatedString(PFdescription_text,
+						  NFdescription_text,
+						  TrUserData)};
+	   {_, #{description_text := NFdescription_text}} ->
+	       S7#{description_text => NFdescription_text};
+	   {#{description_text := PFdescription_text}, _} ->
+	       S7#{description_text => PFdescription_text};
+	   {_, _} -> S7
+	 end,
+    S9 = case {PMsg, NMsg} of
+	   {#{tts_header_text := PFtts_header_text},
+	    #{tts_header_text := NFtts_header_text}} ->
+	       S8#{tts_header_text =>
+		       merge_msg_TranslatedString(PFtts_header_text,
+						  NFtts_header_text,
+						  TrUserData)};
+	   {_, #{tts_header_text := NFtts_header_text}} ->
+	       S8#{tts_header_text => NFtts_header_text};
+	   {#{tts_header_text := PFtts_header_text}, _} ->
+	       S8#{tts_header_text => PFtts_header_text};
+	   {_, _} -> S8
+	 end,
+    S10 = case {PMsg, NMsg} of
+	    {#{tts_description_text := PFtts_description_text},
+	     #{tts_description_text := NFtts_description_text}} ->
+		S9#{tts_description_text =>
+			merge_msg_TranslatedString(PFtts_description_text,
+						   NFtts_description_text,
+						   TrUserData)};
+	    {_,
+	     #{tts_description_text := NFtts_description_text}} ->
+		S9#{tts_description_text => NFtts_description_text};
+	    {#{tts_description_text := PFtts_description_text},
+	     _} ->
+		S9#{tts_description_text => PFtts_description_text};
+	    {_, _} -> S9
+	  end,
     case {PMsg, NMsg} of
-      {#{description_text := PFdescription_text},
-       #{description_text := NFdescription_text}} ->
-	  S7#{description_text =>
-		  merge_msg_TranslatedString(PFdescription_text,
-					     NFdescription_text, TrUserData)};
-      {_, #{description_text := NFdescription_text}} ->
-	  S7#{description_text => NFdescription_text};
-      {#{description_text := PFdescription_text}, _} ->
-	  S7#{description_text => PFdescription_text};
-      {_, _} -> S7
+      {_, #{severity_level := NFseverity_level}} ->
+	  S10#{severity_level => NFseverity_level};
+      {#{severity_level := PFseverity_level}, _} ->
+	  S10#{severity_level => PFseverity_level};
+      _ -> S10
     end.
 
 -compile({nowarn_unused_function,merge_msg_TimeRange/3}).
@@ -5943,11 +6271,17 @@ v_msg_FeedEntity(X, Path, _TrUserData) ->
 								  TrUserData);
       _ -> ok
     end,
+    case M of
+      #{status := F6} ->
+	  v_type_string(F6, [status | Path], TrUserData);
+      _ -> ok
+    end,
     lists:foreach(fun (stop_sequence) -> ok;
 		      (stop_id) -> ok;
 		      (arrival) -> ok;
 		      (departure) -> ok;
 		      (schedule_relationship) -> ok;
+		      (status) -> ok;
 		      (OtherKey) ->
 			  mk_type_error({extraneous_key, OtherKey}, M, Path)
 		  end,
@@ -6153,6 +6487,24 @@ v_msg_Alert(#{} = M, Path, TrUserData) ->
 				 TrUserData);
       _ -> ok
     end,
+    case M of
+      #{tts_header_text := F8} ->
+	  v_msg_TranslatedString(F8, [tts_header_text | Path],
+				 TrUserData);
+      _ -> ok
+    end,
+    case M of
+      #{tts_description_text := F9} ->
+	  v_msg_TranslatedString(F9,
+				 [tts_description_text | Path], TrUserData);
+      _ -> ok
+    end,
+    case M of
+      #{severity_level := F10} ->
+	  'v_enum_Alert.SeverityLevel'(F10,
+				       [severity_level | Path], TrUserData);
+      _ -> ok
+    end,
     lists:foreach(fun (active_period) -> ok;
 		      (informed_entity) -> ok;
 		      (cause) -> ok;
@@ -6160,6 +6512,9 @@ v_msg_Alert(#{} = M, Path, TrUserData) ->
 		      (url) -> ok;
 		      (header_text) -> ok;
 		      (description_text) -> ok;
+		      (tts_header_text) -> ok;
+		      (tts_description_text) -> ok;
+		      (severity_level) -> ok;
 		      (OtherKey) ->
 			  mk_type_error({extraneous_key, OtherKey}, M, Path)
 		  end,
@@ -6624,11 +6979,35 @@ v_msg_TranslatedString(X, Path, _TrUserData) ->
 'v_enum_Alert.Effect'('STOP_MOVED', _Path,
 		      _TrUserData) ->
     ok;
+'v_enum_Alert.Effect'('NO_EFFECT', _Path,
+		      _TrUserData) ->
+    ok;
 'v_enum_Alert.Effect'(V, Path, TrUserData)
     when is_integer(V) ->
     v_type_sint32(V, Path, TrUserData);
 'v_enum_Alert.Effect'(X, Path, _TrUserData) ->
     mk_type_error({invalid_enum, 'Alert.Effect'}, X, Path).
+
+-compile({nowarn_unused_function,'v_enum_Alert.SeverityLevel'/3}).
+-dialyzer({nowarn_function,'v_enum_Alert.SeverityLevel'/3}).
+'v_enum_Alert.SeverityLevel'('UNKNOWN_SEVERITY', _Path,
+			     _TrUserData) ->
+    ok;
+'v_enum_Alert.SeverityLevel'('INFO', _Path,
+			     _TrUserData) ->
+    ok;
+'v_enum_Alert.SeverityLevel'('WARNING', _Path,
+			     _TrUserData) ->
+    ok;
+'v_enum_Alert.SeverityLevel'('SEVERE', _Path,
+			     _TrUserData) ->
+    ok;
+'v_enum_Alert.SeverityLevel'(V, Path, TrUserData)
+    when is_integer(V) ->
+    v_type_sint32(V, Path, TrUserData);
+'v_enum_Alert.SeverityLevel'(X, Path, _TrUserData) ->
+    mk_type_error({invalid_enum, 'Alert.SeverityLevel'}, X,
+		  Path).
 
 -compile({nowarn_unused_function,'v_enum_TripDescriptor.ScheduleRelationship'/3}).
 -dialyzer({nowarn_function,'v_enum_TripDescriptor.ScheduleRelationship'/3}).
@@ -6840,7 +7219,10 @@ get_msg_defs() ->
        {'SIGNIFICANT_DELAYS', 3}, {'DETOUR', 4},
        {'ADDITIONAL_SERVICE', 5}, {'MODIFIED_SERVICE', 6},
        {'OTHER_EFFECT', 7}, {'UNKNOWN_EFFECT', 8},
-       {'STOP_MOVED', 9}]},
+       {'STOP_MOVED', 9}, {'NO_EFFECT', 10}]},
+     {{enum, 'Alert.SeverityLevel'},
+      [{'UNKNOWN_SEVERITY', 1}, {'INFO', 2}, {'WARNING', 3},
+       {'SEVERE', 4}]},
      {{enum, 'TripDescriptor.ScheduleRelationship'},
       [{'SCHEDULED', 0}, {'ADDED', 1}, {'UNSCHEDULED', 2},
        {'CANCELED', 3}]},
@@ -6897,7 +7279,9 @@ get_msg_defs() ->
 	 {enum,
 	  'TripUpdate.StopTimeUpdate.ScheduleRelationship'}},
 	{occurrence, optional},
-	{opts, [{default, 'SCHEDULED'}]}]]},
+	{opts, [{default, 'SCHEDULED'}]}],
+       [{name, status}, {fnum, 6}, {rnum, 7}, {type, string},
+	{occurrence, optional}, {opts, []}]]},
      {{msg, 'TripUpdate'},
       [[{name, trip}, {fnum, 1}, {rnum, 2},
 	{type, {msg, 'TripDescriptor'}}, {occurrence, required},
@@ -6959,7 +7343,17 @@ get_msg_defs() ->
 	{occurrence, optional}, {opts, []}],
        [{name, description_text}, {fnum, 11}, {rnum, 8},
 	{type, {msg, 'TranslatedString'}},
-	{occurrence, optional}, {opts, []}]]},
+	{occurrence, optional}, {opts, []}],
+       [{name, tts_header_text}, {fnum, 12}, {rnum, 9},
+	{type, {msg, 'TranslatedString'}},
+	{occurrence, optional}, {opts, []}],
+       [{name, tts_description_text}, {fnum, 13}, {rnum, 10},
+	{type, {msg, 'TranslatedString'}},
+	{occurrence, optional}, {opts, []}],
+       [{name, severity_level}, {fnum, 14}, {rnum, 11},
+	{type, {enum, 'Alert.SeverityLevel'}},
+	{occurrence, optional},
+	{opts, [{default, 'UNKNOWN_SEVERITY'}]}]]},
      {{msg, 'TimeRange'},
       [[{name, start}, {fnum, 1}, {rnum, 2}, {type, uint64},
 	{occurrence, optional}, {opts, []}],
@@ -7047,7 +7441,8 @@ get_enum_names() ->
      'VehiclePosition.VehicleStopStatus',
      'VehiclePosition.CongestionLevel',
      'VehiclePosition.OccupancyStatus', 'Alert.Cause',
-     'Alert.Effect', 'TripDescriptor.ScheduleRelationship'].
+     'Alert.Effect', 'Alert.SeverityLevel',
+     'TripDescriptor.ScheduleRelationship'].
 
 
 fetch_msg_def(MsgName) ->
@@ -7117,7 +7512,9 @@ find_msg_def('TripUpdate.StopTimeUpdate') ->
        {enum,
 	'TripUpdate.StopTimeUpdate.ScheduleRelationship'}},
       {occurrence, optional},
-      {opts, [{default, 'SCHEDULED'}]}]];
+      {opts, [{default, 'SCHEDULED'}]}],
+     [{name, status}, {fnum, 6}, {rnum, 7}, {type, string},
+      {occurrence, optional}, {opts, []}]];
 find_msg_def('TripUpdate') ->
     [[{name, trip}, {fnum, 1}, {rnum, 2},
       {type, {msg, 'TripDescriptor'}}, {occurrence, required},
@@ -7179,7 +7576,17 @@ find_msg_def('Alert') ->
       {occurrence, optional}, {opts, []}],
      [{name, description_text}, {fnum, 11}, {rnum, 8},
       {type, {msg, 'TranslatedString'}},
-      {occurrence, optional}, {opts, []}]];
+      {occurrence, optional}, {opts, []}],
+     [{name, tts_header_text}, {fnum, 12}, {rnum, 9},
+      {type, {msg, 'TranslatedString'}},
+      {occurrence, optional}, {opts, []}],
+     [{name, tts_description_text}, {fnum, 13}, {rnum, 10},
+      {type, {msg, 'TranslatedString'}},
+      {occurrence, optional}, {opts, []}],
+     [{name, severity_level}, {fnum, 14}, {rnum, 11},
+      {type, {enum, 'Alert.SeverityLevel'}},
+      {occurrence, optional},
+      {opts, [{default, 'UNKNOWN_SEVERITY'}]}]];
 find_msg_def('TimeRange') ->
     [[{name, start}, {fnum, 1}, {rnum, 2}, {type, uint64},
       {occurrence, optional}, {opts, []}],
@@ -7269,7 +7676,10 @@ find_enum_def('Alert.Effect') ->
      {'SIGNIFICANT_DELAYS', 3}, {'DETOUR', 4},
      {'ADDITIONAL_SERVICE', 5}, {'MODIFIED_SERVICE', 6},
      {'OTHER_EFFECT', 7}, {'UNKNOWN_EFFECT', 8},
-     {'STOP_MOVED', 9}];
+     {'STOP_MOVED', 9}, {'NO_EFFECT', 10}];
+find_enum_def('Alert.SeverityLevel') ->
+    [{'UNKNOWN_SEVERITY', 1}, {'INFO', 2}, {'WARNING', 3},
+     {'SEVERE', 4}];
 find_enum_def('TripDescriptor.ScheduleRelationship') ->
     [{'SCHEDULED', 0}, {'ADDED', 1}, {'UNSCHEDULED', 2},
      {'CANCELED', 3}];
@@ -7295,6 +7705,8 @@ enum_symbol_by_value('Alert.Cause', Value) ->
     'enum_symbol_by_value_Alert.Cause'(Value);
 enum_symbol_by_value('Alert.Effect', Value) ->
     'enum_symbol_by_value_Alert.Effect'(Value);
+enum_symbol_by_value('Alert.SeverityLevel', Value) ->
+    'enum_symbol_by_value_Alert.SeverityLevel'(Value);
 enum_symbol_by_value('TripDescriptor.ScheduleRelationship',
 		     Value) ->
     'enum_symbol_by_value_TripDescriptor.ScheduleRelationship'(Value).
@@ -7319,6 +7731,8 @@ enum_value_by_symbol('Alert.Cause', Sym) ->
     'enum_value_by_symbol_Alert.Cause'(Sym);
 enum_value_by_symbol('Alert.Effect', Sym) ->
     'enum_value_by_symbol_Alert.Effect'(Sym);
+enum_value_by_symbol('Alert.SeverityLevel', Sym) ->
+    'enum_value_by_symbol_Alert.SeverityLevel'(Sym);
 enum_value_by_symbol('TripDescriptor.ScheduleRelationship',
 		     Sym) ->
     'enum_value_by_symbol_TripDescriptor.ScheduleRelationship'(Sym).
@@ -7472,7 +7886,8 @@ enum_value_by_symbol('TripDescriptor.ScheduleRelationship',
     'OTHER_EFFECT';
 'enum_symbol_by_value_Alert.Effect'(8) ->
     'UNKNOWN_EFFECT';
-'enum_symbol_by_value_Alert.Effect'(9) -> 'STOP_MOVED'.
+'enum_symbol_by_value_Alert.Effect'(9) -> 'STOP_MOVED';
+'enum_symbol_by_value_Alert.Effect'(10) -> 'NO_EFFECT'.
 
 
 'enum_value_by_symbol_Alert.Effect'('NO_SERVICE') -> 1;
@@ -7489,7 +7904,25 @@ enum_value_by_symbol('TripDescriptor.ScheduleRelationship',
     7;
 'enum_value_by_symbol_Alert.Effect'('UNKNOWN_EFFECT') ->
     8;
-'enum_value_by_symbol_Alert.Effect'('STOP_MOVED') -> 9.
+'enum_value_by_symbol_Alert.Effect'('STOP_MOVED') -> 9;
+'enum_value_by_symbol_Alert.Effect'('NO_EFFECT') -> 10.
+
+'enum_symbol_by_value_Alert.SeverityLevel'(1) ->
+    'UNKNOWN_SEVERITY';
+'enum_symbol_by_value_Alert.SeverityLevel'(2) -> 'INFO';
+'enum_symbol_by_value_Alert.SeverityLevel'(3) ->
+    'WARNING';
+'enum_symbol_by_value_Alert.SeverityLevel'(4) ->
+    'SEVERE'.
+
+
+'enum_value_by_symbol_Alert.SeverityLevel'('UNKNOWN_SEVERITY') ->
+    1;
+'enum_value_by_symbol_Alert.SeverityLevel'('INFO') -> 2;
+'enum_value_by_symbol_Alert.SeverityLevel'('WARNING') ->
+    3;
+'enum_value_by_symbol_Alert.SeverityLevel'('SEVERE') ->
+    4.
 
 'enum_symbol_by_value_TripDescriptor.ScheduleRelationship'(0) ->
     'SCHEDULED';
