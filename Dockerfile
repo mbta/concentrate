@@ -1,4 +1,4 @@
-FROM elixir:1.7-alpine AS builder
+FROM elixir:1.8-alpine AS builder
 
 WORKDIR /root
 
