@@ -126,6 +126,20 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       assert StopTimeUpdate.schedule_relationship(stu) == :SCHEDULED
     end
 
+    test "can handle status field" do
+      update = %{
+        trip: %{},
+        stop_time_update: [
+          %{
+            status: "status"
+          }
+        ]
+      }
+
+      [_tu, stop_update] = decode_trip_update(update, %Options{})
+      assert StopTimeUpdate.status(stop_update) == "status"
+    end
+
     test "does not include trip or stop update if we're ignoring the route" do
       update = %{
         trip: %{route_id: "ignored"},

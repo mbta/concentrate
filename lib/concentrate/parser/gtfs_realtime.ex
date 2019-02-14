@@ -151,7 +151,8 @@ defmodule Concentrate.Parser.GTFSRealtime do
               schedule_relationship: Map.get(stu, :schedule_relationship, :SCHEDULED),
               arrival_time: arrival_time,
               departure_time: departure_time,
-              uncertainty: arrival_uncertainty || departure_uncertainty
+              uncertainty: arrival_uncertainty || departure_uncertainty,
+              status: Map.get(stu, :status)
             )
           end
 

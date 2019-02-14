@@ -24,7 +24,8 @@ defmodule Concentrate.Encoder.TripUpdates do
         stop_time_event(StopTimeUpdate.arrival_time(update), StopTimeUpdate.uncertainty(update)),
       departure:
         stop_time_event(StopTimeUpdate.departure_time(update), StopTimeUpdate.uncertainty(update)),
-      schedule_relationship: schedule_relationship(StopTimeUpdate.schedule_relationship(update))
+      schedule_relationship: schedule_relationship(StopTimeUpdate.schedule_relationship(update)),
+      status: StopTimeUpdate.status(update)
     })
   end
 end
