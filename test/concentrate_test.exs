@@ -39,10 +39,21 @@ defmodule ConcentrateTest do
         "headers": {
           "Authorization": "auth"
         }
+      },
+      "name_7": {
+        "url": "url_7",
+        "drop_fields": {
+          "VehiclePosition": ["speed"]
+        }
       }
     },
     "gtfs_realtime_enhanced": {
-      "enhanced_1": "url_3"
+      "enhanced_1": {
+        "url": "url_3",
+        "drop_fields": {
+          "TripUpdate": ["start_time"]
+        }
+      }
     }
   },
   "gtfs": {
@@ -71,11 +82,12 @@ defmodule ConcentrateTest do
                name_3: {"url_3", routes: ~w(a b)},
                name_4: {"url_4", max_future_time: 3600},
                name_5: {"url_5", content_warning_timeout: 3600},
-               name_6: {"url_6", headers: %{"Authorization" => "auth"}}
+               name_6: {"url_6", headers: %{"Authorization" => "auth"}},
+               name_7: {"url_7", drop_fields: %{Concentrate.VehiclePosition => [:speed]}}
              }
 
       assert config[:sources][:gtfs_realtime_enhanced] == %{
-               enhanced_1: "url_3"
+               enhanced_1: {"url_3", drop_fields: %{Concentrate.TripUpdate => [:start_time]}}
              }
 
       assert config[:gtfs][:url] == "gtfs_url"

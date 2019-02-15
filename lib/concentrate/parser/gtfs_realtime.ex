@@ -1,34 +1,19 @@
 defmodule Concentrate.Parser.GTFSRealtime do
   @moduledoc """
   Parser for [GTFS-Realtime](https://developers.google.com/transit/gtfs-realtime/) ProtoBuf files.
-
-  Options:
-
-  * routes: a list of route IDs to include in the output. Other route IDs
-  (including unknown routes) will not be included.
-
   """
   @behaviour Concentrate.Parser
+  alias Concentrate.Parser.Helpers
+
   alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripUpdate, VehiclePosition}
-
-  defmodule Options do
-    @moduledoc """
-    Options for parsing a GTFS Realtime file.
-
-    * routes: either :all (don't filter the routes) or {:ok, Enumerable.t} with the route IDs to include
-    * excluded_routes: either :none (don't filter) or {:ok, Enumerable.t} with the route IDs to exclude
-    * max_time: the maximum time for a stop time update
-    """
-    defstruct routes: :all, excluded_routes: :none, max_time: :infinity
-  end
-
-  alias __MODULE__.Options
-
   @impl Concentrate.Parser
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
-    options = parse_options(opts)
+    options = Helpers.parse_options(opts)
     message = :gtfs_realtime_proto.decode_msg(binary, :FeedMessage, [])
-    Enum.flat_map(message.entity, &decode_feed_entity(&1, options))
+
+    message.entity
+    |> Enum.flat_map(&decode_feed_entity(&1, options))
+    |> Helpers.drop_fields(options.drop_fields)
   end
 
   def decode_feed_entity(entity, options) do
@@ -100,29 +85,6 @@ defmodule Concentrate.Parser.GTFSRealtime do
   def decode_trip_update(trip_update, options) do
     tu = decode_trip_descriptor(trip_update)
     decode_stop_updates(tu, trip_update, options)
-  end
-
-  defp parse_options(opts, acc \\ %Options{})
-
-  defp parse_options([{:routes, route_ids} | rest], acc) do
-    parse_options(rest, %{acc | routes: {:ok, MapSet.new(route_ids)}})
-  end
-
-  defp parse_options([{:excluded_routes, route_ids} | rest], acc) do
-    parse_options(rest, %{acc | excluded_routes: {:ok, MapSet.new(route_ids)}})
-  end
-
-  defp parse_options([{:max_future_time, seconds} | rest], acc) do
-    max_time = :os.system_time(:seconds) + seconds
-    parse_options(rest, %{acc | max_time: max_time})
-  end
-
-  defp parse_options([_ | rest], acc) do
-    parse_options(rest, acc)
-  end
-
-  defp parse_options([], acc) do
-    acc
   end
 
   defp decode_stop_updates(tu, %{stop_time_update: [update | _] = updates} = trip_update, options) do
