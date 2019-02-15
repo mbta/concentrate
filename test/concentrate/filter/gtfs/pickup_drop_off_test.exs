@@ -24,21 +24,23 @@ defmodule Concentrate.Filter.GTFS.PickupDropOffTest do
     setup :supervised
 
     test "true if there's a pickup at the stop on that trip" do
-      assert pickup?("Logan-22-Weekday-trip", "Logan-Subway")
-      assert pickup?("Logan-22-Weekday-trip", "Logan-RentalCarCenter")
+      assert pickup?("Logan-22-Weekday-trip", "Logan-Subway") == true
+      assert pickup?("Logan-22-Weekday-trip", "Logan-RentalCarCenter") == true
       refute pickup?("Logan-22-Weekday-trip", "Logan-A")
-      assert pickup?("Logan-33-Weekday-trip", "Logan-RentalCarCenter")
+      assert pickup?("Logan-33-Weekday-trip", "Logan-RentalCarCenter") == true
     end
 
     test "true if there's a pickup for that stop sequence" do
-      assert pickup?("Logan-22-Weekday-trip", 1)
-      assert pickup?("Logan-22-Weekday-trip", 2)
+      assert pickup?("Logan-22-Weekday-trip", 1) == true
+      assert pickup?("Logan-22-Weekday-trip", 2) == true
       refute pickup?("Logan-22-Weekday-trip", 3)
-      assert pickup?("Logan-33-Weekday-trip", 2)
+      assert pickup?("Logan-33-Weekday-trip", 2) == true
     end
 
-    test "true for unknown trips" do
-      assert pickup?("unknown trip", "unknown stop")
+    test "unknown for unknown trips/stops" do
+      assert pickup?("unknown trip", "unknown stop") == :unknown
+      assert pickup?("Logan-33-Weekday-trip", "unknown stop") == :unknown
+      assert pickup?("Logan-33-Weekday-trip", 4) == :unknown
     end
   end
 
@@ -59,18 +61,18 @@ defmodule Concentrate.Filter.GTFS.PickupDropOffTest do
       assert drop_off?("Logan-33-Weekday-trip", 2)
     end
 
-    test "true for unknown trips" do
-      assert drop_off?("unknown trip", "unknown stop")
+    test "unknown for unknown trips" do
+      assert drop_off?("unknown trip", "unknown stop") == :unknown
     end
   end
 
   describe "missing ETS table" do
-    test "pickup? is true" do
-      assert pickup?("trip", 1)
+    test "pickup? is unknown" do
+      assert pickup?("trip", 1) == :unknown
     end
 
-    test "drop_off? is true" do
-      assert drop_off?("trip", 1)
+    test "drop_off? is unknown" do
+      assert drop_off?("trip", 1) == :unknown
     end
   end
 end

@@ -13,18 +13,23 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
 
   @spec pickup?(String.t(), String.t() | non_neg_integer) :: boolean
   def pickup?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
-    key = {:no_pickup, trip_id, stop_or_stop_sequence}
-    not :ets.member(@table, key)
-  rescue
-    ArgumentError -> true
+    key = {:pickup, trip_id, stop_or_stop_sequence}
+    find_value(key)
   end
 
   @spec drop_off?(String.t(), String.t() | non_neg_integer) :: boolean
   def drop_off?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
-    key = {:no_drop_off, trip_id, stop_or_stop_sequence}
-    not :ets.member(@table, key)
+    key = {:drop_off, trip_id, stop_or_stop_sequence}
+    find_value(key)
+  end
+
+  defp find_value(key) do
+    case :ets.lookup(@table, key) do
+      [{_, value}] -> value
+      [] -> :unknown
+    end
   rescue
-    ArgumentError -> true
+    ArgumentError -> :unknown
   end
 
   @impl GenStage
@@ -97,23 +102,13 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
     stop_id = copy(Map.get(row, "stop_id"))
     stop_sequence = String.to_integer(Map.get(row, "stop_sequence"))
 
-    insert_keys =
-      if can_pickup_drop_off?(Map.get(row, "pickup_type")) do
-        []
-      else
-        [:no_pickup]
-      end
+    pickup? = can_pickup_drop_off?(Map.get(row, "pickup_type"))
+    drop_off? = can_pickup_drop_off?(Map.get(row, "drop_off_type"))
+    inserts = [pickup: pickup?, drop_off: drop_off?]
 
-    insert_keys =
-      if can_pickup_drop_off?(Map.get(row, "drop_off_type")) do
-        insert_keys
-      else
-        [:no_drop_off | insert_keys]
-      end
-
-    for key <- insert_keys,
+    for {key, value} <- inserts,
         stop_key <- [stop_id, stop_sequence] do
-      {{key, trip_id, stop_key}}
+      {{key, trip_id, stop_key}, value}
     end
   end
 end
