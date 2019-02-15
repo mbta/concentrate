@@ -6,13 +6,17 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimesTest do
 
   defmodule FakePickupDropOff do
     @moduledoc "Fake implementation of Filter.GTFS.PickupDropOff"
+    def pickup?("trip", 1), do: true
+    def pickup?("trip", 4), do: true
     def pickup?("trip", 5), do: false
     def pickup?("trip", 6), do: false
-    def pickup?(_, _), do: true
+    def pickup?(_, _), do: :unknown
 
     def drop_off?("trip", 1), do: false
+    def drop_off?("trip", 4), do: true
+    def drop_off?("trip", 5), do: true
     def drop_off?("trip", 6), do: false
-    def drop_off?(_, _), do: true
+    def drop_off?(_, _), do: :unknown
   end
 
   @module __MODULE__.FakePickupDropOff
@@ -22,12 +26,15 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimesTest do
   @stu StopTimeUpdate.new(
          trip_id: "trip",
          arrival_time: @arrival_time,
-         departure_time: @departure_time
+         departure_time: @departure_time,
+         stop_sequence: 4
        )
 
   describe "filter/1" do
     test "a stop time update with a different stop_sequence isn't modified" do
-      group = {@tu, [], [@stu]}
+      stu = StopTimeUpdate.update(@stu, stop_sequence: 7, arrival_time: nil)
+      stu_2 = StopTimeUpdate.update(@stu, stop_sequence: 8, departure_time: nil)
+      group = {@tu, [], [stu, stu_2]}
       assert filter(group, @module) == group
     end
 

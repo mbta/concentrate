@@ -49,10 +49,21 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
     drop_off? = module.drop_off?(trip_id, key)
 
     case {pickup?, drop_off?} do
-      {true, true} -> ensure_both_times(stu)
-      {true, false} -> remove_arrival_time(stu)
-      {false, true} -> remove_departure_time(stu)
-      {false, false} -> StopTimeUpdate.skip(stu)
+      {true, true} ->
+        ensure_both_times(stu)
+
+      {true, false} ->
+        remove_arrival_time(stu)
+
+      {false, true} ->
+        remove_departure_time(stu)
+
+      {false, false} ->
+        StopTimeUpdate.skip(stu)
+
+      _ ->
+        # don't make changes if we don't know the pickup/drop-off values
+        stu
     end
   end
 
@@ -71,6 +82,10 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
 
       {false, false} ->
         StopTimeUpdate.skip(stu)
+
+      _ ->
+        # don't make changes if we don't know the pickup/drop-off values
+        stu
     end
   end
 
