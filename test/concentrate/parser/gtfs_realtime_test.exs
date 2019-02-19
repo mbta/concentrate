@@ -4,7 +4,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtime
   alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate, Alert}
-  alias Concentrate.Parser.GTFSRealtime.Options
+  alias Concentrate.Parser.Helpers.Options
 
   describe "parse/1" do
     test "parsing a vehiclepositions.pb file returns only VehiclePosition or TripUpdate structs" do

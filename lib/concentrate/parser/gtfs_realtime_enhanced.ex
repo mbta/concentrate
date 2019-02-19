@@ -5,13 +5,17 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   @behaviour Concentrate.Parser
   require Logger
   alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripUpdate, VehiclePosition}
+  alias Concentrate.Parser.Helpers
 
   @default_active_period [%{"start" => nil, "end" => nil}]
 
   @impl Concentrate.Parser
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
+    options = Helpers.parse_options(opts)
+
     for {:ok, json} <- [Jason.decode(binary, strings: :copy)],
-        decoded <- decode_entities(json) do
+        entities = decode_entities(json),
+        decoded <- Helpers.drop_fields(entities, options.drop_fields) do
       decoded
     end
   end

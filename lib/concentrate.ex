@@ -104,24 +104,33 @@ defmodule Concentrate do
 
   defp decode_gtfs_realtime_value(%{"url" => url} = value) when is_binary(url) do
     opts =
-      for {key, guard} <- [
-            routes: &is_list/1,
-            excluded_routes: &is_list/1,
-            fallback_url: &is_binary/1,
-            max_future_time: &is_integer/1,
-            fetch_after: &is_integer/1,
-            content_warning_timeout: &is_integer/1,
-            headers: &is_map/1
+      for {key, {guard, process}} <- [
+            routes: {&is_list/1, & &1},
+            excluded_routes: {&is_list/1, & &1},
+            fallback_url: {&is_binary/1, & &1},
+            max_future_time: {&is_integer/1, & &1},
+            fetch_after: {&is_integer/1, & &1},
+            content_warning_timeout: {&is_integer/1, & &1},
+            headers: {&is_map/1, & &1},
+            drop_fields: {&is_map/1, &process_drop_fields/1}
           ],
           {:ok, opt_value} <- [Map.fetch(value, Atom.to_string(key))],
           guard.(opt_value) do
-        {key, opt_value}
+        {key, process.(opt_value)}
       end
 
     if opts == [] do
       url
     else
       {url, opts}
+    end
+  end
+
+  defp process_drop_fields(map) do
+    for {mod_suffix, str_fields} <- map, into: %{} do
+      mod = Module.concat(["Concentrate", mod_suffix])
+      fields = Enum.map(str_fields, &String.to_existing_atom/1)
+      {mod, fields}
     end
   end
 
