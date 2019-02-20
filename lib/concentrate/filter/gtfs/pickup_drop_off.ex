@@ -11,14 +11,23 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  @spec pickup?(String.t(), String.t() | non_neg_integer) :: boolean
-  def pickup?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
+  @spec pickup_drop_off(String.t(), String.t() | non_neg_integer) :: {boolean, boolean} | :unknown
+  def pickup_drop_off(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
+    case {pickup?(trip_id, stop_or_stop_sequence), drop_off?(trip_id, stop_or_stop_sequence)} do
+      {p, d} = t when is_boolean(p) and is_boolean(d) ->
+        t
+
+      _ ->
+        :unknown
+    end
+  end
+
+  defp pickup?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
     key = {:pickup, trip_id, stop_or_stop_sequence}
     find_value(key)
   end
 
-  @spec drop_off?(String.t(), String.t() | non_neg_integer) :: boolean
-  def drop_off?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
+  defp drop_off?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
     key = {:drop_off, trip_id, stop_or_stop_sequence}
     find_value(key)
   end

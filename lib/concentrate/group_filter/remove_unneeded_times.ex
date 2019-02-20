@@ -45,10 +45,8 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
   defp ensure_correct_times_for_last_stu(stu, module, trip_id) do
     # we only remove the departure time from the last stop (excepting SKIPPED stops)
     key = stop_sequence_or_stop_id(stu)
-    pickup? = module.pickup?(trip_id, key)
-    drop_off? = module.drop_off?(trip_id, key)
 
-    case {pickup?, drop_off?} do
+    case module.pickup_drop_off(trip_id, key) do
       {true, true} ->
         ensure_both_times(stu)
 
@@ -69,10 +67,8 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
 
   defp ensure_correct_times(stu, module, trip_id) do
     key = stop_sequence_or_stop_id(stu)
-    pickup? = module.pickup?(trip_id, key)
-    drop_off? = module.drop_off?(trip_id, key)
 
-    case {pickup?, drop_off?} do
+    case module.pickup_drop_off(trip_id, key) do
       {_, true} ->
         ensure_both_times(stu)
 

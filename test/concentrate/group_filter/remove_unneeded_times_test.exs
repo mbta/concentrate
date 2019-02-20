@@ -6,17 +6,12 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimesTest do
 
   defmodule FakePickupDropOff do
     @moduledoc "Fake implementation of Filter.GTFS.PickupDropOff"
-    def pickup?("trip", 1), do: true
-    def pickup?("trip", 4), do: true
-    def pickup?("trip", 5), do: false
-    def pickup?("trip", 6), do: false
-    def pickup?(_, _), do: :unknown
 
-    def drop_off?("trip", 1), do: false
-    def drop_off?("trip", 4), do: true
-    def drop_off?("trip", 5), do: true
-    def drop_off?("trip", 6), do: false
-    def drop_off?(_, _), do: :unknown
+    def pickup_drop_off("trip", 1), do: {true, false}
+    def pickup_drop_off("trip", 4), do: {true, true}
+    def pickup_drop_off("trip", 5), do: {false, true}
+    def pickup_drop_off("trip", 6), do: {false, false}
+    def pickup_drop_off(_, _), do: :unknown
   end
 
   @module __MODULE__.FakePickupDropOff
