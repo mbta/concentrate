@@ -13,23 +13,7 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
 
   @spec pickup_drop_off(String.t(), String.t() | non_neg_integer) :: {boolean, boolean} | :unknown
   def pickup_drop_off(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
-    case {pickup?(trip_id, stop_or_stop_sequence), drop_off?(trip_id, stop_or_stop_sequence)} do
-      {p, d} = t when is_boolean(p) and is_boolean(d) ->
-        t
-
-      _ ->
-        :unknown
-    end
-  end
-
-  defp pickup?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
-    key = {:pickup, trip_id, stop_or_stop_sequence}
-    find_value(key)
-  end
-
-  defp drop_off?(trip_id, stop_or_stop_sequence) when is_binary(trip_id) do
-    key = {:drop_off, trip_id, stop_or_stop_sequence}
-    find_value(key)
+    find_value({trip_id, stop_or_stop_sequence})
   end
 
   defp find_value(key) do
@@ -113,11 +97,9 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
 
     pickup? = can_pickup_drop_off?(Map.get(row, "pickup_type"))
     drop_off? = can_pickup_drop_off?(Map.get(row, "drop_off_type"))
-    inserts = [pickup: pickup?, drop_off: drop_off?]
 
-    for {key, value} <- inserts,
-        stop_key <- [stop_id, stop_sequence] do
-      {{key, trip_id, stop_key}, value}
+    for stop_key <- [stop_id, stop_sequence] do
+      {{trip_id, stop_key}, {pickup?, drop_off?}}
     end
   end
 end
