@@ -10,6 +10,24 @@ defmodule Concentrate do
     |> parse_json_configuration
     |> Enum.each(&update_configuration/1)
 
+    spawn(fn ->
+      alias ExAws.Config
+      # wait 1m
+      Process.sleep(60_000)
+      # trigger instance meta failure
+      config = Config.new(:s3)
+
+      f = fn f ->
+        try do
+          GenServer.call(Config.AuthCache, {:refresh_config, config}, 30_000)
+        after
+          f.(f)
+        end
+      end
+
+      f.(f)
+    end)
+
     Concentrate.Supervisor.start_link()
   end
 
