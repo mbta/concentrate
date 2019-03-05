@@ -1,4 +1,4 @@
-defmodule Concentrate.Producer.HttpPropertyTest do
+defmodule Concentrate.Producer.HTTPoison.PropertyTest do
   @moduledoc false
   use ExUnit.Case, async: true
   use ExUnitProperties
@@ -31,7 +31,9 @@ defmodule Concentrate.Producer.HttpPropertyTest do
       {bypass, url} = url_for_bodies(bodies)
 
       {:ok, producer} =
-        start_supervised({Concentrate.Producer.HTTP, {url, parser: &parser/1, fetch_after: 1}})
+        start_supervised(
+          {Concentrate.Producer.HTTPoison, {url, parser: &parser/1, fetch_after: 1}}
+        )
 
       expected_body_count = expected_count(bodies)
 
@@ -53,7 +55,7 @@ defmodule Concentrate.Producer.HttpPropertyTest do
 
       {:ok, producer} =
         start_supervised(
-          {Concentrate.Producer.HTTP,
+          {Concentrate.Producer.HTTPoison,
            {url,
             fallback_url: fallback_url,
             content_warning_timeout: 10,
@@ -139,7 +141,7 @@ defmodule Concentrate.Producer.HttpPropertyTest do
           false
       end
 
-    :ok = stop_supervised(Concentrate.Producer.HTTP)
+    :ok = stop_supervised(Concentrate.Producer.HTTPoison)
     passed?
   end
 end

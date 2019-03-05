@@ -10,9 +10,9 @@ Throughout the pipeline, data is represented as one of three structs:
 * `VehiclePosition`: where the vehicle is, both latitude/longitude and on the trip
 * `StopTimeUpdate`: a prediction about when a vehicle will arrive/depart a stop
 
-## Producer.HTTP
+## Producer.HTTPoison
 
-At the top of the pipeline are a set of Producer.HTTP stages. Each one is
+At the top of the pipeline are a set of Producer.HTTPoison stages. Each one is
 responsible for a single file, as well as handling caching and parsing. We
 fetch no more frequently than every 5 seconds, to avoid overloading the
 remote systems. Once fetched, they're parsed and passed along down the pipeline.
