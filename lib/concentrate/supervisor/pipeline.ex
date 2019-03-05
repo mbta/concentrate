@@ -53,7 +53,7 @@ defmodule Concentrate.Supervisor.Pipeline do
 
       child_spec(
         {
-          Concentrate.Producer.HTTP,
+          Concentrate.Producer.HTTPoison,
           {url, [name: source, parser: parser] ++ opts}
         },
         id: source

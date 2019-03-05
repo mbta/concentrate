@@ -1,9 +1,9 @@
-defmodule Concentrate.Producer.HTTP do
+defmodule Concentrate.Producer.HTTPoison do
   @moduledoc """
   GenStage Producer which fulfills demand by fetching from an HTTP Server.
   """
   use GenStage
-  alias Concentrate.Producer.HTTP.StateMachine, as: SM
+  alias Concentrate.Producer.HTTPoison.StateMachine, as: SM
   require Logger
   @start_link_opts [:name]
 

@@ -12,7 +12,7 @@ defmodule Concentrate.Filter.Alert.Supervisor do
       Supervisor.start_link(
         [
           {
-            Concentrate.Producer.HTTP,
+            Concentrate.Producer.HTTPoison,
             {
               config[:url],
               parser: Concentrate.Parser.Alerts,

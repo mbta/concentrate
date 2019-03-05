@@ -1,4 +1,4 @@
-defmodule Concentrate.Producer.HTTP.StateMachine do
+defmodule Concentrate.Producer.HTTPoison.StateMachine do
   @moduledoc """
   State machine to manage the incoming/outgoing messages for making recurring HTTP requests.
 
