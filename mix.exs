@@ -49,7 +49,7 @@ defmodule Concentrate.MixProject do
       {:dialyxir, "~> 0.5", runtime: false, only: :dev},
       {:distillery, "~> 2.0.12", runtime: false, only: :prod},
       {:ehmon, git: "https://github.com/mbta/ehmon.git", branch: "master", only: ~w(test prod)a},
-      {:ex_aws, "~> 2.0"},
+      {:ex_aws, github: "paulswartz/ex_aws", branch: "instance-meta-backoff", override: true},
       {:ex_aws_s3, "~> 2.0"},
       {:excoveralls, "~> 0.7", only: :test},
       {:gen_stage, "~> 0.13 and != 0.13.1"},
