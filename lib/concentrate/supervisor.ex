@@ -18,7 +18,8 @@ defmodule Concentrate.Supervisor do
     alerts = alerts(config[:alerts])
     gtfs = gtfs(config[:gtfs])
     pipeline = pipeline(config)
-    Enum.concat([pool, alerts, gtfs, pipeline])
+    health = health()
+    Enum.concat([pool, alerts, gtfs, pipeline, health])
   end
 
   def pool do
@@ -45,6 +46,12 @@ defmodule Concentrate.Supervisor do
         id: Concentrate.Supervisor.Pipeline,
         start: {Concentrate.Supervisor.Pipeline, :start_link, [config]}
       }
+    ]
+  end
+
+  def health do
+    [
+      {Concentrate.Health, name: Concentrate.Health}
     ]
   end
 end
