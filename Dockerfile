@@ -57,5 +57,5 @@ COPY --from=builder /root/_build/prod/rel /root/rel
 # Ensure SSL support is enabled
 RUN /root/rel/concentrate/bin/concentrate eval ":crypto.supports()"
 
-HEALTHCHECK CMD ["/root/rel/concentrate/bin/concentrate", "ping"]
+HEALTHCHECK CMD ["/root/rel/concentrate/bin/concentrate", "rpc", "--mfa", "Concentrate.Health.healthy?/0"]
 CMD ["/root/rel/concentrate/bin/concentrate", "foreground"]
