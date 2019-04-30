@@ -28,10 +28,11 @@ defmodule Concentrate.GroupFilter.Shuttle do
   def filter(other, _module), do: other
 
   defp shuttle_updates(route_id, stus, module) do
-    {stus, _} =
-      Enum.flat_map_reduce(stus, {false, false}, &shuttle_stop(route_id, module, &1, &2))
+    initial_state = {false, false}
 
     stus
+    |> Enum.flat_map_reduce(initial_state, &shuttle_stop(route_id, module, &1, &2))
+    |> elem(0)
   end
 
   defp shuttle_stop(route_id, shuttle_module, stop_time_updates, state)
@@ -40,35 +41,37 @@ defmodule Concentrate.GroupFilter.Shuttle do
     {[StopTimeUpdate.skip(stu)], state}
   end
 
-  defp shuttle_stop(route_id, module, stu, {has_started?, has_shuttled?}) do
+  defp shuttle_stop(route_id, module, stu, {has_started?, has_shuttled?} = state) do
     time = StopTimeUpdate.time(stu)
-    stop_id = StopTimeUpdate.stop_id(stu)
 
     if is_integer(time) do
+      stop_id = StopTimeUpdate.stop_id(stu)
+
       case module.stop_shuttling_on_route(route_id, stop_id, time) do
         nil ->
-          drop_arrival_time_if_not_started(stu, has_started?, has_shuttled?)
+          drop_arrival_time_if_after_shuttle(stu, has_shuttled?)
 
         :through ->
-          {[StopTimeUpdate.skip(stu)], {has_started?, has_shuttled? || has_started?}}
+          {[StopTimeUpdate.skip(stu)], {has_started?, true}}
 
         :start ->
-          {[StopTimeUpdate.update_departure_time(stu, nil)],
-           {has_started?, has_shuttled? || has_started?}}
+          {[StopTimeUpdate.update_departure_time(stu, nil)], {true, true}}
 
         :stop ->
-          {[StopTimeUpdate.update_arrival_time(stu, nil)], {true, has_shuttled?}}
+          {[StopTimeUpdate.update_arrival_time(stu, nil)], {false, false}}
       end
     else
-      drop_arrival_time_if_not_started(stu, has_started?, has_shuttled?)
+      {[stu], state}
     end
   end
 
-  defp drop_arrival_time_if_not_started(stu, false, has_shuttled?) do
-    {[StopTimeUpdate.update_arrival_time(stu, nil)], {true, has_shuttled?}}
+  defp drop_arrival_time_if_after_shuttle(stu, has_shuttled?)
+
+  defp drop_arrival_time_if_after_shuttle(stu, true) do
+    {[StopTimeUpdate.update_arrival_time(stu, nil)], {true, false}}
   end
 
-  defp drop_arrival_time_if_not_started(stu, true, has_shuttled?) do
+  defp drop_arrival_time_if_after_shuttle(stu, has_shuttled?) do
     {[stu], {true, has_shuttled?}}
   end
 end
