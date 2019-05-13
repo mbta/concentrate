@@ -42,18 +42,18 @@ defmodule Concentrate.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:benchee, ">= 0.0.0", runtime: false, only: :dev},
+      {:benchee, "~> 1.0", runtime: false, only: :dev},
       {:bypass, "~> 1.0", only: :test},
       {:credo, "~> 1.0", runtime: false, only: :dev},
       {:csv, "~> 2.1"},
       {:dialyxir, "~> 0.5", runtime: false, only: :dev},
       {:distillery, "~> 2.0.12", runtime: false, only: :prod},
       {:ehmon, git: "https://github.com/mbta/ehmon.git", branch: "master", only: ~w(test prod)a},
-      {:ex_aws, "~> 2.0"},
+      {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
-      {:excoveralls, "~> 0.7", only: :test},
+      {:excoveralls, "~> 0.11", only: :test},
       {:gen_stage, "~> 0.13 and != 0.13.1"},
-      {:gpb, "~> 4.6", only: :dev, runtime: false},
+      {:gpb, "~> 4.7", only: :dev, runtime: false},
       {:httpoison, "~> 1.0"},
       {:jason, "~> 1.0"},
       {:stream_data, "~> 0.4", only: :test}
