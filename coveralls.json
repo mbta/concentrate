@@ -2,5 +2,8 @@
   "skip_files": [
     "test/support",
     "src/gtfs_realtime_proto.erl"
+  ],
+  "custom_stop_words": [
+    "Logger.debug"
   ]
 }
