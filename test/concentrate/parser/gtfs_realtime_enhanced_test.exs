@@ -74,6 +74,24 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert InformedEntity.activities(entity) == ~w(EXIT RIDE)
     end
 
+    @tag :capture_log
+    test "alerts converts unknown effects to UNKNOWN_EFFECT" do
+      body = ~s(
+        {
+          "entity": [
+            {
+              "id": "id",
+              "alert": {
+                "effect": "what is this",
+                "informed_entity": []
+              }
+            }
+          ]
+        })
+      [alert] = parse(body, [])
+      assert Alert.effect(alert) == :UNKNOWN_EFFECT
+    end
+
     test "alerts can decoded the old-format feed" do
       # top-level "alerts" key
       # id and alert data in same object

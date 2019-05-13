@@ -2,6 +2,7 @@ defmodule Concentrate.MergeFilterTest do
   @moduledoc false
   use ExUnit.Case, async: true
   use ExUnitProperties
+  import ExUnit.CaptureLog, only: [capture_log: 1]
   import Concentrate.MergeFilter
   alias Concentrate.{Merge, TripUpdate, VehiclePosition, StopTimeUpdate}
   alias Concentrate.Encoder.GTFSRealtimeHelpers
@@ -98,6 +99,31 @@ defmodule Concentrate.MergeFilterTest do
       assert events == [expected]
     end
 
+    test "when Logging debug messages, does not crash" do
+      log_level = Logger.level()
+
+      on_exit(fn ->
+        Logger.configure(level: log_level)
+      end)
+
+      Logger.configure(level: :debug)
+      data = []
+
+      events = [data]
+      filters = []
+      from = make_from()
+      {_, state, _} = init(filters: filters)
+      {_, state} = handle_subscribe(:producer, [], from, state)
+      {:noreply, [], state} = handle_events(events, from, state)
+
+      log =
+        capture_log(fn ->
+          handle_info(:timeout, state)
+        end)
+
+      refute log == ""
+    end
+
     property "with multiple sources, returns the merged data" do
       check all multi_source_mergeables <- list_of_mergeables() do
         {_, state, _} = init([])
@@ -134,6 +160,13 @@ defmodule Concentrate.MergeFilterTest do
       {:noreply, _, _state} = handle_info(:timeout, state)
       assert_received {:"$gen_producer", ^producer_0, {:ask, 1}}
       refute_received {:"$gen_producer", ^producer_1, _}
+    end
+  end
+
+  describe "handle_info/2" do
+    @tag :capture_log
+    test "ignores unknown messages" do
+      assert handle_info(:unknown, :state) == {:noreply, [], :state}
     end
   end
 
