@@ -11,9 +11,10 @@ defmodule Concentrate.Health do
 
   def healthy?(name \\ __MODULE__) do
     Agent.get(name, fn state ->
-      Logger.info(fn ->
-        "#{__MODULE__} Checking health..."
-      end)
+      _ =
+        Logger.info(fn ->
+          "#{__MODULE__} Checking health..."
+        end)
 
       state
     end)

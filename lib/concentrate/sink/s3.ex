@@ -24,12 +24,15 @@ defmodule Concentrate.Sink.S3 do
     |> S3.put_object(full_filename, body, opts)
     |> @ex_aws.request!
 
-    Logger.info(fn ->
-      "#{__MODULE__} updated: \
+    _ =
+      Logger.info(fn ->
+        "#{__MODULE__} updated: \
 bucket=#{inspect(state.bucket)} \
 path=#{inspect(full_filename)} \
 bytes=#{byte_size(body)}"
-    end)
+      end)
+
+    :ok
   end
 
   defp content_type(filename) do

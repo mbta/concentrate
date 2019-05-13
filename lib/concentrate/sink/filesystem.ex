@@ -13,9 +13,12 @@ defmodule Concentrate.Sink.Filesystem do
       File.mkdir_p!(directory)
       File.write!(path, body)
 
-      Logger.info(fn ->
-        "#{__MODULE__} updated: path=#{inspect(path)} bytes=#{byte_size(body)}"
-      end)
+      _ =
+        Logger.info(fn ->
+          "#{__MODULE__} updated: path=#{inspect(path)} bytes=#{byte_size(body)}"
+        end)
+
+      :ok
     end)
   end
 end

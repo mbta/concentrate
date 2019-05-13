@@ -10,7 +10,16 @@ defmodule Concentrate.MixProject do
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [coveralls: :test, "coveralls.html": :test, "coveralls.json": :test],
-      dialyzer: [ignore_warnings: ".dialyzer.ignore-warnings"],
+      dialyzer: [
+        plt_add_deps: :transitive,
+        flags: [
+          :race_conditions,
+          :unmatched_returns,
+          :underspecs,
+          :unknown
+        ],
+        ignore_warnings: ".dialyzer.ignore-warnings"
+      ],
       elixirc_paths: elixirc_paths(Mix.env()),
       aliases: aliases()
     ]

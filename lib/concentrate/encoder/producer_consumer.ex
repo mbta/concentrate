@@ -32,9 +32,10 @@ defmodule Concentrate.Encoder.ProducerConsumer do
       for {filename, encoder} <- state do
         {time, encoded} = :timer.tc(encoder, [data])
 
-        Logger.debug(fn ->
-          "#{__MODULE__} encoded filename=#{inspect(filename)} time=#{time / 1000}"
-        end)
+        _ =
+          Logger.debug(fn ->
+            "#{__MODULE__} encoded filename=#{inspect(filename)} time=#{time / 1000}"
+          end)
 
         {filename, encoded}
       end
