@@ -7,7 +7,8 @@ defmodule Concentrate.Filter.Alert.TimeTable do
 
   @doc "Creates a new TimeTable with the given name"
   def new(name) when is_atom(name) do
-    :ets.new(name, [:named_table, :public, :bag])
+    ^name = :ets.new(name, [:named_table, :public, :bag])
+    :ok
   end
 
   @doc "Inserts the given 4-tuples into the table"

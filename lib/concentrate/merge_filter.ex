@@ -96,36 +96,41 @@ defmodule Concentrate.MergeFilter do
   def handle_info(:timeout, state) do
     {time, merged} = :timer.tc(&Table.items/1, [state.table])
 
-    Logger.debug(fn ->
-      "#{__MODULE__} merge time=#{time / 1_000}"
-    end)
+    _ =
+      Logger.debug(fn ->
+        "#{__MODULE__} merge time=#{time / 1_000}"
+      end)
 
     {time, filtered} = :timer.tc(&Filter.run/2, [merged, state.filters])
 
-    Logger.debug(fn ->
-      "#{__MODULE__} filter time=#{time / 1_000}"
-    end)
+    _ =
+      Logger.debug(fn ->
+        "#{__MODULE__} filter time=#{time / 1_000}"
+      end)
 
     {time, grouped} = :timer.tc(&GTFSRealtimeHelpers.group/1, [filtered])
 
-    Logger.debug(fn ->
-      "#{__MODULE__} group time=#{time / 1_000}"
-    end)
+    _ =
+      Logger.debug(fn ->
+        "#{__MODULE__} group time=#{time / 1_000}"
+      end)
 
     {time, group_filtered} = :timer.tc(&group_filter/2, [grouped, state.group_filters])
 
-    Logger.debug(fn ->
-      "#{__MODULE__} group_filter time=#{time / 1_000}"
-    end)
+    _ =
+      Logger.debug(fn ->
+        "#{__MODULE__} group_filter time=#{time / 1_000}"
+      end)
 
     state = %{state | timer: nil, demand: ask_demand(state.demand)}
     {:noreply, [group_filtered], state}
   end
 
   def handle_info(msg, state) do
-    Logger.warn(fn ->
-      "unknown message to #{__MODULE__} #{inspect(self())}: #{inspect(msg)}"
-    end)
+    _ =
+      Logger.warn(fn ->
+        "unknown message to #{__MODULE__} #{inspect(self())}: #{inspect(msg)}"
+      end)
 
     {:noreply, [], state}
   end

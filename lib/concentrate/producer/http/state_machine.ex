@@ -96,9 +96,10 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
         machine.fetch_after - since_last_success
       end
 
-    Logger.debug(fn ->
-      "#{__MODULE__} scheduling fetch url=#{inspect(machine.url)} after=#{time}"
-    end)
+    _ =
+      Logger.debug(fn ->
+        "#{__MODULE__} scheduling fetch url=#{inspect(machine.url)} after=#{time}"
+      end)
 
     time
   end
@@ -159,9 +160,10 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defp handle_message(machine, {:http_response, %{status_code: 304}}) do
     # not modified
-    Logger.info(fn ->
-      "#{__MODULE__}: not modified url=#{inspect(machine.url)}"
-    end)
+    _ =
+      Logger.info(fn ->
+        "#{__MODULE__}: not modified url=#{inspect(machine.url)}"
+      end)
 
     {machine, messages} = check_last_success(machine)
     message = {:fetch, machine.url}
@@ -212,11 +214,12 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   end
 
   defp handle_message(machine, unknown) do
-    Logger.error(fn ->
-      "#{__MODULE__}: got unexpected message url=#{inspect(machine.url)} message=#{
-        inspect(unknown)
-      }"
-    end)
+    _ =
+      Logger.error(fn ->
+        "#{__MODULE__}: got unexpected message url=#{inspect(machine.url)} message=#{
+          inspect(unknown)
+        }"
+      end)
 
     {machine, [], []}
   end
@@ -272,9 +275,10 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   defp parse_bodies_if_changed(%{previous_hash: previous_hash} = machine, body) do
     case :erlang.phash2(body) do
       ^previous_hash ->
-        Logger.info(fn ->
-          "#{__MODULE__}: same content url=#{inspect(machine.url)}"
-        end)
+        _ =
+          Logger.info(fn ->
+            "#{__MODULE__}: same content url=#{inspect(machine.url)}"
+          end)
 
         {[], machine}
 
@@ -287,11 +291,12 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   defp parse_body(machine, body) do
     {time, parsed} = :timer.tc(machine.parser, [body])
 
-    Logger.info(fn ->
-      "#{__MODULE__} updated: url=#{inspect(url(machine))} records=#{length(parsed)} time=#{
-        time / 1000
-      }"
-    end)
+    _ =
+      Logger.info(fn ->
+        "#{__MODULE__} updated: url=#{inspect(url(machine))} records=#{length(parsed)} time=#{
+          time / 1000
+        }"
+      end)
 
     machine =
       if parsed == [] do
@@ -313,11 +318,12 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   end
 
   defp log_parse_error(error, machine, trace) do
-    Logger.error(fn ->
-      "#{__MODULE__}: parse error url=#{inspect(machine.url)} error=#{inspect(error)}\n#{
-        Exception.format_stacktrace(trace)
-      }"
-    end)
+    _ =
+      Logger.error(fn ->
+        "#{__MODULE__}: parse error url=#{inspect(machine.url)} error=#{inspect(error)}\n#{
+          Exception.format_stacktrace(trace)
+        }"
+      end)
 
     []
   end
@@ -326,10 +332,11 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
     time_since_last_success = now() - machine.last_success
 
     if time_since_last_success >= machine.content_warning_timeout do
-      Logger.error(fn ->
-        delay = div(time_since_last_success, 1000)
-        "#{__MODULE__}: feed has not been updated url=#{inspect(machine.url)} delay=#{delay}"
-      end)
+      _ =
+        Logger.error(fn ->
+          delay = div(time_since_last_success, 1000)
+          "#{__MODULE__}: feed has not been updated url=#{inspect(machine.url)} delay=#{delay}"
+        end)
 
       activate_fallback(%{machine | last_success: now()})
     else
@@ -338,9 +345,12 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
   end
 
   defp activate_fallback(%{fallback: {:not_active, url}} = machine) do
-    Logger.error(fn ->
-      "#{__MODULE__} activating fallback url=#{inspect(machine.url)} fallback_url=#{inspect(url)}"
-    end)
+    _ =
+      Logger.error(fn ->
+        "#{__MODULE__} activating fallback url=#{inspect(machine.url)} fallback_url=#{
+          inspect(url)
+        }"
+      end)
 
     fallback_machine =
       init(

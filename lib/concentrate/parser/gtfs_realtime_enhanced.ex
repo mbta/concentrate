@@ -181,9 +181,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp alert_effect(other) do
-    Logger.error(fn ->
-      "#{__MODULE__}: unknown alert effect #{inspect(other)}"
-    end)
+    _ =
+      Logger.error(fn ->
+        "#{__MODULE__}: unknown alert effect #{inspect(other)}"
+      end)
 
     :UNKNOWN_EFFECT
   end

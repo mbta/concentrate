@@ -80,5 +80,7 @@ defmodule Concentrate.Producer.HTTP do
     for {message, send_after} <- outgoing_messages do
       Process.send_after(self(), message, send_after)
     end
+
+    :ok
   end
 end

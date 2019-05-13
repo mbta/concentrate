@@ -21,16 +21,17 @@ defmodule Concentrate.Reporter.Consumer do
     parsed = List.last(events)
     {output, module_state} = module.log(parsed, module_state)
 
-    if output != [] do
-      Logger.info(fn ->
-        report =
-          output
-          |> Enum.map(&log_item/1)
-          |> Enum.join(" ")
+    _ =
+      if output != [] do
+        Logger.info(fn ->
+          report =
+            output
+            |> Enum.map(&log_item/1)
+            |> Enum.join(" ")
 
-        "#{module} report: #{report}"
-      end)
-    end
+          "#{module} report: #{report}"
+        end)
+      end
 
     {:noreply, [], {module, module_state}}
   end

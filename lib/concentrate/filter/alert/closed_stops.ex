@@ -34,14 +34,14 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
         {stop_id, start, stop, entity}
       end
 
-    unless inserts == [] do
-      TimeTable.update(@table, inserts)
+    _ =
+      unless inserts == [] do
+        TimeTable.update(@table, inserts)
 
-      _ =
         Logger.info(fn ->
           "#{__MODULE__} updated: records=#{length(inserts)}"
         end)
-    end
+      end
 
     {:noreply, [], state}
   end

@@ -27,7 +27,7 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
 
   @impl GenStage
   def init(opts) do
-    :ets.new(@table, [:named_table, :public, :set])
+    @table = :ets.new(@table, [:named_table, :public, :set])
     {:consumer, [], opts}
   end
 
@@ -54,11 +54,12 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
         acc + 1
       end)
 
-    if count > 0 do
-      Logger.info(fn ->
-        "#{__MODULE__}: updated with #{count} records"
-      end)
-    end
+    _ =
+      if count > 0 do
+        Logger.info(fn ->
+          "#{__MODULE__}: updated with #{count} records"
+        end)
+      end
 
     {:noreply, [], state, :hibernate}
   end
