@@ -134,7 +134,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
   defp times_less_than_max?(time, nil, max), do: time <= max
   defp times_less_than_max?(_, time, max), do: time <= max
 
-  defp decode_trip_descriptor(%{trip: trip}) do
+  defp decode_trip_descriptor(%{trip: trip} = descriptor) do
     [
       TripUpdate.new(
         trip_id: Map.get(trip, :trip_id),
@@ -142,7 +142,8 @@ defmodule Concentrate.Parser.GTFSRealtime do
         direction_id: Map.get(trip, :direction_id),
         start_date: date(Map.get(trip, :start_date)),
         start_time: Map.get(trip, :start_time),
-        schedule_relationship: Map.get(trip, :schedule_relationship, :SCHEDULED)
+        schedule_relationship: Map.get(trip, :schedule_relationship, :SCHEDULED),
+        vehicle_id: decode_trip_descriptor_vehicle_id(descriptor)
       )
     ]
   end
@@ -150,6 +151,9 @@ defmodule Concentrate.Parser.GTFSRealtime do
   defp decode_trip_descriptor(_) do
     []
   end
+
+  defp decode_trip_descriptor_vehicle_id(%{vehicle: %{id: vehicle_id}}), do: vehicle_id
+  defp decode_trip_descriptor_vehicle_id(_), do: nil
 
   defp date(nil) do
     nil
