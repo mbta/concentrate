@@ -59,7 +59,10 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
           start_time: "26:15:09",
           schedule_relationship: :ADDED
         },
-        stop_time_update: [%{}]
+        stop_time_update: [%{}],
+        vehicle: %{
+          id: "vehicle_id"
+        }
       }
 
       [tu, _] = decode_trip_update(update, %Options{})
@@ -71,6 +74,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
                  direction_id: 1,
                  start_date: {2017, 12, 20},
                  start_time: "26:15:09",
+                 vehicle_id: "vehicle_id",
                  schedule_relationship: :ADDED
                )
     end

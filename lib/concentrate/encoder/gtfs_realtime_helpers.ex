@@ -186,7 +186,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
         schedule_relationship: schedule_relationship(TripUpdate.schedule_relationship(update))
       })
 
-    vehicle = trip_update_vehicle(vps)
+    vehicle = trip_update_vehicle(update, vps)
 
     stop_time_update =
       case stus do
@@ -225,15 +225,19 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     []
   end
 
-  defp trip_update_vehicle([]) do
-    nil
-  end
-
-  defp trip_update_vehicle([vp | _]) do
+  defp trip_update_vehicle(_update, [vp | _]) do
     drop_nil_values(%{
       id: VehiclePosition.id(vp),
       label: VehiclePosition.label(vp),
       license_plate: VehiclePosition.license_plate(vp)
     })
+  end
+
+  defp trip_update_vehicle(update, []) do
+    if vehicle_id = TripUpdate.vehicle_id(update) do
+      %{id: vehicle_id}
+    else
+      nil
+    end
   end
 end
