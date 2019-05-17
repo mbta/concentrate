@@ -64,6 +64,8 @@ defmodule Concentrate.MixProject do
       {:gen_stage, "~> 0.13 and != 0.13.1"},
       {:gpb, "~> 4.7", only: :dev, runtime: false},
       {:httpoison, "~> 1.0"},
+      {:mint, "~> 0.1"},
+      {:castore, "~> 0.1"},
       {:jason, "~> 1.0"},
       {:stream_data, "~> 0.4", only: :test}
     ]
