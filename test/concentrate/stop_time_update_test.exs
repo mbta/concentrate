@@ -4,6 +4,29 @@ defmodule Concentrate.StopTimeUpdateTest do
   import Concentrate.StopTimeUpdate
   alias Concentrate.Mergeable
 
+  @stu new(
+         trip_id: "trip",
+         stop_id: "stop",
+         stop_sequence: 1,
+         arrival_time: 2,
+         departure_time: 3,
+         status: "status",
+         platform_id: "platform"
+       )
+
+  describe "skip/1" do
+    test "removes the times/status" do
+      skipped = skip(@stu)
+      assert time(skipped) == nil
+      assert status(skipped) == nil
+    end
+
+    test "sets the relationship to SKIPPED" do
+      skipped = skip(@stu)
+      assert schedule_relationship(skipped) == :SKIPPED
+    end
+  end
+
   describe "Concentrate.Mergeable" do
     test "key/1 uses the parent station ID" do
       start_supervised!(Concentrate.Filter.GTFS.Stops)
@@ -15,16 +38,7 @@ defmodule Concentrate.StopTimeUpdateTest do
     end
 
     test "merge/2 takes non-nil values, earliest arrival, latest departure" do
-      first =
-        new(
-          trip_id: "trip",
-          stop_id: "stop",
-          stop_sequence: 1,
-          arrival_time: 2,
-          departure_time: 3,
-          status: "status",
-          platform_id: "platform"
-        )
+      first = @stu
 
       second =
         new(

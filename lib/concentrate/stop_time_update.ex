@@ -32,7 +32,7 @@ defmodule Concentrate.StopTimeUpdate do
   """
   @spec skip(%__MODULE__{}) :: t
   def skip(%__MODULE__{} = stu) do
-    %{stu | schedule_relationship: :SKIPPED, arrival_time: nil, departure_time: nil}
+    %{stu | schedule_relationship: :SKIPPED, arrival_time: nil, departure_time: nil, status: nil}
   end
 
   defimpl Concentrate.Mergeable do
