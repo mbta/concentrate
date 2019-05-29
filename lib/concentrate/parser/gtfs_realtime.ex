@@ -33,7 +33,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
   end
 
   defp decode_vehicle_position(tu, vp, options) do
-    if tu == [] or valid_route_id?(options, TripUpdate.route_id(List.first(tu))) do
+    if tu == [] or Helpers.valid_route_id?(options, TripUpdate.route_id(List.first(tu))) do
       trip_id =
         case vp do
           %{trip: %{trip_id: id}} -> id
@@ -66,18 +66,6 @@ defmodule Concentrate.Parser.GTFSRealtime do
     end
   end
 
-  defp valid_route_id?(%{routes: {:ok, route_ids}}, route_id) do
-    route_id in route_ids
-  end
-
-  defp valid_route_id?(%{excluded_routes: {:ok, route_ids}}, route_id) do
-    not (route_id in route_ids)
-  end
-
-  defp valid_route_id?(_, _) do
-    true
-  end
-
   def decode_trip_update(nil, _options) do
     []
   end
@@ -94,10 +82,10 @@ defmodule Concentrate.Parser.GTFSRealtime do
     {departure_time, _} = time_from_event(Map.get(update, :departure))
 
     cond do
-      tu != [] and not valid_route_id?(options, TripUpdate.route_id(List.first(tu))) ->
+      tu != [] and not Helpers.valid_route_id?(options, TripUpdate.route_id(List.first(tu))) ->
         []
 
-      not times_less_than_max?(arrival_time, departure_time, max_time) ->
+      not Helpers.times_less_than_max?(arrival_time, departure_time, max_time) ->
         []
 
       true ->
@@ -122,17 +110,12 @@ defmodule Concentrate.Parser.GTFSRealtime do
   end
 
   defp decode_stop_updates(tu, %{stop_time_update: []}, options) do
-    if tu != [] and not valid_route_id?(options, TripUpdate.route_id(List.first(tu))) do
+    if tu != [] and not Helpers.valid_route_id?(options, TripUpdate.route_id(List.first(tu))) do
       []
     else
       tu
     end
   end
-
-  defp times_less_than_max?(_, _, :infinity), do: true
-  defp times_less_than_max?(nil, nil, _), do: true
-  defp times_less_than_max?(time, nil, max), do: time <= max
-  defp times_less_than_max?(_, time, max), do: time <= max
 
   defp decode_trip_descriptor(%{trip: trip} = descriptor) do
     [

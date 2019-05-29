@@ -14,35 +14,35 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     options = Helpers.parse_options(opts)
 
     for {:ok, json} <- [Jason.decode(binary, strings: :copy)],
-        entities = decode_entities(json),
+        entities = decode_entities(json, options),
         decoded <- Helpers.drop_fields(entities, options.drop_fields) do
       decoded
     end
   end
 
-  defp decode_entities(%{"alerts" => alerts}) do
+  defp decode_entities(%{"alerts" => alerts}, options) do
     for %{"id" => id} = alert <- alerts,
-        decoded <- decode_feed_entity(%{"id" => id, "alert" => alert}) do
+        decoded <- decode_feed_entity(%{"id" => id, "alert" => alert}, options) do
       decoded
     end
   end
 
-  defp decode_entities(%{"entity" => entities}) do
+  defp decode_entities(%{"entity" => entities}, options) do
     for entity <- entities,
-        decoded <- decode_feed_entity(entity) do
+        decoded <- decode_feed_entity(entity, options) do
       decoded
     end
   end
 
-  defp decode_feed_entity(%{"trip_update" => %{} = trip_update}) do
-    decode_trip_update(trip_update)
+  defp decode_feed_entity(%{"trip_update" => %{} = trip_update}, options) do
+    decode_trip_update(trip_update, options)
   end
 
-  defp decode_feed_entity(%{"vehicle" => %{} = vehicle}) do
+  defp decode_feed_entity(%{"vehicle" => %{} = vehicle}, _options) do
     decode_vehicle(vehicle)
   end
 
-  defp decode_feed_entity(%{"id" => id, "alert" => %{} = alert}) do
+  defp decode_feed_entity(%{"id" => id, "alert" => %{} = alert}, _options) do
     [
       Alert.new(
         id: id,
@@ -58,33 +58,62 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     ]
   end
 
-  defp decode_feed_entity(_) do
+  defp decode_feed_entity(_, _) do
     []
   end
 
-  def decode_trip_update(trip_update) do
+  def decode_trip_update(trip_update, options) do
     tu = decode_trip_descriptor(Map.get(trip_update, "trip"))
+    decode_stop_updates(tu, trip_update, options)
+  end
 
-    stop_updates =
-      for stu <- Map.get(trip_update, "stop_time_update") do
-        {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, "arrival"))
-        {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
+  defp decode_stop_updates(
+         tu,
+         %{"stop_time_update" => [update | _] = updates} = trip_update,
+         options
+       ) do
+    max_time = options.max_time
 
-        StopTimeUpdate.new(
-          trip_id:
-            if(descriptor = Map.get(trip_update, "trip"), do: Map.get(descriptor, "trip_id")),
-          stop_id: Map.get(stu, "stop_id"),
-          stop_sequence: Map.get(stu, "stop_sequence"),
-          schedule_relationship: schedule_relationship(Map.get(stu, "schedule_relationship")),
-          arrival_time: arrival_time,
-          departure_time: departure_time,
-          uncertainty: arrival_uncertainty || departure_uncertainty,
-          status: Map.get(stu, "boarding_status"),
-          platform_id: Map.get(stu, "platform_id")
-        )
-      end
+    {arrival_time, _} = time_from_event(Map.get(update, "arrival"))
+    {departure_time, _} = time_from_event(Map.get(update, "departure"))
 
-    tu ++ stop_updates
+    cond do
+      tu != [] and not Helpers.valid_route_id?(options, TripUpdate.route_id(List.first(tu))) ->
+        []
+
+      not Helpers.times_less_than_max?(arrival_time, departure_time, max_time) ->
+        []
+
+      true ->
+        stop_updates =
+          for stu <- updates do
+            {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, "arrival"))
+            {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
+
+            StopTimeUpdate.new(
+              trip_id:
+                if(descriptor = Map.get(trip_update, "trip"), do: Map.get(descriptor, "trip_id")),
+              stop_id: Map.get(stu, "stop_id"),
+              stop_sequence: Map.get(stu, "stop_sequence"),
+              schedule_relationship: schedule_relationship(Map.get(stu, "schedule_relationship")),
+              arrival_time: arrival_time,
+              departure_time: departure_time,
+              uncertainty: arrival_uncertainty || departure_uncertainty,
+              status: Map.get(stu, "boarding_status"),
+              platform_id: Map.get(stu, "platform_id")
+            )
+          end
+
+        tu ++ stop_updates
+    end
+  end
+
+  defp decode_stop_updates(tu, %{"stop_time_update" => []}, options) do
+    if tu != [] and not Helpers.valid_route_id?(options, TripUpdate.route_id(List.first(tu))) do
+      []
+    else
+      tu
+    end
   end
 
   def decode_vehicle(vp) do

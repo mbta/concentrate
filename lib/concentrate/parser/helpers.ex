@@ -82,4 +82,36 @@ defmodule Concentrate.Parser.Helpers do
       end
     end
   end
+
+  @spec valid_route_id?(Options.t(), String.t()) :: boolean
+  @doc """
+  Returns true if the given route ID is valid for the provided options.
+  """
+  def valid_route_id?(options, route_id)
+
+  def valid_route_id?(%{routes: {:ok, route_ids}}, route_id) do
+    route_id in route_ids
+  end
+
+  def valid_route_id?(%{excluded_routes: {:ok, route_ids}}, route_id) do
+    not (route_id in route_ids)
+  end
+
+  def valid_route_id?(_, _) do
+    true
+  end
+
+  @spec times_less_than_max?(
+          non_neg_integer | nil,
+          non_neg_integer | nil,
+          non_neg_integer | :infinity
+        ) :: boolean
+  @doc """
+  Returns true if the arrival or departure time is less than the provided maximum time.
+  """
+  def times_less_than_max?(arrival_time, departure_time, max_time)
+  def times_less_than_max?(_, _, :infinity), do: true
+  def times_less_than_max?(nil, nil, _), do: true
+  def times_less_than_max?(time, nil, max), do: time <= max
+  def times_less_than_max?(_, time, max), do: time <= max
 end
