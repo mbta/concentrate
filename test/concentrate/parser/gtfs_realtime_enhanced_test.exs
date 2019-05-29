@@ -3,7 +3,16 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
   use ExUnit.Case, async: true
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtimeEnhanced
-  alias Concentrate.{TripUpdate, StopTimeUpdate, VehiclePosition, Alert, Alert.InformedEntity}
+
+  alias Concentrate.{
+    TripUpdate,
+    StopTimeUpdate,
+    VehiclePosition,
+    Alert,
+    Alert.InformedEntity,
+    Parser.Helpers,
+    Parser.Helpers.Options
+  }
 
   describe "parse/1" do
     test "parsing a TripUpdate enhanced JSON file returns only StopTimeUpdate or TripUpdate structs" do
@@ -140,7 +149,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         ]
       }
 
-      [_tu, stop_update] = decode_trip_update(update)
+      [_tu, stop_update] = decode_trip_update(update, %Options{})
       assert StopTimeUpdate.status(stop_update) == "ALL_ABOARD"
     end
 
@@ -154,7 +163,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         ]
       }
 
-      [_tu, stop_update] = decode_trip_update(update)
+      [_tu, stop_update] = decode_trip_update(update, %Options{})
       assert StopTimeUpdate.platform_id(stop_update) == "platform"
     end
 
@@ -166,9 +175,50 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         ]
       }
 
-      [tu, stu] = decode_trip_update(update)
+      [tu, stu] = decode_trip_update(update, %Options{})
       assert TripUpdate.schedule_relationship(tu) == :SCHEDULED
       assert StopTimeUpdate.schedule_relationship(stu) == :SCHEDULED
+    end
+
+    test "only includes trip/stop update if it's under max_time" do
+      update = %{
+        "trip" => %{},
+        "stop_time_update" => [
+          %{
+            "departure" => %{"time" => 2}
+          }
+        ]
+      }
+
+      assert [] = decode_trip_update(update, %Options{max_time: 1})
+      assert [_, _] = decode_trip_update(update, %Options{max_time: 2})
+    end
+
+    test "keeps the whole trip even if later updates are later than the time" do
+      update = %{
+        "trip" => %{},
+        "stop_time_update" => [
+          %{
+            "arrival" => %{"time" => 1}
+          },
+          %{
+            "departure" => %{"time" => 2}
+          }
+        ]
+      }
+
+      assert [_, _, _] = decode_trip_update(update, %Options{max_time: 1})
+    end
+
+    test "drops the TripUpdate if the route is ignored" do
+      update = %{
+        "trip" => %{"route_id" => "route"},
+        "stop_time_update" => []
+      }
+
+      assert [_] = decode_trip_update(update, Helpers.parse_options([]))
+      assert [_] = decode_trip_update(update, Helpers.parse_options(routes: ["route"]))
+      assert [] = decode_trip_update(update, Helpers.parse_options(excluded_routes: ["route"]))
     end
   end
 
