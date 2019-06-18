@@ -6,6 +6,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   require Logger
   alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripUpdate, VehiclePosition}
   alias Concentrate.Parser.Helpers
+  alias VehiclePosition.Consist, as: VehiclePositionConsist
 
   @default_active_period [%{"start" => nil, "end" => nil}]
 
@@ -137,7 +138,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
             odometer: Map.get(position, "odometer"),
             status: vehicle_status(Map.get(vp, "current_status")),
             stop_sequence: Map.get(vp, "current_stop_sequence"),
-            last_updated: Map.get(vp, "timestamp")
+            last_updated: Map.get(vp, "timestamp"),
+            consist: decode_consist(Map.get(vehicle, "consist"))
           )
         ]
 
@@ -161,6 +163,16 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         schedule_relationship: schedule_relationship(Map.get(trip, "schedule_relationship"))
       )
     ]
+  end
+
+  defp decode_consist(nil) do
+    nil
+  end
+
+  defp decode_consist(consist) do
+    for c <- consist do
+      VehiclePositionConsist.new(label: Map.get(c, "label"))
+    end
   end
 
   def date(nil) do

@@ -17,8 +17,20 @@ defmodule Concentrate.VehiclePosition do
     :odometer,
     :stop_sequence,
     :last_updated,
+    :consist,
     status: :IN_TRANSIT_TO
   ])
+
+  defmodule Consist do
+    @moduledoc """
+    The consist is the set of individual cars which make up the vehicle we're tracking.
+
+    For example, a subway train can have 6 cars, each of which would have a separate item in the consist.
+    """
+    defstruct_accessors([
+      :label
+    ])
+  end
 
   def new(opts) do
     # required fields
@@ -61,11 +73,16 @@ defmodule Concentrate.VehiclePosition do
           bearing: first_value(second.bearing, first.bearing),
           speed: first_value(second.speed, first.speed),
           odometer: first_value(second.odometer, first.odometer),
-          stop_sequence: first_value(second.stop_sequence, first.stop_sequence)
+          stop_sequence: first_value(second.stop_sequence, first.stop_sequence),
+          consist: first_list_value(second.consist, first.consist)
       }
     end
 
     defp first_value(value, _) when not is_nil(value), do: value
     defp first_value(_, value), do: value
+
+    defp first_list_value([_ | _] = value, _), do: value
+    defp first_list_value([], value), do: value
+    defp first_list_value(value1, value2), do: first_value(value1, value2)
   end
 end
