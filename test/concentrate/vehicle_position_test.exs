@@ -17,10 +17,10 @@ defmodule Concentrate.VehiclePositionTest do
     test "merge/2 takes a consist list in preference to an empty list" do
       consist = [Consist.new(label: "vehicle")]
       first = new(last_updated: 1, latitude: 1, longitude: 1, consist: consist)
-      expected = new(last_updated: 2, latitude: 2, longitude: 2, consist: consist)
+      expected = first
 
       for second_value <- [[], nil] do
-        second = new(last_updated: 2, latitude: 2, longitude: 2, consist: second_value)
+        second = new(last_updated: 1, latitude: 1, longitude: 1, consist: second_value)
         assert Mergeable.merge(first, second) == expected
         assert Mergeable.merge(second, first) == expected
       end
