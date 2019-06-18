@@ -78,12 +78,12 @@ defmodule Concentrate.Encoder.VehiclePositions do
     })
   end
 
-  defp entity_id(vp) do
+  def entity_id(vp) do
     VehiclePosition.id(vp) || VehiclePosition.trip_id(vp) ||
       Integer.to_string(:erlang.unique_integer())
   end
 
-  defp trip_descriptor(update) do
+  def trip_descriptor(update) do
     drop_nil_values(%{
       trip_id: TripUpdate.trip_id(update),
       route_id: TripUpdate.route_id(update),
