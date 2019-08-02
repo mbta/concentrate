@@ -4,13 +4,11 @@ FROM erlang:21.1-alpine AS builder
 
 # elixir expects utf8.
 ENV ELIXIR_VERSION="v1.8.2" \
-    LANG=C.UTF-8 \
-    DUMB_INIT_VERSION="1.2.2"
+    LANG=C.UTF-8
 
 RUN set -xe \
     && ELIXIR_DOWNLOAD_URL="https://github.com/elixir-lang/elixir/archive/${ELIXIR_VERSION}.tar.gz" \
     && ELIXIR_DOWNLOAD_SHA256="cf9bf0b2d92bc4671431e3fe1d1b0a0e5125f1a942cc4fdf7914b74f04efb835" \
-    && DUMB_INIT_SHA256="37f2c1f0372a45554f1b89924fbb134fc24c3756efaedf11e07f599494e0eff9" \
     && buildDeps=' \
         ca-certificates \
         curl \
@@ -24,9 +22,6 @@ RUN set -xe \
     && rm elixir-src.tar.gz \
     && cd /usr/local/src/elixir \
     && make install clean \
-    && curl -fsL -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_amd64 \
-    && echo "$DUMB_INIT_SHA256  /usr/local/bin/dumb-init" | sha256sum -c - \
-    && chmod +x /usr/local/bin/dumb-init \
     && apk del .build-deps
 
 WORKDIR /root
@@ -49,7 +44,7 @@ RUN elixir --erl "-smp enable" /usr/local/bin/mix do deps.get --only prod, compi
 # Second stage: uses the built .tgz to get the files over
 FROM alpine:3.8
 
-RUN apk add --update libssl1.0 ncurses-libs bash \
+RUN apk add --update libssl1.0 ncurses-libs bash dumb-init \
     && rm -rf /var/cache/apk
 
 # Set environment
@@ -58,10 +53,9 @@ ENV MIX_ENV=prod TERM=xterm LANG=C.UTF-8 REPLACE_OS_VARS=true
 WORKDIR /root/
 
 COPY --from=builder /root/_build/prod/rel /root/rel
-COPY --from=builder /usr/local/bin/dumb-init /usr/local/bin/dumb-init
 
 # Ensure SSL support is enabled
 RUN /root/rel/concentrate/bin/concentrate eval ":crypto.supports()"
 
 HEALTHCHECK CMD ["/root/rel/concentrate/bin/concentrate", "rpc", "--mfa", "Concentrate.Health.healthy?/0"]
-CMD ["/usr/local/bin/dumb-init", "/root/rel/concentrate/bin/concentrate", "foreground"]
+CMD ["/usr/bin/dumb-init", "/root/rel/concentrate/bin/concentrate", "foreground"]
