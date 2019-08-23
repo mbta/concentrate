@@ -11,7 +11,7 @@ defmodule Concentrate.MergeFilter do
   use GenStage
   require Logger
   alias Concentrate.Encoder.GTFSRealtimeHelpers
-  alias Concentrate.Filter
+  alias Concentrate.{Filter, TripUpdate}
   alias Concentrate.Merge.Table
 
   @start_link_opts [:name]
@@ -164,13 +164,30 @@ defmodule Concentrate.MergeFilter do
   defp flat_mapper(fun) do
     fn value ->
       case fun.(value) do
-        {_, [], []} -> []
-        other -> [other]
+        {%TripUpdate{} = tu, [], []} ->
+          flat_map_empty_trip_update(tu)
+
+        {nil, _, _} ->
+          []
+
+        other ->
+          [other]
       end
     end
   end
 
+  defp flat_map_empty_trip_update(tu) do
+    # allow CANCELED TripUpdates to have no vehicle or stops
+    if TripUpdate.schedule_relationship(tu) == :CANCELED do
+      [{tu, [], []}]
+    else
+      []
+    end
+  end
+
   defp group_filter(groups, filters) do
-    Enum.reduce(filters, groups, fn filter, groups -> Enum.flat_map(groups, filter) end)
+    Enum.reduce(filters, groups, fn filter, groups ->
+      Enum.flat_map(groups, filter)
+    end)
   end
 end
