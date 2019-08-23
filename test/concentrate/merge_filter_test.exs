@@ -99,6 +99,22 @@ defmodule Concentrate.MergeFilterTest do
       assert events == [expected]
     end
 
+    test "allows a CANCELED TripUpdate with no StopTimeUpdates" do
+      filter = fn group -> group end
+      from = make_from()
+      {_, state, _} = init(group_filters: [filter])
+      {_, state} = handle_subscribe(:producer, [], from, state)
+
+      data = [
+        trip = TripUpdate.new(trip_id: "trip", schedule_relationship: :CANCELED)
+      ]
+
+      expected = [{trip, [], []}]
+      {:noreply, [], state} = handle_events([data], from, state)
+      {:noreply, events, _state} = handle_info(:timeout, state)
+      assert events == [expected]
+    end
+
     test "when Logging debug messages, does not crash" do
       log_level = Logger.level()
 
