@@ -25,7 +25,8 @@ config :concentrate,
   filters: [
     Concentrate.Filter.VehicleWithNoTrip,
     Concentrate.Filter.RoundSpeedToInteger,
-    Concentrate.Filter.IncludeRouteDirection
+    Concentrate.Filter.IncludeRouteDirection,
+    Concentrate.Filter.IncludeStopID
   ],
   group_filters: [
     Concentrate.GroupFilter.TimeOutOfRange,
