@@ -1,6 +1,7 @@
-defmodule Concentrate.Filter.RoundSpeedToInteger do
+defmodule Concentrate.Filter.RoundSpeedAndBearing do
   @moduledoc """
-  Rounds the speed of vehicles to an integer, or nil if it's less than 1 m/s.
+  Rounds the speed and bearing. The speed is rounded to a float with precision
+  of 1 decimal place, and set to nil if < 1 m/s. The bearing is truncated.
   """
   @behaviour Concentrate.Filter
   alias Concentrate.VehiclePosition
@@ -11,7 +12,7 @@ defmodule Concentrate.Filter.RoundSpeedToInteger do
       case VehiclePosition.speed(vp) do
         nil -> nil
         small when small < 1 -> nil
-        other -> trunc(other)
+        other -> Float.round(other, 1)
       end
 
     bearing =
