@@ -17,7 +17,7 @@ defmodule Concentrate.Parser.HelpersTest do
           id: "1",
           latitude: 1,
           longitude: 2,
-          speed: 5
+          speed: 5.2
         )
 
       assert [^tu, new_vp] = drop_fields([tu, vp], @options.drop_fields)
