@@ -1,7 +1,7 @@
-defmodule Concentrate.Filter.RoundSpeedToIntegerTest do
+defmodule Concentrate.Filter.RoundSpeedAndBearingTest do
   @moduledoc false
   use ExUnit.Case, async: true
-  import Concentrate.Filter.RoundSpeedToInteger
+  import Concentrate.Filter.RoundSpeedAndBearing
   alias Concentrate.VehiclePosition
 
   describe "filter/1" do
@@ -10,10 +10,10 @@ defmodule Concentrate.Filter.RoundSpeedToIntegerTest do
       assert {:cont, ^vp} = filter(vp)
     end
 
-    test "a vehicle position with a float speed or bearing is truncated" do
-      vp = VehiclePosition.new(speed: 1.5, bearing: -123.45, latitude: 1, longitude: 1)
+    test "a vehicle position has its float speed rounded and its bearing truncated" do
+      vp = VehiclePosition.new(speed: 1.577, bearing: -123.45, latitude: 1, longitude: 1)
       {:cont, new_vp} = filter(vp)
-      assert VehiclePosition.speed(new_vp) == 1
+      assert VehiclePosition.speed(new_vp) == 1.6
       assert VehiclePosition.bearing(new_vp) == -123
     end
 

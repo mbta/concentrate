@@ -24,7 +24,7 @@ config :concentrate,
   ],
   filters: [
     Concentrate.Filter.VehicleWithNoTrip,
-    Concentrate.Filter.RoundSpeedToInteger,
+    Concentrate.Filter.RoundSpeedAndBearing,
     Concentrate.Filter.IncludeRouteDirection
   ],
   group_filters: [
