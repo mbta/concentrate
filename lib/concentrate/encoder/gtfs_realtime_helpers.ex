@@ -95,8 +95,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
   Takes a function to turn a StopTimeUpdate struct into the GTFS-RT version.
   """
-  def trip_update_feed_entity(groups, stop_time_update_fn, enhanced \\ false) do
-    Enum.flat_map(groups, &build_trip_update_entity(&1, stop_time_update_fn, enhanced))
+  def trip_update_feed_entity(groups, stop_time_update_fn, enhanced_data_fn \\ fn _ -> %{} end) do
+    Enum.flat_map(groups, &build_trip_update_entity(&1, stop_time_update_fn, enhanced_data_fn))
   end
 
   @doc """
@@ -175,7 +175,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   defp build_trip_update_entity(
          {%TripUpdate{} = update, vps, stus},
          stop_time_update_fn,
-         enhanced
+         enhanced_data_fn
        ) do
     trip_id = TripUpdate.trip_id(update)
     id = trip_id || "#{:erlang.phash2(update)}"
@@ -191,12 +191,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
     trip =
       trip_data
-      |> Map.merge(
-        case enhanced do
-          true -> %{route_pattern_id: TripUpdate.route_pattern_id(update)}
-          _ -> %{}
-        end
-      )
+      |> Map.merge(enhanced_data_fn.(update))
       |> drop_nil_values()
 
     vehicle = trip_update_vehicle(update, vps)

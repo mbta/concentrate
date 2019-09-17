@@ -3,17 +3,21 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
   Encodes a list of parsed data into an enhanced.pb file.
   """
   @behaviour Concentrate.Encoder
-  alias Concentrate.StopTimeUpdate
+  alias Concentrate.{StopTimeUpdate, TripUpdate}
   import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
   def encode_groups(groups) when is_list(groups) do
     message = %{
       header: feed_header(),
-      entity: trip_update_feed_entity(groups, &build_stop_time_update/1, true)
+      entity: trip_update_feed_entity(groups, &build_stop_time_update/1, &enhanced_data/1)
     }
 
     Jason.encode!(message)
+  end
+
+  defp enhanced_data(update) do
+    %{route_pattern_id: TripUpdate.route_pattern_id(update)}
   end
 
   defp build_stop_time_update(update) do
