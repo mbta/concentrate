@@ -7,6 +7,7 @@ defmodule Concentrate.TripUpdate do
   defstruct_accessors([
     :trip_id,
     :route_id,
+    :route_pattern_id,
     :direction_id,
     :start_date,
     :start_time,
@@ -26,6 +27,7 @@ defmodule Concentrate.TripUpdate do
       %{
         first
         | route_id: first.route_id || second.route_id,
+          route_pattern_id: first.route_pattern_id || second.route_pattern_id,
           direction_id: first.direction_id || second.direction_id,
           start_date: first.start_date || second.start_date,
           start_time: first.start_time || second.start_time,

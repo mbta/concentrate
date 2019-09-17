@@ -95,8 +95,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
   Takes a function to turn a StopTimeUpdate struct into the GTFS-RT version.
   """
-  def trip_update_feed_entity(groups, stop_time_update_fn) do
-    Enum.flat_map(groups, &build_trip_update_entity(&1, stop_time_update_fn))
+  def trip_update_feed_entity(groups, stop_time_update_fn, enhanced \\ false) do
+    Enum.flat_map(groups, &build_trip_update_entity(&1, stop_time_update_fn, enhanced))
   end
 
   @doc """
@@ -172,19 +172,32 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     {tu, vps, [stu | stus]}
   end
 
-  defp build_trip_update_entity({%TripUpdate{} = update, vps, stus}, stop_time_update_fn) do
+  defp build_trip_update_entity(
+         {%TripUpdate{} = update, vps, stus},
+         stop_time_update_fn,
+         enhanced
+       ) do
     trip_id = TripUpdate.trip_id(update)
     id = trip_id || "#{:erlang.phash2(update)}"
 
+    trip_data = %{
+      trip_id: trip_id,
+      route_id: TripUpdate.route_id(update),
+      direction_id: TripUpdate.direction_id(update),
+      start_time: TripUpdate.start_time(update),
+      start_date: encode_date(TripUpdate.start_date(update)),
+      schedule_relationship: schedule_relationship(TripUpdate.schedule_relationship(update))
+    }
+
     trip =
-      drop_nil_values(%{
-        trip_id: trip_id,
-        route_id: TripUpdate.route_id(update),
-        direction_id: TripUpdate.direction_id(update),
-        start_time: TripUpdate.start_time(update),
-        start_date: encode_date(TripUpdate.start_date(update)),
-        schedule_relationship: schedule_relationship(TripUpdate.schedule_relationship(update))
-      })
+      trip_data
+      |> Map.merge(
+        case enhanced do
+          true -> %{route_pattern_id: TripUpdate.route_pattern_id(update)}
+          _ -> %{}
+        end
+      )
+      |> drop_nil_values()
 
     vehicle = trip_update_vehicle(update, vps)
 
@@ -221,7 +234,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     end
   end
 
-  defp build_trip_update_entity(_, _) do
+  defp build_trip_update_entity(_, _, _) do
     []
   end
 

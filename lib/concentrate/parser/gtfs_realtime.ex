@@ -122,6 +122,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
       TripUpdate.new(
         trip_id: Map.get(trip, :trip_id),
         route_id: Map.get(trip, :route_id),
+        route_pattern_id: Map.get(trip, :route_pattern_id),
         direction_id: Map.get(trip, :direction_id),
         start_date: date(Map.get(trip, :start_date)),
         start_time: Map.get(trip, :start_time),

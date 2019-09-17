@@ -10,7 +10,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
   def encode_groups(groups) when is_list(groups) do
     message = %{
       header: feed_header(),
-      entity: trip_update_feed_entity(groups, &build_stop_time_update/1)
+      entity: trip_update_feed_entity(groups, &build_stop_time_update/1, true)
     }
 
     Jason.encode!(message)
