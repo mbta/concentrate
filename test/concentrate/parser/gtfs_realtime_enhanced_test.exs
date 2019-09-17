@@ -220,6 +220,20 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert [_] = decode_trip_update(update, Helpers.parse_options(routes: ["route"]))
       assert [] = decode_trip_update(update, Helpers.parse_options(excluded_routes: ["route"]))
     end
+
+    test "can include a route_pattern_id in the trip descriptor" do
+      map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "route_pattern_id" => "pattern"
+        },
+        "stop_time_update" => []
+      }
+
+      [tu] = decode_trip_update(map, Helpers.parse_options([]))
+      assert TripUpdate.route_pattern_id(tu) == "pattern"
+    end
   end
 
   describe "decode_vehicle/1" do

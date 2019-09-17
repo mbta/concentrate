@@ -10,6 +10,7 @@ defmodule Concentrate.TripUpdateTest do
         new(
           trip_id: "trip",
           route_id: "route",
+          route_pattern_id: "pattern",
           start_date: ~D[2017-12-20]
         )
 
@@ -25,6 +26,7 @@ defmodule Concentrate.TripUpdateTest do
         new(
           trip_id: "trip",
           route_id: "route",
+          route_pattern_id: "pattern",
           direction_id: 0,
           start_date: ~D[2017-12-20],
           start_time: ~T[12:00:00],
