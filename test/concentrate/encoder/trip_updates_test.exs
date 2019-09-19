@@ -97,5 +97,22 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
       round_tripped = GTFSRealtime.parse(encode_groups(group(interspersed)), [])
       assert Enum.sort(round_tripped) == Enum.sort(decoded)
     end
+
+    test "trips with route_pattern_id present don't have that field" do
+      initial = [
+        TripUpdate.new(trip_id: "trip", route_pattern_id: "pattern"),
+        StopTimeUpdate.new(trip_id: "trip", stop_id: "stop")
+      ]
+
+      decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
+
+      %{
+        entity: [
+          %{trip_update: %{trip: trip}}
+        ]
+      } = decoded
+
+      refute "route_pattern_id" in Map.keys(trip)
+    end
   end
 end
