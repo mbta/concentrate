@@ -111,7 +111,7 @@ defmodule Concentrate do
             max_future_time: {&is_integer/1, & &1},
             fetch_after: {&is_integer/1, & &1},
             content_warning_timeout: {&is_integer/1, & &1},
-            headers: {&is_map/1, & &1},
+            headers: {&is_map/1, &process_headers/1},
             drop_fields: {&is_map/1, &process_drop_fields/1}
           ],
           {:ok, opt_value} <- [Map.fetch(value, Atom.to_string(key))],
@@ -123,6 +123,21 @@ defmodule Concentrate do
       url
     else
       {url, opts}
+    end
+  end
+
+  defp process_headers(map) do
+    for {key, raw_value} <- map, into: %{} do
+      value =
+        case raw_value do
+          %{"system" => env_var} ->
+            System.get_env(env_var)
+
+          raw_value when is_binary(raw_value) ->
+            raw_value
+        end
+
+      {key, value}
     end
   end
 

@@ -146,5 +146,34 @@ defmodule ConcentrateTest do
       _ = parse_json_configuration(body)
       assert Logger.level() == :debug
     end
+
+    test "parses sources with system environment variables" do
+      env_var = "CONCENTRATE_TEST_ENV_VAR"
+      env_var_value = "secret_key"
+      body = ~s(
+{
+  "sources": {
+    "gtfs_realtime": {
+      "name_1": {
+        "url": "url_1",
+        "headers": {
+          "Authorization": {"system": "#{env_var}"}
+        }
+      }
+    }
+  }
+}
+      )
+      System.put_env(env_var, env_var_value)
+
+      try do
+        config = parse_json_configuration(body)
+
+        assert config[:sources][:gtfs_realtime][:name_1] ==
+                 {"url_1", [headers: %{"Authorization" => "secret_key"}]}
+      after
+        System.delete_env(env_var)
+      end
+    end
   end
 end
