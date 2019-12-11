@@ -17,14 +17,24 @@ defmodule Concentrate.Encoder.TripUpdates do
   end
 
   def build_stop_time_update(update) do
-    drop_nil_values(%{
-      stop_id: StopTimeUpdate.stop_id(update),
-      stop_sequence: StopTimeUpdate.stop_sequence(update),
-      arrival:
-        stop_time_event(StopTimeUpdate.arrival_time(update), StopTimeUpdate.uncertainty(update)),
-      departure:
-        stop_time_event(StopTimeUpdate.departure_time(update), StopTimeUpdate.uncertainty(update)),
-      schedule_relationship: schedule_relationship(StopTimeUpdate.schedule_relationship(update))
-    })
+    arrival =
+      stop_time_event(StopTimeUpdate.arrival_time(update), StopTimeUpdate.uncertainty(update))
+
+    departure =
+      stop_time_event(StopTimeUpdate.departure_time(update), StopTimeUpdate.uncertainty(update))
+
+    relationship = schedule_relationship(StopTimeUpdate.schedule_relationship(update))
+
+    if is_map(arrival) or is_map(departure) or relationship != nil do
+      drop_nil_values(%{
+        stop_id: StopTimeUpdate.stop_id(update),
+        stop_sequence: StopTimeUpdate.stop_sequence(update),
+        arrival: arrival,
+        departure: departure,
+        schedule_relationship: relationship
+      })
+    else
+      :skip
+    end
   end
 end

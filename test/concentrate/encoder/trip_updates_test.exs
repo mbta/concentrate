@@ -12,11 +12,13 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
       initial = [
         TripUpdate.new(trip_id: "1"),
         TripUpdate.new(trip_id: "2"),
-        StopTimeUpdate.new(trip_id: "1")
+        StopTimeUpdate.new(trip_id: "1", arrival_time: 1)
       ]
 
       decoded = GTFSRealtime.parse(encode_groups(group(initial)), [])
-      assert [TripUpdate.new(trip_id: "1"), StopTimeUpdate.new(trip_id: "1")] == decoded
+
+      assert [TripUpdate.new(trip_id: "1"), StopTimeUpdate.new(trip_id: "1", arrival_time: 1)] ==
+               decoded
     end
 
     test "trips appear in their order, regardless of StopTimeUpdate order" do
@@ -28,9 +30,9 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
 
       stop_time_updates =
         Enum.shuffle([
-          StopTimeUpdate.new(trip_id: "1"),
-          StopTimeUpdate.new(trip_id: "2"),
-          StopTimeUpdate.new(trip_id: "3")
+          StopTimeUpdate.new(trip_id: "1", arrival_time: 1),
+          StopTimeUpdate.new(trip_id: "2", arrival_time: 2),
+          StopTimeUpdate.new(trip_id: "3", arrival_time: 3)
         ])
 
       initial = trip_updates ++ stop_time_updates
@@ -38,11 +40,11 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
 
       assert [
                TripUpdate.new(trip_id: "1"),
-               StopTimeUpdate.new(trip_id: "1"),
+               StopTimeUpdate.new(trip_id: "1", arrival_time: 1),
                TripUpdate.new(trip_id: "2"),
-               StopTimeUpdate.new(trip_id: "2"),
+               StopTimeUpdate.new(trip_id: "2", arrival_time: 2),
                TripUpdate.new(trip_id: "3"),
-               StopTimeUpdate.new(trip_id: "3")
+               StopTimeUpdate.new(trip_id: "3", arrival_time: 3)
              ] == decoded
     end
 
@@ -59,7 +61,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
     test "trips include part of vehicles" do
       initial = [
         TripUpdate.new(trip_id: "1"),
-        StopTimeUpdate.new(trip_id: "1"),
+        StopTimeUpdate.new(trip_id: "1", arrival_time: 1),
         VehiclePosition.new(
           trip_id: "1",
           latitude: 1,
@@ -77,6 +79,24 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
                  %{trip_update: %{vehicle: %{id: "id", label: "label", license_plate: "plate"}}}
                ]
              } = decoded
+    end
+
+    test "stop time updates with only a boarding status are removed" do
+      initial = [
+        TripUpdate.new(trip_id: "1"),
+        StopTimeUpdate.new(trip_id: "1", stop_sequence: 1, status: "status"),
+        StopTimeUpdate.new(trip_id: "1", stop_sequence: 2, departure_time: 1, status: "boarding"),
+        StopTimeUpdate.new(trip_id: "1", stop_sequence: 3, arrival_time: 2)
+      ]
+
+      decoded = GTFSRealtime.parse(encode_groups(group(initial)), [])
+
+      assert [
+               TripUpdate.new(trip_id: "1"),
+               StopTimeUpdate.new(trip_id: "1", stop_sequence: 2, departure_time: 1),
+               StopTimeUpdate.new(trip_id: "1", stop_sequence: 3, arrival_time: 2)
+             ] ==
+               decoded
     end
 
     test "decoding and re-encoding tripupdates.pb is a no-op" do

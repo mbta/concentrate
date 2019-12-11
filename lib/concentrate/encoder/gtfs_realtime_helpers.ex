@@ -198,7 +198,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
     stop_time_update =
       case stus do
-        [_ | _] -> Enum.map(stus, stop_time_update_fn)
+        [_ | _] -> render_stop_time_updates(stus, stop_time_update_fn)
         [] -> nil
       end
 
@@ -231,6 +231,18 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
   defp build_trip_update_entity(_, _, _) do
     []
+  end
+
+  defp render_stop_time_updates(stus, stop_time_update_fn) do
+    Enum.flat_map(stus, fn stu ->
+      case stop_time_update_fn.(stu) do
+        :skip ->
+          []
+
+        update ->
+          [update]
+      end
+    end)
   end
 
   defp trip_update_vehicle(_update, [vp | _]) do
