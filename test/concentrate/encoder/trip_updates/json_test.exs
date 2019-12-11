@@ -16,8 +16,8 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
       stop_time_updates =
         Enum.shuffle([
           StopTimeUpdate.new(trip_id: "1", schedule_relationship: :SKIPPED),
-          StopTimeUpdate.new(trip_id: "2"),
-          StopTimeUpdate.new(trip_id: "3")
+          StopTimeUpdate.new(trip_id: "2", departure_time: 2),
+          StopTimeUpdate.new(trip_id: "3", arrival_time: 3)
         ])
 
       initial = trip_updates ++ stop_time_updates
@@ -46,7 +46,12 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
     test "trips/updates with schedule_relationship SCHEDULED don't have that field" do
       parsed = [
         TripUpdate.new(trip_id: "trip", schedule_relationship: :SCHEDULED),
-        StopTimeUpdate.new(trip_id: "trip", stop_id: "stop", schedule_relationship: :SCHEDULED)
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          stop_id: "stop",
+          schedule_relationship: :SCHEDULED,
+          arrival_time: 1
+        )
       ]
 
       encoded = parsed |> group() |> encode_groups() |> Jason.decode!()
