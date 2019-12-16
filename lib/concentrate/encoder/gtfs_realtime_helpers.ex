@@ -203,7 +203,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
       end
 
     cond do
-      is_list(stop_time_update) ->
+      match?([_ | _], stop_time_update) ->
         [
           %{
             id: id,

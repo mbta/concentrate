@@ -86,7 +86,9 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         TripUpdate.new(trip_id: "1"),
         StopTimeUpdate.new(trip_id: "1", stop_sequence: 1, status: "status"),
         StopTimeUpdate.new(trip_id: "1", stop_sequence: 2, departure_time: 1, status: "boarding"),
-        StopTimeUpdate.new(trip_id: "1", stop_sequence: 3, arrival_time: 2)
+        StopTimeUpdate.new(trip_id: "1", stop_sequence: 3, arrival_time: 2),
+        TripUpdate.new(trip_id: "2"),
+        StopTimeUpdate.new(trip_id: "2", status: "status")
       ]
 
       decoded = GTFSRealtime.parse(encode_groups(group(initial)), [])
@@ -121,7 +123,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
     test "trips with route_pattern_id present don't have that field" do
       initial = [
         TripUpdate.new(trip_id: "trip", route_pattern_id: "pattern"),
-        StopTimeUpdate.new(trip_id: "trip", stop_id: "stop")
+        StopTimeUpdate.new(trip_id: "trip", stop_id: "stop", departure_time: 1)
       ]
 
       decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
