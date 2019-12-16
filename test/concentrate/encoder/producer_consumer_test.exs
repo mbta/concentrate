@@ -11,7 +11,12 @@ defmodule Concentrate.Encoder.ProducerConsumerTest do
       {_, state, _} =
         init(files: [{"TripUpdates.pb", TripUpdates}, {"VehiclePositions.pb", VehiclePositions}])
 
-      data = group([TripUpdate.new(trip_id: "trip"), StopTimeUpdate.new(trip_id: "trip")])
+      data =
+        group([
+          TripUpdate.new(trip_id: "trip"),
+          StopTimeUpdate.new(trip_id: "trip", departure_time: 1)
+        ])
+
       {:noreply, events, _state, :hibernate} = handle_events([[], data], :from, state)
 
       assert [{"TripUpdates.pb", trip_update}, {"VehiclePositions.pb", vehicle_positions}] =
