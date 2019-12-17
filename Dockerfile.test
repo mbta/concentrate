@@ -1,0 +1,22 @@
+FROM elixir:1.8.2-alpine AS builder
+
+WORKDIR /root
+
+# Install Hex+Rebar
+RUN mix local.hex --force && \
+  mix local.rebar --force
+
+# Install git
+RUN apk --update add bash curl findutils git
+
+ENV MIX_ENV=test
+
+WORKDIR /root
+
+ADD mix.* /root/
+
+RUN mix do deps.get --only test, deps.compile
+
+ADD . .
+
+RUN mix compile --warnings-as-errors
