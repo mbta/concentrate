@@ -24,8 +24,10 @@ defmodule Concentrate.Producer.HttpPropertyTest do
   end
 
   property "returns all the bodies" do
-    check all bodies <- list_of(bodies(), min_length: 1, max_length: 10),
-              demand <- demand(bodies) do
+    check all(
+            bodies <- list_of(bodies(), min_length: 1, max_length: 10),
+            demand <- demand(bodies)
+          ) do
       {bypass, url} = url_for_bodies(bodies)
 
       {:ok, producer} =
@@ -41,9 +43,11 @@ defmodule Concentrate.Producer.HttpPropertyTest do
   end
 
   property "returns all the bodies even with a fallback" do
-    check all bodies <- list_of(bodies(), min_length: 1, max_length: 10),
-              fallback_bodies <- list_of(bodies(), min_length: 1, max_length: 10),
-              demand <- demand(bodies ++ fallback_bodies) do
+    check all(
+            bodies <- list_of(bodies(), min_length: 1, max_length: 10),
+            fallback_bodies <- list_of(bodies(), min_length: 1, max_length: 10),
+            demand <- demand(bodies ++ fallback_bodies)
+          ) do
       {bypass, url} = url_for_bodies(bodies)
       {fallback_bypass, fallback_url} = url_for_bodies(fallback_bodies)
 
