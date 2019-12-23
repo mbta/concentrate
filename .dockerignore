@@ -5,5 +5,4 @@
 /config/*.local.exs
 /aws
 /cover
-/semaphore
 *~

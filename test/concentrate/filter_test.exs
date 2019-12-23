@@ -42,7 +42,7 @@ defmodule Concentrate.FilterTest do
 
   describe "run/2" do
     property "parallel filter removes even numbers" do
-      check all data <- list_of(integer()) do
+      check all(data <- list_of(integer())) do
         expected = OnlyEvenFilter.expected(data)
         actual = run(data, [OnlyEvenFilter])
         assert actual == expected
@@ -50,7 +50,7 @@ defmodule Concentrate.FilterTest do
     end
 
     property "serial filter adds the previous value" do
-      check all data <- list_of(integer()) do
+      check all(data <- list_of(integer())) do
         expected = AddOneFilter.expected(data)
         actual = run(data, [AddOneFilter])
         assert actual == expected
@@ -58,7 +58,7 @@ defmodule Concentrate.FilterTest do
     end
 
     property "filters are applied first to last" do
-      check all data <- list_of(integer()) do
+      check all(data <- list_of(integer())) do
         assert run(data, [OnlyEvenFilter, AddOneFilter]) ==
                  data |> OnlyEvenFilter.expected() |> AddOneFilter.expected()
 
