@@ -7,7 +7,7 @@ defmodule Concentrate.GroupFilter.SkippedDeparturesTest do
 
   describe "filter/1" do
     property "the last non-skipped stop has no departure time" do
-      check all updates <- list_of(stop_time_update(), min_length: 5) do
+      check all(updates <- list_of(stop_time_update(), min_length: 5)) do
         group = {nil, [], updates}
         {_, _, new_updates} = filter(group)
 
@@ -52,8 +52,10 @@ defmodule Concentrate.GroupFilter.SkippedDeparturesTest do
   end
 
   defp stop_time_update do
-    gen all schedule_relationship <- one_of(~w(SCHEDULED SKIPPED)a),
-            departure_time <- time_if_scheduled(schedule_relationship) do
+    gen all(
+          schedule_relationship <- one_of(~w(SCHEDULED SKIPPED)a),
+          departure_time <- time_if_scheduled(schedule_relationship)
+        ) do
       StopTimeUpdate.new(
         schedule_relationship: schedule_relationship,
         departure_time: departure_time
