@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e -x -u
 
-mix format --check-formatted
+docker run $TAG mix format --check-formatted

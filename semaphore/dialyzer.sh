@@ -1,9 +1,7 @@
 #!/bin/bash
-set -e -x -u
+set -eu
 
-mkdir -p _build/dev
-find $SEMAPHORE_CACHE_DIR -name "dialyxir_*_deps-dev.plt*" | xargs -I{} cp '{}' _build/dev
-export ERL_CRASH_DUMP=/dev/null
-mix dialyzer --plt
-cp _build/dev/*_deps-dev.plt* $SEMAPHORE_CACHE_DIR
-mix dialyzer --halt-exit-status
+DIALYXIR_PATH=$SEMAPHORE_CACHE_DIR/dialyxir
+mkdir -p $DIALYXIR_PATH
+
+docker run -v $DIALYXIR_PATH:/root/_build/dialyxir -v $(realpath $(dirname $0)):/root/semaphore $TAG /root/semaphore/dialyzer_container.sh
