@@ -195,7 +195,7 @@ defmodule Concentrate.Producer.Mint do
 
     if state.conn != :not_connected do
       {_, _, _, path} = parse_url(url)
-      {:ok, conn, ref} = HTTP.request(state.conn, "GET", path, Map.to_list(state.headers))
+      {:ok, conn, ref} = HTTP.request(state.conn, "GET", path, Map.to_list(state.headers), nil)
 
       Process.send_after(
         self(),
