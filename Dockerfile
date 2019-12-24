@@ -15,7 +15,7 @@ ADD . .
 
 WORKDIR /root
 
-RUN elixir --erl "-smp enable" /usr/local/bin/mix do deps.get --only prod, compile, release --verbose
+RUN elixir --erl "-smp enable" /usr/local/bin/mix do deps.get --only prod, compile, help, distillery.release --verbose
 
 # Second stage: copies the files from the builder stage
 FROM alpine:3.10
