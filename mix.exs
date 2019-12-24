@@ -21,7 +21,8 @@ defmodule Concentrate.MixProject do
         ignore_warnings: ".dialyzer.ignore-warnings"
       ],
       elixirc_paths: elixirc_paths(Mix.env()),
-      aliases: aliases()
+      aliases: aliases(),
+      releases: releases()
     ]
   end
 
@@ -30,6 +31,14 @@ defmodule Concentrate.MixProject do
 
   defp aliases do
     [test: "test --no-start"]
+  end
+
+  defp releases do
+    [
+      concentrate: [
+        applications: [concentrate: :permanent, ex_aws: :permanent]
+      ]
+    ]
   end
 
   # Run "mix help compile.app" to learn about applications.
@@ -56,7 +65,6 @@ defmodule Concentrate.MixProject do
       {:credo, "~> 1.0", runtime: false, only: :dev},
       {:csv, "~> 2.1"},
       {:dialyxir, "~> 0.5", runtime: false, only: :dev},
-      {:distillery, "~> 2.1.1", runtime: false, only: :prod},
       {:ehmon, git: "https://github.com/mbta/ehmon.git", branch: "master", only: ~w(test prod)a},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
