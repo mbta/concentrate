@@ -229,6 +229,48 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
 
       assert [] = decode_trip_update(update, %Options{routes: {:ok, ["keeping"]}})
     end
+
+    test "can handle start_time with a single digit hour" do
+      update = %{
+        trip: %{
+          trip_id: "trip",
+          route_id: "route",
+          direction_id: 1,
+          start_date: "20171220",
+          start_time: "1:23:45",
+          schedule_relationship: :ADDED
+        },
+        stop_time_update: [%{}],
+        vehicle: %{
+          id: "vehicle_id"
+        }
+      }
+
+      [tu, _] = decode_trip_update(update, %Options{})
+
+      assert TripUpdate.start_time(tu) == "01:23:45"
+    end
+
+    test "can handle invalid start_time by treating it as nil" do
+      update = %{
+        trip: %{
+          trip_id: "trip",
+          route_id: "route",
+          direction_id: 1,
+          start_date: "20171220",
+          start_time: "12345",
+          schedule_relationship: :ADDED
+        },
+        stop_time_update: [%{}],
+        vehicle: %{
+          id: "vehicle_id"
+        }
+      }
+
+      [tu, _] = decode_trip_update(update, %Options{})
+
+      assert TripUpdate.start_time(tu) == nil
+    end
   end
 
   describe "decode_vehicle/2" do

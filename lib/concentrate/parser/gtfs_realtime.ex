@@ -124,7 +124,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
         route_id: Map.get(trip, :route_id),
         direction_id: Map.get(trip, :direction_id),
         start_date: date(Map.get(trip, :start_date)),
-        start_time: Map.get(trip, :start_time),
+        start_time: time(Map.get(trip, :start_time)),
         schedule_relationship: Map.get(trip, :schedule_relationship, :SCHEDULED),
         vehicle_id: decode_trip_descriptor_vehicle_id(descriptor)
       )
@@ -148,6 +148,23 @@ defmodule Concentrate.Parser.GTFSRealtime do
       String.to_integer(month_str),
       String.to_integer(day_str)
     }
+  end
+
+  defp time(nil) do
+    nil
+  end
+
+  defp time(<<_hour::binary-2, ":", _minute::binary-2, ":", _second::binary-2>> = bin) do
+    bin
+  end
+
+  defp time(<<_hour::binary-1, ":", _minute::binary-2, ":", _second::binary-2>> = bin) do
+    "0" <> bin
+  end
+
+  defp time(bin) when is_binary(bin) do
+    # invalid time, treat as missing
+    nil
   end
 
   defp decode_alert(%{id: id, alert: %{} = alert}) do
