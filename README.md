@@ -8,7 +8,7 @@ single output files.
 
 ## Architecture
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for the overall architecture of the system.
+See [architecture.md](guides/architecture.md) for the overall architecture of the system.
 
 ## Development Setup
 
