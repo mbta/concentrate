@@ -6,6 +6,10 @@
 Concentrate combines realtime transit information from multiple sources into
 single output files.
 
+## Configuration
+
+Concentrate can either be configured via `config/config.exs` or a JSON environment variable as `CONCENTRATE_JSON`: more details are available in [configuration.md](doc/configuration.md).
+
 ## Architecture
 
 See [architecture.md](guides/architecture.md) for the overall architecture of the system.
@@ -41,6 +45,3 @@ docker build -t concentrate:latest .
 # run
 docker run concentrate:latest
 ```
-
-It can be configured by passing a JSON configuration file as
-`CONCENTRATE_JSON`. An example JSON configuration can be seen in [test/concentrate_test.exs](https://github.com/mbta/concentrate/blob/master/test/concentrate_test.exs#L17-L57).
