@@ -37,7 +37,8 @@ config :concentrate,
     Concentrate.GroupFilter.ClosedStop,
     Concentrate.GroupFilter.VehicleAtSkippedStop,
     Concentrate.GroupFilter.VehicleStopMatch,
-    Concentrate.GroupFilter.SkippedStopOnAddedTrip
+    Concentrate.GroupFilter.SkippedStopOnAddedTrip,
+    Concentrate.GroupFilter.TripUpdateTimestamp
   ],
   reporters: [
     Concentrate.Reporter.VehicleLatency,

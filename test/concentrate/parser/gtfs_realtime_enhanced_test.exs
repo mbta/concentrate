@@ -234,6 +234,20 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       [tu] = decode_trip_update(map, Helpers.parse_options([]))
       assert TripUpdate.route_pattern_id(tu) == "pattern"
     end
+
+    test "includes timestamp if available" do
+      map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "timestamp" => 1_534_340_406,
+        "stop_time_update" => []
+      }
+
+      [tu] = decode_trip_update(map, Helpers.parse_options([]))
+      assert TripUpdate.timestamp(tu) == 1_534_340_406
+    end
   end
 
   describe "decode_vehicle/1" do
@@ -279,7 +293,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
                  route_id: "Green-E",
                  direction_id: 0,
                  start_date: {2018, 8, 15},
-                 schedule_relationship: :SCHEDULED
+                 schedule_relationship: :SCHEDULED,
+                 timestamp: 1_534_340_406
                )
 
       assert vp ==

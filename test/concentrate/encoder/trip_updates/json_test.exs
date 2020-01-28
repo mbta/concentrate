@@ -8,7 +8,7 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
   describe "encode_groups/1" do
     test "same output as EncoderTripUpdates.encode_groups/1 but in JSON" do
       trip_updates = [
-        TripUpdate.new(trip_id: "1", schedule_relationship: :ADDED),
+        TripUpdate.new(trip_id: "1", schedule_relationship: :ADDED, timestamp: 1_534_340_406),
         TripUpdate.new(trip_id: "2"),
         TripUpdate.new(trip_id: "3")
       ]
@@ -34,6 +34,7 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
                %{
                  "id" => "1",
                  "trip_update" => %{
+                   "timestamp" => 1_534_340_406,
                    "stop_time_update" => [%{"schedule_relationship" => "SKIPPED"}],
                    "trip" => %{
                      "schedule_relationship" => "ADDED",

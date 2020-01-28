@@ -126,7 +126,8 @@ defmodule Concentrate.Parser.GTFSRealtime do
         start_date: date(Map.get(trip, :start_date)),
         start_time: time(Map.get(trip, :start_time)),
         schedule_relationship: Map.get(trip, :schedule_relationship, :SCHEDULED),
-        vehicle_id: decode_trip_descriptor_vehicle_id(descriptor)
+        vehicle_id: decode_trip_descriptor_vehicle_id(descriptor),
+        timestamp: decode_trip_descriptor_timestamp(descriptor)
       )
     ]
   end
@@ -137,6 +138,9 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
   defp decode_trip_descriptor_vehicle_id(%{vehicle: %{id: vehicle_id}}), do: vehicle_id
   defp decode_trip_descriptor_vehicle_id(_), do: nil
+
+  defp decode_trip_descriptor_timestamp(%{timestamp: timestamp}), do: timestamp
+  defp decode_trip_descriptor_timestamp(_), do: nil
 
   defp date(nil) do
     nil
