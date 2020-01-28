@@ -59,6 +59,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
           start_time: "26:15:09",
           schedule_relationship: :ADDED
         },
+        timestamp: 1_534_340_406,
         stop_time_update: [%{}],
         vehicle: %{
           id: "vehicle_id"
@@ -75,7 +76,8 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
                  start_date: {2017, 12, 20},
                  start_time: "26:15:09",
                  vehicle_id: "vehicle_id",
-                 schedule_relationship: :ADDED
+                 schedule_relationship: :ADDED,
+                 timestamp: 1_534_340_406
                )
     end
 
@@ -292,6 +294,18 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       }
 
       assert [_, _] = decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}})
+    end
+
+    test "includes timestamp if available" do
+      position = %{
+        timestamp: 1_534_340_406,
+        trip: %{route_id: "keeping"},
+        vehicle: %{},
+        position: %{latitude: 1, longitude: 1}
+      }
+
+      assert [tu, _] = decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}})
+      assert TripUpdate.timestamp(tu) == 1_534_340_406
     end
   end
 end

@@ -12,6 +12,7 @@ defmodule Concentrate.TripUpdate do
     :start_date,
     :start_time,
     :vehicle_id,
+    :timestamp,
     schedule_relationship: :SCHEDULED
   ])
 

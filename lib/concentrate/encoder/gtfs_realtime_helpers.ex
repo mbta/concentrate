@@ -189,6 +189,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
       schedule_relationship: schedule_relationship(TripUpdate.schedule_relationship(update))
     }
 
+    timestamp = TripUpdate.timestamp(update)
+
     trip =
       trip_data
       |> Map.merge(enhanced_data_fn.(update))
@@ -211,7 +213,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
               drop_nil_values(%{
                 trip: trip,
                 stop_time_update: stop_time_update,
-                vehicle: vehicle
+                vehicle: vehicle,
+                timestamp: timestamp
               })
           }
         ]
@@ -220,7 +223,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
         [
           %{
             id: id,
-            trip_update: drop_nil_values(%{trip: trip, vehicle: vehicle})
+            trip_update: drop_nil_values(%{trip: trip, vehicle: vehicle, timestamp: timestamp})
           }
         ]
 

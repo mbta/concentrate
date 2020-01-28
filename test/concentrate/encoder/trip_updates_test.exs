@@ -136,5 +136,22 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
 
       refute "route_pattern_id" in Map.keys(trip)
     end
+
+    test "trips updates with timestamp present don't have that field" do
+      initial = [
+        TripUpdate.new(trip_id: "trip", timestamp: 1_534_340_406),
+        StopTimeUpdate.new(trip_id: "trip", stop_id: "stop", departure_time: 1)
+      ]
+
+      decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
+
+      %{
+        entity: [
+          %{trip_update: %{trip: trip, timestamp: 1_534_340_406}}
+        ]
+      } = decoded
+
+      refute "route_pattern_id" in Map.keys(trip)
+    end
   end
 end

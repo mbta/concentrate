@@ -106,5 +106,25 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
                ]
              } = encoded
     end
+
+    test "trips updates with timestamp present have that field" do
+      parsed = [
+        TripUpdate.new(trip_id: "trip", timestamp: 1_534_340_406),
+        StopTimeUpdate.new(trip_id: "trip", stop_id: "stop")
+      ]
+
+      encoded = Jason.decode!(encode_groups(group(parsed)))
+
+      assert %{
+               "entity" => [
+                 %{
+                   "trip_update" => %{
+                     "timestamp" => 1_534_340_406,
+                     "trip" => %{}
+                   }
+                 }
+               ]
+             } = encoded
+    end
   end
 end

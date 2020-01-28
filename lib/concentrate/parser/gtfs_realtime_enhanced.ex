@@ -64,7 +64,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   def decode_trip_update(trip_update, options) do
-    tu = decode_trip_descriptor(Map.get(trip_update, "trip"))
+    tu = decode_trip_descriptor(trip_update)
     decode_stop_updates(tu, trip_update, options)
   end
 
@@ -121,7 +121,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     position = Map.get(vp, "position", %{})
     vehicle = Map.get(vp, "vehicle", %{})
 
-    case decode_trip_descriptor(Map.get(vp, "trip")) do
+    case decode_trip_descriptor(vp) do
       [trip] ->
         [
           trip,
@@ -148,11 +148,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     end
   end
 
-  defp decode_trip_descriptor(nil) do
-    []
-  end
-
-  defp decode_trip_descriptor(trip) do
+  defp decode_trip_descriptor(%{"trip" => trip} = descriptor) do
     [
       TripUpdate.new(
         trip_id: Map.get(trip, "trip_id"),
@@ -161,9 +157,14 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         direction_id: Map.get(trip, "direction_id"),
         start_date: date(Map.get(trip, "start_date")),
         start_time: Map.get(trip, "start_time"),
-        schedule_relationship: schedule_relationship(Map.get(trip, "schedule_relationship"))
+        schedule_relationship: schedule_relationship(Map.get(trip, "schedule_relationship")),
+        timestamp: Map.get(descriptor, "timestamp")
       )
     ]
+  end
+
+  defp decode_trip_descriptor(_) do
+    []
   end
 
   defp decode_consist(nil) do
