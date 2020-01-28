@@ -5,8 +5,8 @@ defmodule Concentrate.GroupFilter.TimeOutOfRange do
   alias Concentrate.StopTimeUpdate
   @behaviour Concentrate.GroupFilter
 
-  # one minute
-  @min_time_in_past 60
+  # 10 minutes
+  @min_time_in_past 60 * 10
   # 3 hours
   @max_time_in_future 10_800
 
