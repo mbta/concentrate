@@ -11,11 +11,13 @@ RUN apk --update add git make
 
 ENV MIX_ENV=prod
 
+ADD mix.* /root/
+
+RUN elixir --erl "-smp enable" /usr/local/bin/mix do deps.get --only prod, deps.compile
+
 ADD . .
 
-WORKDIR /root
-
-RUN elixir --erl "-smp enable" /usr/local/bin/mix do deps.get --only prod, compile, help, distillery.release --verbose
+RUN elixir --erl "-smp enable" /usr/local/bin/mix release
 
 # Second stage: copies the files from the builder stage
 FROM alpine:3.10
@@ -33,5 +35,5 @@ COPY --from=builder /root/_build/prod/rel /root/rel
 # Ensure SSL support is enabled
 RUN /root/rel/concentrate/bin/concentrate eval ":crypto.supports()"
 
-HEALTHCHECK CMD ["/root/rel/concentrate/bin/concentrate", "rpc", "--mfa", "Concentrate.Health.healthy?/0"]
-CMD ["/usr/bin/dumb-init", "/root/rel/concentrate/bin/concentrate", "foreground"]
+HEALTHCHECK CMD ["/root/rel/concentrate/bin/concentrate", "rpc", "Concentrate.Health.healthy?()"]
+CMD ["/usr/bin/dumb-init", "/root/rel/concentrate/bin/concentrate", "start"]
