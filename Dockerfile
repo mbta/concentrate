@@ -35,11 +35,13 @@ RUN apk --update add git make
 
 ENV MIX_ENV=prod
 
+ADD mix.* /root/
+
+RUN elixir --erl "-smp enable" /usr/local/bin/mix do deps.get --only prod, deps.compile
+
 ADD . .
 
-WORKDIR /root
-
-RUN elixir --erl "-smp enable" /usr/local/bin/mix do deps.get --only prod, compile, release --verbose
+RUN elixir --erl "-smp enable" /usr/local/bin/mix do compile, distillery.release --verbose
 
 # Second stage: uses the built .tgz to get the files over
 FROM alpine:3.8
