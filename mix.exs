@@ -61,7 +61,7 @@ defmodule Concentrate.MixProject do
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
       {:excoveralls, "~> 0.11", only: :test},
-      {:gen_stage, "~> 0.13 and != 0.13.1"},
+      {:gen_stage, "~> 1.0"},
       {:gpb, "~> 4.7", only: :dev, runtime: false, only: :dev},
       {:httpoison, "~> 1.0"},
       {:jason, "~> 1.0"},
