@@ -39,7 +39,10 @@ ADD mix.* /root/
 
 RUN elixir --erl "-smp enable" /usr/local/bin/mix do deps.get --only prod, deps.compile
 
-ADD . .
+ADD lib /root/lib
+ADD src /root/src
+ADD config /root/config
+ADD rel /root/rel
 
 RUN elixir --erl "-smp enable" /usr/local/bin/mix do compile, distillery.release --verbose
 
