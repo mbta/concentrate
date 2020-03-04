@@ -390,7 +390,7 @@ defmodule Concentrate.Producer.HTTP.StateMachine do
 
   defp error_log_level(:closed), do: :warn
   defp error_log_level({:closed, _}), do: :warn
-  defp error_log_level({:ssl_closed, _}), do: :warn
+  defp error_log_level({:ssl_closed, _}), do: :info
   defp error_log_level(:timeout), do: :warn
   defp error_log_level({:unexpected_code, _}), do: :warn
   defp error_log_level(_), do: :error
