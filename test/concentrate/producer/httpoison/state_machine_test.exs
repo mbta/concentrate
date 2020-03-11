@@ -1,7 +1,7 @@
-defmodule Concentrate.Producer.HTTP.StateMachineTest do
+defmodule Concentrate.Producer.HTTPoison.StateMachineTest do
   @moduledoc false
   use ExUnit.Case
-  import Concentrate.Producer.HTTP.StateMachine
+  import Concentrate.Producer.HTTPoison.StateMachine
   import ExUnit.CaptureLog
 
   setup_all do

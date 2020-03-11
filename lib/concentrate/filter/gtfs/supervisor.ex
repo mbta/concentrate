@@ -12,7 +12,7 @@ defmodule Concentrate.Filter.GTFS.Supervisor do
       Supervisor.start_link(
         [
           {
-            Concentrate.Producer.HTTP,
+            Application.get_env(:concentrate, :http_producer),
             {
               config[:url],
               parser: Concentrate.Filter.GTFS.Unzip,

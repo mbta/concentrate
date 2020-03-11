@@ -1,8 +1,8 @@
-defmodule Concentrate.Producer.HTTPTest do
+defmodule Concentrate.Producer.HTTPoisonTest do
   @moduledoc false
   use ExUnit.Case
-  import Concentrate.Producer.HTTP
-  alias Concentrate.Producer.HTTP.StateMachine
+  import Concentrate.Producer.HTTPoison
+  alias Concentrate.Producer.HTTPoison.StateMachine
   import Plug.Conn, only: [get_req_header: 2, put_resp_header: 3, send_resp: 3]
 
   defmodule TestParser do
@@ -44,14 +44,14 @@ defmodule Concentrate.Producer.HTTPTest do
     @tag :capture_log
     test "ignores unknown messages" do
       machine = StateMachine.init("url", parser: & &1)
-      state = %Concentrate.Producer.HTTP.State{machine: machine}
+      state = %Concentrate.Producer.HTTPoison.State{machine: machine}
       assert {:noreply, [], ^state} = handle_info(:unknown, state)
     end
 
     @tag :capture_log
     test "does not send more demand than requested" do
       machine = StateMachine.init("url", parser: &[&1])
-      state = %Concentrate.Producer.HTTP.State{machine: machine, demand: 1}
+      state = %Concentrate.Producer.HTTPoison.State{machine: machine, demand: 1}
       response = %HTTPoison.Response{status_code: 200, body: "body"}
       assert {:noreply, [_], state, :hibernate} = handle_info({:http_response, response}, state)
 
@@ -288,7 +288,9 @@ defmodule Concentrate.Producer.HTTPTest do
 
     @tag :capture_log
     test "a fetch error is not fatal" do
-      {:ok, pid} = start_supervised({Concentrate.Producer.HTTP, {"nodomain.dne", parser: & &1}})
+      {:ok, pid} =
+        start_supervised({Concentrate.Producer.HTTPoison, {"nodomain.dne", parser: & &1}})
+
       # this will never finish, so run it in a separate process
       Task.async(fn -> take_events(pid, 1) end)
       :timer.sleep(50)
@@ -299,7 +301,7 @@ defmodule Concentrate.Producer.HTTPTest do
       url = "http://127.0.0.1:#{bypass.port}/"
       opts = Keyword.put_new(opts, :parser, fn body -> [body] end)
 
-      {:ok, _} = start_supervised({Concentrate.Producer.HTTP, {url, opts}})
+      {:ok, _} = start_supervised({Concentrate.Producer.HTTPoison, {url, opts}})
     end
 
     defp take_events(producer, event_count) do
