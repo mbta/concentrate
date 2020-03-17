@@ -64,7 +64,7 @@ defmodule Concentrate.MixProject do
       {:bypass, "~> 1.0", only: :test},
       {:credo, "~> 1.0", runtime: false, only: :dev},
       {:csv, "~> 2.1"},
-      {:dialyxir, "~> 0.5", runtime: false, only: :dev},
+      {:dialyxir, "~> 1.0", runtime: false, only: :dev},
       {:ehmon, git: "https://github.com/mbta/ehmon.git", branch: "master", only: ~w(test prod)a},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
