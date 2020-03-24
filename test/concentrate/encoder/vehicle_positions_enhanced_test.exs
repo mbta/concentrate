@@ -10,9 +10,9 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
   describe "encode/1" do
     test "includes consist data if present" do
       data = [
-        TripUpdate.new(trip_id: "one"),
+        TripUpdate.new(trip_id: "one", vehicle_id: "y1"),
         VehiclePosition.new(trip_id: "one", id: "y1", latitude: 1, longitude: 1),
-        TripUpdate.new(trip_id: "two"),
+        TripUpdate.new(trip_id: "two", vehicle_id: "y2"),
         VehiclePosition.new(
           trip_id: "two",
           id: "y2",
