@@ -149,6 +149,12 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp decode_trip_descriptor(%{"trip" => trip} = descriptor) do
+    vehicle_id =
+      case descriptor do
+        %{"vehicle" => %{"id" => vehicle_id}} -> vehicle_id
+        _ -> nil
+      end
+
     [
       TripUpdate.new(
         trip_id: Map.get(trip, "trip_id"),
@@ -158,7 +164,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         start_date: date(Map.get(trip, "start_date")),
         start_time: Map.get(trip, "start_time"),
         schedule_relationship: schedule_relationship(Map.get(trip, "schedule_relationship")),
-        timestamp: Map.get(descriptor, "timestamp")
+        timestamp: Map.get(descriptor, "timestamp"),
+        vehicle_id: vehicle_id
       )
     ]
   end
