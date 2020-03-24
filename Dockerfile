@@ -1,4 +1,4 @@
-FROM elixir:1.10.1-alpine AS builder
+FROM elixir:1.10.2-alpine AS builder
 
 WORKDIR /root
 
@@ -22,7 +22,7 @@ ADD src /root/src
 RUN mix do compile, release
 
 # Second stage: copies the files from the builder stage
-FROM alpine:3.10
+FROM alpine:3.11
 
 RUN apk add --update libssl1.1 ncurses-libs bash dumb-init \
     && rm -rf /var/cache/apk
