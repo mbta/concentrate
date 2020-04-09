@@ -199,7 +199,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
     InformedEntity.new(
       trip_id: Map.get(trip, :trip_id),
       route_id: Map.get(entity, :route_id),
-      direction_id: Map.get(trip, :direction_id),
+      direction_id: Map.get(trip, :direction_id) || Map.get(entity, :direction_id),
       route_type: Map.get(entity, :route_type),
       stop_id: Map.get(entity, :stop_id)
     )

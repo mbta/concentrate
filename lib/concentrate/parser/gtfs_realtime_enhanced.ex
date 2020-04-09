@@ -226,7 +226,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         MODIFIED_SERVICE
         OTHER_EFFECT
         UNKNOWN_EFFECT
-        STOP_MOVED)a do
+        STOP_MOVED
+        NO_EFFECT
+        ACCESSIBILITY_ISSUE)a do
     defp alert_effect(unquote(Atom.to_string(effect))), do: unquote(effect)
   end
 
