@@ -277,7 +277,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         "congestion_level" => nil,
         "current_status" => "STOPPED_AT",
         "current_stop_sequence" => 670,
-        "occupancy_status" => nil,
+        "occupancy_status" => "MANY_SEATS_AVAILABLE",
+        "occupancy_percentage" => 50,
         "position" => %{
           "bearing" => 135,
           "latitude" => 42.32951,
@@ -326,7 +327,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
                  trip_id: "37165437-X",
                  stop_sequence: 670,
                  status: :STOPPED_AT,
-                 last_updated: 1_534_340_406
+                 last_updated: 1_534_340_406,
+                 occupancy_status: :MANY_SEATS_AVAILABLE,
+                 occupancy_percentage: 50
                )
     end
 

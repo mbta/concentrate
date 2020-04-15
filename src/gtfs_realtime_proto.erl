@@ -117,7 +117,8 @@
         current_status          => 'INCOMING_AT' | 'STOPPED_AT' | 'IN_TRANSIT_TO' | integer(), % = 4, enum VehiclePosition.VehicleStopStatus
         timestamp               => non_neg_integer(), % = 5, 64 bits
         congestion_level        => 'UNKNOWN_CONGESTION_LEVEL' | 'RUNNING_SMOOTHLY' | 'STOP_AND_GO' | 'CONGESTION' | 'SEVERE_CONGESTION' | integer(), % = 6, enum VehiclePosition.CongestionLevel
-        occupancy_status        => 'EMPTY' | 'MANY_SEATS_AVAILABLE' | 'FEW_SEATS_AVAILABLE' | 'STANDING_ROOM_ONLY' | 'CRUSHED_STANDING_ROOM_ONLY' | 'FULL' | 'NOT_ACCEPTING_PASSENGERS' | integer() % = 9, enum VehiclePosition.OccupancyStatus
+        occupancy_status        => 'EMPTY' | 'MANY_SEATS_AVAILABLE' | 'FEW_SEATS_AVAILABLE' | 'STANDING_ROOM_ONLY' | 'CRUSHED_STANDING_ROOM_ONLY' | 'FULL' | 'NOT_ACCEPTING_PASSENGERS' | integer(), % = 9, enum VehiclePosition.OccupancyStatus
+        occupancy_percentage    => non_neg_integer() % = 10, 32 bits
        }.
 
 -type 'Alert'() ::
@@ -543,15 +544,23 @@ encode_msg_VehiclePosition(#{} = M, Bin, TrUserData) ->
 	       end;
 	   _ -> B7
 	 end,
+    B9 = case M of
+	   #{occupancy_status := F9} ->
+	       begin
+		 TrF9 = id(F9, TrUserData),
+		 'e_enum_VehiclePosition.OccupancyStatus'(TrF9,
+							  <<B8/binary, 72>>,
+							  TrUserData)
+	       end;
+	   _ -> B8
+	 end,
     case M of
-      #{occupancy_status := F9} ->
+      #{occupancy_percentage := F10} ->
 	  begin
-	    TrF9 = id(F9, TrUserData),
-	    'e_enum_VehiclePosition.OccupancyStatus'(TrF9,
-						     <<B8/binary, 72>>,
-						     TrUserData)
+	    TrF10 = id(F10, TrUserData),
+	    e_varint(TrF10, <<B9/binary, 80>>, TrUserData)
 	  end;
-      _ -> B8
+      _ -> B9
     end.
 
 encode_msg_Alert(Msg, TrUserData) ->
@@ -2832,66 +2841,76 @@ decode_msg_VehiclePosition(Bin, TrUserData) ->
 				       id('IN_TRANSIT_TO', TrUserData),
 				       id('$undef', TrUserData),
 				       id('$undef', TrUserData),
+				       id('$undef', TrUserData),
 				       id('$undef', TrUserData), TrUserData).
 
 dfp_read_field_def_VehiclePosition(<<10, Rest/binary>>,
 				   Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				   F@_7, F@_8, F@_9, TrUserData) ->
+				   F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     d_field_VehiclePosition_trip(Rest, Z1, Z2, F@_1, F@_2,
 				 F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
-				 TrUserData);
+				 F@_10, TrUserData);
 dfp_read_field_def_VehiclePosition(<<66, Rest/binary>>,
 				   Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				   F@_7, F@_8, F@_9, TrUserData) ->
+				   F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     d_field_VehiclePosition_vehicle(Rest, Z1, Z2, F@_1,
 				    F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				    F@_9, TrUserData);
+				    F@_9, F@_10, TrUserData);
 dfp_read_field_def_VehiclePosition(<<18, Rest/binary>>,
 				   Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				   F@_7, F@_8, F@_9, TrUserData) ->
+				   F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     d_field_VehiclePosition_position(Rest, Z1, Z2, F@_1,
 				     F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				     F@_9, TrUserData);
+				     F@_9, F@_10, TrUserData);
 dfp_read_field_def_VehiclePosition(<<24, Rest/binary>>,
 				   Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				   F@_7, F@_8, F@_9, TrUserData) ->
+				   F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     d_field_VehiclePosition_current_stop_sequence(Rest, Z1,
 						  Z2, F@_1, F@_2, F@_3, F@_4,
 						  F@_5, F@_6, F@_7, F@_8, F@_9,
-						  TrUserData);
+						  F@_10, TrUserData);
 dfp_read_field_def_VehiclePosition(<<58, Rest/binary>>,
 				   Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				   F@_7, F@_8, F@_9, TrUserData) ->
+				   F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     d_field_VehiclePosition_stop_id(Rest, Z1, Z2, F@_1,
 				    F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				    F@_9, TrUserData);
+				    F@_9, F@_10, TrUserData);
 dfp_read_field_def_VehiclePosition(<<32, Rest/binary>>,
 				   Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				   F@_7, F@_8, F@_9, TrUserData) ->
+				   F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     d_field_VehiclePosition_current_status(Rest, Z1, Z2,
 					   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-					   F@_7, F@_8, F@_9, TrUserData);
+					   F@_7, F@_8, F@_9, F@_10, TrUserData);
 dfp_read_field_def_VehiclePosition(<<40, Rest/binary>>,
 				   Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				   F@_7, F@_8, F@_9, TrUserData) ->
+				   F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     d_field_VehiclePosition_timestamp(Rest, Z1, Z2, F@_1,
 				      F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				      F@_9, TrUserData);
+				      F@_9, F@_10, TrUserData);
 dfp_read_field_def_VehiclePosition(<<48, Rest/binary>>,
 				   Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				   F@_7, F@_8, F@_9, TrUserData) ->
+				   F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     d_field_VehiclePosition_congestion_level(Rest, Z1, Z2,
 					     F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-					     F@_7, F@_8, F@_9, TrUserData);
+					     F@_7, F@_8, F@_9, F@_10,
+					     TrUserData);
 dfp_read_field_def_VehiclePosition(<<72, Rest/binary>>,
 				   Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				   F@_7, F@_8, F@_9, TrUserData) ->
+				   F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     d_field_VehiclePosition_occupancy_status(Rest, Z1, Z2,
 					     F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-					     F@_7, F@_8, F@_9, TrUserData);
+					     F@_7, F@_8, F@_9, F@_10,
+					     TrUserData);
+dfp_read_field_def_VehiclePosition(<<80, Rest/binary>>,
+				   Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
+				   F@_7, F@_8, F@_9, F@_10, TrUserData) ->
+    d_field_VehiclePosition_occupancy_percentage(Rest, Z1,
+						 Z2, F@_1, F@_2, F@_3, F@_4,
+						 F@_5, F@_6, F@_7, F@_8, F@_9,
+						 F@_10, TrUserData);
 dfp_read_field_def_VehiclePosition(<<>>, 0, 0, F@_1,
 				   F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				   F@_9, _) ->
+				   F@_9, F@_10, _) ->
     S1 = #{},
     S2 = if F@_1 == '$undef' -> S1;
 	    true -> S1#{trip => F@_1}
@@ -2917,97 +2936,108 @@ dfp_read_field_def_VehiclePosition(<<>>, 0, 0, F@_1,
     S9 = if F@_8 == '$undef' -> S8;
 	    true -> S8#{congestion_level => F@_8}
 	 end,
-    if F@_9 == '$undef' -> S9;
-       true -> S9#{occupancy_status => F@_9}
+    S10 = if F@_9 == '$undef' -> S9;
+	     true -> S9#{occupancy_status => F@_9}
+	  end,
+    if F@_10 == '$undef' -> S10;
+       true -> S10#{occupancy_percentage => F@_10}
     end;
 dfp_read_field_def_VehiclePosition(Other, Z1, Z2, F@_1,
 				   F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				   F@_9, TrUserData) ->
+				   F@_9, F@_10, TrUserData) ->
     dg_read_field_def_VehiclePosition(Other, Z1, Z2, F@_1,
 				      F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				      F@_9, TrUserData).
+				      F@_9, F@_10, TrUserData).
 
 dg_read_field_def_VehiclePosition(<<1:1, X:7,
 				    Rest/binary>>,
 				  N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				  F@_7, F@_8, F@_9, TrUserData)
+				  F@_7, F@_8, F@_9, F@_10, TrUserData)
     when N < 32 - 7 ->
     dg_read_field_def_VehiclePosition(Rest, N + 7,
 				      X bsl N + Acc, F@_1, F@_2, F@_3, F@_4,
-				      F@_5, F@_6, F@_7, F@_8, F@_9, TrUserData);
+				      F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+				      TrUserData);
 dg_read_field_def_VehiclePosition(<<0:1, X:7,
 				    Rest/binary>>,
 				  N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				  F@_7, F@_8, F@_9, TrUserData) ->
+				  F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     Key = X bsl N + Acc,
     case Key of
       10 ->
 	  d_field_VehiclePosition_trip(Rest, 0, 0, F@_1, F@_2,
 				       F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
-				       TrUserData);
+				       F@_10, TrUserData);
       66 ->
 	  d_field_VehiclePosition_vehicle(Rest, 0, 0, F@_1, F@_2,
 					  F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-					  F@_9, TrUserData);
+					  F@_9, F@_10, TrUserData);
       18 ->
 	  d_field_VehiclePosition_position(Rest, 0, 0, F@_1, F@_2,
 					   F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-					   F@_9, TrUserData);
+					   F@_9, F@_10, TrUserData);
       24 ->
 	  d_field_VehiclePosition_current_stop_sequence(Rest, 0,
 							0, F@_1, F@_2, F@_3,
 							F@_4, F@_5, F@_6, F@_7,
-							F@_8, F@_9, TrUserData);
+							F@_8, F@_9, F@_10,
+							TrUserData);
       58 ->
 	  d_field_VehiclePosition_stop_id(Rest, 0, 0, F@_1, F@_2,
 					  F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-					  F@_9, TrUserData);
+					  F@_9, F@_10, TrUserData);
       32 ->
 	  d_field_VehiclePosition_current_status(Rest, 0, 0, F@_1,
 						 F@_2, F@_3, F@_4, F@_5, F@_6,
-						 F@_7, F@_8, F@_9, TrUserData);
+						 F@_7, F@_8, F@_9, F@_10,
+						 TrUserData);
       40 ->
 	  d_field_VehiclePosition_timestamp(Rest, 0, 0, F@_1,
 					    F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-					    F@_8, F@_9, TrUserData);
+					    F@_8, F@_9, F@_10, TrUserData);
       48 ->
 	  d_field_VehiclePosition_congestion_level(Rest, 0, 0,
 						   F@_1, F@_2, F@_3, F@_4, F@_5,
 						   F@_6, F@_7, F@_8, F@_9,
-						   TrUserData);
+						   F@_10, TrUserData);
       72 ->
 	  d_field_VehiclePosition_occupancy_status(Rest, 0, 0,
 						   F@_1, F@_2, F@_3, F@_4, F@_5,
 						   F@_6, F@_7, F@_8, F@_9,
-						   TrUserData);
+						   F@_10, TrUserData);
+      80 ->
+	  d_field_VehiclePosition_occupancy_percentage(Rest, 0, 0,
+						       F@_1, F@_2, F@_3, F@_4,
+						       F@_5, F@_6, F@_7, F@_8,
+						       F@_9, F@_10, TrUserData);
       _ ->
 	  case Key band 7 of
 	    0 ->
 		skip_varint_VehiclePosition(Rest, 0, 0, F@_1, F@_2,
 					    F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-					    F@_9, TrUserData);
+					    F@_9, F@_10, TrUserData);
 	    1 ->
 		skip_64_VehiclePosition(Rest, 0, 0, F@_1, F@_2, F@_3,
 					F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
-					TrUserData);
+					F@_10, TrUserData);
 	    2 ->
 		skip_length_delimited_VehiclePosition(Rest, 0, 0, F@_1,
 						      F@_2, F@_3, F@_4, F@_5,
 						      F@_6, F@_7, F@_8, F@_9,
-						      TrUserData);
+						      F@_10, TrUserData);
 	    3 ->
 		skip_group_VehiclePosition(Rest, Key bsr 3, 0, F@_1,
 					   F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-					   F@_8, F@_9, TrUserData);
+					   F@_8, F@_9, F@_10, TrUserData);
 	    5 ->
 		skip_32_VehiclePosition(Rest, 0, 0, F@_1, F@_2, F@_3,
 					F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
-					TrUserData)
+					F@_10, TrUserData)
 	  end
     end;
 dg_read_field_def_VehiclePosition(<<>>, 0, 0, F@_1,
 				  F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				  F@_9, _) ->
+				  F@_9, F@_10, _) ->
     S1 = #{},
     S2 = if F@_1 == '$undef' -> S1;
 	    true -> S1#{trip => F@_1}
@@ -3033,20 +3063,23 @@ dg_read_field_def_VehiclePosition(<<>>, 0, 0, F@_1,
     S9 = if F@_8 == '$undef' -> S8;
 	    true -> S8#{congestion_level => F@_8}
 	 end,
-    if F@_9 == '$undef' -> S9;
-       true -> S9#{occupancy_status => F@_9}
+    S10 = if F@_9 == '$undef' -> S9;
+	     true -> S9#{occupancy_status => F@_9}
+	  end,
+    if F@_10 == '$undef' -> S10;
+       true -> S10#{occupancy_percentage => F@_10}
     end.
 
 d_field_VehiclePosition_trip(<<1:1, X:7, Rest/binary>>,
 			     N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			     F@_8, F@_9, TrUserData)
+			     F@_8, F@_9, F@_10, TrUserData)
     when N < 57 ->
     d_field_VehiclePosition_trip(Rest, N + 7, X bsl N + Acc,
 				 F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				 F@_9, TrUserData);
+				 F@_9, F@_10, TrUserData);
 d_field_VehiclePosition_trip(<<0:1, X:7, Rest/binary>>,
 			     N, Acc, Prev, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			     F@_8, F@_9, TrUserData) ->
+			     F@_8, F@_9, F@_10, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -3062,20 +3095,20 @@ d_field_VehiclePosition_trip(<<0:1, X:7, Rest/binary>>,
 								       TrUserData)
 				       end,
 				       F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				       F@_9, TrUserData).
+				       F@_9, F@_10, TrUserData).
 
 d_field_VehiclePosition_vehicle(<<1:1, X:7,
 				  Rest/binary>>,
 				N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				F@_7, F@_8, F@_9, TrUserData)
+				F@_7, F@_8, F@_9, F@_10, TrUserData)
     when N < 57 ->
     d_field_VehiclePosition_vehicle(Rest, N + 7,
 				    X bsl N + Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
-				    F@_6, F@_7, F@_8, F@_9, TrUserData);
+				    F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
 d_field_VehiclePosition_vehicle(<<0:1, X:7,
 				  Rest/binary>>,
 				N, Acc, F@_1, Prev, F@_3, F@_4, F@_5, F@_6,
-				F@_7, F@_8, F@_9, TrUserData) ->
+				F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -3091,20 +3124,21 @@ d_field_VehiclePosition_vehicle(<<0:1, X:7,
 									  TrUserData)
 				       end,
 				       F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
-				       TrUserData).
+				       F@_10, TrUserData).
 
 d_field_VehiclePosition_position(<<1:1, X:7,
 				   Rest/binary>>,
 				 N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				 F@_7, F@_8, F@_9, TrUserData)
+				 F@_7, F@_8, F@_9, F@_10, TrUserData)
     when N < 57 ->
     d_field_VehiclePosition_position(Rest, N + 7,
 				     X bsl N + Acc, F@_1, F@_2, F@_3, F@_4,
-				     F@_5, F@_6, F@_7, F@_8, F@_9, TrUserData);
+				     F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+				     TrUserData);
 d_field_VehiclePosition_position(<<0:1, X:7,
 				   Rest/binary>>,
 				 N, Acc, F@_1, F@_2, Prev, F@_4, F@_5, F@_6,
-				 F@_7, F@_8, F@_9, TrUserData) ->
+				 F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -3120,41 +3154,42 @@ d_field_VehiclePosition_position(<<0:1, X:7,
 								 TrUserData)
 				       end,
 				       F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
-				       TrUserData).
+				       F@_10, TrUserData).
 
 d_field_VehiclePosition_current_stop_sequence(<<1:1,
 						X:7, Rest/binary>>,
 					      N, Acc, F@_1, F@_2, F@_3, F@_4,
 					      F@_5, F@_6, F@_7, F@_8, F@_9,
-					      TrUserData)
+					      F@_10, TrUserData)
     when N < 57 ->
     d_field_VehiclePosition_current_stop_sequence(Rest,
 						  N + 7, X bsl N + Acc, F@_1,
 						  F@_2, F@_3, F@_4, F@_5, F@_6,
-						  F@_7, F@_8, F@_9, TrUserData);
+						  F@_7, F@_8, F@_9, F@_10,
+						  TrUserData);
 d_field_VehiclePosition_current_stop_sequence(<<0:1,
 						X:7, Rest/binary>>,
 					      N, Acc, F@_1, F@_2, F@_3, _, F@_5,
-					      F@_6, F@_7, F@_8, F@_9,
+					      F@_6, F@_7, F@_8, F@_9, F@_10,
 					      TrUserData) ->
     {NewFValue, RestF} = {id(X bsl N + Acc, TrUserData),
 			  Rest},
     dfp_read_field_def_VehiclePosition(RestF, 0, 0, F@_1,
 				       F@_2, F@_3, NewFValue, F@_5, F@_6, F@_7,
-				       F@_8, F@_9, TrUserData).
+				       F@_8, F@_9, F@_10, TrUserData).
 
 d_field_VehiclePosition_stop_id(<<1:1, X:7,
 				  Rest/binary>>,
 				N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				F@_7, F@_8, F@_9, TrUserData)
+				F@_7, F@_8, F@_9, F@_10, TrUserData)
     when N < 57 ->
     d_field_VehiclePosition_stop_id(Rest, N + 7,
 				    X bsl N + Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
-				    F@_6, F@_7, F@_8, F@_9, TrUserData);
+				    F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData);
 d_field_VehiclePosition_stop_id(<<0:1, X:7,
 				  Rest/binary>>,
 				N, Acc, F@_1, F@_2, F@_3, F@_4, _, F@_6, F@_7,
-				F@_8, F@_9, TrUserData) ->
+				F@_8, F@_9, F@_10, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bytes:Len/binary, Rest2/binary>> = Rest,
@@ -3162,21 +3197,22 @@ d_field_VehiclePosition_stop_id(<<0:1, X:7,
 			 end,
     dfp_read_field_def_VehiclePosition(RestF, 0, 0, F@_1,
 				       F@_2, F@_3, F@_4, NewFValue, F@_6, F@_7,
-				       F@_8, F@_9, TrUserData).
+				       F@_8, F@_9, F@_10, TrUserData).
 
 d_field_VehiclePosition_current_status(<<1:1, X:7,
 					 Rest/binary>>,
 				       N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
-				       F@_6, F@_7, F@_8, F@_9, TrUserData)
+				       F@_6, F@_7, F@_8, F@_9, F@_10,
+				       TrUserData)
     when N < 57 ->
     d_field_VehiclePosition_current_status(Rest, N + 7,
 					   X bsl N + Acc, F@_1, F@_2, F@_3,
 					   F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
-					   TrUserData);
+					   F@_10, TrUserData);
 d_field_VehiclePosition_current_status(<<0:1, X:7,
 					 Rest/binary>>,
 				       N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, _,
-				       F@_7, F@_8, F@_9, TrUserData) ->
+				       F@_7, F@_8, F@_9, F@_10, TrUserData) ->
     {NewFValue, RestF} =
 	{id('d_enum_VehiclePosition.VehicleStopStatus'(begin
 							 <<Res:32/signed-native>> =
@@ -3188,39 +3224,42 @@ d_field_VehiclePosition_current_status(<<0:1, X:7,
 	 Rest},
     dfp_read_field_def_VehiclePosition(RestF, 0, 0, F@_1,
 				       F@_2, F@_3, F@_4, F@_5, NewFValue, F@_7,
-				       F@_8, F@_9, TrUserData).
+				       F@_8, F@_9, F@_10, TrUserData).
 
 d_field_VehiclePosition_timestamp(<<1:1, X:7,
 				    Rest/binary>>,
 				  N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6,
-				  F@_7, F@_8, F@_9, TrUserData)
+				  F@_7, F@_8, F@_9, F@_10, TrUserData)
     when N < 57 ->
     d_field_VehiclePosition_timestamp(Rest, N + 7,
 				      X bsl N + Acc, F@_1, F@_2, F@_3, F@_4,
-				      F@_5, F@_6, F@_7, F@_8, F@_9, TrUserData);
+				      F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
+				      TrUserData);
 d_field_VehiclePosition_timestamp(<<0:1, X:7,
 				    Rest/binary>>,
 				  N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, _,
-				  F@_8, F@_9, TrUserData) ->
+				  F@_8, F@_9, F@_10, TrUserData) ->
     {NewFValue, RestF} = {id(X bsl N + Acc, TrUserData),
 			  Rest},
     dfp_read_field_def_VehiclePosition(RestF, 0, 0, F@_1,
 				       F@_2, F@_3, F@_4, F@_5, F@_6, NewFValue,
-				       F@_8, F@_9, TrUserData).
+				       F@_8, F@_9, F@_10, TrUserData).
 
 d_field_VehiclePosition_congestion_level(<<1:1, X:7,
 					   Rest/binary>>,
 					 N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
-					 F@_6, F@_7, F@_8, F@_9, TrUserData)
+					 F@_6, F@_7, F@_8, F@_9, F@_10,
+					 TrUserData)
     when N < 57 ->
     d_field_VehiclePosition_congestion_level(Rest, N + 7,
 					     X bsl N + Acc, F@_1, F@_2, F@_3,
 					     F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
-					     TrUserData);
+					     F@_10, TrUserData);
 d_field_VehiclePosition_congestion_level(<<0:1, X:7,
 					   Rest/binary>>,
 					 N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
-					 F@_6, F@_7, _, F@_9, TrUserData) ->
+					 F@_6, F@_7, _, F@_9, F@_10,
+					 TrUserData) ->
     {NewFValue, RestF} =
 	{id('d_enum_VehiclePosition.CongestionLevel'(begin
 						       <<Res:32/signed-native>> =
@@ -3232,21 +3271,23 @@ d_field_VehiclePosition_congestion_level(<<0:1, X:7,
 	 Rest},
     dfp_read_field_def_VehiclePosition(RestF, 0, 0, F@_1,
 				       F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-				       NewFValue, F@_9, TrUserData).
+				       NewFValue, F@_9, F@_10, TrUserData).
 
 d_field_VehiclePosition_occupancy_status(<<1:1, X:7,
 					   Rest/binary>>,
 					 N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
-					 F@_6, F@_7, F@_8, F@_9, TrUserData)
+					 F@_6, F@_7, F@_8, F@_9, F@_10,
+					 TrUserData)
     when N < 57 ->
     d_field_VehiclePosition_occupancy_status(Rest, N + 7,
 					     X bsl N + Acc, F@_1, F@_2, F@_3,
 					     F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
-					     TrUserData);
+					     F@_10, TrUserData);
 d_field_VehiclePosition_occupancy_status(<<0:1, X:7,
 					   Rest/binary>>,
 					 N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
-					 F@_6, F@_7, F@_8, _, TrUserData) ->
+					 F@_6, F@_7, F@_8, _, F@_10,
+					 TrUserData) ->
     {NewFValue, RestF} =
 	{id('d_enum_VehiclePosition.OccupancyStatus'(begin
 						       <<Res:32/signed-native>> =
@@ -3258,61 +3299,84 @@ d_field_VehiclePosition_occupancy_status(<<0:1, X:7,
 	 Rest},
     dfp_read_field_def_VehiclePosition(RestF, 0, 0, F@_1,
 				       F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				       NewFValue, TrUserData).
+				       NewFValue, F@_10, TrUserData).
+
+d_field_VehiclePosition_occupancy_percentage(<<1:1, X:7,
+					       Rest/binary>>,
+					     N, Acc, F@_1, F@_2, F@_3, F@_4,
+					     F@_5, F@_6, F@_7, F@_8, F@_9,
+					     F@_10, TrUserData)
+    when N < 57 ->
+    d_field_VehiclePosition_occupancy_percentage(Rest,
+						 N + 7, X bsl N + Acc, F@_1,
+						 F@_2, F@_3, F@_4, F@_5, F@_6,
+						 F@_7, F@_8, F@_9, F@_10,
+						 TrUserData);
+d_field_VehiclePosition_occupancy_percentage(<<0:1, X:7,
+					       Rest/binary>>,
+					     N, Acc, F@_1, F@_2, F@_3, F@_4,
+					     F@_5, F@_6, F@_7, F@_8, F@_9, _,
+					     TrUserData) ->
+    {NewFValue, RestF} = {id(X bsl N + Acc, TrUserData),
+			  Rest},
+    dfp_read_field_def_VehiclePosition(RestF, 0, 0, F@_1,
+				       F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
+				       F@_9, NewFValue, TrUserData).
 
 skip_varint_VehiclePosition(<<1:1, _:7, Rest/binary>>,
 			    Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			    F@_8, F@_9, TrUserData) ->
+			    F@_8, F@_9, F@_10, TrUserData) ->
     skip_varint_VehiclePosition(Rest, Z1, Z2, F@_1, F@_2,
-				F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+				F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
 				TrUserData);
 skip_varint_VehiclePosition(<<0:1, _:7, Rest/binary>>,
 			    Z1, Z2, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			    F@_8, F@_9, TrUserData) ->
+			    F@_8, F@_9, F@_10, TrUserData) ->
     dfp_read_field_def_VehiclePosition(Rest, Z1, Z2, F@_1,
 				       F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				       F@_9, TrUserData).
+				       F@_9, F@_10, TrUserData).
 
 skip_length_delimited_VehiclePosition(<<1:1, X:7,
 					Rest/binary>>,
 				      N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
-				      F@_6, F@_7, F@_8, F@_9, TrUserData)
+				      F@_6, F@_7, F@_8, F@_9, F@_10, TrUserData)
     when N < 57 ->
     skip_length_delimited_VehiclePosition(Rest, N + 7,
 					  X bsl N + Acc, F@_1, F@_2, F@_3, F@_4,
-					  F@_5, F@_6, F@_7, F@_8, F@_9,
+					  F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
 					  TrUserData);
 skip_length_delimited_VehiclePosition(<<0:1, X:7,
 					Rest/binary>>,
 				      N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
-				      F@_6, F@_7, F@_8, F@_9, TrUserData) ->
+				      F@_6, F@_7, F@_8, F@_9, F@_10,
+				      TrUserData) ->
     Length = X bsl N + Acc,
     <<_:Length/binary, Rest2/binary>> = Rest,
     dfp_read_field_def_VehiclePosition(Rest2, 0, 0, F@_1,
 				       F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				       F@_9, TrUserData).
+				       F@_9, F@_10, TrUserData).
 
 skip_group_VehiclePosition(Bin, FNum, Z2, F@_1, F@_2,
-			   F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
+			   F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9, F@_10,
 			   TrUserData) ->
     {_, Rest} = read_group(Bin, FNum),
     dfp_read_field_def_VehiclePosition(Rest, 0, Z2, F@_1,
 				       F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				       F@_9, TrUserData).
+				       F@_9, F@_10, TrUserData).
 
 skip_32_VehiclePosition(<<_:32, Rest/binary>>, Z1, Z2,
 			F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
-			TrUserData) ->
+			F@_10, TrUserData) ->
     dfp_read_field_def_VehiclePosition(Rest, Z1, Z2, F@_1,
 				       F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				       F@_9, TrUserData).
+				       F@_9, F@_10, TrUserData).
 
 skip_64_VehiclePosition(<<_:64, Rest/binary>>, Z1, Z2,
 			F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8, F@_9,
-			TrUserData) ->
+			F@_10, TrUserData) ->
     dfp_read_field_def_VehiclePosition(Rest, Z1, Z2, F@_1,
 				       F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, F@_8,
-				       F@_9, TrUserData).
+				       F@_9, F@_10, TrUserData).
 
 decode_msg_Alert(Bin, TrUserData) ->
     dfp_read_field_def_Alert(Bin, 0, 0, id([], TrUserData),
@@ -5780,12 +5844,21 @@ merge_msg_VehiclePosition(PMsg, NMsg, TrUserData) ->
 	       S8#{congestion_level => PFcongestion_level};
 	   _ -> S8
 	 end,
+    S10 = case {PMsg, NMsg} of
+	    {_, #{occupancy_status := NFoccupancy_status}} ->
+		S9#{occupancy_status => NFoccupancy_status};
+	    {#{occupancy_status := PFoccupancy_status}, _} ->
+		S9#{occupancy_status => PFoccupancy_status};
+	    _ -> S9
+	  end,
     case {PMsg, NMsg} of
-      {_, #{occupancy_status := NFoccupancy_status}} ->
-	  S9#{occupancy_status => NFoccupancy_status};
-      {#{occupancy_status := PFoccupancy_status}, _} ->
-	  S9#{occupancy_status => PFoccupancy_status};
-      _ -> S9
+      {_,
+       #{occupancy_percentage := NFoccupancy_percentage}} ->
+	  S10#{occupancy_percentage => NFoccupancy_percentage};
+      {#{occupancy_percentage := PFoccupancy_percentage},
+       _} ->
+	  S10#{occupancy_percentage => PFoccupancy_percentage};
+      _ -> S10
     end.
 
 -compile({nowarn_unused_function,merge_msg_Alert/3}).
@@ -6429,6 +6502,12 @@ v_msg_VehiclePosition(#{} = M, Path, TrUserData) ->
 						   TrUserData);
       _ -> ok
     end,
+    case M of
+      #{occupancy_percentage := F10} ->
+	  v_type_uint32(F10, [occupancy_percentage | Path],
+			TrUserData);
+      _ -> ok
+    end,
     lists:foreach(fun (trip) -> ok;
 		      (vehicle) -> ok;
 		      (position) -> ok;
@@ -6438,6 +6517,7 @@ v_msg_VehiclePosition(#{} = M, Path, TrUserData) ->
 		      (timestamp) -> ok;
 		      (congestion_level) -> ok;
 		      (occupancy_status) -> ok;
+		      (occupancy_percentage) -> ok;
 		      (OtherKey) ->
 			  mk_type_error({extraneous_key, OtherKey}, M, Path)
 		  end,
@@ -7359,7 +7439,9 @@ get_msg_defs() ->
 	{occurrence, optional}, {opts, []}],
        [{name, occupancy_status}, {fnum, 9}, {rnum, 10},
 	{type, {enum, 'VehiclePosition.OccupancyStatus'}},
-	{occurrence, optional}, {opts, []}]]},
+	{occurrence, optional}, {opts, []}],
+       [{name, occupancy_percentage}, {fnum, 10}, {rnum, 11},
+	{type, uint32}, {occurrence, optional}, {opts, []}]]},
      {{msg, 'Alert'},
       [[{name, active_period}, {fnum, 1}, {rnum, 2},
 	{type, {msg, 'TimeRange'}}, {occurrence, repeated},
@@ -7592,7 +7674,9 @@ find_msg_def('VehiclePosition') ->
       {occurrence, optional}, {opts, []}],
      [{name, occupancy_status}, {fnum, 9}, {rnum, 10},
       {type, {enum, 'VehiclePosition.OccupancyStatus'}},
-      {occurrence, optional}, {opts, []}]];
+      {occurrence, optional}, {opts, []}],
+     [{name, occupancy_percentage}, {fnum, 10}, {rnum, 11},
+      {type, uint32}, {occurrence, optional}, {opts, []}]];
 find_msg_def('Alert') ->
     [[{name, active_period}, {fnum, 1}, {rnum, 2},
       {type, {msg, 'TimeRange'}}, {occurrence, repeated},

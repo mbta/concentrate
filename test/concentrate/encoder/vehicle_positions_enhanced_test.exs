@@ -8,7 +8,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
   alias VehiclePosition.Consist, as: VehiclePositionConsist
 
   describe "encode/1" do
-    test "includes consist data if present" do
+    test "includes consist/occupancy data if present" do
       data = [
         TripUpdate.new(trip_id: "one", vehicle_id: "y1"),
         VehiclePosition.new(trip_id: "one", id: "y1", latitude: 1, longitude: 1),
@@ -18,6 +18,8 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
           id: "y2",
           latitude: 2,
           longitude: 2,
+          occupancy_status: :FULL,
+          occupancy_percentage: 101,
           consist: [
             VehiclePositionConsist.new(label: "y2-1"),
             VehiclePositionConsist.new(label: "y2-2")

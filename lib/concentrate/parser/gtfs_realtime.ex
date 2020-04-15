@@ -79,7 +79,9 @@ defmodule Concentrate.Parser.GTFSRealtime do
             odometer: Map.get(position, :odometer),
             status: Map.get(vp, :current_status),
             stop_sequence: Map.get(vp, :current_stop_sequence),
-            last_updated: timestamp
+            last_updated: timestamp,
+            occupancy_status: Map.get(vp, :occupancy_status),
+            occupancy_percentage: Map.get(vp, :occupancy_percentage)
           )
         ]
     else

@@ -154,7 +154,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
             status: vehicle_status(Map.get(vp, "current_status")),
             stop_sequence: Map.get(vp, "current_stop_sequence"),
             last_updated: timestamp,
-            consist: decode_consist(Map.get(vehicle, "consist"))
+            consist: decode_consist(Map.get(vehicle, "consist")),
+            occupancy_status: occupancy_status(Map.get(vp, "occupancy_status")),
+            occupancy_percentage: Map.get(vp, "occupancy_percentage")
           )
         ]
 
@@ -230,6 +232,14 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   for status <- ~w(INCOMING_AT STOPPED_AT IN_TRANSIT_TO)a do
     defp vehicle_status(unquote(Atom.to_string(status))), do: unquote(status)
+  end
+
+  defp occupancy_status(nil), do: nil
+
+  for status <-
+        ~w(EMPTY MANY_SEATS_AVAILABLE FEW_SEATS_AVAILABLE STANDING_ROOM_ONLY
+           CRUSHED_STANDING_ROOM_ONLY FULL NOT_ACCEPTING_PASSENGERS)a do
+    defp occupancy_status(unquote(Atom.to_string(status))), do: unquote(status)
   end
 
   for effect <- ~w(
