@@ -30,7 +30,6 @@ config :concentrate,
   group_filters: [
     Concentrate.GroupFilter.TimeOutOfRange,
     Concentrate.GroupFilter.RemoveUnneededTimes,
-    Concentrate.GroupFilter.VehiclePastStop,
     Concentrate.GroupFilter.Shuttle,
     Concentrate.GroupFilter.SkippedDepartures,
     Concentrate.GroupFilter.CancelledTrip,
