@@ -25,6 +25,14 @@ defmodule Concentrate.TripUpdate do
     def key(%{trip_id: trip_id}), do: trip_id
 
     def merge(first, second) do
+      if {first.start_date, first.start_time} > {second.start_date, second.start_time} do
+        do_merge(first, second)
+      else
+        do_merge(second, first)
+      end
+    end
+
+    def do_merge(first, second) do
       %{
         first
         | route_id: first.route_id || second.route_id,
