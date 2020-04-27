@@ -1,6 +1,7 @@
 defmodule Concentrate.Parser.GTFSRealtimeTest do
   @moduledoc false
   use ExUnit.Case, async: true
+  import ExUnit.CaptureLog
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtime
   alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate, Alert}
@@ -283,7 +284,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         position: %{latitude: 1, longitude: 1}
       }
 
-      assert [] = decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}})
+      assert [] = decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}}, 0)
     end
 
     test "includes trip/vehicle if we're keeping the route" do
@@ -293,7 +294,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         position: %{latitude: 1, longitude: 1}
       }
 
-      assert [_, _] = decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}})
+      assert [_, _] = decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}}, 0)
     end
 
     test "includes timestamp if available" do
@@ -304,8 +305,26 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         position: %{latitude: 1, longitude: 1}
       }
 
-      assert [tu, _] = decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}})
+      assert [tu, _] =
+               decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}}, 1_534_340_506)
+
       assert TripUpdate.timestamp(tu) == 1_534_340_406
+    end
+
+    test "logs if vehicle timestamp is later than feed timestamp" do
+      position = %{
+        timestamp: 1_534_340_406,
+        trip: %{route_id: "keeping"},
+        vehicle: %{},
+        position: %{latitude: 1, longitude: 1}
+      }
+
+      log =
+        capture_log([level: :warn], fn ->
+          decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}}, 1_534_340_306)
+        end)
+
+      assert log =~ "vehicle timestamp after feed timestamp"
     end
   end
 end
