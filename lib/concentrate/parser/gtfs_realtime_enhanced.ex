@@ -21,29 +21,33 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     end
   end
 
+  @spec decode_entities(map(), Helpers.Options.t()) :: [any()]
   defp decode_entities(%{"alerts" => alerts}, options) do
     for %{"id" => id} = alert <- alerts,
-        decoded <- decode_feed_entity(%{"id" => id, "alert" => alert}, options) do
+        decoded <- decode_feed_entity(%{"id" => id, "alert" => alert}, options, nil) do
       decoded
     end
   end
 
-  defp decode_entities(%{"entity" => entities}, options) do
+  defp decode_entities(%{"entity" => entities} = json, options) do
+    feed_timestamp = get_in(json, ["header", "timestamp"])
+
     for entity <- entities,
-        decoded <- decode_feed_entity(entity, options) do
+        decoded <- decode_feed_entity(entity, options, feed_timestamp) do
       decoded
     end
   end
 
-  defp decode_feed_entity(%{"trip_update" => %{} = trip_update}, options) do
+  @spec decode_feed_entity(map(), Helpers.Options.t(), integer | nil) :: [any()]
+  defp decode_feed_entity(%{"trip_update" => %{} = trip_update}, options, _feed_timestamp) do
     decode_trip_update(trip_update, options)
   end
 
-  defp decode_feed_entity(%{"vehicle" => %{} = vehicle}, _options) do
-    decode_vehicle(vehicle)
+  defp decode_feed_entity(%{"vehicle" => %{} = vehicle}, options, feed_timestamp) do
+    decode_vehicle(vehicle, options.feed_url, feed_timestamp)
   end
 
-  defp decode_feed_entity(%{"id" => id, "alert" => %{} = alert}, _options) do
+  defp decode_feed_entity(%{"id" => id, "alert" => %{} = alert}, _options, _feed_timestamp) do
     [
       Alert.new(
         id: id,
@@ -59,7 +63,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     ]
   end
 
-  defp decode_feed_entity(_, _) do
+  defp decode_feed_entity(_, _, _) do
     []
   end
 
@@ -117,16 +121,27 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     end
   end
 
-  def decode_vehicle(vp) do
+  @spec decode_vehicle(map(), String.t() | nil, integer | nil) :: [any()]
+  def decode_vehicle(vp, feed_url, feed_timestamp) do
     position = Map.get(vp, "position", %{})
     vehicle = Map.get(vp, "vehicle", %{})
+    id = Map.get(vehicle, "id")
+    timestamp = Map.get(vp, "timestamp")
+
+    if is_integer(timestamp) && is_integer(feed_timestamp) && timestamp > feed_timestamp do
+      Logger.warn(
+        "vehicle timestamp after feed timestamp feed_url=#{inspect(feed_url)} vehicle_id=#{
+          inspect(id)
+        } feed_timestamp=#{inspect(feed_timestamp)} vehicle_timestamp=#{inspect(timestamp)}"
+      )
+    end
 
     case decode_trip_descriptor(vp) do
       [trip] ->
         [
           trip,
           VehiclePosition.new(
-            id: Map.get(vehicle, "id"),
+            id: id,
             trip_id: TripUpdate.trip_id(trip),
             stop_id: Map.get(vp, "stop_id"),
             label: Map.get(vehicle, "label"),
@@ -138,7 +153,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
             odometer: Map.get(position, "odometer"),
             status: vehicle_status(Map.get(vp, "current_status")),
             stop_sequence: Map.get(vp, "current_stop_sequence"),
-            last_updated: Map.get(vp, "timestamp"),
+            last_updated: timestamp,
             consist: decode_consist(Map.get(vehicle, "consist"))
           )
         ]
