@@ -1,6 +1,7 @@
 defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
   @moduledoc false
-  use ExUnit.Case, async: true
+  use ExUnit.Case
+  import ExUnit.CaptureLog
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtimeEnhanced
 
@@ -266,9 +267,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     end
   end
 
-  describe "decode_vehicle/1" do
+  describe "decode_vehicle/3" do
     test "returns nothing if there's an empty map" do
-      assert decode_vehicle(%{}) == []
+      assert decode_vehicle(%{}, nil, nil) == []
     end
 
     test "decodes a VehiclePosition JSON map" do
@@ -301,7 +302,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         }
       }
 
-      assert [tu, vp] = decode_vehicle(map)
+      assert [tu, vp] = decode_vehicle(map, nil, nil)
 
       assert tu ==
                TripUpdate.new(
@@ -356,12 +357,44 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         }
       }
 
-      assert [_tu, vp] = decode_vehicle(map)
+      assert [_tu, vp] = decode_vehicle(map, nil, nil)
 
       assert VehiclePosition.consist(vp) == [
                VehiclePosition.Consist.new(label: "3823"),
                VehiclePosition.Consist.new(label: "3605")
              ]
+    end
+
+    test "logs when vehicle timestamp is later than feed timestamp" do
+      map = %{
+        "congestion_level" => nil,
+        "current_status" => "STOPPED_AT",
+        "current_stop_sequence" => 670,
+        "occupancy_status" => nil,
+        "position" => %{
+          "bearing" => 135,
+          "latitude" => 42.32951,
+          "longitude" => -71.11109,
+          "odometer" => nil,
+          "speed" => nil
+        },
+        "stop_id" => "70257",
+        "timestamp" => 1_534_340_406,
+        "trip" => %{},
+        "vehicle" => %{
+          "id" => "G-10098",
+          "label" => "3823-3605",
+          "license_plate" => nil,
+          "consist" => [
+            %{"label" => "3823"},
+            %{"label" => "3605"}
+          ]
+        }
+      }
+
+      log = capture_log([level: :warn], fn -> decode_vehicle(map, "test_url", 1_534_340_306) end)
+
+      assert log =~ "vehicle timestamp after feed timestamp"
     end
   end
 end
