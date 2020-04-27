@@ -10,9 +10,14 @@ defmodule Concentrate.Parser.Helpers do
             routes: :all | {:ok, MapSet.t()},
             excluded_routes: :none | {:ok, MapSet.t()},
             max_time: :infinity | non_neg_integer,
-            drop_fields: drop_fields
+            drop_fields: drop_fields,
+            feed_url: String.t() | nil
           }
-    defstruct routes: :all, excluded_routes: :none, max_time: :infinity, drop_fields: %{}
+    defstruct routes: :all,
+              excluded_routes: :none,
+              max_time: :infinity,
+              drop_fields: %{},
+              feed_url: nil
   end
 
   alias __MODULE__.Options
@@ -51,6 +56,10 @@ defmodule Concentrate.Parser.Helpers do
   defp parse_options([{:max_future_time, seconds} | rest], acc) do
     max_time = :os.system_time(:seconds) + seconds
     parse_options(rest, %{acc | max_time: max_time})
+  end
+
+  defp parse_options([{:feed_url, url} | rest], acc) do
+    parse_options(rest, %{acc | feed_url: url})
   end
 
   defp parse_options([_ | rest], acc) do

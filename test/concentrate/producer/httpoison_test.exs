@@ -1,13 +1,18 @@
 defmodule Concentrate.Producer.HTTPoisonTest do
   @moduledoc false
   use ExUnit.Case
+  require Logger
+  import ExUnit.CaptureLog
   import Concentrate.Producer.HTTPoison
   alias Concentrate.Producer.HTTPoison.StateMachine
   import Plug.Conn, only: [get_req_header: 2, put_resp_header: 3, send_resp: 3]
 
   defmodule TestParser do
     @behaviour Concentrate.Parser
-    def parse(_body, _opts), do: []
+    def parse(_body, opts) do
+      opts |> IO.inspect() |> Logger.info()
+      []
+    end
   end
 
   setup_all do
@@ -32,11 +37,15 @@ defmodule Concentrate.Producer.HTTPoisonTest do
     test "parser can be a module" do
       assert {:producer, state, _} = init({"url", parser: __MODULE__.TestParser})
       assert is_function(state.machine.parser, 1)
+      log = capture_log([level: :info], fn -> state.machine.parser.("") end)
+      assert log =~ "url"
     end
 
     test "parser can be a module with options" do
       assert {:producer, state, _} = init({"url", parser: {__MODULE__.TestParser, [opt: 1]}})
       assert is_function(state.machine.parser, 1)
+      log = capture_log([level: :info], fn -> state.machine.parser.("") end)
+      assert log =~ "url"
     end
   end
 

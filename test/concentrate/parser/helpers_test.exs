@@ -24,4 +24,11 @@ defmodule Concentrate.Parser.HelpersTest do
       assert VehiclePosition.speed(new_vp) == nil
     end
   end
+
+  describe "parse_options/1" do
+    test "handles feed_url option" do
+      assert %Concentrate.Parser.Helpers.Options{feed_url: "url"} =
+               Concentrate.Parser.Helpers.parse_options(feed_url: "url")
+    end
+  end
 end
