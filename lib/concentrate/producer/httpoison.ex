@@ -27,10 +27,10 @@ defmodule Concentrate.Producer.HTTPoison do
     parser =
       case Keyword.fetch!(opts, :parser) do
         module when is_atom(module) ->
-          &module.parse(&1, [])
+          &module.parse(&1, feed_url: url)
 
         {module, opts} when is_atom(module) and is_list(opts) ->
-          &module.parse(&1, opts)
+          &module.parse(&1, [feed_url: url] ++ opts)
 
         fun when is_function(fun, 1) ->
           fun
