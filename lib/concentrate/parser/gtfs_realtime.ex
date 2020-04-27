@@ -4,6 +4,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
   """
   @behaviour Concentrate.Parser
   alias Concentrate.Parser.Helpers
+  require Logger
 
   alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripUpdate, VehiclePosition}
   @impl Concentrate.Parser
@@ -11,28 +12,38 @@ defmodule Concentrate.Parser.GTFSRealtime do
     options = Helpers.parse_options(opts)
     message = :gtfs_realtime_proto.decode_msg(binary, :FeedMessage, [])
 
+    feed_timestamp = message.header.timestamp
+
     message.entity
-    |> Enum.flat_map(&decode_feed_entity(&1, options))
+    |> Enum.flat_map(&decode_feed_entity(&1, options, feed_timestamp))
     |> Helpers.drop_fields(options.drop_fields)
   end
 
-  def decode_feed_entity(entity, options) do
-    vp = decode_vehicle(Map.get(entity, :vehicle), options)
+  @spec decode_feed_entity(map(), Helpers.Options.t(), integer | nil) :: [any()]
+  def decode_feed_entity(entity, options, feed_timestamp) do
+    vp = decode_vehicle(Map.get(entity, :vehicle), options, feed_timestamp)
     stop_updates = decode_trip_update(Map.get(entity, :trip_update), options)
     alerts = decode_alert(entity)
     List.flatten([alerts, vp, stop_updates])
   end
 
-  def decode_vehicle(nil, _opts) do
+  @spec decode_vehicle(map() | nil, Helpers.Options.t(), integer | nil) :: [any()]
+  def decode_vehicle(nil, _opts, _feed_timestamp) do
     []
   end
 
-  def decode_vehicle(vp, options) do
+  def decode_vehicle(vp, options, feed_timestamp) do
     tu = decode_trip_descriptor(vp)
-    decode_vehicle_position(tu, vp, options)
+    decode_vehicle_position(tu, vp, options, feed_timestamp)
   end
 
-  defp decode_vehicle_position(tu, vp, options) do
+  @spec decode_vehicle_position(
+          [TripUpdate.t()],
+          map(),
+          Helpers.Options.t(),
+          integer | nil
+        ) :: [any()]
+  defp decode_vehicle_position(tu, vp, options, feed_timestamp) do
     if tu == [] or Helpers.valid_route_id?(options, TripUpdate.route_id(List.first(tu))) do
       trip_id =
         case vp do
@@ -42,11 +53,21 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
       vehicle = vp.vehicle
       position = vp.position
+      id = Map.get(vehicle, :id)
+      timestamp = Map.get(vp, :timestamp)
+
+      if is_integer(timestamp) && is_integer(feed_timestamp) && timestamp > feed_timestamp do
+        Logger.warn(
+          "vehicle timestamp after feed timestamp feed_url=#{inspect(options.feed_url)} vehicle_id=#{
+            inspect(id)
+          } feed_timestamp=#{inspect(feed_timestamp)} vehicle_timestamp=#{inspect(timestamp)}"
+        )
+      end
 
       tu ++
         [
           VehiclePosition.new(
-            id: Map.get(vehicle, :id),
+            id: id,
             trip_id: trip_id,
             stop_id: Map.get(vp, :stop_id),
             label: Map.get(vehicle, :label),
@@ -58,7 +79,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
             odometer: Map.get(position, :odometer),
             status: Map.get(vp, :current_status),
             stop_sequence: Map.get(vp, :current_stop_sequence),
-            last_updated: Map.get(vp, :timestamp)
+            last_updated: timestamp
           )
         ]
     else
@@ -66,6 +87,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
     end
   end
 
+  @spec decode_trip_update(map() | nil, Helpers.Options.t()) :: [any()]
   def decode_trip_update(nil, _options) do
     []
   end
@@ -117,6 +139,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
     end
   end
 
+  @spec decode_trip_descriptor(map()) :: [TripUpdate.t()]
   defp decode_trip_descriptor(%{trip: trip} = descriptor) do
     [
       TripUpdate.new(
