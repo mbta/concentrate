@@ -102,6 +102,22 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
              ] == decoded
     end
 
+    test "includes occupancy data if present" do
+      data = [
+        TripUpdate.new(trip_id: "trip", vehicle_id: "y2"),
+        VehiclePosition.new(
+          trip_id: "trip",
+          id: "y2",
+          latitude: 2,
+          longitude: 2,
+          occupancy_status: :FULL,
+          occupancy_percentage: 101
+        )
+      ]
+
+      assert data == round_trip(data)
+    end
+
     test "decoding and re-encoding vehiclepositions.pb is a no-op" do
       decoded = GTFSRealtime.parse(File.read!(fixture_path("vehiclepositions.pb")), [])
       assert Enum.sort(round_trip(decoded)) == Enum.sort(decoded)
