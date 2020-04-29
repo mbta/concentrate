@@ -18,6 +18,8 @@ defmodule Concentrate.VehiclePosition do
     :stop_sequence,
     :last_updated,
     :consist,
+    :occupancy_status,
+    :occupancy_percentage,
     status: :IN_TRANSIT_TO
   ])
 
@@ -74,6 +76,9 @@ defmodule Concentrate.VehiclePosition do
           speed: first_value(second.speed, first.speed),
           odometer: first_value(second.odometer, first.odometer),
           stop_sequence: first_value(second.stop_sequence, first.stop_sequence),
+          occupancy_status: first_value(second.occupancy_status, first.occupancy_status),
+          occupancy_percentage:
+            first_value(second.occupancy_percentage, first.occupancy_percentage),
           consist: first_list_value(second.consist, first.consist)
       }
     end
