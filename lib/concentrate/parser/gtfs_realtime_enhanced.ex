@@ -132,27 +132,31 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
     case decode_trip_descriptor(vp) do
       [trip] ->
-        [
-          trip,
-          VehiclePosition.new(
-            id: id,
-            trip_id: TripUpdate.trip_id(trip),
-            stop_id: Map.get(vp, "stop_id"),
-            label: Map.get(vehicle, "label"),
-            license_plate: Map.get(vehicle, "license_plate"),
-            latitude: Map.get(position, "latitude"),
-            longitude: Map.get(position, "longitude"),
-            bearing: Map.get(position, "bearing"),
-            speed: Map.get(position, "speed"),
-            odometer: Map.get(position, "odometer"),
-            status: vehicle_status(Map.get(vp, "current_status")),
-            stop_sequence: Map.get(vp, "current_stop_sequence"),
-            last_updated: timestamp,
-            consist: decode_consist(Map.get(vehicle, "consist")),
-            occupancy_status: occupancy_status(Map.get(vp, "occupancy_status")),
-            occupancy_percentage: Map.get(vp, "occupancy_percentage")
-          )
-        ]
+        if Helpers.valid_route_id?(options, TripUpdate.route_id(trip)) do
+          [
+            trip,
+            VehiclePosition.new(
+              id: id,
+              trip_id: TripUpdate.trip_id(trip),
+              stop_id: Map.get(vp, "stop_id"),
+              label: Map.get(vehicle, "label"),
+              license_plate: Map.get(vehicle, "license_plate"),
+              latitude: Map.get(position, "latitude"),
+              longitude: Map.get(position, "longitude"),
+              bearing: Map.get(position, "bearing"),
+              speed: Map.get(position, "speed"),
+              odometer: Map.get(position, "odometer"),
+              status: vehicle_status(Map.get(vp, "current_status")),
+              stop_sequence: Map.get(vp, "current_stop_sequence"),
+              last_updated: timestamp,
+              consist: decode_consist(Map.get(vehicle, "consist")),
+              occupancy_status: occupancy_status(Map.get(vp, "occupancy_status")),
+              occupancy_percentage: Map.get(vp, "occupancy_percentage")
+            )
+          ]
+        else
+          []
+        end
 
       [] ->
         []

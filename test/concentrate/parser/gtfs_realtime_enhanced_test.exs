@@ -272,6 +272,20 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert decode_vehicle(%{}, Helpers.parse_options([]), nil) == []
     end
 
+    test "drops the VehiclePosition if the route is ignored" do
+      map = %{
+        "trip" => %{"route_id" => "route"},
+        "position" => %{
+          "latitude" => 1.0,
+          "longitude" => 1.0
+        }
+      }
+
+      assert [_, _] = decode_vehicle(map, Helpers.parse_options([]), nil)
+      assert [_, _] = decode_vehicle(map, Helpers.parse_options(routes: ["route"]), nil)
+      assert [] = decode_vehicle(map, Helpers.parse_options(excluded_routes: ["route"]), nil)
+    end
+
     test "decodes a VehiclePosition JSON map" do
       map = %{
         "congestion_level" => nil,
