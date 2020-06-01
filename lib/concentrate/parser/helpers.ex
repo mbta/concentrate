@@ -2,6 +2,7 @@ defmodule Concentrate.Parser.Helpers do
   @moduledoc """
   Helper functions for the GTFS-RT and GTFS-RT Enhanced parsers.
   """
+  require Logger
 
   defmodule Options do
     @moduledoc false
@@ -123,4 +124,34 @@ defmodule Concentrate.Parser.Helpers do
   def times_less_than_max?(nil, nil, _), do: true
   def times_less_than_max?(time, nil, max), do: time <= max
   def times_less_than_max?(_, time, max), do: time <= max
+
+  @doc """
+  Log a warning if the vehicle timestamp is greater than the feed timestamp.
+  """
+  @spec log_future_vehicle_timestamp(
+          Options.t(),
+          non_neg_integer | nil,
+          non_neg_integer | nil,
+          String.t()
+        ) :: :ok
+  def log_future_vehicle_timestamp(options, feed_timestamp, vehicle_timestamp, vehicle_id)
+
+  def log_future_vehicle_timestamp(options, feed_timestamp, vehicle_timestamp, vehicle_id)
+      when is_integer(vehicle_timestamp) and is_integer(feed_timestamp) and
+             vehicle_timestamp > feed_timestamp do
+    _ =
+      Logger.warn(
+        "vehicle timestamp after feed timestamp feed_url=#{inspect(options.feed_url)} vehicle_id=#{
+          inspect(vehicle_id)
+        } feed_timestamp=#{inspect(feed_timestamp)} vehicle_timestamp=#{
+          inspect(vehicle_timestamp)
+        }"
+      )
+
+    :ok
+  end
+
+  def log_future_vehicle_timestamp(_options, _feed_timestamp, _vehicle_timestamp, _vehicle_id) do
+    :ok
+  end
 end

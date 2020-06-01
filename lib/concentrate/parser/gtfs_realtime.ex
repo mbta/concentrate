@@ -56,13 +56,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
       id = Map.get(vehicle, :id)
       timestamp = Map.get(vp, :timestamp)
 
-      if is_integer(timestamp) && is_integer(feed_timestamp) && timestamp > feed_timestamp do
-        Logger.warn(
-          "vehicle timestamp after feed timestamp feed_url=#{inspect(options.feed_url)} vehicle_id=#{
-            inspect(id)
-          } feed_timestamp=#{inspect(feed_timestamp)} vehicle_timestamp=#{inspect(timestamp)}"
-        )
-      end
+      Helpers.log_future_vehicle_timestamp(options, feed_timestamp, timestamp, id)
 
       tu ++
         [

@@ -269,7 +269,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
   describe "decode_vehicle/3" do
     test "returns nothing if there's an empty map" do
-      assert decode_vehicle(%{}, nil, nil) == []
+      assert decode_vehicle(%{}, Helpers.parse_options([]), nil) == []
     end
 
     test "decodes a VehiclePosition JSON map" do
@@ -303,7 +303,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         }
       }
 
-      assert [tu, vp] = decode_vehicle(map, nil, nil)
+      assert [tu, vp] = decode_vehicle(map, Helpers.parse_options([]), nil)
 
       assert tu ==
                TripUpdate.new(
@@ -360,7 +360,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         }
       }
 
-      assert [_tu, vp] = decode_vehicle(map, nil, nil)
+      assert [_tu, vp] = decode_vehicle(map, Helpers.parse_options([]), nil)
 
       assert VehiclePosition.consist(vp) == [
                VehiclePosition.Consist.new(label: "3823"),
@@ -395,7 +395,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         }
       }
 
-      log = capture_log([level: :warn], fn -> decode_vehicle(map, "test_url", 1_534_340_306) end)
+      log =
+        capture_log([level: :warn], fn ->
+          decode_vehicle(map, Helpers.parse_options(feed_url: "test_url"), 1_534_340_306)
+        end)
 
       assert log =~ "vehicle timestamp after feed timestamp"
     end
