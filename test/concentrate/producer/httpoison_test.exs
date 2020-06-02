@@ -10,7 +10,7 @@ defmodule Concentrate.Producer.HTTPoisonTest do
   defmodule TestParser do
     @behaviour Concentrate.Parser
     def parse(_body, opts) do
-      opts |> IO.inspect() |> Logger.info()
+      opts |> inspect() |> Logger.info()
       []
     end
   end
