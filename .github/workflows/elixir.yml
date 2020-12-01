@@ -17,6 +17,7 @@ jobs:
         elixir-version: '1.10.3' # Define the elixir version [required]
         otp-version: '23.0.2' # Define the OTP version [required]
     - name: Restore dependencies cache
+      id: deps-cache
       uses: actions/cache@v2
       with:
         path: deps
@@ -30,3 +31,14 @@ jobs:
       run: mix credo --strict
     - name: Run tests
       run: env MIX_ENV=test mix do compile --force --warnings-as-errors, coveralls.json && bash <(curl -s https://codecov.io/bash)
+    - name: Restore Dialyzer cache
+      id: dialyzer-cache
+      uses: actions/cache@v2
+      with:
+        path: _build/dev/dialyxir*.plt*
+        key: ${{ runner.os }}-dialyxir-${{ steps.elixir.otp-version }}-${{ steps.elixir.elixir_version }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-dialyxir-${{ steps.elixir.otp-version }}-${{ steps.elixir.elixir_version }}-
+          ${{ runner.os }}-dialyxir-${{ steps.elixir.otp-version }}-
+    - name: Dialyzer
+      run: mix dialyzer --halt-exit-status
