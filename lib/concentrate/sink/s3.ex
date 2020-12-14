@@ -5,8 +5,7 @@ defmodule Concentrate.Sink.S3 do
   alias ExAws.S3
   require Logger
 
-  @config Application.get_env(:concentrate, :sink_s3) || []
-  @ex_aws Keyword.get(@config, :ex_aws, ExAws)
+  @ex_aws Application.compile_env(:concentrate, [:sink_s3, :ex_aws], ExAws)
 
   def start_link(opts, file_data) do
     bucket = Keyword.fetch!(opts, :bucket)

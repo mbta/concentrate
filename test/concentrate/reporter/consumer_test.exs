@@ -9,9 +9,7 @@ defmodule Concentrate.Reporter.ConsumerTest do
     @behaviour Concentrate.Reporter
 
     @impl Concentrate.Reporter
-    def init() do
-      "state"
-    end
+    def init, do: "state"
 
     @impl Concentrate.Reporter
     def log(items, state) do
