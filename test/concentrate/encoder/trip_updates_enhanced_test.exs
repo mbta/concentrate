@@ -5,7 +5,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
   import Concentrate.Encoder.TripUpdatesEnhanced
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.Parser.GTFSRealtimeEnhanced
-  alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{TripDescriptor, VehiclePosition, StopTimeUpdate}
 
   describe "encode_groups/1" do
     test "decoding and re-encoding TripUpdates_enhanced.json is a no-op" do
@@ -18,7 +18,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
 
     test "trip updates without a start_time don't have that key" do
       parsed = [
-        TripUpdate.new(trip_id: "trip"),
+        TripDescriptor.new(trip_id: "trip"),
         StopTimeUpdate.new(trip_id: "trip", stop_id: "5")
       ]
 
@@ -29,7 +29,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
 
     test "stop time updates without a status don't have that key" do
       parsed = [
-        TripUpdate.new(trip_id: "trip"),
+        TripDescriptor.new(trip_id: "trip"),
         StopTimeUpdate.new(trip_id: "trip", stop_id: "5")
       ]
 
@@ -43,7 +43,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
 
     test "trips with only vehicles aren't encoded" do
       initial = [
-        TripUpdate.new(trip_id: "1"),
+        TripDescriptor.new(trip_id: "1"),
         VehiclePosition.new(trip_id: "1", latitude: 1, longitude: 1)
       ]
 
@@ -53,7 +53,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
 
     test "trips with a non-SCHEDULED relationship can appear alone" do
       initial = [
-        TripUpdate.new(trip_id: "1", schedule_relationship: :CANCELED)
+        TripDescriptor.new(trip_id: "1", schedule_relationship: :CANCELED)
       ]
 
       decoded = Jason.decode!(encode_groups(group(initial)))
@@ -65,7 +65,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
 
     test "trips/updates with schedule_relationship SCHEDULED don't have that field" do
       parsed = [
-        TripUpdate.new(trip_id: "trip", schedule_relationship: :SCHEDULED),
+        TripDescriptor.new(trip_id: "trip", schedule_relationship: :SCHEDULED),
         StopTimeUpdate.new(trip_id: "trip", stop_id: "stop", schedule_relationship: :SCHEDULED)
       ]
 
@@ -88,7 +88,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
 
     test "trips with route_pattern_id present have that field" do
       parsed = [
-        TripUpdate.new(trip_id: "trip", route_pattern_id: "pattern"),
+        TripDescriptor.new(trip_id: "trip", route_pattern_id: "pattern"),
         StopTimeUpdate.new(trip_id: "trip", stop_id: "stop")
       ]
 
@@ -109,7 +109,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
 
     test "trips updates with timestamp present have that field" do
       parsed = [
-        TripUpdate.new(trip_id: "trip", timestamp: 1_534_340_406),
+        TripDescriptor.new(trip_id: "trip", timestamp: 1_534_340_406),
         StopTimeUpdate.new(trip_id: "trip", stop_id: "stop")
       ]
 

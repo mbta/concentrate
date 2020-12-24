@@ -3,7 +3,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
   Encodes a list of parsed data into an enhanced.pb file.
   """
   @behaviour Concentrate.Encoder
-  alias Concentrate.{StopTimeUpdate, TripUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
   import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
@@ -17,7 +17,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
   end
 
   defp enhanced_data(update) do
-    %{route_pattern_id: TripUpdate.route_pattern_id(update)}
+    %{route_pattern_id: TripDescriptor.route_pattern_id(update)}
   end
 
   defp build_stop_time_update(update) do

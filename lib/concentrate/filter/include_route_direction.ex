@@ -4,37 +4,37 @@ defmodule Concentrate.Filter.IncludeRouteDirection do
   """
   @behaviour Concentrate.Filter
   alias Concentrate.Filter.GTFS.Trips
-  alias Concentrate.TripUpdate
+  alias Concentrate.TripDescriptor
 
   @impl Concentrate.Filter
   def filter(item, module \\ Trips)
 
-  def filter(%TripUpdate{} = tu, module) do
-    trip_id = TripUpdate.trip_id(tu)
-    tu = update_route_direction(tu, trip_id, module)
-    {:cont, tu}
+  def filter(%TripDescriptor{} = td, module) do
+    trip_id = TripDescriptor.trip_id(td)
+    td = update_route_direction(td, trip_id, module)
+    {:cont, td}
   end
 
   def filter(other, _module) do
     {:cont, other}
   end
 
-  defp update_route_direction(tu, nil, _) do
-    tu
+  defp update_route_direction(td, nil, _) do
+    td
   end
 
-  defp update_route_direction(tu, trip_id, module) do
-    tu =
-      if TripUpdate.route_id(tu) do
-        tu
+  defp update_route_direction(td, trip_id, module) do
+    td =
+      if TripDescriptor.route_id(td) do
+        td
       else
-        TripUpdate.update_route_id(tu, module.route_id(trip_id))
+        TripDescriptor.update_route_id(td, module.route_id(trip_id))
       end
 
-    if TripUpdate.direction_id(tu) do
-      tu
+    if TripDescriptor.direction_id(td) do
+      td
     else
-      TripUpdate.update_direction_id(tu, module.direction_id(trip_id))
+      TripDescriptor.update_direction_id(td, module.direction_id(trip_id))
     end
   end
 end

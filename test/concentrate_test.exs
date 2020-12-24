@@ -51,7 +51,7 @@ defmodule ConcentrateTest do
       "enhanced_1": {
         "url": "url_3",
         "drop_fields": {
-          "TripUpdate": ["start_time"]
+          "TripDescriptor": ["start_time"]
         }
       }
     }
@@ -87,7 +87,7 @@ defmodule ConcentrateTest do
              }
 
       assert config[:sources][:gtfs_realtime_enhanced] == %{
-               enhanced_1: {"url_3", drop_fields: %{Concentrate.TripUpdate => [:start_time]}}
+               enhanced_1: {"url_3", drop_fields: %{Concentrate.TripDescriptor => [:start_time]}}
              }
 
       assert config[:gtfs][:url] == "gtfs_url"

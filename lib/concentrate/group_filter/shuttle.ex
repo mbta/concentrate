@@ -3,16 +3,16 @@ defmodule Concentrate.GroupFilter.Shuttle do
   Handle shuttles by skipping StopTimeUpdates involving the shuttle.
   """
   @behaviour Concentrate.GroupFilter
-  alias Concentrate.{StopTimeUpdate, TripUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   @impl Concentrate.GroupFilter
   def filter(trip_group, shuttle_module \\ Concentrate.Filter.Alert.Shuttles)
 
-  def filter({%TripUpdate{} = tu, vps, stus}, module) do
-    trip_id = TripUpdate.trip_id(tu)
-    route_id = TripUpdate.route_id(tu)
-    direction_id = TripUpdate.direction_id(tu)
-    date = TripUpdate.start_date(tu)
+  def filter({%TripDescriptor{} = td, vps, stus}, module) do
+    trip_id = TripDescriptor.trip_id(td)
+    route_id = TripDescriptor.route_id(td)
+    direction_id = TripDescriptor.direction_id(td)
+    date = TripDescriptor.start_date(td)
 
     stus =
       if is_tuple(date) and is_binary(route_id) and
@@ -22,7 +22,7 @@ defmodule Concentrate.GroupFilter.Shuttle do
         stus
       end
 
-    {tu, vps, stus}
+    {td, vps, stus}
   end
 
   def filter(other, _module), do: other

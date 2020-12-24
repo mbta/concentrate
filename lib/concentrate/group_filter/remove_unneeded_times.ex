@@ -3,17 +3,17 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
   Removes arrival times from the first stop on a trip, and the departure time from the last stop on a trip.
   """
   alias Concentrate.Filter.GTFS.PickupDropOff
-  alias Concentrate.{StopTimeUpdate, TripUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
   @behaviour Concentrate.GroupFilter
 
   @impl Concentrate.GroupFilter
   def filter(trip_group, module \\ PickupDropOff)
 
-  def filter({%TripUpdate{} = tu, vps, stus} = group, module) do
-    if TripUpdate.schedule_relationship(tu) == :SCHEDULED do
-      trip_id = TripUpdate.trip_id(tu)
+  def filter({%TripDescriptor{} = td, vps, stus} = group, module) do
+    if TripDescriptor.schedule_relationship(td) == :SCHEDULED do
+      trip_id = TripDescriptor.trip_id(td)
       stus = ensure_all_correct_times(stus, module, trip_id)
-      {tu, vps, stus}
+      {td, vps, stus}
     else
       group
     end

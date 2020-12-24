@@ -19,7 +19,7 @@ Concentrate can be configured either by updating `config/config.exs` file, or by
     *  `"max_future_time"`: amount of time (seconds) after which StopTImeUpdates will be ignored
     * `"fetch_after"`: amount of time (milliseconds) to wait between fetches
     * `"headers"`: an object with additional HTTP headers to send. The values can optionally be {“system”: “<ENV_VAR>”} to fetch the header value from the environment.
-    * `"drop_fields"`: an object with `"VehiclePosition"`, `"TripUpdate"`, and/or `"StopTimeUpdate"` keys, and values as a list of fields on those struct. The provided fields will be replace with `null` when being parsed.
+    * `"drop_fields"`: an object with `"VehiclePosition"`, `"TripDescriptor"`, and/or `"StopTimeUpdate"` keys, and values as a list of fields on those struct. The provided fields will be replace with `null` when being parsed.
 
 ### GTFS (required)
 * Top-level key: `"gtfs"`
@@ -92,7 +92,7 @@ Concentrate can be configured either by updating `config/config.exs` file, or by
           "enhanced_1": {
             "url": "url_3",
             "drop_fields": {
-              "TripUpdate": ["start_time"]
+              "TripDescriptor": ["start_time"]
             }
           }
         }

@@ -4,15 +4,15 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
   import Concentrate.Encoder.VehiclePositionsEnhanced
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.Parser.GTFSRealtimeEnhanced
-  alias Concentrate.{TripUpdate, VehiclePosition}
+  alias Concentrate.{TripDescriptor, VehiclePosition}
   alias VehiclePosition.Consist, as: VehiclePositionConsist
 
   describe "encode/1" do
     test "includes consist/occupancy data if present" do
       data = [
-        TripUpdate.new(trip_id: "one", vehicle_id: "y1"),
+        TripDescriptor.new(trip_id: "one", vehicle_id: "y1"),
         VehiclePosition.new(trip_id: "one", id: "y1", latitude: 1, longitude: 1),
-        TripUpdate.new(trip_id: "two", vehicle_id: "y2"),
+        TripDescriptor.new(trip_id: "two", vehicle_id: "y2"),
         VehiclePosition.new(
           trip_id: "two",
           id: "y2",
@@ -35,8 +35,8 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
         VehiclePosition.new(trip_id: "unscheduled", id: "u", latitude: 1, longitude: 1)
       ]
 
-      assert [tu, vp] = round_trip(data)
-      assert TripUpdate.schedule_relationship(tu) == :UNSCHEDULED
+      assert [td, vp] = round_trip(data)
+      assert TripDescriptor.schedule_relationship(td) == :UNSCHEDULED
     end
 
     test "does not use a trip if there's no trip ID" do

@@ -6,7 +6,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
   alias Concentrate.Parser.Helpers
   require Logger
 
-  alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripUpdate, VehiclePosition}
+  alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripDescriptor, VehiclePosition}
   @impl Concentrate.Parser
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
     options = Helpers.parse_options(opts)
@@ -33,18 +33,18 @@ defmodule Concentrate.Parser.GTFSRealtime do
   end
 
   def decode_vehicle(vp, options, feed_timestamp) do
-    tu = decode_trip_descriptor(vp)
-    decode_vehicle_position(tu, vp, options, feed_timestamp)
+    td = decode_trip_descriptor(vp)
+    decode_vehicle_position(td, vp, options, feed_timestamp)
   end
 
   @spec decode_vehicle_position(
-          [TripUpdate.t()],
+          [TripDescriptor.t()],
           map(),
           Helpers.Options.t(),
           integer | nil
         ) :: [any()]
-  defp decode_vehicle_position(tu, vp, options, feed_timestamp) do
-    if tu == [] or Helpers.valid_route_id?(options, TripUpdate.route_id(List.first(tu))) do
+  defp decode_vehicle_position(td, vp, options, feed_timestamp) do
+    if td == [] or Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) do
       trip_id =
         case vp do
           %{trip: %{trip_id: id}} -> id
@@ -58,7 +58,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
       Helpers.log_future_vehicle_timestamp(options, feed_timestamp, timestamp, id)
 
-      tu ++
+      td ++
         [
           VehiclePosition.new(
             id: id,
@@ -89,18 +89,18 @@ defmodule Concentrate.Parser.GTFSRealtime do
   end
 
   def decode_trip_update(trip_update, options) do
-    tu = decode_trip_descriptor(trip_update)
-    decode_stop_updates(tu, trip_update, options)
+    td = decode_trip_descriptor(trip_update)
+    decode_stop_updates(td, trip_update, options)
   end
 
-  defp decode_stop_updates(tu, %{stop_time_update: [update | _] = updates} = trip_update, options) do
+  defp decode_stop_updates(td, %{stop_time_update: [update | _] = updates} = trip_update, options) do
     max_time = options.max_time
 
     {arrival_time, _} = time_from_event(Map.get(update, :arrival))
     {departure_time, _} = time_from_event(Map.get(update, :departure))
 
     cond do
-      tu != [] and not Helpers.valid_route_id?(options, TripUpdate.route_id(List.first(tu))) ->
+      td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) ->
         []
 
       not Helpers.times_less_than_max?(arrival_time, departure_time, max_time) ->
@@ -123,22 +123,22 @@ defmodule Concentrate.Parser.GTFSRealtime do
             )
           end
 
-        tu ++ stop_updates
+        td ++ stop_updates
     end
   end
 
-  defp decode_stop_updates(tu, %{stop_time_update: []}, options) do
-    if tu != [] and not Helpers.valid_route_id?(options, TripUpdate.route_id(List.first(tu))) do
+  defp decode_stop_updates(td, %{stop_time_update: []}, options) do
+    if td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) do
       []
     else
-      tu
+      td
     end
   end
 
-  @spec decode_trip_descriptor(map()) :: [TripUpdate.t()]
+  @spec decode_trip_descriptor(map()) :: [TripDescriptor.t()]
   defp decode_trip_descriptor(%{trip: trip} = descriptor) do
     [
-      TripUpdate.new(
+      TripDescriptor.new(
         trip_id: Map.get(trip, :trip_id),
         route_id: Map.get(trip, :route_id),
         direction_id: Map.get(trip, :direction_id),

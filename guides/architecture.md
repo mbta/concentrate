@@ -6,7 +6,7 @@ Overall, Concentrate is modeled as a [GenStage](https://github.com/elixir-lang/g
 
 Throughout the pipeline, data is represented as one of three structs:
 
-* `TripUpdate`: basic trip information like ID, route ID, and direction
+* `TripDescriptor`: basic trip information like ID, route ID, and direction
 * `VehiclePosition`: where the vehicle is, both latitude/longitude and on the trip
 * `StopTimeUpdate`: a prediction about when a vehicle will arrive/depart a stop
 
@@ -30,7 +30,7 @@ provided struc. Some filters depend on outside data such as alerts or GTFS:
 those filters maintain external state and refer to it during the filtering.
 
 After the first pass of filtering, the data are grouped by their trip
-ID. This more closely matches the GTFS-RT format, by having a TripUpdate
+ID. This more closely matches the GTFS-RT format, by having a TripDescriptor
 grouped with the VehiclePositions and StopTimeUpdates for that trip.
 
 The groups are then passed through modules implementing the GroupFilter

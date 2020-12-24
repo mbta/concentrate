@@ -1,7 +1,7 @@
-defmodule Concentrate.TripUpdateTest do
+defmodule Concentrate.TripDescriptorTest do
   @moduledoc false
   use ExUnit.Case, async: true
-  import Concentrate.TripUpdate
+  import Concentrate.TripDescriptor
   alias Concentrate.Mergeable
 
   describe "Concentrate.Mergeable" do

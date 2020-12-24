@@ -3,17 +3,17 @@ defmodule Concentrate.GroupFilter.ClosedStop do
   Skips StopTimeUpdates for closed stops.
   """
   @behaviour Concentrate.GroupFilter
-  alias Concentrate.{Alert.InformedEntity, StopTimeUpdate, TripUpdate}
+  alias Concentrate.{Alert.InformedEntity, StopTimeUpdate, TripDescriptor}
   alias Concentrate.Filter.Alert.ClosedStops
 
   @impl Concentrate.GroupFilter
   def filter(update, stops_module \\ ClosedStops)
 
-  def filter({%TripUpdate{} = tu, vps, stus}, stops_module) do
+  def filter({%TripDescriptor{} = td, vps, stus}, stops_module) do
     match = [
-      trip_id: TripUpdate.trip_id(tu),
-      route_id: TripUpdate.route_id(tu),
-      direction_id: TripUpdate.direction_id(tu)
+      trip_id: TripDescriptor.trip_id(td),
+      route_id: TripDescriptor.route_id(td),
+      direction_id: TripDescriptor.direction_id(td)
     ]
 
     stus =
@@ -28,7 +28,7 @@ defmodule Concentrate.GroupFilter.ClosedStop do
         end
       end
 
-    {tu, vps, stus}
+    {td, vps, stus}
   end
 
   def filter({_, _, _} = group, _) do

@@ -4,28 +4,28 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
   import Concentrate.TestHelpers
   import Concentrate.Encoder.TripUpdates
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
-  alias Concentrate.{TripUpdate, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{TripDescriptor, VehiclePosition, StopTimeUpdate}
   alias Concentrate.Parser.GTFSRealtime
 
   describe "encode_groups/1" do
     test "order of trip updates doesn't matter" do
       initial = [
-        TripUpdate.new(trip_id: "1"),
-        TripUpdate.new(trip_id: "2"),
+        TripDescriptor.new(trip_id: "1"),
+        TripDescriptor.new(trip_id: "2"),
         StopTimeUpdate.new(trip_id: "1", arrival_time: 1)
       ]
 
       decoded = GTFSRealtime.parse(encode_groups(group(initial)), [])
 
-      assert [TripUpdate.new(trip_id: "1"), StopTimeUpdate.new(trip_id: "1", arrival_time: 1)] ==
+      assert [TripDescriptor.new(trip_id: "1"), StopTimeUpdate.new(trip_id: "1", arrival_time: 1)] ==
                decoded
     end
 
     test "trips appear in their order, regardless of StopTimeUpdate order" do
       trip_updates = [
-        TripUpdate.new(trip_id: "1"),
-        TripUpdate.new(trip_id: "2"),
-        TripUpdate.new(trip_id: "3")
+        TripDescriptor.new(trip_id: "1"),
+        TripDescriptor.new(trip_id: "2"),
+        TripDescriptor.new(trip_id: "3")
       ]
 
       stop_time_updates =
@@ -39,18 +39,18 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
       decoded = GTFSRealtime.parse(encode_groups(group(initial)), [])
 
       assert [
-               TripUpdate.new(trip_id: "1"),
+               TripDescriptor.new(trip_id: "1"),
                StopTimeUpdate.new(trip_id: "1", arrival_time: 1),
-               TripUpdate.new(trip_id: "2"),
+               TripDescriptor.new(trip_id: "2"),
                StopTimeUpdate.new(trip_id: "2", arrival_time: 2),
-               TripUpdate.new(trip_id: "3"),
+               TripDescriptor.new(trip_id: "3"),
                StopTimeUpdate.new(trip_id: "3", arrival_time: 3)
              ] == decoded
     end
 
     test "trips with only vehicles aren't encoded" do
       initial = [
-        TripUpdate.new(trip_id: "1"),
+        TripDescriptor.new(trip_id: "1"),
         VehiclePosition.new(trip_id: "1", latitude: 1, longitude: 1)
       ]
 
@@ -60,7 +60,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
 
     test "trips include part of vehicles" do
       initial = [
-        TripUpdate.new(trip_id: "1"),
+        TripDescriptor.new(trip_id: "1"),
         StopTimeUpdate.new(trip_id: "1", arrival_time: 1),
         VehiclePosition.new(
           trip_id: "1",
@@ -83,18 +83,18 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
 
     test "stop time updates with only a boarding status are removed" do
       initial = [
-        TripUpdate.new(trip_id: "1"),
+        TripDescriptor.new(trip_id: "1"),
         StopTimeUpdate.new(trip_id: "1", stop_sequence: 1, status: "status"),
         StopTimeUpdate.new(trip_id: "1", stop_sequence: 2, departure_time: 1, status: "boarding"),
         StopTimeUpdate.new(trip_id: "1", stop_sequence: 3, arrival_time: 2),
-        TripUpdate.new(trip_id: "2"),
+        TripDescriptor.new(trip_id: "2"),
         StopTimeUpdate.new(trip_id: "2", status: "status")
       ]
 
       decoded = GTFSRealtime.parse(encode_groups(group(initial)), [])
 
       assert [
-               TripUpdate.new(trip_id: "1"),
+               TripDescriptor.new(trip_id: "1"),
                StopTimeUpdate.new(trip_id: "1", stop_sequence: 2, departure_time: 1),
                StopTimeUpdate.new(trip_id: "1", stop_sequence: 3, arrival_time: 2)
              ] ==
@@ -122,7 +122,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
 
     test "trips with route_pattern_id present don't have that field" do
       initial = [
-        TripUpdate.new(trip_id: "trip", route_pattern_id: "pattern"),
+        TripDescriptor.new(trip_id: "trip", route_pattern_id: "pattern"),
         StopTimeUpdate.new(trip_id: "trip", stop_id: "stop", departure_time: 1)
       ]
 
@@ -139,7 +139,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
 
     test "trips updates with timestamp present don't have that field" do
       initial = [
-        TripUpdate.new(trip_id: "trip", timestamp: 1_534_340_406),
+        TripDescriptor.new(trip_id: "trip", timestamp: 1_534_340_406),
         StopTimeUpdate.new(trip_id: "trip", stop_id: "stop", departure_time: 1)
       ]
 

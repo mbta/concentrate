@@ -2,35 +2,35 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   @moduledoc """
   Helper functions for encoding GTFS-Realtime files.
   """
-  alias Concentrate.{StopTimeUpdate, TripUpdate, VehiclePosition}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
   import Calendar.ISO, only: [date_to_string: 4]
 
-  @type trip_group :: {TripUpdate.t() | nil, [VehiclePosition.t()], [StopTimeUpdate.t()]}
+  @type trip_group :: {TripDescriptor.t() | nil, [VehiclePosition.t()], [StopTimeUpdate.t()]}
 
   @doc """
   Given a list of parsed data, returns a list of tuples:
 
-  {TripUpdate.t() | nil, [VehiclePosition.t()], [StopTimeUpdate.t]}
+  {TripDescriptor.t() | nil, [VehiclePosition.t()], [StopTimeUpdate.t]}
 
   The VehiclePositions/StopTimeUpdates will share the same trip ID.
   """
-  @spec group([TripUpdate.t() | VehiclePosition.t() | StopTimeUpdate.t()]) :: [trip_group]
+  @spec group([TripDescriptor.t() | VehiclePosition.t() | StopTimeUpdate.t()]) :: [trip_group]
   def group(parsed) do
     # we sort by the initial size, which keeps the trip updates in their original ordering
     parsed
     |> Enum.reduce(%{}, &group_by_trip_id/2)
     |> Map.values()
     |> Enum.flat_map(fn
-      {%TripUpdate{} = tu, [], []} ->
-        if TripUpdate.schedule_relationship(tu) == :CANCELED do
-          [{tu, [], []}]
+      {%TripDescriptor{} = td, [], []} ->
+        if TripDescriptor.schedule_relationship(td) == :CANCELED do
+          [{td, [], []}]
         else
           []
         end
 
-      {tu, vps, stus} ->
+      {td, vps, stus} ->
         stus = Enum.sort_by(stus, &StopTimeUpdate.stop_sequence/1)
-        [{tu, vps, stus}]
+        [{td, vps, stus}]
     end)
   end
 
@@ -91,7 +91,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   end
 
   @doc """
-  Builds a list of TripUpdate FeedEntities.
+  Builds a list of TripDescriptor FeedEntities.
 
   Takes a function to turn a StopTimeUpdate struct into the GTFS-RT version.
   """
@@ -140,9 +140,9 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   def schedule_relationship(:SCHEDULED), do: nil
   def schedule_relationship(relationship), do: relationship
 
-  defp group_by_trip_id(%TripUpdate{} = tu, map) do
-    if trip_id = TripUpdate.trip_id(tu) do
-      Map.update(map, trip_id, {tu, [], []}, &add_trip_update(&1, tu))
+  defp group_by_trip_id(%TripDescriptor{} = td, map) do
+    if trip_id = TripDescriptor.trip_id(td) do
+      Map.update(map, trip_id, {td, [], []}, &add_trip_descriptor(&1, td))
     else
       map
     end
@@ -160,43 +160,43 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     Map.update(map, trip_id, {nil, [], [stu]}, &add_stop_time_update(&1, stu))
   end
 
-  defp add_trip_update({_tu, vps, stus}, tu) do
-    {tu, vps, stus}
+  defp add_trip_descriptor({_td, vps, stus}, td) do
+    {td, vps, stus}
   end
 
-  defp add_vehicle_position({tu, vps, stus}, vp) do
-    {tu, [vp | vps], stus}
+  defp add_vehicle_position({td, vps, stus}, vp) do
+    {td, [vp | vps], stus}
   end
 
-  defp add_stop_time_update({tu, vps, stus}, stu) do
-    {tu, vps, [stu | stus]}
+  defp add_stop_time_update({td, vps, stus}, stu) do
+    {td, vps, [stu | stus]}
   end
 
   defp build_trip_update_entity(
-         {%TripUpdate{} = update, vps, stus},
+         {%TripDescriptor{} = td, vps, stus},
          stop_time_update_fn,
          enhanced_data_fn
        ) do
-    trip_id = TripUpdate.trip_id(update)
-    id = trip_id || "#{:erlang.phash2(update)}"
+    trip_id = TripDescriptor.trip_id(td)
+    id = trip_id || "#{:erlang.phash2(td)}"
 
     trip_data = %{
       trip_id: trip_id,
-      route_id: TripUpdate.route_id(update),
-      direction_id: TripUpdate.direction_id(update),
-      start_time: TripUpdate.start_time(update),
-      start_date: encode_date(TripUpdate.start_date(update)),
-      schedule_relationship: schedule_relationship(TripUpdate.schedule_relationship(update))
+      route_id: TripDescriptor.route_id(td),
+      direction_id: TripDescriptor.direction_id(td),
+      start_time: TripDescriptor.start_time(td),
+      start_date: encode_date(TripDescriptor.start_date(td)),
+      schedule_relationship: schedule_relationship(TripDescriptor.schedule_relationship(td))
     }
 
-    timestamp = TripUpdate.timestamp(update)
+    timestamp = TripDescriptor.timestamp(td)
 
     trip =
       trip_data
-      |> Map.merge(enhanced_data_fn.(update))
+      |> Map.merge(enhanced_data_fn.(td))
       |> drop_nil_values()
 
-    vehicle = trip_update_vehicle(update, vps)
+    vehicle = trip_update_vehicle(td, vps)
 
     stop_time_update =
       case stus do
@@ -219,7 +219,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
           }
         ]
 
-      TripUpdate.schedule_relationship(update) == :CANCELED ->
+      TripDescriptor.schedule_relationship(td) == :CANCELED ->
         [
           %{
             id: id,
@@ -257,7 +257,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   end
 
   defp trip_update_vehicle(update, []) do
-    if vehicle_id = TripUpdate.vehicle_id(update) do
+    if vehicle_id = TripDescriptor.vehicle_id(update) do
       %{id: vehicle_id}
     else
       nil

@@ -3,7 +3,7 @@ defmodule Concentrate.Encoder.ProducerConsumerTest do
   use ExUnit.Case, async: true
   import Concentrate.Encoder.ProducerConsumer
   import Concentrate.Encoder.GTFSRealtimeHelpers
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.{TripDescriptor, StopTimeUpdate}
   alias Concentrate.Encoder.{TripUpdates, VehiclePositions}
 
   describe "handle_events/3" do
@@ -13,7 +13,7 @@ defmodule Concentrate.Encoder.ProducerConsumerTest do
 
       data =
         group([
-          TripUpdate.new(trip_id: "trip"),
+          TripDescriptor.new(trip_id: "trip"),
           StopTimeUpdate.new(trip_id: "trip", departure_time: 1)
         ])
 

@@ -1,11 +1,11 @@
-defmodule Concentrate.GroupFilter.TripUpdateTimestampTest do
+defmodule Concentrate.GroupFilter.TripDescriptorTimestampTest do
   @moduledoc false
   use ExUnit.Case, async: true
-  import Concentrate.GroupFilter.TripUpdateTimestamp
-  alias Concentrate.{TripUpdate, VehiclePosition}
+  import Concentrate.GroupFilter.TripDescriptorTimestamp
+  alias Concentrate.{TripDescriptor, VehiclePosition}
 
   describe "filter/1" do
-    test "populates timestamp in TripUpdate with corresponding timestamp in VehiclePosition" do
+    test "populates timestamp in TripDescriptor with corresponding timestamp in VehiclePosition" do
       vp =
         VehiclePosition.new(
           trip_id: "trip",
@@ -14,10 +14,10 @@ defmodule Concentrate.GroupFilter.TripUpdateTimestampTest do
           last_updated: 1_514_558_974
         )
 
-      tu = TripUpdate.new([])
+      td = TripDescriptor.new([])
 
-      assert {%{tu | timestamp: VehiclePosition.last_updated(vp)}, [vp], []} ==
-               filter({tu, [vp], []})
+      assert {%{td | timestamp: VehiclePosition.last_updated(vp)}, [vp], []} ==
+               filter({td, [vp], []})
     end
 
     test "use VehiclePostition with max timestamp if more than one is present" do
@@ -37,13 +37,13 @@ defmodule Concentrate.GroupFilter.TripUpdateTimestampTest do
           last_updated: 1_514_558_975
         )
 
-      tu = TripUpdate.new([])
+      td = TripDescriptor.new([])
 
-      assert {%{tu | timestamp: VehiclePosition.last_updated(vp2)}, [vp1, vp2], []} ==
-               filter({tu, [vp1, vp2], []})
+      assert {%{td | timestamp: VehiclePosition.last_updated(vp2)}, [vp1, vp2], []} ==
+               filter({td, [vp1, vp2], []})
     end
 
-    test "uses timestamp on TripUpdate if one exists" do
+    test "uses timestamp on TripDescriptor if one exists" do
       vp =
         VehiclePosition.new(
           trip_id: "trip",
@@ -52,10 +52,10 @@ defmodule Concentrate.GroupFilter.TripUpdateTimestampTest do
           last_updated: 1_514_558_974
         )
 
-      tu = TripUpdate.new(timestamp: 1_514_558_900)
+      td = TripDescriptor.new(timestamp: 1_514_558_900)
 
-      assert {tu, [vp], []} ==
-               filter({tu, [vp], []})
+      assert {td, [vp], []} ==
+               filter({td, [vp], []})
     end
 
     test "other values are returned as-is" do

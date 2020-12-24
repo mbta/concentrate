@@ -3,14 +3,14 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
   use ExUnit.Case, async: true
   import Concentrate.Encoder.TripUpdates.JSON
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.{TripDescriptor, StopTimeUpdate}
 
   describe "encode_groups/1" do
     test "same output as EncoderTripUpdates.encode_groups/1 but in JSON" do
       trip_updates = [
-        TripUpdate.new(trip_id: "1", schedule_relationship: :ADDED, timestamp: 1_534_340_406),
-        TripUpdate.new(trip_id: "2"),
-        TripUpdate.new(trip_id: "3")
+        TripDescriptor.new(trip_id: "1", schedule_relationship: :ADDED, timestamp: 1_534_340_406),
+        TripDescriptor.new(trip_id: "2"),
+        TripDescriptor.new(trip_id: "3")
       ]
 
       stop_time_updates =
@@ -46,7 +46,7 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
 
     test "trips/updates with schedule_relationship SCHEDULED don't have that field" do
       parsed = [
-        TripUpdate.new(trip_id: "trip", schedule_relationship: :SCHEDULED),
+        TripDescriptor.new(trip_id: "trip", schedule_relationship: :SCHEDULED),
         StopTimeUpdate.new(
           trip_id: "trip",
           stop_id: "stop",

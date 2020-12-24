@@ -3,7 +3,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
   Encodes a list of parsed data into a VehiclePositions.pb file.
   """
   @behaviour Concentrate.Encoder
-  alias Concentrate.{TripUpdate, VehiclePosition}
+  alias Concentrate.{TripDescriptor, VehiclePosition}
   alias VehiclePosition.Consist, as: VehiclePositionConsist
   import Concentrate.Encoder.GTFSRealtimeHelpers
   import Concentrate.Encoder.VehiclePositions, only: [entity_id: 1, trip_descriptor: 1]
@@ -18,8 +18,8 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
     Jason.encode!(message)
   end
 
-  def build_entity({%TripUpdate{} = update, vps, _stus}) do
-    trip = trip_descriptor(update)
+  def build_entity({%TripDescriptor{} = td, vps, _stus}) do
+    trip = trip_descriptor(td)
 
     for vp <- vps do
       %{
