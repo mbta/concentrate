@@ -4,7 +4,7 @@ defmodule Concentrate.MergeFilterTest do
   use ExUnitProperties
   import ExUnit.CaptureLog, only: [capture_log: 1]
   import Concentrate.MergeFilter
-  alias Concentrate.{Merge, TripUpdate, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{Merge, TripDescriptor, VehiclePosition, StopTimeUpdate}
   alias Concentrate.Encoder.GTFSRealtimeHelpers
 
   describe "handle_subscribe/4" do
@@ -71,7 +71,7 @@ defmodule Concentrate.MergeFilterTest do
       {_, state} = handle_subscribe(:producer, [], from, state)
 
       data = [
-        trip = TripUpdate.new(trip_id: "trip"),
+        trip = TripDescriptor.new(trip_id: "trip"),
         VehiclePosition.new(trip_id: "trip", latitude: 1, longitude: 1),
         stu = StopTimeUpdate.new(trip_id: "trip")
       ]
@@ -89,7 +89,7 @@ defmodule Concentrate.MergeFilterTest do
       {_, state} = handle_subscribe(:producer, [], from, state)
 
       data = [
-        TripUpdate.new(trip_id: "trip"),
+        TripDescriptor.new(trip_id: "trip"),
         StopTimeUpdate.new(trip_id: "trip")
       ]
 
@@ -99,14 +99,14 @@ defmodule Concentrate.MergeFilterTest do
       assert events == [expected]
     end
 
-    test "allows a CANCELED TripUpdate with no StopTimeUpdates" do
+    test "allows a CANCELED TripDescriptor with no StopTimeUpdates" do
       filter = fn group -> group end
       from = make_from()
       {_, state, _} = init(group_filters: [filter])
       {_, state} = handle_subscribe(:producer, [], from, state)
 
       data = [
-        trip = TripUpdate.new(trip_id: "trip", schedule_relationship: :CANCELED)
+        trip = TripDescriptor.new(trip_id: "trip", schedule_relationship: :CANCELED)
       ]
 
       expected = [{trip, [], []}]

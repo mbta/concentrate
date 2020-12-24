@@ -1,7 +1,7 @@
 defmodule Concentrate.Parser.HelpersTest do
   use ExUnit.Case, async: true
   import Concentrate.Parser.Helpers
-  alias Concentrate.{TripUpdate, VehiclePosition}
+  alias Concentrate.{TripDescriptor, VehiclePosition}
 
   describe "drop_fields/2" do
     @options parse_options(
@@ -10,7 +10,7 @@ defmodule Concentrate.Parser.HelpersTest do
                }
              )
     test "drops fields from the provided configuration" do
-      tu = TripUpdate.new(trip_id: "trip")
+      td = TripDescriptor.new(trip_id: "trip")
 
       vp =
         VehiclePosition.new(
@@ -20,7 +20,7 @@ defmodule Concentrate.Parser.HelpersTest do
           speed: 5.2
         )
 
-      assert [^tu, new_vp] = drop_fields([tu, vp], @options.drop_fields)
+      assert [^td, new_vp] = drop_fields([td, vp], @options.drop_fields)
       assert VehiclePosition.speed(new_vp) == nil
     end
   end

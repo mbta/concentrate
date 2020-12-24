@@ -12,13 +12,13 @@ defmodule Concentrate.GroupFilter.VehicleStopMatch do
   alias Concentrate.{StopTimeUpdate, VehiclePosition}
 
   @impl Concentrate.GroupFilter
-  def filter({tu, vps, stus}) do
+  def filter({td, vps, stus}) do
     vps =
       for vp <- vps do
         match_stop_id(vp, stus)
       end
 
-    {tu, vps, stus}
+    {td, vps, stus}
   end
 
   defp match_stop_id(vp, stus) do

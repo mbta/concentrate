@@ -26,7 +26,7 @@ defmodule Concentrate.Reporter.VehicleLatencyTest do
       now = utc_now()
 
       group = {
-        Concentrate.TripUpdate.new([]),
+        Concentrate.TripDescriptor.new([]),
         [
           VehiclePosition.update_last_updated(vp, now - 5),
           VehiclePosition.update_last_updated(vp, now - 3),

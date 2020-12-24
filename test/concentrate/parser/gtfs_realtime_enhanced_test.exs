@@ -6,7 +6,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
   import Concentrate.Parser.GTFSRealtimeEnhanced
 
   alias Concentrate.{
-    TripUpdate,
+    TripDescriptor,
     StopTimeUpdate,
     VehiclePosition,
     Alert,
@@ -16,13 +16,13 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
   }
 
   describe "parse/1" do
-    test "parsing a TripUpdate enhanced JSON file returns only StopTimeUpdate or TripUpdate structs" do
+    test "parsing a TripDescriptor enhanced JSON file returns only StopTimeUpdate or TripDescriptor structs" do
       binary = File.read!(fixture_path("TripUpdates_enhanced.json"))
       parsed = parse(binary, [])
       assert [_ | _] = parsed
 
       for update <- parsed do
-        assert update.__struct__ in [StopTimeUpdate, TripUpdate]
+        assert update.__struct__ in [StopTimeUpdate, TripDescriptor]
       end
     end
 
@@ -36,13 +36,13 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       end
     end
 
-    test "parsing an enhanced VehiclePositions JSON file returns only VehiclePosition or TripUpdate structs" do
+    test "parsing an enhanced VehiclePositions JSON file returns only VehiclePosition or TripDescriptor structs" do
       binary = File.read!(fixture_path("VehiclePositions_enhanced.json"))
       parsed = parse(binary, [])
       assert [_ | _] = parsed
 
       for update <- parsed do
-        assert update.__struct__ in [VehiclePosition, TripUpdate]
+        assert update.__struct__ in [VehiclePosition, TripDescriptor]
       end
     end
 
@@ -150,7 +150,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         ]
       }
 
-      [_tu, stop_update] = decode_trip_update(update, %Options{})
+      [_td, stop_update] = decode_trip_update(update, %Options{})
       assert StopTimeUpdate.status(stop_update) == "ALL_ABOARD"
     end
 
@@ -164,7 +164,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         ]
       }
 
-      [_tu, stop_update] = decode_trip_update(update, %Options{})
+      [_td, stop_update] = decode_trip_update(update, %Options{})
       assert StopTimeUpdate.platform_id(stop_update) == "platform"
     end
 
@@ -176,8 +176,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         ]
       }
 
-      [tu, stu] = decode_trip_update(update, %Options{})
-      assert TripUpdate.schedule_relationship(tu) == :SCHEDULED
+      [td, stu] = decode_trip_update(update, %Options{})
+      assert TripDescriptor.schedule_relationship(td) == :SCHEDULED
       assert StopTimeUpdate.schedule_relationship(stu) == :SCHEDULED
     end
 
@@ -211,7 +211,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert [_, _, _] = decode_trip_update(update, %Options{max_time: 1})
     end
 
-    test "drops the TripUpdate if the route is ignored" do
+    test "drops the TripDescriptor if the route is ignored" do
       update = %{
         "trip" => %{"route_id" => "route"},
         "stop_time_update" => []
@@ -232,8 +232,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         "stop_time_update" => []
       }
 
-      [tu] = decode_trip_update(map, Helpers.parse_options([]))
-      assert TripUpdate.route_pattern_id(tu) == "pattern"
+      [td] = decode_trip_update(map, Helpers.parse_options([]))
+      assert TripDescriptor.route_pattern_id(td) == "pattern"
     end
 
     test "includes timestamp if available" do
@@ -246,8 +246,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         "stop_time_update" => []
       }
 
-      [tu] = decode_trip_update(map, Helpers.parse_options([]))
-      assert TripUpdate.timestamp(tu) == 1_534_340_406
+      [td] = decode_trip_update(map, Helpers.parse_options([]))
+      assert TripDescriptor.timestamp(td) == 1_534_340_406
     end
 
     test "includes vehicle_id if available" do
@@ -262,8 +262,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         "stop_time_update" => []
       }
 
-      [tu] = decode_trip_update(map, Helpers.parse_options([]))
-      assert TripUpdate.vehicle_id(tu) == "vehicle_id"
+      [td] = decode_trip_update(map, Helpers.parse_options([]))
+      assert TripDescriptor.vehicle_id(td) == "vehicle_id"
     end
   end
 
@@ -317,10 +317,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         }
       }
 
-      assert [tu, vp] = decode_vehicle(map, Helpers.parse_options([]), nil)
+      assert [td, vp] = decode_vehicle(map, Helpers.parse_options([]), nil)
 
-      assert tu ==
-               TripUpdate.new(
+      assert td ==
+               TripDescriptor.new(
                  trip_id: "37165437-X",
                  route_id: "Green-E",
                  direction_id: 0,
@@ -374,7 +374,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         }
       }
 
-      assert [_tu, vp] = decode_vehicle(map, Helpers.parse_options([]), nil)
+      assert [_td, vp] = decode_vehicle(map, Helpers.parse_options([]), nil)
 
       assert VehiclePosition.consist(vp) == [
                VehiclePosition.Consist.new(label: "3823"),

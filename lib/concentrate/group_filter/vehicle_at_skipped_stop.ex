@@ -6,13 +6,13 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStop do
   alias Concentrate.{StopTimeUpdate, VehiclePosition}
 
   @impl Concentrate.GroupFilter
-  def filter({tu, vps, stus}) do
+  def filter({td, vps, stus}) do
     vps =
       for vp <- vps do
         move_stop_id(vp, stus)
       end
 
-    {tu, vps, stus}
+    {td, vps, stus}
   end
 
   defp move_stop_id(vp, stus) do

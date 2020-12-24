@@ -1,6 +1,6 @@
-defmodule Concentrate.TripUpdate do
+defmodule Concentrate.TripDescriptor do
   @moduledoc """
-  TripUpdate represents a (potential) change to a GTFS trip.
+  TripDescriptor represents a (potential) change to a GTFS trip.
   """
   import Concentrate.StructHelpers
 

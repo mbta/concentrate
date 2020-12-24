@@ -3,7 +3,7 @@ defmodule Concentrate.Reporter.ConsumerTest do
   use ExUnit.Case, async: true
   import Concentrate.Reporter.Consumer
   import ExUnit.CaptureLog
-  alias Concentrate.TripUpdate
+  alias Concentrate.TripDescriptor
 
   defmodule FakeReporter do
     @behaviour Concentrate.Reporter
@@ -27,7 +27,7 @@ defmodule Concentrate.Reporter.ConsumerTest do
   describe "handle_events/3" do
     test "logs the output" do
       {:consumer, state, _} = init(module: FakeReporter)
-      parsed = [TripUpdate.new([])]
+      parsed = [TripDescriptor.new([])]
 
       log =
         capture_log([level: :info], fn ->
@@ -41,7 +41,7 @@ defmodule Concentrate.Reporter.ConsumerTest do
 
     test "keeps track of previous state" do
       {:consumer, state, _} = init(module: FakeReporter)
-      parsed = [TripUpdate.new([])]
+      parsed = [TripDescriptor.new([])]
       assert {:noreply, [], state} = handle_events([parsed], :from, state)
 
       log =

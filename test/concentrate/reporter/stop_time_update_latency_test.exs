@@ -21,7 +21,7 @@ defmodule Concentrate.Reporter.STopTimeUpdateLatencyTest do
       now = utc_now()
 
       group = {
-        Concentrate.TripUpdate.new([]),
+        Concentrate.TripDescriptor.new([]),
         [],
         [
           StopTimeUpdate.update_arrival_time(stu, now - 5),

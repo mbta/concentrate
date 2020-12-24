@@ -4,27 +4,27 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
   import ExUnit.CaptureLog
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtime
-  alias Concentrate.{VehiclePosition, TripUpdate, StopTimeUpdate, Alert}
+  alias Concentrate.{VehiclePosition, TripDescriptor, StopTimeUpdate, Alert}
   alias Concentrate.Parser.Helpers.Options
 
   describe "parse/1" do
-    test "parsing a vehiclepositions.pb file returns only VehiclePosition or TripUpdate structs" do
+    test "parsing a vehiclepositions.pb file returns only VehiclePosition or TripDescriptor structs" do
       binary = File.read!(fixture_path("vehiclepositions.pb"))
       parsed = parse(binary, [])
       assert [_ | _] = parsed
 
       for vp <- parsed do
-        assert vp.__struct__ in [VehiclePosition, TripUpdate]
+        assert vp.__struct__ in [VehiclePosition, TripDescriptor]
       end
     end
 
-    test "parsing a tripupdates.pb file returns only StopTimeUpdate or TripUpdate structs" do
+    test "parsing a tripupdates.pb file returns only StopTimeUpdate or TripDescriptor structs" do
       binary = File.read!(fixture_path("tripupdates.pb"))
       parsed = parse(binary, [])
       assert [_ | _] = parsed
 
       for update <- parsed do
-        assert update.__struct__ in [StopTimeUpdate, TripUpdate]
+        assert update.__struct__ in [StopTimeUpdate, TripDescriptor]
       end
     end
 
@@ -67,10 +67,10 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         }
       }
 
-      [tu, _] = decode_trip_update(update, %Options{})
+      [td, _] = decode_trip_update(update, %Options{})
 
-      assert tu ==
-               TripUpdate.new(
+      assert td ==
+               TripDescriptor.new(
                  trip_id: "trip",
                  route_id: "route",
                  direction_id: 1,
@@ -93,7 +93,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         ]
       }
 
-      [_tu, stop_update] = decode_trip_update(update, %Options{})
+      [_td, stop_update] = decode_trip_update(update, %Options{})
       refute StopTimeUpdate.arrival_time(stop_update)
       refute StopTimeUpdate.departure_time(stop_update)
     end
@@ -113,7 +113,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         ]
       }
 
-      [_tu, stop_update_1, stop_update_2] = decode_trip_update(update, %Options{})
+      [_td, stop_update_1, stop_update_2] = decode_trip_update(update, %Options{})
       assert StopTimeUpdate.arrival_time(stop_update_1) == nil
       assert StopTimeUpdate.departure_time(stop_update_1) == 1
       assert StopTimeUpdate.uncertainty(stop_update_1) == 300
@@ -128,8 +128,8 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         stop_time_update: [%{}]
       }
 
-      [tu, stu] = decode_trip_update(update, %Options{})
-      assert TripUpdate.schedule_relationship(tu) == :SCHEDULED
+      [td, stu] = decode_trip_update(update, %Options{})
+      assert TripDescriptor.schedule_relationship(td) == :SCHEDULED
       assert StopTimeUpdate.schedule_relationship(stu) == :SCHEDULED
     end
 
@@ -249,9 +249,9 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         }
       }
 
-      [tu, _] = decode_trip_update(update, %Options{})
+      [td, _] = decode_trip_update(update, %Options{})
 
-      assert TripUpdate.start_time(tu) == "01:23:45"
+      assert TripDescriptor.start_time(td) == "01:23:45"
     end
 
     test "can handle invalid start_time by treating it as nil" do
@@ -270,9 +270,9 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         }
       }
 
-      [tu, _] = decode_trip_update(update, %Options{})
+      [td, _] = decode_trip_update(update, %Options{})
 
-      assert TripUpdate.start_time(tu) == nil
+      assert TripDescriptor.start_time(td) == nil
     end
   end
 
@@ -305,10 +305,10 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         position: %{latitude: 1, longitude: 1}
       }
 
-      assert [tu, _] =
+      assert [td, _] =
                decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}}, 1_534_340_506)
 
-      assert TripUpdate.timestamp(tu) == 1_534_340_406
+      assert TripDescriptor.timestamp(td) == 1_534_340_406
     end
 
     test "logs if vehicle timestamp is later than feed timestamp" do

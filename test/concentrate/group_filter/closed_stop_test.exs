@@ -2,9 +2,9 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.ClosedStop
-  alias Concentrate.{TripUpdate, StopTimeUpdate, VehiclePosition}
+  alias Concentrate.{TripDescriptor, StopTimeUpdate, VehiclePosition}
 
-  @trip_update TripUpdate.new(trip_id: "trip", direction_id: 1, route_id: "route")
+  @trip_update TripDescriptor.new(trip_id: "trip", direction_id: 1, route_id: "route")
   @valid_date_time 8
   @invalid_date_time 4
 
@@ -34,8 +34,8 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
     end
 
     test "skips the stop time if the stop is closed for the whole route" do
-      tu =
-        TripUpdate.new(
+      td =
+        TripDescriptor.new(
           trip_id: "other_trip",
           route_id: "other_route"
         )
@@ -48,7 +48,7 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
           departure_time: @valid_date_time
         )
 
-      group = {tu, [], [stu]}
+      group = {td, [], [stu]}
       assert {_, _, [new_stu]} = filter(group, @module)
       assert StopTimeUpdate.schedule_relationship(new_stu) == :SKIPPED
       assert StopTimeUpdate.arrival_time(new_stu) == nil
@@ -90,7 +90,7 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
       assert ^group = filter(group)
     end
 
-    test "does not modify the group if there's no TripUpdate" do
+    test "does not modify the group if there's no TripDescriptor" do
       group = {nil, [VehiclePosition.new(id: "vehicle", latitude: 0, longitude: 0)], []}
       assert ^group = filter(group)
     end

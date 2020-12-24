@@ -2,7 +2,7 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimesTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.RemoveUnneededTimes
-  alias Concentrate.{TripUpdate, StopTimeUpdate}
+  alias Concentrate.{TripDescriptor, StopTimeUpdate}
 
   defmodule FakePickupDropOff do
     @moduledoc "Fake implementation of Filter.GTFS.PickupDropOff"
@@ -17,7 +17,7 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimesTest do
   @module __MODULE__.FakePickupDropOff
   @arrival_time 5
   @departure_time 500
-  @tu TripUpdate.new(trip_id: "trip")
+  @tu TripDescriptor.new(trip_id: "trip")
   @stu StopTimeUpdate.new(
          trip_id: "trip",
          arrival_time: @arrival_time,
@@ -101,9 +101,9 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimesTest do
     end
 
     test "non-scheduled TripUpdates aren't modified" do
-      tu = TripUpdate.new(trip_id: "added", schedule_relationship: :ADDED)
+      td = TripDescriptor.new(trip_id: "added", schedule_relationship: :ADDED)
       stu = StopTimeUpdate.update(@stu, trip_id: "added", departure_time: nil)
-      group = {tu, [], [stu]}
+      group = {td, [], [stu]}
       assert filter(group, @module) == group
     end
 

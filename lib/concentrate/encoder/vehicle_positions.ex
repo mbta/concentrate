@@ -3,7 +3,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
   Encodes a list of parsed data into a VehiclePositions.pb file.
   """
   @behaviour Concentrate.Encoder
-  alias Concentrate.{TripUpdate, VehiclePosition}
+  alias Concentrate.{TripDescriptor, VehiclePosition}
   import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
@@ -22,8 +22,8 @@ defmodule Concentrate.Encoder.VehiclePositions do
     |> Enum.flat_map(&build_entity/1)
   end
 
-  def build_entity({%TripUpdate{} = update, vps, _stus}) do
-    trip = trip_descriptor(update)
+  def build_entity({%TripDescriptor{} = td, vps, _stus}) do
+    trip = trip_descriptor(td)
 
     for vp <- vps do
       %{
@@ -87,12 +87,12 @@ defmodule Concentrate.Encoder.VehiclePositions do
 
   def trip_descriptor(update) do
     drop_nil_values(%{
-      trip_id: TripUpdate.trip_id(update),
-      route_id: TripUpdate.route_id(update),
-      direction_id: TripUpdate.direction_id(update),
-      start_time: TripUpdate.start_time(update),
-      start_date: encode_date(TripUpdate.start_date(update)),
-      schedule_relationship: TripUpdate.schedule_relationship(update)
+      trip_id: TripDescriptor.trip_id(update),
+      route_id: TripDescriptor.route_id(update),
+      direction_id: TripDescriptor.direction_id(update),
+      start_time: TripDescriptor.start_time(update),
+      start_date: encode_date(TripDescriptor.start_date(update)),
+      schedule_relationship: TripDescriptor.schedule_relationship(update)
     })
   end
 end

@@ -13,13 +13,13 @@ defmodule Concentrate.GroupFilter.TimeOutOfRange do
   @impl Concentrate.GroupFilter
   def filter(trip_group, now_fn \\ &now/0)
 
-  def filter({tu, vps, stus}, now_fn) do
+  def filter({td, vps, stus}, now_fn) do
     now = now_fn.()
     min_time = now - @min_time_in_past
     max_time = now + @max_time_in_future
 
     {stus, _} = Enum.flat_map_reduce(stus, false, &maybe_drop_stu(&1, &2, min_time, max_time))
-    {tu, vps, stus}
+    {td, vps, stus}
   end
 
   def filter(other, _now_fn) do

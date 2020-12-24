@@ -4,7 +4,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   """
   @behaviour Concentrate.Parser
   require Logger
-  alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripUpdate, VehiclePosition}
+  alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripDescriptor, VehiclePosition}
   alias Concentrate.Parser.Helpers
   alias VehiclePosition.Consist, as: VehiclePositionConsist
 
@@ -68,12 +68,12 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   def decode_trip_update(trip_update, options) do
-    tu = decode_trip_descriptor(trip_update)
-    decode_stop_updates(tu, trip_update, options)
+    td = decode_trip_descriptor(trip_update)
+    decode_stop_updates(td, trip_update, options)
   end
 
   defp decode_stop_updates(
-         tu,
+         td,
          %{"stop_time_update" => [update | _] = updates} = trip_update,
          options
        ) do
@@ -83,7 +83,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     {departure_time, _} = time_from_event(Map.get(update, "departure"))
 
     cond do
-      tu != [] and not Helpers.valid_route_id?(options, TripUpdate.route_id(List.first(tu))) ->
+      td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) ->
         []
 
       not Helpers.times_less_than_max?(arrival_time, departure_time, max_time) ->
@@ -109,15 +109,15 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
             )
           end
 
-        tu ++ stop_updates
+        td ++ stop_updates
     end
   end
 
-  defp decode_stop_updates(tu, %{"stop_time_update" => []}, options) do
-    if tu != [] and not Helpers.valid_route_id?(options, TripUpdate.route_id(List.first(tu))) do
+  defp decode_stop_updates(td, %{"stop_time_update" => []}, options) do
+    if td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) do
       []
     else
-      tu
+      td
     end
   end
 
@@ -132,12 +132,12 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
     case decode_trip_descriptor(vp) do
       [trip] ->
-        if Helpers.valid_route_id?(options, TripUpdate.route_id(trip)) do
+        if Helpers.valid_route_id?(options, TripDescriptor.route_id(trip)) do
           [
             trip,
             VehiclePosition.new(
               id: id,
-              trip_id: TripUpdate.trip_id(trip),
+              trip_id: TripDescriptor.trip_id(trip),
               stop_id: Map.get(vp, "stop_id"),
               label: Map.get(vehicle, "label"),
               license_plate: Map.get(vehicle, "license_plate"),
@@ -171,7 +171,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
       end
 
     [
-      TripUpdate.new(
+      TripDescriptor.new(
         trip_id: Map.get(trip, "trip_id"),
         route_id: Map.get(trip, "route_id"),
         route_pattern_id: Map.get(trip, "route_pattern_id"),

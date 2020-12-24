@@ -3,13 +3,13 @@ defmodule Concentrate.Encoder.VehiclePositions.JSONTest do
   use ExUnit.Case, async: true
   import Concentrate.Encoder.VehiclePositions.JSON
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
-  alias Concentrate.{TripUpdate, VehiclePosition}
+  alias Concentrate.{TripDescriptor, VehiclePosition}
 
   describe "encode_groups/1" do
     test "same output as Encoder.VehiclePositions.encode_groups/1 but in JSON" do
       initial = [
-        TripUpdate.new(trip_id: "1"),
-        TripUpdate.new(trip_id: "2"),
+        TripDescriptor.new(trip_id: "1"),
+        TripDescriptor.new(trip_id: "2"),
         VehiclePosition.new(trip_id: "1", latitude: 1.0, longitude: 1.0),
         VehiclePosition.new(trip_id: "2", latitude: 2.0, longitude: 2.0)
       ]
