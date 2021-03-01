@@ -1,6 +1,6 @@
 name: Elixir CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -30,7 +30,13 @@ jobs:
     - name: Credo
       run: mix credo --strict
     - name: Run tests
-      run: env MIX_ENV=test mix do compile --force --warnings-as-errors, coveralls.json && bash <(curl -s https://codecov.io/bash)
+      run: env MIX_ENV=test mix do compile --force --warnings-as-errors, test --cover
+    - name: Upload coverage artifact
+      uses: zgosalvez/github-actions-report-lcov@v1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        coverage-files: ./coverage/lcov*.info
+        artifact-name: elixir-code-coverage
     - name: Restore Dialyzer cache
       id: dialyzer-cache
       uses: actions/cache@v2
