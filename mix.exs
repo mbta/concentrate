@@ -8,8 +8,7 @@ defmodule Concentrate.MixProject do
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [coveralls: :test, "coveralls.html": :test, "coveralls.json": :test],
+      test_coverage: [tool: LcovEx, output: "coverage", ignore_paths: ~w(test/ src/)],
       dialyzer: [
         plt_add_deps: :transitive,
         flags: [
@@ -68,7 +67,7 @@ defmodule Concentrate.MixProject do
       {:ehmon, git: "https://github.com/mbta/ehmon.git", branch: "master", only: ~w(test prod)a},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
-      {:excoveralls, "~> 0.11", only: :test},
+      {:lcov_ex, "~> 0.1.1", only: :test, runtime: false},
       {:gen_stage, "~> 1.0"},
       {:gpb, "~> 4.7", only: :dev, runtime: false, only: :dev},
       {:httpoison, "~> 1.0"},
