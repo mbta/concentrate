@@ -29,8 +29,12 @@ jobs:
       run: mix format --check-formatted
     - name: Credo
       run: mix credo --strict
+    - name: Compile (warnings as errors)
+      env:
+        MIX_ENV: test
+      run: mix compile --force --warnings-as-errors
     - name: Run tests
-      run: env MIX_ENV=test mix do compile --force --warnings-as-errors, test --cover
+      run: mix test --cover
     - name: Upload coverage artifact
       uses: zgosalvez/github-actions-report-lcov@v1
       with:
