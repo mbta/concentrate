@@ -1,0 +1,35 @@
+name: 'Build/push'
+description: 'Build a Docker image and push to ECR'
+inputs:
+  aws-access-key-id:
+    description: "AWS_ACCESS_KEY_ID"
+    required: true
+  aws-secret-access-key:
+    description: "AWS_SECRET_ACCESS_KEY"
+    required: true
+  aws-region:
+    description: "AWS region to use"
+    required: true
+    default: "us-east-1"
+  docker-repo:
+    description: "ECR Docker repo to push to"
+    required: true
+outputs:
+  docker-tag:
+    description: "Docker Tag"
+    value: ${{ steps.docker.outputs.tag }}
+runs:
+  using: "composite"
+  steps:
+    - run: echo "::set-output name=tag::${{ inputs.docker-repo }}:git-$(git rev-parse --short HEAD)"
+      id: docker
+      shell: bash
+    - run: docker build --pull -t ${{ steps.docker.outputs.tag }} .
+      shell: bash
+    - run: aws ecr get-login-password --region ${{ inputs.aws-region }} | docker login --username AWS --password-stdin ${{ inputs.docker-repo }}
+      env:
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
+      shell: bash
+    - run: docker push ${{ steps.docker.outputs.tag }}
+      shell: bash

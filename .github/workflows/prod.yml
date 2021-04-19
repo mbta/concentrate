@@ -1,0 +1,28 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-lattest
+    environment: production
+    concurrency: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: ./.github/actions/build-push
+        id: build-push
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          docker-repo: ${{ secrets.DOCKER_REPO }}
+      - uses: ./.github/actions/deploy
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ecs-cluster: concentrate
+          ecs-service: concentrate-prod
+          docker-tag: ${{ steps.build-push.outputs.docker-tag }}
