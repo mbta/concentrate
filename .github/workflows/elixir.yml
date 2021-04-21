@@ -46,9 +46,9 @@ jobs:
       uses: actions/cache@v2
       with:
         path: _build/dev/dialyxir*.plt*
-        key: ${{ runner.os }}-dialyxir-${{ steps.elixir.otp-version }}-${{ steps.elixir.elixir_version }}-${{ hashFiles('**/mix.lock') }}
+        key: ${{ runner.os }}-dialyxir-${{ steps.elixir.outputs.otp-version }}-${{ steps.elixir.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
         restore-keys: |
-          ${{ runner.os }}-dialyxir-${{ steps.elixir.otp-version }}-${{ steps.elixir.elixir_version }}-
-          ${{ runner.os }}-dialyxir-${{ steps.elixir.otp-version }}-
+          ${{ runner.os }}-dialyxir-${{ steps.elixir.outputs.otp-version }}-${{ steps.elixir.outputs.elixir-version }}-
+          ${{ runner.os }}-dialyxir-${{ steps.elixir.outputs.otp-version }}-
     - name: Dialyzer
       run: mix dialyzer --halt-exit-status
