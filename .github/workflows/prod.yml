@@ -1,12 +1,11 @@
 name: Deploy to Production
 
-on:
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
   deploy:
     name: Deploy
-    runs-on: ubuntu-lattest
+    runs-on: ubuntu-latest
     environment: production
     concurrency: production
 

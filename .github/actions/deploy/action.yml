@@ -1,27 +1,27 @@
-name: "Deploy"
-description: "Deploy a Docker image (in ECR) to ECS"
+name: Deploy
+description: Deploy a Docker image (in ECR) to ECS
 inputs:
   aws-access-key-id:
-    description: "AWS_ACCESS_KEY_ID"
+    description: AWS_ACCESS_KEY_ID
     required: true
   aws-secret-access-key:
-    description: "AWS_SECRET_ACCESS_KEY"
+    description: AWS_SECRET_ACCESS_KEY
     required: true
   aws-region:
-    description: "AWS region to use"
+    description: AWS region to use
     required: true
-    default: "us-east-1"
+    default: us-east-1
   ecs-cluster:
-    description: "ECS cluster to deploy"
+    description: ECS cluster to deploy
     required: true
   ecs-service:
-    description: "ECS service to deploy"
+    description: ECS service to deploy
     required: true
   docker-tag:
-    description: "Docker tag to deploy"
+    description: Docker tag to deploy
     required: true
 runs:
-  using: "composite"
+  using: composite
   steps:
     - run: bash ${{ github.action_path }}/deploy.sh
       shell: bash
