@@ -1,6 +1,6 @@
 name: Elixir CI
 
-on: [push, pull_request_target]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -36,11 +36,10 @@ jobs:
     - name: Run tests
       run: mix test --cover
     - name: Upload coverage artifact
-      uses: zgosalvez/github-actions-report-lcov@v1
+      uses: actions/upload-artifact@v2
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        coverage-files: ./coverage/lcov*.info
-        artifact-name: elixir-code-coverage
+        name: elixir-lcov
+        path: coverage/
     - name: Restore Dialyzer cache
       id: dialyzer-cache
       uses: actions/cache@v2
