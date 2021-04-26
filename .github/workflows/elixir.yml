@@ -35,6 +35,11 @@ jobs:
       run: mix compile --force --warnings-as-errors
     - name: Run tests
       run: mix test --cover
+    - name: Save PR information
+      run: |
+        echo "${{ github.event.pull_request.number }}" > coverage/PR_NUMBER
+        echo "${{ github.event.pull_request.head.sha }}" > coverage/PR_SHA
+      if: github.event.pull_request
     - name: Upload coverage artifact
       uses: actions/upload-artifact@v2
       with:

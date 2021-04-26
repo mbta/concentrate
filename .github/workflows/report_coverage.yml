@@ -13,12 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - run: mkdir -p ${{ runner.temp }}/coverage
     - run: echo Fetching artifacts for ${{ github.event.workflow_run.id }}, event name ${{ github.event_name }}, triggered by ${{ github.event.workflow_run.event }}
-    - run: echo Should have run? ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
-
-    - uses: actions/checkout@v2 # UNTRUSTED CODE - do not run scripts from it
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
     - name: Download artifact
       uses: actions/github-script@v3.1.0
       with:
@@ -38,12 +34,18 @@ jobs:
             archive_format: 'zip',
           });
           var fs = require('fs');
-          fs.writeFileSync('${{github.workspace}}/elixir-lcov.zip', Buffer.from(download.data));
-    - run: unzip elixir-lcov.zip
-    - run: ls
+          fs.writeFileSync('${{ runner.temp }}/coverage/elixir-lcov.zip', Buffer.from(download.data));
+    - working-directory: ${{ runner.temp }}/coverage
+      run: |
+        unzip elixir-lcov.zip
+        echo "::set-output name=PR_SHA::$(cat PR_SHA)"
+        echo "::set-output name=PR_NUMBER::$(cat PR_NUMBER)"
+    - uses: actions/checkout@v2 # UNTRUSTED CODE - do not run scripts from it
+      with:
+        ref: ${{ env.PR_SHA }}
     - name: Upload coverage artifact and post comment
       uses: mbta/github-actions-report-lcov@v1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        coverage-files: ./lcov*.info
+        coverage-files: ${{ runner.temp }}/coverage/lcov*.info
         artifact-name: elixir-code-coverage
