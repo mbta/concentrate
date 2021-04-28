@@ -10,8 +10,7 @@ jobs:
     concurrency: production
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - uses: mbta/actions/build-push-ecr@v1
         id: build-push
         with:
