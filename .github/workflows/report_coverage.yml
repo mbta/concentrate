@@ -38,8 +38,8 @@ jobs:
     - working-directory: ${{ runner.temp }}/coverage
       run: |
         unzip elixir-lcov.zip
-        echo "::set-output name=PR_SHA::$(cat PR_SHA)"
-        echo "::set-output name=PR_NUMBER::$(cat PR_NUMBER)"
+        echo "PR_SHA=$(cat PR_SHA)" >> $GITHUB_ENV
+        echo "PR_NUMBER=$(cat PR_NUMBER)" >> $GITHUB_ENV
     - uses: actions/checkout@v2 # UNTRUSTED CODE - do not run scripts from it
       with:
         ref: ${{ env.PR_SHA }}
