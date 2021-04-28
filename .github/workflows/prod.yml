@@ -12,13 +12,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: ./.github/actions/build-push
+      - uses: mbta/actions/build-push-ecr@v1
         id: build-push
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           docker-repo: ${{ secrets.DOCKER_REPO }}
-      - uses: ./.github/actions/deploy
+      - uses: mbta/actions/deploy-ecs-@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
