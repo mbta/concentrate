@@ -25,3 +25,8 @@ jobs:
           ecs-cluster: concentrate
           ecs-service: concentrate-dev-green-fargate
           docker-tag: ${{ steps.build-push.outputs.docker-tag }}
+      - uses: mbta/actions/notify-slack-deploy@v1
+        if: ${{ !cancelled() }}
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          job-status: ${{ job.status }}
