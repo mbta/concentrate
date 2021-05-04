@@ -61,30 +61,4 @@ jobs:
       with:
         name: elixir-lcov
         path: coverage/
-    - name: Set Dialyzer Cache Keys
-      run: |
-        cat <<EOF > ${{ runner.temp }}/cache_keys.exs
-        architecture = :erlang.system_info(:system_architecture)
-        action = "dialyzer"
-        cache_key = Enum.intersperse([architecture, action, System.otp_release(), System.version()], ?-)
-        otp_prefix = Enum.intersperse([architecture, action, System.otp_release()], ?-)
-        system_prefix = Enum.intersperse([architecture, action], ?-)
-        IO.puts(['::set-output name=CACHE_KEY::', cache_key])
-        IO.puts(['::set-output name=OTP_PREFIX::', otp_prefix])
-        IO.puts(['::set-output name=SYSTEM_PREFIX::', system_prefix])
-        EOF
-        elixir -r ${{ runner.temp }}/cache_keys.exs
-        rm -f ${{ runner.temp }}/cache_keys.exs
-      id: dialyzer-keys
-    - name: Restore Dialyzer cache
-      id: dialyzer-cache
-      uses: actions/cache@v2
-      with:
-        path: _build/dev/dialyxir*.plt*
-        key: ${{ steps.dialyzer-keys.outputs.CACHE_KEY }}-${{ hashFiles('**/mix.lock') }}
-        restore-keys: |
-          ${{ steps.dialyzer-keys.outputs.CACHE_KEY }}-
-          ${{ steps.dialyzer-keys.outputs.OTP_PREFIX }}-
-          ${{ steps.dialyzer-keys.outputs.SYSTEM_PREFIX }}-
-    - name: Dialyzer
-      run: mix dialyzer --halt-exit-status
+    - uses: mbta/actions/dialyzer@v1
