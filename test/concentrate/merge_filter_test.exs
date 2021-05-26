@@ -1,6 +1,6 @@
 defmodule Concentrate.MergeFilterTest do
   @moduledoc false
-  use ExUnit.Case, async: true
+  use ExUnit.Case
   use ExUnitProperties
   import ExUnit.CaptureLog, only: [capture_log: 1]
   import Concentrate.MergeFilter

@@ -1,6 +1,6 @@
 defmodule ConcentrateTest do
   @moduledoc false
-  use ExUnit.Case, async: true
+  use ExUnit.Case
   import Concentrate
 
   describe "parse_json_configuration/1" do

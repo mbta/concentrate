@@ -1,4 +1,5 @@
-FROM hexpm/elixir:1.10.3-erlang-23.0.2-alpine-3.11.6 AS builder
+# get from https://hub.docker.com/r/hexpm/elixir/tags
+FROM hexpm/elixir:1.12.0-erlang-23.3.4.1-alpine-3.13.3 AS builder
 
 WORKDIR /root
 
@@ -22,20 +23,24 @@ ADD src /root/src
 RUN mix do compile, release
 
 # Second stage: copies the files from the builder stage
-FROM alpine:3.11.6
+FROM alpine:3.13.3
 
 RUN apk add --update libssl1.1 ncurses-libs bash dumb-init \
     && rm -rf /var/cache/apk
 
+# Create non-root user
+RUN addgroup -S concentrate && adduser -S -G concentrate concentrate
+USER concentrate
+WORKDIR /home/concentrate
+
 # Set environment
 ENV MIX_ENV=prod TERM=xterm LANG=C.UTF-8 REPLACE_OS_VARS=true
 
-WORKDIR /root/
-
-COPY --from=builder /root/_build/prod/rel /root/rel
+COPY --from=builder --chown=concentrate:concentrate /root/_build/prod/rel /home/concentrate/rel
 
 # Ensure SSL support is enabled
-RUN /root/rel/concentrate/bin/concentrate eval ":crypto.supports()"
+RUN rel/concentrate/bin/concentrate eval ":crypto.supports()"
 
-HEALTHCHECK CMD ["/root/rel/concentrate/bin/concentrate", "rpc", "Concentrate.Health.healthy?()"]
-CMD ["/usr/bin/dumb-init", "/root/rel/concentrate/bin/concentrate", "start"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+HEALTHCHECK CMD ["rel/concentrate/bin/concentrate", "rpc", "Concentrate.Health.healthy?()"]
+CMD ["rel/concentrate/bin/concentrate", "start"]
