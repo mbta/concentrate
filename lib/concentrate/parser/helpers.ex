@@ -104,7 +104,7 @@ defmodule Concentrate.Parser.Helpers do
   end
 
   def valid_route_id?(%{excluded_routes: {:ok, route_ids}}, route_id) do
-    not (route_id in route_ids)
+    route_id not in route_ids
   end
 
   def valid_route_id?(_, _) do
@@ -141,11 +141,7 @@ defmodule Concentrate.Parser.Helpers do
              vehicle_timestamp > feed_timestamp do
     _ =
       Logger.warn(
-        "vehicle timestamp after feed timestamp feed_url=#{inspect(options.feed_url)} vehicle_id=#{
-          inspect(vehicle_id)
-        } feed_timestamp=#{inspect(feed_timestamp)} vehicle_timestamp=#{
-          inspect(vehicle_timestamp)
-        }"
+        "vehicle timestamp after feed timestamp feed_url=#{inspect(options.feed_url)} vehicle_id=#{inspect(vehicle_id)} feed_timestamp=#{inspect(feed_timestamp)} vehicle_timestamp=#{inspect(vehicle_timestamp)}"
       )
 
     :ok
