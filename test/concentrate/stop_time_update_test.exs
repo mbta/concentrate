@@ -6,7 +6,6 @@ defmodule Concentrate.StopTimeUpdateTest do
 
   @stu new(
          trip_id: "trip",
-         stop_id: "stop",
          stop_sequence: 1,
          arrival_time: 2,
          departure_time: 3,
@@ -28,22 +27,13 @@ defmodule Concentrate.StopTimeUpdateTest do
   end
 
   describe "Concentrate.Mergeable" do
-    test "key/1 uses the parent station ID" do
-      start_supervised!(Concentrate.Filter.GTFS.Stops)
-      Concentrate.Filter.GTFS.Stops._insert_mapping("child_id", "parent_id")
-
-      assert Mergeable.key(new(stop_id: "child_id")) == {nil, "parent_id", nil}
-      assert Mergeable.key(new(stop_id: "other")) == {nil, "other", nil}
-      assert Mergeable.key(new(stop_id: nil)) == {nil, nil, nil}
-    end
-
-    test "merge/2 takes non-nil values, earliest arrival, latest departure" do
+    test "takes non-nil values, earliest arrival, latest departure" do
       first = @stu
 
       second =
         new(
           trip_id: "trip",
-          stop_id: "stop-01",
+          stop_id: "stop",
           stop_sequence: 1,
           arrival_time: 1,
           departure_time: 4,
@@ -55,7 +45,7 @@ defmodule Concentrate.StopTimeUpdateTest do
       expected =
         new(
           trip_id: "trip",
-          stop_id: "stop-01",
+          stop_id: "stop",
           stop_sequence: 1,
           arrival_time: 1,
           departure_time: 4,
@@ -68,6 +58,14 @@ defmodule Concentrate.StopTimeUpdateTest do
 
       assert Mergeable.merge(first, second) == expected
       assert Mergeable.merge(second, first) == expected
+    end
+
+    test "picks the 'greater' of two stop IDs" do
+      first = new(stop_id: "stop")
+      second = new(stop_id: "stop-01")
+
+      assert %{stop_id: "stop-01"} = Mergeable.merge(first, second)
+      assert %{stop_id: "stop-01"} = Mergeable.merge(second, first)
     end
   end
 end
