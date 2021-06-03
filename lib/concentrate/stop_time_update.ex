@@ -3,7 +3,6 @@ defmodule Concentrate.StopTimeUpdate do
   Structure for representing an update to a StopTime (e.g. a predicted arrival or departure)
   """
   import Concentrate.StructHelpers
-  alias Concentrate.Filter.GTFS.Stops
 
   defstruct_accessors([
     :trip_id,
@@ -36,14 +35,7 @@ defmodule Concentrate.StopTimeUpdate do
   end
 
   defimpl Concentrate.Mergeable do
-    def key(%{trip_id: trip_id, stop_id: stop_id, stop_sequence: stop_sequence}) do
-      parent_station_id =
-        if stop_id do
-          Stops.parent_station_id(stop_id)
-        end
-
-      {trip_id, parent_station_id, stop_sequence}
-    end
+    def key(%{trip_id: trip_id, stop_sequence: stop_sequence}), do: {trip_id, stop_sequence}
 
     def merge(first, second) do
       %{
