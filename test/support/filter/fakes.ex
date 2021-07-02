@@ -7,6 +7,12 @@ defmodule Concentrate.Filter.FakeTrips do
   def direction_id(_), do: nil
 end
 
+defmodule Concentrate.Filter.FakeStopIDs do
+  @moduledoc "Fake implementation of Filter.GTFS.StopIDs"
+  def stop_id("trip", 1), do: "stop"
+  def stop_id(_, _), do: :unknown
+end
+
 defmodule Concentrate.Filter.FakeCancelledTrips do
   @moduledoc "Fake implementation of Filter.Alerts.CancelledTrips"
   def route_cancelled?("route", {1970, 1, 2}) do

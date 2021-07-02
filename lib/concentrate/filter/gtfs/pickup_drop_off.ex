@@ -3,6 +3,7 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
   Server which knows whether riders can be picked up or dropped off at a stop.
   """
   use GenStage
+  alias Concentrate.Filter.GTFS.Helpers
   require Logger
   import :binary, only: [copy: 1]
   @table __MODULE__
@@ -38,7 +39,7 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
       |> List.flatten()
       |> Stream.flat_map(fn
         {"stop_times.txt", body} ->
-          io_stream(body)
+          Helpers.io_stream(body)
 
         _ ->
           []
@@ -62,26 +63,6 @@ defmodule Concentrate.Filter.GTFS.PickupDropOff do
       end
 
     {:noreply, [], state, :hibernate}
-  end
-
-  @spec io_stream(binary) :: Enumerable.t()
-  defp io_stream(body) when is_binary(body) do
-    # turns the given binary into a Stream of lines.
-    Stream.resource(
-      fn ->
-        {:ok, pid} = StringIO.open(body)
-        pid
-      end,
-      fn pid ->
-        case IO.read(pid, :line) do
-          line when is_binary(line) -> {[line], pid}
-          _ -> {:halt, pid}
-        end
-      end,
-      fn pid ->
-        StringIO.close(pid)
-      end
-    )
   end
 
   defp can_pickup_drop_off?("1"), do: false
