@@ -23,7 +23,7 @@ asdf install
 mix deps.get
 
 # add pre-commit hook to verify formatting/tests/types
-ln -s ../../hooks/pre-commit .git/hooks/pre-commit
+ln -s ./hooks/pre-commit .git/hooks/pre-commit
 
 # make sure everything passes! (slowest to fastest)
 mix format --check-formatted
