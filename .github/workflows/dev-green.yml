@@ -22,7 +22,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           ecs-cluster: concentrate
-          ecs-service: concentrate-dev-green-fargate
+          ecs-service: concentrate-dev-green
           docker-tag: ${{ steps.build-push.outputs.docker-tag }}
       - uses: mbta/actions/notify-slack-deploy@v1
         if: ${{ !cancelled() }}
