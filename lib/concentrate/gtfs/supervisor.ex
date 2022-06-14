@@ -24,6 +24,7 @@ defmodule Concentrate.GTFS.Supervisor do
           {Concentrate.GTFS.Trips, subscribe_to: [:gtfs_producer]},
           {Concentrate.GTFS.Stops, subscribe_to: [:gtfs_producer]},
           {Concentrate.GTFS.StopIDs, subscribe_to: [:gtfs_producer]},
+          {Concentrate.GTFS.StopTimes, subscribe_to: [:gtfs_producer]},
           {Concentrate.GTFS.PickupDropOff, subscribe_to: [:gtfs_producer]}
         ],
         strategy: :rest_for_one

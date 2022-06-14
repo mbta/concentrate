@@ -30,7 +30,7 @@ defmodule Concentrate.Supervisor do
 
   def alerts(config) do
     [
-      {Concentrate.Alert.Supervisor, config}
+      {Concentrate.Filter.Alert.Supervisor, config}
     ]
   end
 

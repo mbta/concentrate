@@ -153,6 +153,9 @@ defmodule Concentrate.MergeFilter do
           filter when is_atom(filter) ->
             &filter.filter/1
 
+          {filter, _options} when is_atom(filter) ->
+            &filter.filter/1
+
           filter when is_function(filter, 1) ->
             filter
         end
