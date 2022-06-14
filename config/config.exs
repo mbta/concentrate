@@ -4,6 +4,8 @@ use Mix.Config
 
 config :logger, level: :debug
 
+config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
+
 config :ex_aws, json_codec: Jason
 
 # per https://github.com/edgurgel/httpoison/issues/130, set the SSL version to pick a better default
@@ -30,6 +32,11 @@ config :concentrate,
     Concentrate.Filter.IncludeStopID
   ],
   group_filters: [
+    {
+      Concentrate.GroupFilter.ScheduledStopTimes,
+      # https://github.com/mbta/commuter_rail_boarding/blob/79a493f/config/config.exs#L34-L63
+      on_time_statuses: ["All aboard", "Now boarding", "On time", "On Time"]
+    },
     Concentrate.GroupFilter.TimeOutOfRange,
     Concentrate.GroupFilter.RemoveUnneededTimes,
     Concentrate.GroupFilter.Shuttle,

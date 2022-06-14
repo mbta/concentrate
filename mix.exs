@@ -72,7 +72,8 @@ defmodule Concentrate.MixProject do
       {:gpb, "~> 4.7", only: :dev, runtime: false, only: :dev},
       {:httpoison, "~> 1.0"},
       {:jason, "~> 1.0"},
-      {:stream_data, "~> 0.4", only: :test}
+      {:stream_data, "~> 0.4", only: :test},
+      {:tzdata, "~> 1.1.1"}
     ]
   end
 end
