@@ -2,7 +2,7 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
   @moduledoc """
   Removes arrival times from the first stop on a trip, and the departure time from the last stop on a trip.
   """
-  alias Concentrate.Filter.GTFS.PickupDropOff
+  alias Concentrate.GTFS.PickupDropOff
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
   @behaviour Concentrate.GroupFilter
 

@@ -4,7 +4,7 @@ defmodule Concentrate.Filter.IncludeRouteDirectionTest do
   import Concentrate.Filter.IncludeRouteDirection
   alias Concentrate.TripDescriptor
 
-  @module Concentrate.Filter.FakeTrips
+  @module Concentrate.GTFS.FakeTrips
 
   describe "filter/2" do
     test "a trip update with a route/direction is kept as-is" do

@@ -1,4 +1,4 @@
-defmodule Concentrate.Filter.GTFS.Unzip do
+defmodule Concentrate.GTFS.Unzip do
   @moduledoc """
   Unzips the GTFS file into constituent files.
   """

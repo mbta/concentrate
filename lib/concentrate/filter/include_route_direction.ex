@@ -3,7 +3,7 @@ defmodule Concentrate.Filter.IncludeRouteDirection do
   Adds route/direction ID for TripUpdates.
   """
   @behaviour Concentrate.Filter
-  alias Concentrate.Filter.GTFS.Trips
+  alias Concentrate.GTFS.Trips
   alias Concentrate.TripDescriptor
 
   @impl Concentrate.Filter

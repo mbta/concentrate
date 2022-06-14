@@ -1,9 +1,9 @@
-defmodule Concentrate.Filter.GTFS.StopIDs do
+defmodule Concentrate.GTFS.StopIDs do
   @moduledoc """
   Server which knows the stop ID for a given trip ID and stop sequence.
   """
   use GenStage
-  alias Concentrate.Filter.GTFS.Helpers
+  alias Concentrate.GTFS.Helpers
   require Logger
   import :binary, only: [copy: 1]
   @table __MODULE__

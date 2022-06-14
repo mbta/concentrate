@@ -1,5 +1,5 @@
-defmodule Concentrate.Filter.GTFS.Helpers do
-  @moduledoc "Shared helpers for `Filter.GTFS` modules."
+defmodule Concentrate.GTFS.Helpers do
+  @moduledoc "Shared helpers for `GTFS` modules."
 
   @doc "Turns the given binary into a Stream of lines."
   @spec io_stream(binary) :: Enumerable.t()

@@ -30,13 +30,13 @@ defmodule Concentrate.Supervisor do
 
   def alerts(config) do
     [
-      {Concentrate.Filter.Alert.Supervisor, config}
+      {Concentrate.Alert.Supervisor, config}
     ]
   end
 
   def gtfs(config) do
     [
-      {Concentrate.Filter.GTFS.Supervisor, config}
+      {Concentrate.GTFS.Supervisor, config}
     ]
   end
 
