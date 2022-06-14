@@ -1,7 +1,7 @@
-defmodule Concentrate.Filter.GTFS.StopIDsTest do
+defmodule Concentrate.GTFS.StopIDsTest do
   @moduledoc false
   use ExUnit.Case
-  import Concentrate.Filter.GTFS.StopIDs
+  import Concentrate.GTFS.StopIDs
 
   # copied + modified from a recent stop_times.txt
   @body """
@@ -10,7 +10,7 @@ defmodule Concentrate.Filter.GTFS.StopIDsTest do
   """
 
   defp supervised(_) do
-    start_supervised(Concentrate.Filter.GTFS.StopIDs)
+    start_supervised(Concentrate.GTFS.StopIDs)
     event = [{"stop_times.txt", @body}]
     # relies on being able to update the table from a different process
     handle_events([event], :ignored, :ignored)

@@ -1,5 +1,5 @@
-defmodule Concentrate.Filter.FakeTrips do
-  @moduledoc "Fake implementation of Filter.GTFS.Trips"
+defmodule Concentrate.GTFS.FakeTrips do
+  @moduledoc "Fake implementation of GTFS.Trips"
   def route_id("trip"), do: "route"
   def route_id(_), do: nil
 
@@ -7,8 +7,8 @@ defmodule Concentrate.Filter.FakeTrips do
   def direction_id(_), do: nil
 end
 
-defmodule Concentrate.Filter.FakeStopIDs do
-  @moduledoc "Fake implementation of Filter.GTFS.StopIDs"
+defmodule Concentrate.GTFS.FakeStopIDs do
+  @moduledoc "Fake implementation of GTFS.StopIDs"
   def stop_id("trip", 1), do: "stop"
   def stop_id(_, _), do: :unknown
 end

@@ -1,7 +1,7 @@
-defmodule Concentrate.Filter.GTFS.HelpersTest do
+defmodule Concentrate.GTFS.HelpersTest do
   @moduledoc false
   use ExUnit.Case, async: true
-  alias Concentrate.Filter.GTFS.Helpers
+  alias Concentrate.GTFS.Helpers
 
   describe "io_stream/1" do
     test "streams the lines of a binary" do

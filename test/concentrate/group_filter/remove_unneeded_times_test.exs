@@ -5,7 +5,7 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimesTest do
   alias Concentrate.{TripDescriptor, StopTimeUpdate}
 
   defmodule FakePickupDropOff do
-    @moduledoc "Fake implementation of Filter.GTFS.PickupDropOff"
+    @moduledoc "Fake implementation of GTFS.PickupDropOff"
 
     def pickup_drop_off("trip", 1), do: {true, false}
     def pickup_drop_off("trip", 4), do: {true, true}

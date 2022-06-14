@@ -3,7 +3,7 @@ defmodule Concentrate.Filter.IncludeStopID do
   Adds missing stop IDs to StopTimeUpdates.
   """
   @behaviour Concentrate.Filter
-  alias Concentrate.Filter.GTFS.StopIDs
+  alias Concentrate.GTFS.StopIDs
   alias Concentrate.StopTimeUpdate
 
   @impl Concentrate.Filter

@@ -1,9 +1,9 @@
-defmodule Concentrate.Filter.GTFS.PickupDropOff do
+defmodule Concentrate.GTFS.PickupDropOff do
   @moduledoc """
   Server which knows whether riders can be picked up or dropped off at a stop.
   """
   use GenStage
-  alias Concentrate.Filter.GTFS.Helpers
+  alias Concentrate.GTFS.Helpers
   require Logger
   import :binary, only: [copy: 1]
   @table __MODULE__

@@ -4,7 +4,7 @@ defmodule Concentrate.Filter.IncludeStopIDTest do
   import Concentrate.Filter.IncludeStopID
   alias Concentrate.StopTimeUpdate
 
-  @module Concentrate.Filter.FakeStopIDs
+  @module Concentrate.GTFS.FakeStopIDs
 
   describe "filter/2" do
     test "a stop time update with a stop_id is kept as-is" do

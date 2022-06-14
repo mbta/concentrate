@@ -1,7 +1,7 @@
-defmodule Concentrate.Filter.GTFS.TripsTest do
+defmodule Concentrate.GTFS.TripsTest do
   @moduledoc false
   use ExUnit.Case
-  import Concentrate.Filter.GTFS.Trips
+  import Concentrate.GTFS.Trips
 
   @body """
   trip_id,route_id,direction_id
@@ -9,7 +9,7 @@ defmodule Concentrate.Filter.GTFS.TripsTest do
   """
 
   defp supervised(_) do
-    start_supervised(Concentrate.Filter.GTFS.Trips)
+    start_supervised(Concentrate.GTFS.Trips)
     event = [{"trips.txt", @body}]
     # relies on being able to update the table from a different process
     handle_events([event], :ignored, :ignored)

@@ -1,4 +1,4 @@
-defmodule Concentrate.Filter.GTFS.Trips do
+defmodule Concentrate.GTFS.Trips do
   @moduledoc """
   Server which maintains a list of trip -> {route_id, direction_id} mappings.
   """

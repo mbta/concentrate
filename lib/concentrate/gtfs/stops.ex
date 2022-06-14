@@ -1,4 +1,4 @@
-defmodule Concentrate.Filter.GTFS.Stops do
+defmodule Concentrate.GTFS.Stops do
   @moduledoc """
   Server which maintains a list of stop id -> parent station ID.
   """

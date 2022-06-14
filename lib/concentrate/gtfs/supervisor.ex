@@ -1,4 +1,4 @@
-defmodule Concentrate.Filter.GTFS.Supervisor do
+defmodule Concentrate.GTFS.Supervisor do
   @moduledoc """
   Supervisor for the extra servers needed for GTFS parsing.
 
@@ -15,16 +15,16 @@ defmodule Concentrate.Filter.GTFS.Supervisor do
             Application.get_env(:concentrate, :http_producer),
             {
               config[:url],
-              parser: Concentrate.Filter.GTFS.Unzip,
+              parser: Concentrate.GTFS.Unzip,
               fetch_after: @one_hour,
               content_warning_timeout: :infinity,
               name: :gtfs_producer
             }
           },
-          {Concentrate.Filter.GTFS.Trips, subscribe_to: [:gtfs_producer]},
-          {Concentrate.Filter.GTFS.Stops, subscribe_to: [:gtfs_producer]},
-          {Concentrate.Filter.GTFS.StopIDs, subscribe_to: [:gtfs_producer]},
-          {Concentrate.Filter.GTFS.PickupDropOff, subscribe_to: [:gtfs_producer]}
+          {Concentrate.GTFS.Trips, subscribe_to: [:gtfs_producer]},
+          {Concentrate.GTFS.Stops, subscribe_to: [:gtfs_producer]},
+          {Concentrate.GTFS.StopIDs, subscribe_to: [:gtfs_producer]},
+          {Concentrate.GTFS.PickupDropOff, subscribe_to: [:gtfs_producer]}
         ],
         strategy: :rest_for_one
       )

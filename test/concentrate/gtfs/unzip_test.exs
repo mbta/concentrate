@@ -1,7 +1,7 @@
-defmodule Concentrate.Filter.GTFS.UnzipTest do
+defmodule Concentrate.GTFS.UnzipTest do
   @moduledoc false
   use ExUnit.Case, async: true
-  import Concentrate.Filter.GTFS.Unzip
+  import Concentrate.GTFS.Unzip
 
   describe "parse/1" do
     test "returns the relevants bodies" do
