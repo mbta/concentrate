@@ -34,7 +34,7 @@ defmodule Concentrate.GTFS.PickupDropOff do
 
   @impl GenStage
   def handle_events(events, _from, state) do
-    count =
+    inserts =
       events
       |> List.flatten()
       |> Stream.flat_map(fn
@@ -45,22 +45,16 @@ defmodule Concentrate.GTFS.PickupDropOff do
           []
       end)
       |> CSV.decode(headers: true, num_workers: System.schedulers())
-      |> Stream.flat_map(&build_inserts/1)
-      |> Enum.reduce(0, fn insert, acc ->
-        if acc == 0 do
-          true = :ets.delete_all_objects(@table)
-        end
+      |> Enum.flat_map(&build_inserts/1)
 
-        :ets.insert(@table, insert)
-        acc + 1
+    if inserts != [] do
+      true = :ets.delete_all_objects(@table)
+      :ets.insert(@table, inserts)
+
+      Logger.info(fn ->
+        "#{__MODULE__}: updated with #{length(inserts)} records"
       end)
-
-    _ =
-      if count > 0 do
-        Logger.info(fn ->
-          "#{__MODULE__}: updated with #{count} records"
-        end)
-      end
+    end
 
     {:noreply, [], state, :hibernate}
   end
