@@ -44,24 +44,62 @@ defmodule Concentrate.GTFS.StopTimesTest do
     :ok
   end
 
-  describe "get/3" do
+  describe "arrival_departure/3" do
     setup :supervised
 
-    test "gets scheduled arrival/departure times given a trip ID, stop sequence, and date" do
-      assert StopTimes.get("CR-524518-2019", 10, {2022, 6, 12}) == {1_655_080_260, 1_655_080_260}
-      assert StopTimes.get("CR-524518-2019", 10, {2022, 6, 19}) == {1_655_685_060, 1_655_685_060}
-      assert StopTimes.get("CR-524522-2502", 0, {2022, 6, 19}) == {1_655_637_000, 1_655_637_000}
+    test "returns scheduled arrival/departure times for a stop time with a reference date" do
+      assert StopTimes.arrival_departure("CR-524518-2019", 10, {2022, 6, 12}) ==
+               {1_655_080_260, 1_655_080_260}
+
+      assert StopTimes.arrival_departure("CR-524518-2019", 10, {2022, 6, 19}) ==
+               {1_655_685_060, 1_655_685_060}
+
+      assert StopTimes.arrival_departure("CR-524522-2502", 0, {2022, 6, 19}) ==
+               {1_655_637_000, 1_655_637_000}
     end
 
     test "returns :unknown for unknown trips or stop sequences" do
-      assert StopTimes.get("CR-524518-0000", 10, {2022, 6, 19}) == :unknown
-      assert StopTimes.get("CR-524518-2019", 30, {2022, 6, 19}) == :unknown
+      assert StopTimes.arrival_departure("CR-524518-0000", 10, {2022, 6, 19}) == :unknown
+      assert StopTimes.arrival_departure("CR-524518-2019", 30, {2022, 6, 19}) == :unknown
+    end
+  end
+
+  describe "pick_up_drop_off/2" do
+    setup :supervised
+
+    test "returns pick-up/drop-off booleans for a stop time" do
+      assert StopTimes.pick_up_drop_off("CR-524522-2502", 0) == {true, false}
+    end
+
+    test "returns true for all pick-up/drop-off types other than 1" do
+      assert StopTimes.pick_up_drop_off("CR-524518-2019", 10) == {true, true}
+    end
+
+    test "returns :unknown for unknown trips or stop sequences" do
+      assert StopTimes.pick_up_drop_off("CR-524518-0000", 10) == :unknown
+      assert StopTimes.pick_up_drop_off("CR-524518-2019", 30) == :unknown
+    end
+  end
+
+  describe "stop_id/2" do
+    setup :supervised
+
+    test "returns the stop ID for a stop time" do
+      assert StopTimes.stop_id("CR-524522-2502", 0) == "WML-0442-CS"
+      assert StopTimes.stop_id("CR-524518-2019", 20) == "MM-0079-S"
+    end
+
+    test "returns :unknown for unknown trips or stop sequences" do
+      assert StopTimes.stop_id("CR-524518-0000", 10) == :unknown
+      assert StopTimes.stop_id("CR-524518-2019", 30) == :unknown
     end
   end
 
   describe "missing ETS table" do
-    test "returns :unknown" do
-      assert StopTimes.get("CR-524518-2019", 10, {2022, 6, 19}) == :unknown
+    test "all functions return :unknown" do
+      assert StopTimes.arrival_departure("CR-524518-2019", 10, {2022, 6, 19}) == :unknown
+      assert StopTimes.pick_up_drop_off("CR-524518-2019", 10) == :unknown
+      assert StopTimes.stop_id("CR-524518-2019", 10) == :unknown
     end
   end
 end

@@ -2,17 +2,17 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
   @moduledoc """
   Removes arrival times from the first stop on a trip, and the departure time from the last stop on a trip.
   """
-  alias Concentrate.GTFS.PickupDropOff
+  alias Concentrate.GTFS.StopTimes
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
   @behaviour Concentrate.GroupFilter
 
   @impl Concentrate.GroupFilter
-  def filter(trip_group, module \\ PickupDropOff)
+  def filter(trip_group, stop_times \\ StopTimes)
 
-  def filter({%TripDescriptor{} = td, vps, stus} = group, module) do
+  def filter({%TripDescriptor{} = td, vps, stus} = group, stop_times) do
     if TripDescriptor.schedule_relationship(td) == :SCHEDULED do
       trip_id = TripDescriptor.trip_id(td)
-      stus = ensure_all_correct_times(stus, module, trip_id)
+      stus = ensure_all_correct_times(stus, stop_times, trip_id)
       {td, vps, stus}
     else
       group
@@ -21,10 +21,10 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
 
   def filter(other, _module), do: other
 
-  defp ensure_all_correct_times([_ | _] = stus, module, trip_id) do
+  defp ensure_all_correct_times([_ | _] = stus, stop_times, trip_id) do
     [last | rest] = Enum.reverse(stus)
-    last = ensure_correct_times_for_last_stu(last, module, trip_id)
-    rest = Enum.map(rest, &ensure_correct_times(&1, module, trip_id))
+    last = ensure_correct_times_for_last_stu(last, stop_times, trip_id)
+    rest = Enum.map(rest, &ensure_correct_times(&1, stop_times, trip_id))
     Enum.reverse(rest, [last])
   end
 
@@ -32,21 +32,9 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
     []
   end
 
-  defp stop_sequence_or_stop_id(stu) do
-    case StopTimeUpdate.stop_sequence(stu) do
-      sequence when is_integer(sequence) ->
-        sequence
-
-      _ ->
-        StopTimeUpdate.stop_id(stu)
-    end
-  end
-
-  defp ensure_correct_times_for_last_stu(stu, module, trip_id) do
+  defp ensure_correct_times_for_last_stu(stu, stop_times, trip_id) do
     # we only remove the departure time from the last stop (excepting SKIPPED stops)
-    key = stop_sequence_or_stop_id(stu)
-
-    case module.pickup_drop_off(trip_id, key) do
+    case stop_times.pick_up_drop_off(trip_id, StopTimeUpdate.stop_sequence(stu)) do
       {true, true} ->
         ensure_both_times(stu)
 
@@ -65,10 +53,8 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
     end
   end
 
-  defp ensure_correct_times(stu, module, trip_id) do
-    key = stop_sequence_or_stop_id(stu)
-
-    case module.pickup_drop_off(trip_id, key) do
+  defp ensure_correct_times(stu, stop_times, trip_id) do
+    case stop_times.pick_up_drop_off(trip_id, StopTimeUpdate.stop_sequence(stu)) do
       {_, true} ->
         ensure_both_times(stu)
 
