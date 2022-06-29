@@ -1,11 +1,6 @@
 defmodule Concentrate.GTFS.StopTimes do
   @moduledoc """
-  Server which knows scheduled arrival and departure times for a given trip at a given stop.
-
-  The shape of the ETS records is `{{trip_id, stop_sequence}, {arrival, departure, time_zone}}`.
-  Arrival and departure are stored as an offset in seconds from noon local time, as per GTFS[1].
-
-  [1]: https://gtfs.org/schedule/reference/#field-types
+  Server which stores data related to GTFS stop times, keyed by trip ID and stop sequence.
   """
   use GenStage
   alias Concentrate.GTFS.Helpers
@@ -13,32 +8,65 @@ defmodule Concentrate.GTFS.StopTimes do
   import :binary, only: [copy: 1]
   @table __MODULE__
 
+  # Arrival and departure are stored as an offset in seconds from noon local time, as per GTFS:
+  # https://gtfs.org/schedule/reference/#field-types
+
+  @type object_key :: {trip_id :: String.t(), stop_sequence :: non_neg_integer}
+  @type object_value :: {
+          stop_id :: String.t(),
+          arrival_offset :: integer,
+          departure_offset :: integer,
+          time_zone_name :: String.t(),
+          pick_up? :: boolean,
+          drop_off? :: boolean
+        }
+
   def start_link(opts) do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
   @doc """
-  Given a trip ID, stop sequence, and reference date, return the scheduled arrival and departure
+  Given a trip ID, stop sequence, and reference date, returns the scheduled arrival and departure
   times for the trip at the stop on the date, as Unix timestamps. (Assumes the given trip runs on
   the given date; this is not actually checked against the calendar.)
   """
-  @spec get(String.t(), non_neg_integer, :calendar.date()) ::
-          {arrival :: non_neg_integer, departure :: non_neg_integer} | :unknown
-  def get(trip_id, stop_sequence, {_, _, _} = date)
+  @spec arrival_departure(String.t(), non_neg_integer, :calendar.date()) ::
+          {arrival_time :: non_neg_integer, departure_time :: non_neg_integer} | :unknown
+  def arrival_departure(trip_id, stop_sequence, {_, _, _} = date)
       when is_binary(trip_id) and is_integer(stop_sequence) do
     case lookup({trip_id, stop_sequence}) do
-      [{_, {arrival, departure, time_zone}}] ->
+      {_, arrival, departure, time_zone, _, _} ->
         {to_unix!(date, arrival, time_zone), to_unix!(date, departure, time_zone)}
 
-      [] ->
+      nil ->
         :unknown
     end
   end
 
+  @doc "Returns whether riders can be picked up or dropped off for a given stop time."
+  @spec pick_up_drop_off(String.t(), non_neg_integer) :: {boolean, boolean} | :unknown
+  def pick_up_drop_off(trip_id, stop_sequence)
+      when is_binary(trip_id) and is_integer(stop_sequence) do
+    case lookup({trip_id, stop_sequence}) do
+      {_, _, _, _, pick_up?, drop_off?} -> {pick_up?, drop_off?}
+      nil -> :unknown
+    end
+  end
+
+  @doc "Returns the stop ID for a stop time, identified by trip ID and stop sequence."
+  @spec stop_id(String.t(), non_neg_integer) :: String.t() | :unknown
+  def stop_id(trip_id, stop_sequence) when is_binary(trip_id) and is_integer(stop_sequence) do
+    case lookup({trip_id, stop_sequence}) do
+      {stop_id, _, _, _, _, _} -> stop_id
+      nil -> :unknown
+    end
+  end
+
+  @spec lookup(object_key) :: object_value | nil
   defp lookup(key) do
-    :ets.lookup(@table, key)
+    :ets.lookup_element(@table, key, 2)
   rescue
-    ArgumentError -> []
+    ArgumentError -> nil
   end
 
   # Note: we assume, as GTFS does, that 12:00:00 always occurs exactly once per day regardless of
@@ -109,10 +137,14 @@ defmodule Concentrate.GTFS.StopTimes do
   defp build_inserts(row, time_zone) when is_binary(time_zone) do
     trip_id = copy(row["trip_id"])
     stop_sequence = String.to_integer(row["stop_sequence"])
+
+    stop_id = copy(row["stop_id"])
     arrival = time_to_offset(row["arrival_time"])
     departure = time_to_offset(row["departure_time"])
+    pick_up? = type_to_boolean(row["pickup_type"])
+    drop_off? = type_to_boolean(row["drop_off_type"])
 
-    [{{trip_id, stop_sequence}, {arrival, departure, time_zone}}]
+    [{{trip_id, stop_sequence}, {stop_id, arrival, departure, time_zone, pick_up?, drop_off?}}]
   end
 
   defp build_inserts(_, _), do: []
@@ -136,4 +168,7 @@ defmodule Concentrate.GTFS.StopTimes do
        ) do
     time_to_offset("0" <> time)
   end
+
+  defp type_to_boolean("1"), do: false
+  defp type_to_boolean(_), do: true
 end
