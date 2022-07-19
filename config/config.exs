@@ -25,6 +25,7 @@ config :concentrate,
     url: "https://cdn.mbta.com/MBTA_GTFS.zip"
   ],
   filters: [
+    Concentrate.Filter.ScheduleBasedVehicle,
     Concentrate.Filter.NullStopSequence,
     Concentrate.Filter.VehicleWithNoTrip,
     Concentrate.Filter.RoundSpeedAndBearing,
