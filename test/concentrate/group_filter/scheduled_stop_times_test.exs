@@ -5,10 +5,10 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimesTest do
   alias Concentrate.{TripDescriptor, StopTimeUpdate}
 
   defmodule FakeStopTimes do
-    def get("trip1", 10, {2022, 1, 1}), do: {1_610_000_000, 1_610_000_001}
-    def get("trip1", 20, {2022, 1, 1}), do: {1_620_000_000, 1_620_000_001}
-    def get("trip1", 30, {2022, 1, 1}), do: {1_630_000_000, 1_630_000_001}
-    def get(_, _, _), do: :unknown
+    def arrival_departure("trip1", 10, {2022, 1, 1}), do: {1_610_000_000, 1_610_000_001}
+    def arrival_departure("trip1", 20, {2022, 1, 1}), do: {1_620_000_000, 1_620_000_001}
+    def arrival_departure("trip1", 30, {2022, 1, 1}), do: {1_630_000_000, 1_630_000_001}
+    def arrival_departure(_, _, _), do: :unknown
   end
 
   # see config/test.exs

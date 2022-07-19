@@ -62,7 +62,7 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimes do
       trip_id = StopTimeUpdate.trip_id(stop_time_update)
       stop_sequence = StopTimeUpdate.stop_sequence(stop_time_update)
 
-      case gtfs_stop_times.get(trip_id, stop_sequence, trip_date) do
+      case gtfs_stop_times.arrival_departure(trip_id, stop_sequence, trip_date) do
         {arrival_time, departure_time} ->
           stop_time_update
           |> StopTimeUpdate.update_arrival_time(arrival_time)
