@@ -1,33 +1,33 @@
-defmodule Concentrate.Filter.ScheduleBasedVehicle do
+defmodule Concentrate.Filter.FilterTripUpdateVehicles do
   @moduledoc """
-  Rejects vehicles which end in a specific string provided via config at compile time.
+  Rejects vehicle ids which end in a specific string provided via config at compile time.
 
   Example config:
     config :concentrate,
       filters: [
         {
-          Concentrate.Filter.ScheduleBasedVehicle,
+          Concentrate.Filter.FilterTripUpdateVehicles,
           suffix_matches: ["ignore_suffix_1", "ignore_suffix_2"]
         }
       ]
 
   If no suffix match provided, this filter does nothing.
   """
-  alias Concentrate.VehiclePosition
+  alias Concentrate.TripDescriptor
   @behaviour Concentrate.Filter
 
   config_path = [:filters, __MODULE__, :suffix_matches]
   @suffix_matches Application.compile_env(:concentrate, config_path, [])
 
   @impl Concentrate.Filter
-  def filter(vp, suffix_matches \\ @suffix_matches)
-  def filter(vp, []), do: {:cont, vp}
+  def filter(td, suffix_matches \\ @suffix_matches)
+  def filter(td, []), do: {:cont, td}
 
-  def filter(%VehiclePosition{trip_id: trip_id} = vp, suffix_matches) do
+  def filter(%TripDescriptor{trip_id: trip_id} = td, suffix_matches) do
     if String.ends_with?(trip_id, suffix_matches) do
-      :skip
+      {:cont, %{td | vehicle_id: nil}}
     else
-      {:cont, vp}
+      {:cont, td}
     end
   end
 

@@ -26,7 +26,7 @@ config :concentrate,
   ],
   filters: [
     {
-      Concentrate.Filter.ScheduleBasedVehicle,
+      Concentrate.Filter.FilterTripUpdateVehicles,
       suffix_matches: ["schedBasedVehicle"]
     },
     Concentrate.Filter.NullStopSequence,
