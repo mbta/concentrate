@@ -11,13 +11,13 @@ defmodule Concentrate.Filter.FilterTripUpdateVehiclesTest do
     end
 
     test "a trip descriptor with vehicle id ending with schedBasedVehicle has the vehicle_id removed" do
-      td = TripDescriptor.new(trip_id: "trip", vehicle_id: "trip_schedBasedVehicle")
+      td = TripDescriptor.new(trip_id: "trip", vehicle_id: "vehicle_schedBasedVehicle")
 
       assert {:cont, %TripDescriptor{trip_id: "trip", vehicle_id: nil}} = filter(td)
     end
 
     test "a trip descriptor is not affected if no suffix matches are provided" do
-      td = TripDescriptor.new(trip_id: "trip", vehicle_id: "trip_schedBasedVehicle")
+      td = TripDescriptor.new(trip_id: "trip", vehicle_id: "vehicle_schedBasedVehicle")
       assert {:cont, ^td} = filter(td, [])
     end
 
@@ -36,7 +36,7 @@ defmodule Concentrate.Filter.FilterTripUpdateVehiclesTest do
       assert {:cont, %TripDescriptor{trip_id: "trip3", vehicle_id: nil}} =
                filter(td3, ["suffix_1", "suffix_2", "suffix_3"])
 
-      assert {:cont, ^td4} = filter(td4, ["suffix_1", "suffix_2", "suffix_2"])
+      assert {:cont, ^td4} = filter(td4, ["suffix_1", "suffix_2", "suffix_3"])
     end
 
     test "other values are returned as-is" do
