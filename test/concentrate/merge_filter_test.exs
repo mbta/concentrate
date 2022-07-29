@@ -57,6 +57,21 @@ defmodule Concentrate.MergeFilterTest do
       assert {:noreply, [[{nil, [^expected], []}]], _state} = handle_info(:timeout, state)
     end
 
+    test "runs the events through the filter with options" do
+      data = [
+        VehiclePosition.new(id: "one", latitude: 1, longitude: 1),
+        expected = VehiclePosition.new(id: "two", trip_id: "trip", latitude: 2, longitude: 2)
+      ]
+
+      events = [data]
+      filters = [{Concentrate.Filter.VehicleWithNoTrip, options: []}]
+      from = make_from()
+      {_, state, _} = init(filters: filters)
+      {_, state} = handle_subscribe(:producer, [], from, state)
+      {:noreply, [], state} = handle_events(events, from, state)
+      assert {:noreply, [[{nil, [^expected], []}]], _state} = handle_info(:timeout, state)
+    end
+
     test "can filter the grouped data" do
       defmodule Filter do
         @moduledoc false

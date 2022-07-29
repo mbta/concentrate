@@ -33,7 +33,7 @@ defmodule Concentrate.MergeFilter do
 
   @impl GenStage
   def init(opts) do
-    filters = Keyword.get(opts, :filters, [])
+    filters = build_filters(Keyword.get(opts, :filters, []))
     group_filters = build_group_filters(Keyword.get(opts, :group_filters, []))
     state = %__MODULE__{filters: filters, group_filters: group_filters}
 
@@ -144,6 +144,13 @@ defmodule Concentrate.MergeFilter do
         {from, demand}
       end
     end
+  end
+
+  defp parse_filter({filter, _opts}), do: filter
+  defp parse_filter(filter), do: filter
+
+  defp build_filters(filters) do
+    Enum.map(filters, &parse_filter/1)
   end
 
   defp build_group_filters(filters) do
