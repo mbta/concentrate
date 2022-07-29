@@ -23,6 +23,8 @@ defmodule Concentrate.Filter.FilterTripUpdateVehicles do
   def filter(td, suffix_matches \\ @suffix_matches)
   def filter(td, []), do: {:cont, td}
 
+  def filter(%TripDescriptor{vehicle_id: nil} = td, _), do: {:cont, td}
+
   def filter(%TripDescriptor{vehicle_id: vehicle_id} = td, suffix_matches) do
     if String.ends_with?(vehicle_id, suffix_matches) do
       {:cont, %{td | vehicle_id: nil}}

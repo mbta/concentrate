@@ -16,6 +16,12 @@ defmodule Concentrate.Filter.FilterTripUpdateVehiclesTest do
       assert {:cont, %TripDescriptor{trip_id: "trip", vehicle_id: nil}} = filter(td)
     end
 
+    test "a trip descriptor with no vehicle id passes through" do
+      td = TripDescriptor.new(trip_id: "trip", vehicle_id: nil)
+
+      assert {:cont, %TripDescriptor{trip_id: "trip", vehicle_id: nil}} = filter(td)
+    end
+
     test "a trip descriptor is not affected if no suffix matches are provided" do
       td = TripDescriptor.new(trip_id: "trip", vehicle_id: "vehicle_schedBasedVehicle")
       assert {:cont, ^td} = filter(td, [])
