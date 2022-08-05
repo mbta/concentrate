@@ -25,6 +25,10 @@ config :concentrate,
     url: "https://cdn.mbta.com/MBTA_GTFS.zip"
   ],
   filters: [
+    {
+      Concentrate.Filter.FilterTripUpdateVehicles,
+      suffix_matches: ["schedBasedVehicle"]
+    },
     Concentrate.Filter.NullStopSequence,
     Concentrate.Filter.VehicleWithNoTrip,
     Concentrate.Filter.RoundSpeedAndBearing,
