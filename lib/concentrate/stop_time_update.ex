@@ -14,6 +14,8 @@ defmodule Concentrate.StopTimeUpdate do
     :track,
     :platform_id,
     :uncertainty,
+    :stops_away,
+    :passthrough_time,
     schedule_relationship: :SCHEDULED
   ])
 
@@ -52,7 +54,9 @@ defmodule Concentrate.StopTimeUpdate do
             end,
           stop_id: max(first.stop_id, second.stop_id),
           platform_id: first.platform_id || second.platform_id,
-          uncertainty: first.uncertainty || second.uncertainty
+          uncertainty: first.uncertainty || second.uncertainty,
+          stops_away: first.stops_away || second.stops_away,
+          passthrough_time: first.passthrough_time || second.passthrough_time
       }
     end
 
