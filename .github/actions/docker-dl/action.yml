@@ -1,0 +1,13 @@
+name: Docker Image Download
+description: Loads the pre-built Docker image into the local Docker client
+runs:
+  using: composite
+  steps:
+    - name: Download image
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ github.event.repository.name }}_dev_${{ github.sha }}
+        path: /tmp
+    - name: Load image
+      shell: bash
+      run: docker load --input /tmp/${{ github.event.repository.name }}_dev.tar
