@@ -7,5 +7,4 @@ RUN mix local.hex --force && \
 RUN apk --update add git make
 ENV MIX_ENV=test
 ADD . .
-RUN mix do deps.get, deps.compile
-RUN mix do compile
+RUN mix do deps.get, deps.compile --force --warnings-as-errors, compile
