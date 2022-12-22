@@ -5,6 +5,6 @@ RUN mix local.hex --force && \
     mix local.rebar --force
 # Install git
 RUN apk --update add git make
-ENV MIX_ENV=test
+# ENV MIX_ENV=test
 ADD . .
-RUN mix do deps.get, deps.compile --force --warnings-as-errors, compile
+RUN mix do deps.get, deps.compile, compile
