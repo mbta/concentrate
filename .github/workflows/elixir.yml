@@ -10,39 +10,29 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    # cache the ASDF directory, using the values from .tool-versions
-    - name: ASDF cache
-      uses: actions/cache@v2
+    - uses: actions/cache@v2
+      id: asdf-cache
       with:
         path: ~/.asdf
         key: ${{ runner.os }}-asdf-v2-${{ hashFiles('.tool-versions') }}
-      id: asdf-cache
-    # only run `asdf install` if we didn't hit the cache
-    - uses: asdf-vm/actions/install@v1
-      if: steps.asdf-cache.outputs.cache-hit != 'true'
-    # if we did hit the cache, set up the environment
-    - name: Setup ASDF environment
-      run: |
-        echo "ASDF_DIR=$HOME/.asdf" >> $GITHUB_ENV
-        echo "ASDF_DATA_DIR=$HOME/.asdf" >> $GITHUB_ENV
-      if: steps.asdf-cache.outputs.cache-hit == 'true'
-    - name: Reshim ASDF
-      run: |
-        echo "$ASDF_DIR/bin" >> $GITHUB_PATH
-        echo "$ASDF_DIR/shims" >> $GITHUB_PATH
-        $ASDF_DIR/bin/asdf reshim
-    - name: Restore dependencies cache
+    - if: "!steps.asdf-cache.outputs.cache-hit"
+      uses: asdf-vm/actions/install@v1
+    - uses: mbta/actions/reshim-asdf@v1
+    - uses: actions/cache@v2
       id: deps-cache
-      uses: actions/cache@v2
       with:
         path: deps
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: ${{ runner.os }}-mix-
-    - name: Install dependencies
+        key: ${{ runner.os }}-mix-v2-${{ hashFiles('mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-v2-
+    - if: "!steps.asdf-cache.outputs.cache-hit"
       run: |
-        mix local.rebar --foce
+        mix local.rebar --force
         mix local.hex --force
-        mix deps.get
+      shell: bash
+    - name: Install dependencies (if needed)
+      if: "!steps.deps-cache.outputs.cache-hit"
+      shell: bash
+      run: mix deps.get
     - name: Compile (warnings as errors)
       run: mix compile --force --warnings-as-errors
     - name: Check formatting
