@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.13.4-erlang-24.3.4.7-alpine-3.16.3 AS builder
+FROM hexpm/elixir:1.10.4-erlang-24.3.4.7-alpine-3.16.3 AS builder
 
 WORKDIR /root
 
