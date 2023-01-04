@@ -22,7 +22,7 @@ ADD src /root/src
 RUN mix do compile, release
 
 # Second stage: copies the files from the builder stage
-FROM alpine:3.16.0
+FROM alpine:3.16.3
 
 RUN apk add --update libssl1.1 ncurses-libs bash dumb-init \
     && rm -rf /var/cache/apk
