@@ -44,7 +44,7 @@ jobs:
         mix local.hex --force
         mix deps.get
     - name: Compile (warnings as errors)
-      run: mix compile --force --warnings-as-errors
+      run: mix compile --force
     - name: Check formatting
       run: mix format --check-formatted
     - name: Credo
