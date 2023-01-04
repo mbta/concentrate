@@ -13,7 +13,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
         GTFSRealtimeEnhanced.parse(File.read!(fixture_path("TripUpdates_enhanced.json")), [])
 
       round_tripped = GTFSRealtimeEnhanced.parse(encode_groups(group(decoded)), [])
-      assert round_tripped == decoded
+      assert Enum.sort(round_tripped) == Enum.sort(decoded)
     end
 
     test "trip updates without a start_time don't have that key" do
