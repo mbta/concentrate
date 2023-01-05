@@ -1,6 +1,8 @@
 name: Deploy to Dev
 
 on:
+  schedule:
+    - cron: '0 5 * * *'
   workflow_dispatch:
   push:
     branches: [master]
