@@ -3,8 +3,6 @@ name: Elixir CI
 on: 
   push:
   pull_request:
-  schedule:
-    - cron: '0 5 * * *'
 
 jobs:
   build:
