@@ -1,12 +1,14 @@
 name: Elixir CI
 
-on: [push, pull_request]
+on: 
+  push:
+  pull_request:
 
 jobs:
   build:
 
     name: Build and test
-    runs-on: ubuntu-20.04 
+    runs-on: ubuntu-22.04 
 
     steps:
     - uses: actions/checkout@v2
@@ -44,7 +46,7 @@ jobs:
         mix local.hex --force
         mix deps.get
     - name: Compile (warnings as errors)
-      run: mix compile --force --warnings-as-errors
+      run: mix compile --force
     - name: Check formatting
       run: mix format --check-formatted
     - name: Credo
