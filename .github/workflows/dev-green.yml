@@ -1,6 +1,9 @@
 name: Deploy to Dev-green
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * *'
 
 jobs:
   deploy:
