@@ -265,6 +265,20 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       [td] = decode_trip_update(map, Helpers.parse_options([]))
       assert TripDescriptor.vehicle_id(td) == "vehicle_id"
     end
+
+    test "includes necessary realtime_signs fields stops_away and passthrough_time" do
+      map = %{
+        "trip" => %{},
+        "stop_time_update" => [
+          %{"stops_away" => 5, "passthrough_time" => 1_660_821_478}
+        ]
+      }
+
+      [_td, stu] = decode_trip_update(map, Helpers.parse_options([]))
+
+      assert StopTimeUpdate.passthrough_time(stu) == 1_660_821_478
+      assert StopTimeUpdate.stops_away(stu) == 5
+    end
   end
 
   describe "decode_vehicle/3" do

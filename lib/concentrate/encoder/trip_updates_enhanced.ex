@@ -30,7 +30,9 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
         stop_time_event(StopTimeUpdate.departure_time(update), StopTimeUpdate.uncertainty(update)),
       schedule_relationship: schedule_relationship(StopTimeUpdate.schedule_relationship(update)),
       boarding_status: StopTimeUpdate.status(update),
-      platform_id: StopTimeUpdate.platform_id(update)
+      platform_id: StopTimeUpdate.platform_id(update),
+      stops_away: StopTimeUpdate.stops_away(update),
+      passthrough_time: StopTimeUpdate.passthrough_time(update)
     })
   end
 end

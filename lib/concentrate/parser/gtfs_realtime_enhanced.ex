@@ -105,7 +105,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
               departure_time: departure_time,
               uncertainty: arrival_uncertainty || departure_uncertainty,
               status: Map.get(stu, "boarding_status"),
-              platform_id: Map.get(stu, "platform_id")
+              platform_id: Map.get(stu, "platform_id"),
+              stops_away: Map.get(stu, "stops_away"),
+              passthrough_time: Map.get(stu, "passthrough_time")
             )
           end
 
