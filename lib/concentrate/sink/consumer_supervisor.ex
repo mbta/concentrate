@@ -4,7 +4,6 @@ defmodule Concentrate.Sink.ConsumerSupervisor do
   processes.
   """
   @supervisor_opts ~w(subscribe_to)a
-  import Supervisor.Spec, only: [worker: 3]
 
   def start_link({sink_child, opts}) do
     supervisor_opts =
@@ -12,13 +11,16 @@ defmodule Concentrate.Sink.ConsumerSupervisor do
       |> Keyword.take(@supervisor_opts)
       |> Keyword.put(:strategy, :one_for_one)
 
-    opts = Keyword.drop(opts, @supervisor_opts)
+    opts =
+      opts
+      |> Keyword.drop(@supervisor_opts)
+      |> Keyword.put(:restart, :temporary)
 
     children = [
-      worker(sink_child, [opts], restart: :temporary)
+      {sink_child, opts}
     ]
 
-    ConsumerSupervisor.start_link(children, supervisor_opts)
+    Supervisor.start_link(children, supervisor_opts)
   end
 
   def child_spec({sink_child, opts}) do
