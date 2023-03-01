@@ -5,6 +5,9 @@ defmodule Concentrate do
   use Application
 
   def start(_type, _args) do
+    # Invoke Sentry logger:
+    _ = Logger.add_backend(Sentry.LoggerBackend)
+
     "CONCENTRATE_JSON"
     |> System.get_env()
     |> parse_json_configuration
