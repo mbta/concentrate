@@ -11,10 +11,7 @@ defmodule Concentrate.Sink.ConsumerSupervisor do
       |> Keyword.take(@supervisor_opts)
       |> Keyword.put(:strategy, :one_for_one)
 
-    opts =
-      opts
-      |> Keyword.drop(@supervisor_opts)
-      |> Keyword.put(:restart, :temporary)
+    opts = Keyword.drop(opts, @supervisor_opts)
 
     children = [
       {sink_child, opts}
