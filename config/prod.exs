@@ -5,7 +5,7 @@ config :sasl, errlog_type: :error
 config :logger,
   handle_sasl_reports: true,
   level: :info,
-  backends: [:console]
+  backends: [:console, Sentry.LoggerBackend]
 
 config :logger, :console,
   level: :debug,
