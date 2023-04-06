@@ -27,6 +27,7 @@ defmodule Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates do
   config_path = [:group_filters, __MODULE__, :uncertainties_by_route]
   @uncertainties_by_route Application.compile_env(:concentrate, config_path, %{})
 
+  @impl Concentrate.GroupFilter
   def filter(trip_descriptor, exclusions \\ @uncertainties_by_route)
 
   def filter(group, exclusions) when exclusions == %{}, do: group
