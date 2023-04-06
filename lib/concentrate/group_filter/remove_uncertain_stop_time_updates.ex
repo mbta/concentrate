@@ -31,7 +31,7 @@ defmodule Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates do
 
   def filter(group, exclusions) when exclusions == %{}, do: group
 
-  def filter({nil, _, _} = group, exclusions) when exclusions == %{}, do: group
+  def filter({nil, _, _} = group, _), do: group
 
   def filter({trip_descriptor, vehicle_positions, stop_time_updates}, exclusions) do
     route_id = TripDescriptor.route_id(trip_descriptor)
