@@ -7,11 +7,11 @@ defmodule Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates do
         group_filters: [
           {
             Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates,
-            on_time_statuses: ["status 1", "status 2", "status 3"]
+            uncertainties_by_route: ["status 1", "status 2", "status 3"]
           }
         ]
 
-  If no status values are configured, enabling this filter has no effect.
+  If no uncertainty values are configured, enabling this filter has no effect.
   """
   alias Concentrate.TripDescriptor
   alias Concentrate.StopTimeUpdate
