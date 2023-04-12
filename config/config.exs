@@ -38,7 +38,7 @@ config :concentrate,
   group_filters: [
     {
       Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates,
-      uncertainties_by_route: %{"Red" => [120, 360], "Blue" => [120, 360]}
+      uncertainties_by_route: %{"Blue" => [120, 360]}
     },
     {
       Concentrate.GroupFilter.ScheduledStopTimes,
