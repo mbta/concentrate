@@ -3,7 +3,9 @@ defmodule Concentrate.Reporter.VehicleLatency do
   Reporter which logs how recently the latest vehicle was updated.
   """
   @behaviour Concentrate.Reporter
+  alias Concentrate.GTFS.Routes
   alias Concentrate.VehiclePosition
+  alias Concentrate.TripDescriptor
 
   @impl Concentrate.Reporter
   def init do
@@ -12,6 +14,29 @@ defmodule Concentrate.Reporter.VehicleLatency do
 
   @impl Concentrate.Reporter
   def log(groups, state) do
+    {latest, average, count} = lateness(groups)
+
+    route_type_lateness =
+      groups
+      |> Stream.filter(&(elem(&1, 0) != nil))
+      |> Enum.group_by(&(&1 |> elem(0) |> TripDescriptor.route_id() |> Routes.route_type()))
+      |> Stream.filter(&(elem(&1, 0) != nil))
+      |> Enum.flat_map(&lateness_for_type/1)
+
+    {[latest_vehicle_lateness: latest, average_vehicle_lateness: average, vehicle_count: count] ++
+       route_type_lateness, state}
+  end
+
+  defp lateness_for_type({type, groups}) do
+    latest_label = String.to_atom("latest_#{type}_lateness")
+    average_label = String.to_atom("average_#{type}_lateness")
+    count_label = String.to_atom("#{type}_count")
+
+    {latest, average, count} = lateness(groups)
+    [{latest_label, latest}, {average_label, average}, {count_label, count}]
+  end
+
+  defp lateness(groups) do
     now = utc_now()
 
     latenesses =
@@ -28,9 +53,7 @@ defmodule Concentrate.Reporter.VehicleLatency do
       end
 
     {average, count} = average(latenesses)
-
-    {[latest_vehicle_lateness: latest, average_vehicle_lateness: average, vehicle_count: count],
-     state}
+    {latest, average, count}
   end
 
   defp timestamp(%VehiclePosition{} = vp, now) do
