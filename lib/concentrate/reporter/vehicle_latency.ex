@@ -27,7 +27,7 @@ defmodule Concentrate.Reporter.VehicleLatency do
       groups
       # get the vehicle positions
       |> Enum.flat_map(&elem(&1, 1))
-      |> Enum.flat_map(&{VehiclePosition.id(&1), VehiclePosition.last_updated(&1)})
+      |> Enum.map(&{VehiclePosition.id(&1), VehiclePosition.last_updated(&1)})
 
     {[
        latest_vehicle_lateness: latest,
