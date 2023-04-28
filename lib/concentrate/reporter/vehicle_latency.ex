@@ -6,6 +6,7 @@ defmodule Concentrate.Reporter.VehicleLatency do
   alias Concentrate.GTFS.Routes
   alias Concentrate.VehiclePosition
   alias Concentrate.TripDescriptor
+  require Logger
 
   @impl Concentrate.Reporter
   def init do
@@ -23,18 +24,25 @@ defmodule Concentrate.Reporter.VehicleLatency do
       |> Stream.filter(&(elem(&1, 0) != nil))
       |> Enum.flat_map(&lateness_for_type/1)
 
-    vehicles =
-      groups
-      # get the vehicle positions
-      |> Enum.flat_map(&elem(&1, 1))
-      |> Enum.map(&{VehiclePosition.id(&1), VehiclePosition.last_updated(&1)})
+    groups
+    # get the vehicle positions
+    |> Enum.flat_map(&elem(&1, 1))
+    |> Enum.each(
+      &Logger.info([
+        "event=processed_vehicle id=",
+        inspect(VehiclePosition.id(&1)),
+        ",latitude=",
+        inspect(VehiclePosition.latitude(&1)),
+        ",longitude=",
+        inspect(VehiclePosition.longitude(&1))
+      ])
+    )
 
     {[
        latest_vehicle_lateness: latest,
        average_vehicle_lateness: average,
        median_vehicle_lateness: median,
-       vehicle_count: count,
-       vehicles: inspect(vehicles, limit: :infinity)
+       vehicle_count: count
      ] ++
        route_type_lateness, state}
   end
