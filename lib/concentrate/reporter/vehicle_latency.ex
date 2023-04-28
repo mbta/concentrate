@@ -34,7 +34,7 @@ defmodule Concentrate.Reporter.VehicleLatency do
        average_vehicle_lateness: average,
        median_vehicle_lateness: median,
        vehicle_count: count,
-       vehicles: vehicles
+       vehicles: inspect(vehicles, limit: :infinity)
      ] ++
        route_type_lateness, state}
   end
