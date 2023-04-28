@@ -14,7 +14,7 @@ defmodule Concentrate.Reporter.VehicleLatency do
 
   @impl Concentrate.Reporter
   def log(groups, state) do
-    {latest, average, count} = lateness(groups)
+    {latest, average, median, count} = lateness(groups)
 
     route_type_lateness =
       groups
@@ -23,17 +23,29 @@ defmodule Concentrate.Reporter.VehicleLatency do
       |> Stream.filter(&(elem(&1, 0) != nil))
       |> Enum.flat_map(&lateness_for_type/1)
 
-    {[latest_vehicle_lateness: latest, average_vehicle_lateness: average, vehicle_count: count] ++
+    {[
+       latest_vehicle_lateness: latest,
+       average_vehicle_lateness: average,
+       median_vehicle_lateness: median,
+       vehicle_count: count
+     ] ++
        route_type_lateness, state}
   end
 
   defp lateness_for_type({type, groups}) do
     latest_label = String.to_atom("latest_#{type}_lateness")
     average_label = String.to_atom("average_#{type}_lateness")
+    median_label = String.to_atom("median_#{type}_lateness")
     count_label = String.to_atom("#{type}_count")
 
-    {latest, average, count} = lateness(groups)
-    [{latest_label, latest}, {average_label, average}, {count_label, count}]
+    {latest, average, median, count} = lateness(groups)
+
+    [
+      {latest_label, latest},
+      {average_label, average},
+      {median_label, median},
+      {count_label, count}
+    ]
   end
 
   defp lateness(groups) do
@@ -53,7 +65,8 @@ defmodule Concentrate.Reporter.VehicleLatency do
       end
 
     {average, count} = average(latenesses)
-    {latest, average, count}
+    median = Statistics.median(latenesses)
+    {latest, average, median, count}
   end
 
   defp timestamp(%VehiclePosition{} = vp, now) do
