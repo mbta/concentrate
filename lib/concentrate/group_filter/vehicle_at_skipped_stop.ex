@@ -9,27 +9,26 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStop do
   def filter({td, vps, stus}) do
     vps =
       for vp <- vps do
-        move_stop_id(vp, stus)
+        stop_id = VehiclePosition.stop_id(vp)
+        move_stop_id(stop_id, vp, stus)
       end
 
     {td, vps, stus}
   end
 
-  defp move_stop_id(vp, stus) do
-    if stop_id = VehiclePosition.stop_id(vp) do
-      case Enum.split_while(stus, &(StopTimeUpdate.stop_id(&1) != stop_id)) do
-        {_before_vehicle, [stop | after_vehicle]} ->
-          if StopTimeUpdate.schedule_relationship(stop) == :SKIPPED do
-            update_vehicle_to_next_non_skipped_update(vp, after_vehicle)
-          else
-            vp
-          end
+  defp move_stop_id(nil, vp, _), do: vp
 
-        _ ->
+  defp move_stop_id(stop_id, vp, stus) do
+    case Enum.split_while(stus, &(StopTimeUpdate.stop_id(&1) != stop_id)) do
+      {_before_vehicle, [stop | after_vehicle]} ->
+        if StopTimeUpdate.schedule_relationship(stop) == :SKIPPED do
+          update_vehicle_to_next_non_skipped_update(vp, after_vehicle)
+        else
           vp
-      end
-    else
-      vp
+        end
+
+      _ ->
+        vp
     end
   end
 

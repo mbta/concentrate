@@ -2,6 +2,7 @@ defmodule Concentrate.Sink.S3 do
   @moduledoc """
   Sink which writes files to an S3 bucket.
   """
+  use GenServer, restart: :temporary
   alias ExAws.S3
   require Logger
 
@@ -13,6 +14,10 @@ defmodule Concentrate.Sink.S3 do
     acl = Keyword.get(opts, :acl, :public_read)
     state = %{bucket: bucket, prefix: prefix, acl: acl}
     Task.start_link(__MODULE__, :upload_to_s3, [file_data, state])
+  end
+
+  def init(init_arg) do
+    {:ok, init_arg}
   end
 
   def upload_to_s3({filename, body}, state) do
