@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :sasl, errlog_type: :error
 

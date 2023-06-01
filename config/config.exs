@@ -1,6 +1,6 @@
 # This file is responsible for configuring your application
 # and its dependencies with the aid of the Mix.Config module.
-use Mix.Config
+import Config
 
 config :logger, level: :debug
 
@@ -79,4 +79,4 @@ config :concentrate,
   ],
   http_producer: Concentrate.Producer.HTTPoison
 
-import_config "#{Mix.env()}.exs"
+import_config "#{config_env()}.exs"

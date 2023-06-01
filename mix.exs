@@ -12,7 +12,6 @@ defmodule Concentrate.MixProject do
       dialyzer: [
         plt_add_deps: :transitive,
         flags: [
-          :race_conditions,
           :unmatched_returns,
           :underspecs,
           :unknown
