@@ -1,3 +1,5 @@
-use Mix.Config
+import Config
 
-import_config "*.local.exs"
+for config <- "*.local.exs" |> Path.expand(__DIR__) |> Path.wildcard() do
+  import_config config
+end
