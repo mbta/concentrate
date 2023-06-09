@@ -79,5 +79,7 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimes do
         stop_time_update
       end
     end
+
+    defp fill_in_arrival_departure(stop_time_update, _, _, _, _, _), do: stop_time_update
   end
 end
