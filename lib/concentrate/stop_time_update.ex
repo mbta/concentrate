@@ -38,12 +38,15 @@ defmodule Concentrate.StopTimeUpdate do
     def key(%{trip_id: trip_id, stop_sequence: stop_sequence}), do: {trip_id, stop_sequence}
 
     def merge(first, second) do
-      [first, second] = Enum.sort_by([first, second], &Concentrate.StopTimeUpdate.time/1)
+      time_stu =
+        if Concentrate.StopTimeUpdate.time(first) < Concentrate.StopTimeUpdate.time(second),
+          do: first,
+          else: second
 
       %{
         first
-        | arrival_time: first.arrival_time,
-          departure_time: first.departure_time,
+        | arrival_time: time_stu.arrival_time,
+          departure_time: time_stu.departure_time,
           status: first.status || second.status,
           track: first.track || second.track,
           schedule_relationship:
