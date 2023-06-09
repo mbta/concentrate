@@ -16,6 +16,12 @@ config :concentrate,
     gtfs_realtime: [
       vehicle_positions: "https://cdn.mbta.com/realtime/VehiclePositions.pb",
       trip_updates: "https://cdn.mbta.com/realtime/TripUpdates.pb"
+    ],
+    gtfs_realtime_enhanced: [
+      keolis_trip_updates:
+        "https://mbta-gtfs-s3.s3.amazonaws.com/keolis/dev/TripUpdates_enhanced.json",
+      keolis_vehicle_positions:
+        "https://mbta-gtfs-s3.s3.amazonaws.com/keolis/dev/VehiclePositions_enhanced.json"
     ]
   ],
   alerts: [
