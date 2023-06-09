@@ -22,7 +22,15 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimesTest do
       trip = TripDescriptor.new(trip_id: "trip1", start_date: {2022, 1, 1})
       stu1 = StopTimeUpdate.new(trip_id: "trip1", stop_sequence: 0, status: @on_time_status)
       stu2 = StopTimeUpdate.new(trip_id: "trip1", stop_sequence: 10, status: @on_time_status)
-      stu3 = StopTimeUpdate.new(trip_id: "trip1", stop_sequence: 20, status: @other_status)
+
+      stu3 =
+        StopTimeUpdate.new(
+          trip_id: "trip1",
+          stop_sequence: 20,
+          status: String.upcase(@on_time_status)
+        )
+
+      stu4 = StopTimeUpdate.new(trip_id: "trip1", stop_sequence: 30, status: @other_status)
 
       new_stu2 =
         StopTimeUpdate.new(
@@ -33,7 +41,17 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimesTest do
           departure_time: 1_610_000_001
         )
 
-      assert filter({trip, [], [stu1, stu2, stu3]}) == {trip, [], [stu1, new_stu2, stu3]}
+      new_stu3 =
+        StopTimeUpdate.new(
+          trip_id: "trip1",
+          stop_sequence: 20,
+          status: String.upcase(@on_time_status),
+          arrival_time: 1_620_000_000,
+          departure_time: 1_620_000_001
+        )
+
+      assert filter({trip, [], [stu1, stu2, stu3, stu4]}) ==
+               {trip, [], [stu1, new_stu2, new_stu3, stu4]}
     end
 
     test "does not change stop time updates with existing arrival or departure times" do
