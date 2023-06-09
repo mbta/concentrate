@@ -28,6 +28,7 @@ defmodule Concentrate.GroupFilter.TimeTravel do
       Logger.warning("""
       Trip ID: #{stop_time_update.trip_id} predicts arriving at stop #{stop_time_update.stop_sequence} at #{time}
       before departing stop #{prev.stop_sequence} at #{prev_time}. Dropping prior predictions.
+      trip_id=#{stop_time_update.trip_id} stop_sequence=#{stop_time_update.stop_sequence}
       """)
 
       [stop_time_update]
