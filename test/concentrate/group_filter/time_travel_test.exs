@@ -11,7 +11,7 @@ defmodule Concentrate.GroupFilter.TimeTravelTest do
       start_date: "20190101"
     }
 
-    stus =
+    stop_time_updates =
       timings
       |> Enum.with_index(1)
       |> Enum.map(fn {{arrival, departure}, sequence} ->
@@ -23,11 +23,11 @@ defmodule Concentrate.GroupFilter.TimeTravelTest do
         }
       end)
 
-    {td, [], stus}
+    {td, [], stop_time_updates}
   end
 
-  defp trip_stops({_, _, stus}) do
-    Enum.map(stus, & &1.stop_sequence)
+  defp trip_stops({_, _, stop_time_updates}) do
+    Enum.map(stop_time_updates, & &1.stop_sequence)
   end
 
   test "does not affect linear trips" do
@@ -40,9 +40,9 @@ defmodule Concentrate.GroupFilter.TimeTravelTest do
         {15, nil}
       ])
 
-    {td, vp, stus} = expected_trip
+    {td, vp, stop_time_updates} = expected_trip
     actual_trip = TimeTravel.filter(expected_trip)
-    assert {^td, ^vp, stus} = actual_trip
+    assert {^td, ^vp, stop_time_updates} = actual_trip
 
     assert trip_stops(actual_trip) == trip_stops(expected_trip)
   end

@@ -7,32 +7,32 @@ defmodule Concentrate.GroupFilter.TimeTravel do
   @behaviour Concentrate.GroupFilter
   @impl Concentrate.GroupFilter
 
-  def filter({td, vps, stus}) do
-    stus =
-      stus
-      |> Enum.reduce([], &filter_stu/2)
+  def filter({td, vps, stop_time_updates}) do
+    stop_time_updates =
+      stop_time_updates
+      |> Enum.reduce([], &filter_stop_time_update/2)
       |> Enum.reverse()
 
-    {td, vps, stus}
+    {td, vps, stop_time_updates}
   end
 
-  defp filter_stu(stu, []) do
-    [stu]
+  defp filter_stop_time_update(stop_time_update, []) do
+    [stop_time_update]
   end
 
-  defp filter_stu(stu, [prev | _] = stus) do
+  defp filter_stop_time_update(stop_time_update, [prev | _] = stop_time_updates) do
     prev_time = prev.departure_time || prev.arrival_time
-    time = stu.arrival_time || stu.departure_time
+    time = stop_time_update.arrival_time || stop_time_update.departure_time
 
     if time < prev_time do
       Logger.warning("""
-      Trip ID: #{stu.trip_id} predicts arriving at stop #{stu.stop_sequence} at #{time}
+      Trip ID: #{stop_time_update.trip_id} predicts arriving at stop #{stop_time_update.stop_sequence} at #{time}
       before departing stop #{prev.stop_sequence} at #{prev_time}. Dropping prior predictions.
       """)
 
-      [stu]
+      [stop_time_update]
     else
-      [stu | stus]
+      [stop_time_update | stop_time_updates]
     end
   end
 end
