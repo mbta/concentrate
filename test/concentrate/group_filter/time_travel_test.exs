@@ -47,7 +47,7 @@ defmodule Concentrate.GroupFilter.TimeTravelTest do
     assert trip_stops(actual_trip) == trip_stops(expected_trip)
   end
 
-  test "drops predecing stops when prediction involves going back in time" do
+  test "drops preceding stops when prediction involves going back in time" do
     trip =
       build_trip([
         {nil, 1},
@@ -62,7 +62,7 @@ defmodule Concentrate.GroupFilter.TimeTravelTest do
     assert [4, 5] == trip_stops(filtered_trip)
   end
 
-  test "drops predecing stops when multiple instances of time travel are detected" do
+  test "drops preceding stops when multiple instances of time travel are detected" do
     trip =
       build_trip([
         {nil, 1},
