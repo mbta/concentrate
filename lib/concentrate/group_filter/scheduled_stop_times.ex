@@ -61,7 +61,8 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimes do
       end)
     end
 
-    defp fill_in_arrival_departure(stop_time_update, trip_date, nil, nil, status, gtfs_stop_times) do
+    defp fill_in_arrival_departure(stop_time_update, trip_date, nil, nil, status, gtfs_stop_times)
+         when is_binary(status) do
       if String.downcase(status) in @on_time_statuses do
         trip_id = StopTimeUpdate.trip_id(stop_time_update)
         stop_sequence = StopTimeUpdate.stop_sequence(stop_time_update)
