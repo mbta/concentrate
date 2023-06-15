@@ -25,6 +25,7 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
         vehicle = VehiclePosition.new(latitude: 1.0, longitude: 1.0),
         vehicle_no_trip = VehiclePosition.new(trip_id: "trip", latitude: 2.0, longitude: 2.0)
       ]
+
       # the trip and trip vehicle are re-arranged in the output
       assert Enum.sort(round_trip(data)) == Enum.sort([trip, vehicle, vehicle_no_trip])
     end
