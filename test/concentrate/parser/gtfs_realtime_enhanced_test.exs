@@ -302,7 +302,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
             carriage_sequence: 1
           },
           %{
-            id: 0,
+            id: 1,
             label: "second-car",
             occupancy_status: :EMPTY,
             occupancy_percentage: 0,
@@ -369,7 +369,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
                      carriage_sequence: 1
                    },
                    %{
-                     id: 0,
+                     id: 1,
                      label: "second-car",
                      occupancy_status: :EMPTY,
                      occupancy_percentage: 0,

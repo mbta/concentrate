@@ -133,6 +133,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     case decode_trip_descriptor(vp) do
       [trip] ->
         if Helpers.valid_route_id?(options, TripDescriptor.route_id(trip)) do
+          multi_carriage_details = Map.get(vp, "multi_carriage_details")
+
           [
             trip,
             VehiclePosition.new(
@@ -152,7 +154,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
               consist: decode_consist(Map.get(vehicle, "consist")),
               occupancy_status: occupancy_status(Map.get(vp, "occupancy_status")),
               occupancy_percentage: Map.get(vp, "occupancy_percentage"),
-              multi_carriage_details: Map.get(vp, "multi_carriage_details")
+              multi_carriage_details:
+                if(multi_carriage_details == [], do: nil, else: multi_carriage_details)
             )
           ]
         else
