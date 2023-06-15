@@ -151,7 +151,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
               last_updated: timestamp,
               consist: decode_consist(Map.get(vehicle, "consist")),
               occupancy_status: occupancy_status(Map.get(vp, "occupancy_status")),
-              occupancy_percentage: Map.get(vp, "occupancy_percentage")
+              occupancy_percentage: Map.get(vp, "occupancy_percentage"),
+              multi_carriage_details: Map.get(vp, "multi_carriage_details")
             )
           ]
         else
@@ -233,6 +234,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp occupancy_status(nil), do: nil
+
+  defp multi_carriage_details(nil), do: nil
 
   for status <-
         ~w(EMPTY MANY_SEATS_AVAILABLE FEW_SEATS_AVAILABLE STANDING_ROOM_ONLY
