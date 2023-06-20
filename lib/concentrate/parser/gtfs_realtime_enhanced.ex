@@ -47,7 +47,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     decode_vehicle(vehicle, options, feed_timestamp)
   end
 
-  defp decode_feed_entity(%{"id" => id, "alert" => %{} = alert}, _options, _feed_timestamp) do
+  defp decode_feed_entity(%{"id" => id, "alert" => %{} = alert}, _options, _feed_timestamp)
+       when not is_map_key(alert, "closed_timestamp") do
     [
       Alert.new(
         id: id,
