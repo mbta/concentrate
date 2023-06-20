@@ -18,7 +18,7 @@ defmodule Concentrate.Parser.AlertsTest do
     test "ignores alerts with closed_timestamp property, json payload" do
       body = File.read!(fixture_path("alerts_enhanced_closed.json"))
       result = parse(body, [])
-      assert length(result) == 0
+      assert result == []
     end
   end
 end
