@@ -77,4 +77,17 @@ defmodule Concentrate.GroupFilter.TimeTravelTest do
 
     assert [6] == trip_stops(filtered_trip)
   end
+
+  test "does not consider skipped stops time travel" do
+    trip =
+      build_trip([
+        {nil, 1},
+        {nil, nil},
+        {4, 5}
+      ])
+
+    filtered_trip = TimeTravel.filter(trip)
+
+    assert [1, 2, 3] == trip_stops(filtered_trip)
+  end
 end
