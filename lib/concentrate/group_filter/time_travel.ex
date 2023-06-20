@@ -25,11 +25,9 @@ defmodule Concentrate.GroupFilter.TimeTravel do
     time = stop_time_update.arrival_time || stop_time_update.departure_time
 
     if not is_nil(prev_time) and time < prev_time do
-      Logger.warning("""
-      Trip ID: #{stop_time_update.trip_id} predicts arriving at stop #{stop_time_update.stop_sequence} at #{time}
-      before departing stop #{prev.stop_sequence} at #{prev_time}. Dropping prior predictions.
-      trip_id=#{stop_time_update.trip_id} stop_sequence=#{stop_time_update.stop_sequence}
-      """)
+      Logger.warning(
+        "event=time_travel trip_id=#{stop_time_update.trip_id} prev_stop=#{prev.stop_sequence} prev_time=#{prev_time} stop=#{stop_time_update.stop_sequence} time=#{time}"
+      )
 
       [stop_time_update]
     else
