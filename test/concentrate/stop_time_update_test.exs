@@ -27,7 +27,7 @@ defmodule Concentrate.StopTimeUpdateTest do
   end
 
   describe "Concentrate.Mergeable" do
-    test "takes non-nil values, uses arrival/departure times from earliest arrival." do
+    test "takes non-nil values, earliest arrival, latest departure" do
       first = @stu
 
       second =
@@ -36,7 +36,7 @@ defmodule Concentrate.StopTimeUpdateTest do
           stop_id: "stop",
           stop_sequence: 1,
           arrival_time: 1,
-          departure_time: 2,
+          departure_time: 4,
           track: "track",
           schedule_relationship: :SKIPPED,
           uncertainty: 300
@@ -48,7 +48,7 @@ defmodule Concentrate.StopTimeUpdateTest do
           stop_id: "stop",
           stop_sequence: 1,
           arrival_time: 1,
-          departure_time: 2,
+          departure_time: 4,
           status: "status",
           track: "track",
           schedule_relationship: :SKIPPED,

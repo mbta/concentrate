@@ -38,15 +38,10 @@ defmodule Concentrate.StopTimeUpdate do
     def key(%{trip_id: trip_id, stop_sequence: stop_sequence}), do: {trip_id, stop_sequence}
 
     def merge(first, second) do
-      time_stu =
-        if Concentrate.StopTimeUpdate.time(first) < Concentrate.StopTimeUpdate.time(second),
-          do: first,
-          else: second
-
       %{
         first
-        | arrival_time: time_stu.arrival_time,
-          departure_time: time_stu.departure_time,
+        | arrival_time: time(:lt, first.arrival_time, second.arrival_time),
+          departure_time: time(:gt, first.departure_time, second.departure_time),
           status: first.status || second.status,
           track: first.track || second.track,
           schedule_relationship:
@@ -60,5 +55,12 @@ defmodule Concentrate.StopTimeUpdate do
           uncertainty: first.uncertainty || second.uncertainty
       }
     end
+
+    defp time(_, nil, time), do: time
+    defp time(_, time, nil), do: time
+    defp time(_, time, time), do: time
+    defp time(:lt, first, second) when first < second, do: first
+    defp time(:gt, first, second) when first > second, do: first
+    defp time(_, _, second), do: second
   end
 end
