@@ -57,7 +57,6 @@ defmodule Concentrate.Parser.GTFSRealtime do
       timestamp = Map.get(vp, :timestamp)
 
       Helpers.log_future_vehicle_timestamp(options, feed_timestamp, timestamp, id)
-      multi_carriage_details = Map.get(vp, :multi_carriage_details)
 
       td ++
         [
@@ -77,8 +76,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
             last_updated: timestamp,
             occupancy_status: Map.get(vp, :occupancy_status),
             occupancy_percentage: Map.get(vp, :occupancy_percentage),
-            multi_carriage_details:
-              if(multi_carriage_details == [], do: nil, else: multi_carriage_details)
+            multi_carriage_details: Helpers.parse_multi_carriage_details(vp)
           )
         ]
     else
