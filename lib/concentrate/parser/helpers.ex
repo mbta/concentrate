@@ -156,8 +156,14 @@ defmodule Concentrate.Parser.Helpers do
   """
   @spec parse_multi_carriage_details(any) :: any
   def parse_multi_carriage_details(%{multi_carriage_details: []} = _input), do: nil
-  def parse_multi_carriage_details(%{multi_carriage_details: multi_carriage_details}), do: multi_carriage_details
+
+  def parse_multi_carriage_details(%{multi_carriage_details: multi_carriage_details}),
+    do: multi_carriage_details
+
   def parse_multi_carriage_details(%{"multi_carriage_details" => []} = _input), do: nil
-  def parse_multi_carriage_details(%{"multi_carriage_details" => multi_carriage_details}), do: multi_carriage_details
+
+  def parse_multi_carriage_details(%{"multi_carriage_details" => multi_carriage_details}),
+    do: multi_carriage_details
+
   def parse_multi_carriage_details(_), do: nil
 end
