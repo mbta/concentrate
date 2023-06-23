@@ -47,7 +47,7 @@ defmodule Concentrate.StopTimeUpdate do
     def merge(first, second) do
       if first.trip_id != second.trip_id do
         Logger.warning(
-          "event=merge_stus trip=#{first.trip_id} stop_sequence=#{first.stop_sequence} first=#{inspect(first)} second=#{inspect(second)}"
+          "event=conflicting_stop_ids trip=#{first.trip_id} stop_sequence=#{first.stop_sequence} first=#{inspect(first)} second=#{inspect(second)}"
         )
       end
 
