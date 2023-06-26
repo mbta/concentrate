@@ -20,6 +20,7 @@ defmodule Concentrate.VehiclePosition do
     :consist,
     :occupancy_status,
     :occupancy_percentage,
+    :multi_carriage_details,
     status: :IN_TRANSIT_TO
   ])
 
@@ -79,6 +80,8 @@ defmodule Concentrate.VehiclePosition do
           occupancy_status: first_value(second.occupancy_status, first.occupancy_status),
           occupancy_percentage:
             first_value(second.occupancy_percentage, first.occupancy_percentage),
+          multi_carriage_details:
+            first_value(second.multi_carriage_details, first.multi_carriage_details),
           consist: first_list_value(second.consist, first.consist)
       }
     end

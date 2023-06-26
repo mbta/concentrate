@@ -76,7 +76,8 @@ defmodule Concentrate.Encoder.VehiclePositions do
       current_status: VehiclePosition.status(vp),
       timestamp: VehiclePosition.last_updated(vp),
       occupancy_status: VehiclePosition.occupancy_status(vp),
-      occupancy_percentage: VehiclePosition.occupancy_percentage(vp)
+      occupancy_percentage: VehiclePosition.occupancy_percentage(vp),
+      multi_carriage_details: VehiclePosition.multi_carriage_details(vp)
     })
   end
 

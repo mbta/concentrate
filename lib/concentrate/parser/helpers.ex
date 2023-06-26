@@ -150,4 +150,20 @@ defmodule Concentrate.Parser.Helpers do
   def log_future_vehicle_timestamp(_options, _feed_timestamp, _vehicle_timestamp, _vehicle_id) do
     :ok
   end
+
+  @doc """
+  Properly handle empty and non-empty multi_carriage_details messages
+  """
+  @spec parse_multi_carriage_details(any) :: any
+  def parse_multi_carriage_details(%{multi_carriage_details: []} = _input), do: nil
+
+  def parse_multi_carriage_details(%{multi_carriage_details: multi_carriage_details}),
+    do: multi_carriage_details
+
+  def parse_multi_carriage_details(%{"multi_carriage_details" => []} = _input), do: nil
+
+  def parse_multi_carriage_details(%{"multi_carriage_details" => multi_carriage_details}),
+    do: multi_carriage_details
+
+  def parse_multi_carriage_details(_), do: nil
 end

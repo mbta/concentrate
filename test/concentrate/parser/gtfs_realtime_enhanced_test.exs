@@ -293,6 +293,22 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         "current_stop_sequence" => 670,
         "occupancy_status" => "MANY_SEATS_AVAILABLE",
         "occupancy_percentage" => 50,
+        "multi_carriage_details" => [
+          %{
+            id: 0,
+            label: "main-car",
+            occupancy_status: :MANY_SEATS_FULL,
+            occupancy_percentage: 80,
+            carriage_sequence: 1
+          },
+          %{
+            id: 1,
+            label: "second-car",
+            occupancy_status: :EMPTY,
+            occupancy_percentage: 0,
+            carriage_sequence: 2
+          }
+        ],
         "position" => %{
           "bearing" => 135,
           "latitude" => 42.32951,
@@ -343,7 +359,23 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
                  status: :STOPPED_AT,
                  last_updated: 1_534_340_406,
                  occupancy_status: :MANY_SEATS_AVAILABLE,
-                 occupancy_percentage: 50
+                 occupancy_percentage: 50,
+                 multi_carriage_details: [
+                   %{
+                     id: 0,
+                     label: "main-car",
+                     occupancy_status: :MANY_SEATS_FULL,
+                     occupancy_percentage: 80,
+                     carriage_sequence: 1
+                   },
+                   %{
+                     id: 1,
+                     label: "second-car",
+                     occupancy_status: :EMPTY,
+                     occupancy_percentage: 0,
+                     carriage_sequence: 2
+                   }
+                 ]
                )
     end
 
