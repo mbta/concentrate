@@ -42,5 +42,58 @@ defmodule Concentrate.VehiclePositionTest do
       assert Mergeable.merge(first, second) == expected
       assert Mergeable.merge(second, first) == expected
     end
+
+    test "merge/2 merges the multi carriage status information" do
+      first =
+        new(
+          last_updated: 1,
+          latitude: 1,
+          longitude: 1,
+          multi_carriage_details: [
+            %{
+              id: 0,
+              label: "main-car",
+              occupancy_status: :MANY_SEATS_FULL,
+              occupancy_percentage: 80,
+              carriage_sequence: 1
+            },
+            %{
+              id: 0,
+              label: "second-car",
+              occupancy_status: :EMPTY,
+              occupancy_percentage: 0,
+              carriage_sequence: 2
+            }
+          ]
+        )
+
+      second = new(last_updated: 2, latitude: 2, longitude: 2)
+
+      expected =
+        new(
+          last_updated: 2,
+          latitude: 2,
+          longitude: 2,
+          multi_carriage_details: [
+            %{
+              id: 0,
+              label: "main-car",
+              occupancy_status: :MANY_SEATS_FULL,
+              occupancy_percentage: 80,
+              carriage_sequence: 1
+            },
+            %{
+              id: 0,
+              label: "second-car",
+              occupancy_status: :EMPTY,
+              occupancy_percentage: 0,
+              carriage_sequence: 2
+            }
+          ]
+        )
+
+      assert Mergeable.merge(first, second) == expected
+      assert Mergeable.merge(second, first) == expected
+    end
   end
 end
