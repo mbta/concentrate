@@ -1,0 +1,73 @@
+{
+  "header": {
+    "gtfs_realtime_version": "1.0",
+    "incrementality": 0,
+    "timestamp": 1514558974
+  },
+  "entity": [
+    {
+      "id": "138754",
+      "alert": {
+        "effect": "NO_SERVICE",
+        "effect_detail": "STATION_CLOSURE",
+        "cause": "UNKNOWN_CAUSE",
+        "cause_detail": "UNKNOWN_CAUSE",
+        "header_text": {
+          "translation": [
+            {
+              "text": "Museum of Fine Arts closed",
+              "language": "en"
+            }
+          ]
+        },
+        "description_text": {
+          "translation": [
+            {
+              "text": "Affected lines:\r\nGreen Line E branch",
+              "language": "en"
+            }
+          ]
+        },
+        "severity_level": "SEVERE",
+        "service_effect_text": {
+          "translation": [
+            {
+              "text": "Museum of Fine Arts closed",
+              "language": "en"
+            }
+          ]
+        },
+        "short_header_text": {
+          "translation": [
+            {
+              "text": "Museum of Fine Arts closed",
+              "language": "en"
+            }
+          ]
+        },
+        "severity": 0,
+        "created_timestamp": 1687283708,
+        "last_modified_timestamp": 1687283738,
+        "closed_timestamp": 1687283738,
+        "alert_lifecycle": "NEW",
+        "duration_certainty": "KNOWN",
+        "informed_entity": [
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-E",
+            "stop_id": "70245",
+            "activities": ["BOARD", "EXIT"]
+          },
+          {
+            "agency_id": "1",
+            "route_type": 0,
+            "route_id": "Green-E",
+            "stop_id": "70246",
+            "activities": ["BOARD", "EXIT"]
+          }
+        ]
+      }
+    }
+  ]
+}
