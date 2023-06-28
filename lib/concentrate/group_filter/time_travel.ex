@@ -8,30 +8,29 @@ defmodule Concentrate.GroupFilter.TimeTravel do
   @impl Concentrate.GroupFilter
 
   def filter({td, vps, stop_time_updates}) do
-    stop_time_updates =
-      stop_time_updates
-      |> Enum.reduce([], &filter_stop_time_update/2)
-      |> Enum.reverse()
+    time_travel_check(stop_time_updates)
 
     {td, vps, stop_time_updates}
   end
 
-  defp filter_stop_time_update(stop_time_update, []) do
-    [stop_time_update]
+  defp time_travel_check([]) do
+    nil
   end
 
-  defp filter_stop_time_update(stop_time_update, [prev | _] = stop_time_updates) do
-    prev_time = prev.departure_time || prev.arrival_time
-    time = stop_time_update.arrival_time || stop_time_update.departure_time
+  defp time_travel_check([_]) do
+    nil
+  end
 
-    if not is_nil(prev_time) and time < prev_time do
+  defp time_travel_check([first, second | rest]) do
+    first_time = first.departure_time || first.arrival_time
+    second_time = second.arrival_time || second.departure_time
+
+    if not is_nil(second_time) and second_time < first_time do
       Logger.warning(
-        "event=time_travel trip_id=#{stop_time_update.trip_id} prev_stop=#{prev.stop_sequence} prev_time=#{prev_time} stop=#{stop_time_update.stop_sequence} time=#{time}"
+        "event=time_travel trip_id=#{first.trip_id} first_stop=#{first.stop_sequence} first_time=#{first_time} second_stop=#{second.stop_sequence} second_time=#{second_time}"
       )
-
-      [stop_time_update]
-    else
-      [stop_time_update | stop_time_updates]
     end
+
+    time_travel_check([second | rest])
   end
 end

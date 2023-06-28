@@ -45,12 +45,6 @@ defmodule Concentrate.StopTimeUpdate do
     def key(%{trip_id: trip_id, stop_sequence: stop_sequence}), do: {trip_id, stop_sequence}
 
     def merge(first, second) do
-      if first.stop_id != second.stop_id do
-        Logger.warning(
-          "event=conflicting_stop_ids trip=#{first.trip_id} stop_sequence=#{first.stop_sequence} first=#{inspect(first)} second=#{inspect(second)}"
-        )
-      end
-
       time_stu =
         if Concentrate.StopTimeUpdate.time(first) < Concentrate.StopTimeUpdate.time(second),
           do: first,
