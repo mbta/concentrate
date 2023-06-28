@@ -122,13 +122,6 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     end
   end
 
-  # defp decode_stop_updates(td, stus, options) do
-  #   IO.inspect(td)
-  #   IO.inspect(stus)
-  #   IO.inspect(options)
-  #   dbg("here")
-  # end
-
   @spec decode_vehicle(map(), Helpers.Options.t(), integer | nil) :: [any()]
   def decode_vehicle(vp, options, feed_timestamp) do
     position = Map.get(vp, "position", %{})
