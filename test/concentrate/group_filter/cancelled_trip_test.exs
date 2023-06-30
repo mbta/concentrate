@@ -65,6 +65,56 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
       assert StopTimeUpdate.schedule_relationship(stu) == :SKIPPED
     end
 
+    test "cancels the group if all stop updates have already been given a skipped status" do
+      td =
+        TripDescriptor.new(
+          trip_id: "trip",
+          start_date: {1970, 1, 2}
+        )
+
+      stu =
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          status: :SCHEDULED,
+          arrival_time: 87_000,
+          schedule_relationship: :SKIPPED
+        )
+
+      group = {td, [], [stu, stu]}
+      {td_actual, [], [stu_actual1, stu_actual2]} = filter(group, @module)
+      assert TripDescriptor.schedule_relationship(td_actual) == :CANCELED
+      assert StopTimeUpdate.schedule_relationship(stu_actual1) == :SKIPPED
+      assert StopTimeUpdate.schedule_relationship(stu_actual2) == :SKIPPED
+    end
+
+    test "does not cancel the group if only some stop updates have already been given a skipped schedule relationship" do
+      td =
+        TripDescriptor.new(
+          trip_id: "trip",
+          start_date: {1970, 1, 2}
+        )
+
+      stu1 =
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          arrival_time: 87_000,
+          schedule_relationship: :SKIPPED
+        )
+
+      stu2 =
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          arrival_time: 87_000,
+          schedule_relationship: :SCHEDULED
+        )
+
+      group = {td, [], [stu1, stu2]}
+      {td_actual, [], [stu_actual1, stu_actual2]} = filter(group, @module)
+      assert TripDescriptor.schedule_relationship(td_actual) == :SCHEDULED
+      assert StopTimeUpdate.schedule_relationship(stu_actual1) == :SKIPPED
+      assert StopTimeUpdate.schedule_relationship(stu_actual2) == :SCHEDULED
+    end
+
     test "leaves non-cancelled trips alone" do
       td =
         TripDescriptor.new(

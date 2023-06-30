@@ -9,7 +9,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   @impl Concentrate.GroupFilter
   def filter(trip_group, module \\ CancelledTrips)
 
-  def filter({%TripDescriptor{} = td, _vps, [stu | _]} = group, module) do
+  def filter({%TripDescriptor{} = td, _vps, [stu | _] = stop_time_updates} = group, module) do
     trip_id = TripDescriptor.trip_id(td)
     route_id = TripDescriptor.route_id(td)
     time = StopTimeUpdate.time(stu)
@@ -20,6 +20,9 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
 
       is_nil(time) ->
         group
+
+      Enum.all?(stop_time_updates, &(StopTimeUpdate.schedule_relationship(&1) == :SKIPPED)) ->
+        cancel_group(group)
 
       is_binary(trip_id) and module.trip_cancelled?(trip_id, time) ->
         cancel_group(group)
