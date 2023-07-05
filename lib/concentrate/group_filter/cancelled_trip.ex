@@ -18,11 +18,11 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
       TripDescriptor.schedule_relationship(td) == :CANCELED ->
         cancel_group(group)
 
+      Enum.all?(stop_time_updates, &StopTimeUpdate.skipped?(&1)) ->
+        cancel_group(group)
+
       is_nil(time) ->
         group
-
-      Enum.all?(stop_time_updates, &(StopTimeUpdate.schedule_relationship(&1) == :SKIPPED)) ->
-        cancel_group(group)
 
       is_binary(trip_id) and module.trip_cancelled?(trip_id, time) ->
         cancel_group(group)

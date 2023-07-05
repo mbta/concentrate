@@ -34,6 +34,11 @@ defmodule Concentrate.StopTimeUpdate do
     %{stu | schedule_relationship: :SKIPPED, arrival_time: nil, departure_time: nil, status: nil}
   end
 
+  @spec skipped?(%__MODULE__{}) :: boolean()
+  def skipped?(%__MODULE__{schedule_relationship: schedule_relationship}) do
+    schedule_relationship == :SKIPPED
+  end
+
   defimpl Concentrate.Mergeable do
     def key(%{trip_id: trip_id, stop_sequence: stop_sequence}), do: {trip_id, stop_sequence}
 
