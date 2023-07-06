@@ -46,7 +46,7 @@ defmodule Concentrate.StopTimeUpdate do
 
     def merge(first, second) do
       time_stu =
-        if Concentrate.StopTimeUpdate.time(first) < Concentrate.StopTimeUpdate.time(second),
+        if Concentrate.StopTimeUpdate.time(first) <= Concentrate.StopTimeUpdate.time(second),
           do: first,
           else: second
 
