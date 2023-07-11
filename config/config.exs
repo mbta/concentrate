@@ -51,13 +51,13 @@ config :concentrate,
     Concentrate.GroupFilter.VehicleAtSkippedStop,
     Concentrate.GroupFilter.VehicleStopMatch,
     Concentrate.GroupFilter.SkippedStopOnAddedTrip,
-    Concentrate.GroupFilter.TripDescriptorTimestamp,
-    Concentrate.GroupFilter.TimeTravel
+    Concentrate.GroupFilter.TripDescriptorTimestamp
   ],
   reporters: [
     Concentrate.Reporter.VehicleLatency,
     Concentrate.Reporter.StopTimeUpdateLatency,
-    Concentrate.Reporter.Latency
+    Concentrate.Reporter.Latency,
+    Concentrate.Reporter.TimeTravel
   ],
   encoders: [
     files: [
