@@ -10,7 +10,8 @@ defmodule Concentrate.StopTimeUpdateTest do
          arrival_time: 2,
          departure_time: 3,
          status: "status",
-         platform_id: "platform"
+         platform_id: "platform",
+         schedule_relationship: :SCHEDULED
        )
 
   describe "skip/1" do
@@ -23,6 +24,17 @@ defmodule Concentrate.StopTimeUpdateTest do
     test "sets the relationship to SKIPPED" do
       skipped = skip(@stu)
       assert schedule_relationship(skipped) == :SKIPPED
+    end
+  end
+
+  describe "skipped?/1" do
+    test "returns false if stop time update schedule relationship is not skipped" do
+      assert skipped?(@stu) == false
+    end
+
+    test "returns true if stop time update schedule relationship is skipped" do
+      skipped = skip(@stu)
+      assert skipped?(skipped) == true
     end
   end
 

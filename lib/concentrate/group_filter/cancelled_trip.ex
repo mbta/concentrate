@@ -9,13 +9,16 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   @impl Concentrate.GroupFilter
   def filter(trip_group, module \\ CancelledTrips)
 
-  def filter({%TripDescriptor{} = td, _vps, [stu | _]} = group, module) do
+  def filter({%TripDescriptor{} = td, _vps, [stu | _] = stop_time_updates} = group, module) do
     trip_id = TripDescriptor.trip_id(td)
     route_id = TripDescriptor.route_id(td)
     time = StopTimeUpdate.time(stu)
 
     cond do
       TripDescriptor.schedule_relationship(td) == :CANCELED ->
+        cancel_group(group)
+
+      Enum.all?(stop_time_updates, &StopTimeUpdate.skipped?(&1)) ->
         cancel_group(group)
 
       is_nil(time) ->
