@@ -55,7 +55,8 @@ config :concentrate,
   reporters: [
     Concentrate.Reporter.VehicleLatency,
     Concentrate.Reporter.StopTimeUpdateLatency,
-    Concentrate.Reporter.Latency
+    Concentrate.Reporter.Latency,
+    Concentrate.Reporter.UnskippedNullStops
   ],
   encoders: [
     files: [
