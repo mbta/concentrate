@@ -33,7 +33,8 @@ config :concentrate,
     Concentrate.Filter.VehicleWithNoTrip,
     Concentrate.Filter.RoundSpeedAndBearing,
     Concentrate.Filter.IncludeRouteDirection,
-    Concentrate.Filter.IncludeStopID
+    Concentrate.Filter.IncludeStopID,
+    Concentrate.Filter.UnscheduledScheduledStop
   ],
   group_filters: [
     {
