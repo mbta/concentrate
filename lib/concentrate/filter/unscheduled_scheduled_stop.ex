@@ -15,7 +15,7 @@ defmodule Concentrate.Filter.UnscheduledScheduledStop do
         "event=unscheduled_scheduled_stop trip_id=#{stu.trip_id} stop_sequence=#{stu.stop_sequence} schedule_relationship=#{stu.schedule_relationship} status=#{stu.status} stu=#{inspect(stu)}"
       )
 
-      {:skip, stu}
+      :skip
     else
       {:cont, stu}
     end
