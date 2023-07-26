@@ -36,7 +36,7 @@ defmodule Concentrate.Reporter.UnskippedNullStops do
        ) do
     if !arrival_time && !departure_time && schedule_relationship !== :SKIPPED do
       Logger.warning(
-        "event=unskipped_null_stop trip_id=#{stu.trip_id} stop_sequence=#{stu.stop_sequence} stu=#{inspect(stu)}"
+        "event=unskipped_null_stop trip_id=#{stu.trip_id} stop_sequence=#{stu.stop_sequence} schedule_relationship=#{stu.schedule_relationship} status=#{stu.status} stu=#{inspect(stu)}"
       )
     end
   end
