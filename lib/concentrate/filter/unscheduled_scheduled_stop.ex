@@ -8,13 +8,8 @@ defmodule Concentrate.Filter.UnscheduledScheduledStop do
 
   @impl Concentrate.Filter
   def filter(%StopTimeUpdate{} = stu) do
-    scheduled? =
-      StopTimeUpdate.schedule_relationship(stu) == :SCHEDULED ||
-        StopTimeUpdate.schedule_relationship(stu) == nil
-
     if StopTimeUpdate.arrival_time(stu) || StopTimeUpdate.departure_time(stu) ||
-         StopTimeUpdate.status(stu) ||
-         !scheduled? do
+         StopTimeUpdate.status(stu) || StopTimeUpdate.schedule_relationship(stu) !== :SCHEDULED do
       {:cont, stu}
     else
       :skip

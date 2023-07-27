@@ -29,7 +29,7 @@ defmodule Concentrate.Filter.UnscheduledScheduledStopTest do
       assert {:cont, ^stu} = filter(stu)
     end
 
-    test "nil and scheduled stop time updates with no arrival/departure are skipped" do
+    test "scheduled stop time updates with no arrival/departure are skipped" do
       stu =
         StopTimeUpdate.new(
           arrival_time: nil,
@@ -37,9 +37,6 @@ defmodule Concentrate.Filter.UnscheduledScheduledStopTest do
           schedule_relationship: :SCHEDULED
         )
 
-      assert :skip = filter(stu)
-
-      stu = StopTimeUpdate.new(arrival_time: nil, departure_time: nil, schedule_relationship: nil)
       assert :skip = filter(stu)
     end
   end
