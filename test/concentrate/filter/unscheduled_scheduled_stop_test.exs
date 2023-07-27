@@ -24,6 +24,11 @@ defmodule Concentrate.Filter.UnscheduledScheduledStopTest do
       assert {:cont, ^stu} = filter(stu)
     end
 
+    test "a stop time update with a boarding status is kept" do
+      stu = StopTimeUpdate.new(arrival_time: nil, departure_time: nil, status: "On time")
+      assert {:cont, ^stu} = filter(stu)
+    end
+
     test "nil and scheduled stop time updates with no arrival/departure are skipped" do
       stu =
         StopTimeUpdate.new(
