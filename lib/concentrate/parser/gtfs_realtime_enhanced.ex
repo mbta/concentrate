@@ -97,8 +97,6 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
             {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, "arrival"))
             {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
 
-            boarding_status = Map.get(stu, "boarding_status")
-
             StopTimeUpdate.new(
               trip_id:
                 if(descriptor = Map.get(trip_update, "trip"), do: Map.get(descriptor, "trip_id")),
@@ -108,8 +106,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
               arrival_time: arrival_time,
               departure_time: departure_time,
               uncertainty: arrival_uncertainty || departure_uncertainty,
-              status:
-                if(boarding_status == "NOW BOARDING", do: "Now boarding", else: boarding_status),
+              status: Map.get(stu, "boarding_status"),
               platform_id: Map.get(stu, "platform_id")
             )
           end
