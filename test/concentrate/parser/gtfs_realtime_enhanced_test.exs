@@ -151,7 +151,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       }
 
       [_td, stop_update] = decode_trip_update(update, %Options{})
-      assert StopTimeUpdate.status(stop_update) == "ALL_ABOARD"
+      assert StopTimeUpdate.status(stop_update) == "All_aboard"
     end
 
     test "can handle platform id information" do
