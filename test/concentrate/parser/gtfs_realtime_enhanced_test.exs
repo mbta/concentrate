@@ -151,7 +151,35 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       }
 
       [_td, stop_update] = decode_trip_update(update, %Options{})
-      assert StopTimeUpdate.status(stop_update) == "All_aboard"
+      assert StopTimeUpdate.status(stop_update) == "ALL_ABOARD"
+    end
+
+    test "replaces overridden statuses" do
+      update = %{
+        "trip" => %{},
+        "stop_time_update" => [
+          %{
+            "boarding_status" => "NOW BOARDING"
+          }
+        ]
+      }
+
+      [_td, stop_update] = decode_trip_update(update, %Options{})
+      assert StopTimeUpdate.status(stop_update) == "Now boarding"
+    end
+
+    test "does not replace statuses that are not overridden" do
+      update = %{
+        "trip" => %{},
+        "stop_time_update" => [
+          %{
+            "boarding_status" => "UNIQUE STATUS"
+          }
+        ]
+      }
+
+      [_td, stop_update] = decode_trip_update(update, %Options{})
+      assert StopTimeUpdate.status(stop_update) == "UNIQUE STATUS"
     end
 
     test "can handle platform id information" do

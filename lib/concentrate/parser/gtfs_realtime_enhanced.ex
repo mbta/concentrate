@@ -10,6 +10,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   @default_active_period [%{"start" => nil, "end" => nil}]
 
+  @boarding_status_override Application.compile_env(:concentrate, :boarding_status_override, %{})
+
   @impl Concentrate.Parser
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
     options = Helpers.parse_options(opts)
@@ -97,10 +99,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
             {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, "arrival"))
             {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
 
-            boarding_status =
-              if Map.get(stu, "boarding_status") do
-                String.capitalize(Map.get(stu, "boarding_status"))
-              end
+            boarding_status = decode_boarding_status(Map.get(stu, "boarding_status"))
 
             StopTimeUpdate.new(
               trip_id:
@@ -126,6 +125,14 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     else
       td
     end
+  end
+
+  defp decode_boarding_status(nil) do
+    nil
+  end
+
+  defp decode_boarding_status(status) do
+    Map.get(@boarding_status_override, status, status)
   end
 
   @spec decode_vehicle(map(), Helpers.Options.t(), integer | nil) :: [any()]
