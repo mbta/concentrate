@@ -127,12 +127,12 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     end
   end
 
-  defp decode_boarding_status(nil) do
-    nil
+  for {status, new_status} <- @boarding_status_override do
+    defp decode_boarding_status(unquote(status)), do: unquote(new_status)
   end
 
   defp decode_boarding_status(status) do
-    Map.get(@boarding_status_override, status, status)
+    status
   end
 
   @spec decode_vehicle(map(), Helpers.Options.t(), integer | nil) :: [any()]
