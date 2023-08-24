@@ -18,7 +18,7 @@ defmodule Concentrate.MergeFilter do
   # allow sources some time to load
   @initial_timeout 5_000
 
-  defstruct timeout: 1_000,
+  defstruct timeout: 1,
             timer: nil,
             table: Table.new(),
             demand: %{},
