@@ -12,6 +12,28 @@ config :ex_aws, json_codec: Jason
 config :ssl, protocol_version: :"tlsv1.2"
 
 config :concentrate,
+  boarding_status_override: %{
+    "ARRIVED" => "Arrived",
+    "CANCELLED" => "Cancelled",
+    "DELAYED" => "Delayed",
+    "DEPARTED" => "Departed",
+    "BOARDING COMPLETE" => "Boarding complete",
+    "ON TIME" => "On time",
+    "PRIORITY" => "Info to follow",
+    "BUS SUBSTITUTE" => "Bus substitution",
+    "SEE AGENT" => "See agent",
+    "ORANGE LINE" => "Not stopping here",
+    "GREEN LINE" => "Not stopping here",
+    "RED LINE" => "Not stopping here",
+    "BLUE LINE" => "Not stopping here",
+    "SILVER LINE" => "Not stopping here",
+    "SUBWAY" => "Not stopping here",
+    "NOW BOARDING" => "Now boarding",
+    "ALL ABOARD" => "All aboard",
+    "ARRIVING" => "Arriving",
+    "LATE" => "Late",
+    "HOLD" => "Info to follow"
+  },
   sources: [
     gtfs_realtime: [
       vehicle_positions: "https://cdn.mbta.com/realtime/VehiclePositions.pb",

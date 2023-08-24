@@ -22,7 +22,11 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimes do
   def filter(trip_group, gtfs_stop_times \\ Concentrate.GTFS.StopTimes)
 
   config_path = [:group_filters, __MODULE__, :on_time_statuses]
-  @on_time_statuses Application.compile_env(:concentrate, config_path, [])
+
+  @on_time_statuses Enum.map(
+                      Application.compile_env(:concentrate, config_path, []),
+                      &String.downcase/1
+                    )
 
   if @on_time_statuses == [] do
     def filter(trip_group, _), do: trip_group
@@ -58,18 +62,22 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimes do
     end
 
     defp fill_in_arrival_departure(stop_time_update, trip_date, nil, nil, status, gtfs_stop_times)
-         when status in @on_time_statuses do
-      trip_id = StopTimeUpdate.trip_id(stop_time_update)
-      stop_sequence = StopTimeUpdate.stop_sequence(stop_time_update)
+         when is_binary(status) do
+      if String.downcase(status) in @on_time_statuses do
+        trip_id = StopTimeUpdate.trip_id(stop_time_update)
+        stop_sequence = StopTimeUpdate.stop_sequence(stop_time_update)
 
-      case gtfs_stop_times.arrival_departure(trip_id, stop_sequence, trip_date) do
-        {arrival_time, departure_time} ->
-          stop_time_update
-          |> StopTimeUpdate.update_arrival_time(arrival_time)
-          |> StopTimeUpdate.update_departure_time(departure_time)
+        case gtfs_stop_times.arrival_departure(trip_id, stop_sequence, trip_date) do
+          {arrival_time, departure_time} ->
+            stop_time_update
+            |> StopTimeUpdate.update_arrival_time(arrival_time)
+            |> StopTimeUpdate.update_departure_time(departure_time)
 
-        :unknown ->
-          stop_time_update
+          :unknown ->
+            stop_time_update
+        end
+      else
+        stop_time_update
       end
     end
 
