@@ -4,16 +4,17 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
   import ExUnit.CaptureLog
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtime
-  alias Concentrate.{VehiclePosition, TripDescriptor, StopTimeUpdate, Alert}
+  alias Concentrate.{FeedUpdate, VehiclePosition, TripDescriptor, StopTimeUpdate, Alert}
   alias Concentrate.Parser.Helpers.Options
 
   describe "parse/1" do
     test "parsing a vehiclepositions.pb file returns only VehiclePosition or TripDescriptor structs" do
       binary = File.read!(fixture_path("vehiclepositions.pb"))
       parsed = parse(binary, [])
-      assert [_ | _] = parsed
+      assert 1_513_622_764 = FeedUpdate.timestamp(parsed)
+      assert [_ | _] = updates = FeedUpdate.updates(parsed)
 
-      for vp <- parsed do
+      for vp <- updates do
         assert vp.__struct__ in [VehiclePosition, TripDescriptor]
       end
     end
@@ -21,9 +22,9 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
     test "parsing a tripupdates.pb file returns only StopTimeUpdate or TripDescriptor structs" do
       binary = File.read!(fixture_path("tripupdates.pb"))
       parsed = parse(binary, [])
-      assert [_ | _] = parsed
+      assert [_ | _] = updates = FeedUpdate.updates(parsed)
 
-      for update <- parsed do
+      for update <- updates do
         assert update.__struct__ in [StopTimeUpdate, TripDescriptor]
       end
     end
@@ -31,9 +32,9 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
     test "parsing an alerts.pb returns only alerts" do
       binary = File.read!(fixture_path("alerts.pb"))
       parsed = parse(binary, [])
-      assert [_ | _] = parsed
+      assert [_ | _] = updates = FeedUpdate.updates(parsed)
 
-      for alert <- parsed do
+      for alert <- updates do
         assert alert.__struct__ == Alert
       end
     end
@@ -41,11 +42,12 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
     test "options are parsed" do
       binary = File.read!(fixture_path("tripupdates.pb"))
       now = :os.system_time(:seconds)
-      assert parse(binary, max_future_time: -now) == []
-      assert parse(binary, routes: []) == []
+      assert FeedUpdate.updates(parse(binary, max_future_time: -now)) == []
+      assert FeedUpdate.updates(parse(binary, routes: [])) == []
       with_excluded = parse(binary, excluded_routes: ["Green-D"])
-      refute with_excluded == []
+      refute FeedUpdate.updates(with_excluded) == []
       refute with_excluded == parse(binary, [])
+      assert FeedUpdate.url(parse(binary, feed_url: "url")) == "url"
     end
   end
 

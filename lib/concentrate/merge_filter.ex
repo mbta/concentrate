@@ -11,7 +11,7 @@ defmodule Concentrate.MergeFilter do
   use GenStage
   require Logger
   alias Concentrate.Encoder.GTFSRealtimeHelpers
-  alias Concentrate.{Filter, TripDescriptor}
+  alias Concentrate.{FeedUpdate, Filter, TripDescriptor}
   alias Concentrate.Merge.Table
 
   @start_link_opts [:name]
@@ -52,7 +52,7 @@ defmodule Concentrate.MergeFilter do
 
   @impl GenStage
   def handle_subscribe(:producer, _options, from, state) do
-    state = %{state | table: Table.add(state.table, from), demand: Map.put(state.demand, from, 1)}
+    state = %{state | demand: Map.put(state.demand, from, 1)}
     :ok = GenStage.ask(from, 1)
     {:manual, state}
   end
@@ -74,13 +74,14 @@ defmodule Concentrate.MergeFilter do
 
   @impl GenStage
   def handle_events(events, from, state) do
-    latest_data = List.last(events)
-
-    state = %{
-      state
-      | table: Table.update(state.table, from, latest_data),
-        demand: Map.update!(state.demand, from, fn demand -> demand - length(events) end)
-    }
+    state =
+      Enum.reduce(events, state, fn event, state ->
+        %{
+          state
+          | table: Table.update(state.table, FeedUpdate.url(event) || from, event),
+            demand: Map.update!(state.demand, from, fn demand -> demand - 1 end)
+        }
+      end)
 
     state =
       if state.timer do

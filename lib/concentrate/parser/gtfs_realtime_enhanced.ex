@@ -4,7 +4,16 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   """
   @behaviour Concentrate.Parser
   require Logger
-  alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripDescriptor, VehiclePosition}
+
+  alias Concentrate.{
+    Alert,
+    Alert.InformedEntity,
+    FeedUpdate,
+    StopTimeUpdate,
+    TripDescriptor,
+    VehiclePosition
+  }
+
   alias Concentrate.Parser.Helpers
   alias VehiclePosition.Consist, as: VehiclePositionConsist
 
@@ -16,11 +25,31 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
     options = Helpers.parse_options(opts)
 
-    for {:ok, json} <- [Jason.decode(binary, strings: :copy)],
-        entities = decode_entities(json, options),
-        decoded <- Helpers.drop_fields(entities, options.drop_fields) do
-      decoded
-    end
+    json = Jason.decode!(binary, strings: :copy)
+
+    feed_timestamp =
+      case json do
+        %{
+          "header" => %{
+            "timestamp" => feed_timestamp
+          }
+        } ->
+          feed_timestamp
+
+        _ ->
+          nil
+      end
+
+    updates =
+      json
+      |> decode_entities(options)
+      |> Helpers.drop_fields(options.drop_fields)
+
+    FeedUpdate.new(
+      url: Keyword.get(opts, :feed_url),
+      timestamp: feed_timestamp,
+      updates: updates
+    )
   end
 
   @spec decode_entities(map(), Helpers.Options.t()) :: [any()]
@@ -32,7 +61,11 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp decode_entities(%{"entity" => entities} = json, options) do
-    feed_timestamp = get_in(json, ["header", "timestamp"])
+    %{
+      "header" => %{
+        "timestamp" => feed_timestamp
+      }
+    } = json
 
     for entity <- entities,
         decoded <- decode_feed_entity(entity, options, feed_timestamp) do

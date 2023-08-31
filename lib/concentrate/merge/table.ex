@@ -14,10 +14,6 @@ defmodule Concentrate.Merge.Table do
     %__MODULE__{}
   end
 
-  def add(%{data: data} = table, source_name) do
-    %{table | data: Map.put_new(data, source_name, %{})}
-  end
-
   def remove(table, source_name) do
     %{table | data: Map.delete(table.data, source_name)}
   end
@@ -30,7 +26,7 @@ defmodule Concentrate.Merge.Table do
         {key, item}
       end)
 
-    %{table | data: %{data | source_name => item_list}}
+    %{table | data: Map.put(data, source_name, item_list)}
   end
 
   def items(%{data: empty}) when empty == %{} do

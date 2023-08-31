@@ -4,7 +4,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
   import Concentrate.Encoder.VehiclePositionsEnhanced
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.Parser.GTFSRealtimeEnhanced
-  alias Concentrate.{TripDescriptor, VehiclePosition}
+  alias Concentrate.{FeedUpdate, TripDescriptor, VehiclePosition}
   alias VehiclePosition.Consist, as: VehiclePositionConsist
 
   describe "encode/1" do
@@ -35,7 +35,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
         VehiclePosition.new(trip_id: "unscheduled", id: "u", latitude: 1, longitude: 1)
       ]
 
-      assert [td, vp] = round_trip(data)
+      assert [td, _vp] = round_trip(data)
       assert TripDescriptor.schedule_relationship(td) == :UNSCHEDULED
     end
 
@@ -50,6 +50,10 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
 
   defp round_trip(data) do
     # return the result of decoding the encoded data
-    GTFSRealtimeEnhanced.parse(encode_groups(group(data)), [])
+    data
+    |> group()
+    |> encode_groups()
+    |> GTFSRealtimeEnhanced.parse([])
+    |> FeedUpdate.updates()
   end
 end

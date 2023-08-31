@@ -6,7 +6,15 @@ defmodule Concentrate.Parser.GTFSRealtime do
   alias Concentrate.Parser.Helpers
   require Logger
 
-  alias Concentrate.{Alert, Alert.InformedEntity, StopTimeUpdate, TripDescriptor, VehiclePosition}
+  alias Concentrate.{
+    Alert,
+    Alert.InformedEntity,
+    FeedUpdate,
+    StopTimeUpdate,
+    TripDescriptor,
+    VehiclePosition
+  }
+
   @impl Concentrate.Parser
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
     options = Helpers.parse_options(opts)
@@ -14,9 +22,16 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
     feed_timestamp = message.header.timestamp
 
-    message.entity
-    |> Enum.flat_map(&decode_feed_entity(&1, options, feed_timestamp))
-    |> Helpers.drop_fields(options.drop_fields)
+    updates =
+      message.entity
+      |> Enum.flat_map(&decode_feed_entity(&1, options, feed_timestamp))
+      |> Helpers.drop_fields(options.drop_fields)
+
+    FeedUpdate.new(
+      url: Keyword.get(opts, :feed_url),
+      timestamp: feed_timestamp,
+      updates: updates
+    )
   end
 
   @spec decode_feed_entity(map(), Helpers.Options.t(), integer | nil) :: [any()]

@@ -10,7 +10,6 @@ defmodule Concentrate.Merge.TableTest do
       check all(mergeables <- TestMergeable.mergeables()) do
         from = :from
         table = new()
-        table = add(table, from)
         table = update(table, from, mergeables)
         assert Enum.sort(items(table)) == Enum.sort(Merge.merge(mergeables))
       end
@@ -30,7 +29,6 @@ defmodule Concentrate.Merge.TableTest do
         table =
           Enum.reduce(multi_source_mergeables, new(), fn {source, mergeables}, table ->
             table
-            |> add(source)
             |> update(source, mergeables)
           end)
 
@@ -44,7 +42,6 @@ defmodule Concentrate.Merge.TableTest do
       check all(all_mergeables <- list_of_mergeables()) do
         from = :from
         table = new()
-        table = add(table, from)
         expected = List.last(all_mergeables)
 
         table =

@@ -6,6 +6,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
   import Concentrate.Parser.GTFSRealtimeEnhanced
 
   alias Concentrate.{
+    FeedUpdate,
     TripDescriptor,
     StopTimeUpdate,
     VehiclePosition,
@@ -19,9 +20,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     test "parsing a TripDescriptor enhanced JSON file returns only StopTimeUpdate or TripDescriptor structs" do
       binary = File.read!(fixture_path("TripUpdates_enhanced.json"))
       parsed = parse(binary, [])
-      assert [_ | _] = parsed
+      assert 1_514_142_840 = FeedUpdate.timestamp(parsed)
+      assert [_ | _] = updates = FeedUpdate.updates(parsed)
 
-      for update <- parsed do
+      for update <- updates do
         assert update.__struct__ in [StopTimeUpdate, TripDescriptor]
       end
     end
@@ -29,9 +31,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     test "parsing an alerts_enhanced.json file returns only alerts" do
       binary = File.read!(fixture_path("alerts_enhanced.json"))
       parsed = parse(binary, [])
-      assert [_ | _] = parsed
+      assert [_ | _] = updates = FeedUpdate.updates(parsed)
 
-      for alert <- parsed do
+      for alert <- updates do
         assert alert.__struct__ == Alert
       end
     end
@@ -39,9 +41,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     test "parsing an enhanced VehiclePositions JSON file returns only VehiclePosition or TripDescriptor structs" do
       binary = File.read!(fixture_path("VehiclePositions_enhanced.json"))
       parsed = parse(binary, [])
-      assert [_ | _] = parsed
+      assert [_ | _] = updates = FeedUpdate.updates(parsed)
 
-      for update <- parsed do
+      for update <- updates do
         assert update.__struct__ in [VehiclePosition, TripDescriptor]
       end
     end
@@ -49,6 +51,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     test "alerts decode all entity fields" do
       body = ~s(
         {
+          "header": {
+            "timestamp": 0
+          },
           "entity": [
             {
               "id": "id",
@@ -74,7 +79,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
             }
           ]
         })
-      [alert] = parse(body, [])
+      [alert] = FeedUpdate.updates(parse(body, []))
       [entity] = Alert.informed_entity(alert)
       assert InformedEntity.route_type(entity) == 2
       assert InformedEntity.route_id(entity) == "CR-Worcester"
@@ -88,6 +93,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     test "alerts converts unknown effects to UNKNOWN_EFFECT" do
       body = ~s(
         {
+          "header": {
+            "timestamp": 0
+          },
           "entity": [
             {
               "id": "id",
@@ -98,7 +106,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
             }
           ]
         })
-      [alert] = parse(body, [])
+      [alert] = FeedUpdate.updates(parse(body, []))
       assert Alert.effect(alert) == :UNKNOWN_EFFECT
     end
 
@@ -128,7 +136,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
             }
           ]
         })
-      [alert] = parse(body, [])
+      [alert] = FeedUpdate.updates(parse(body, []))
       assert Alert.id(alert) == "id"
       [entity] = Alert.informed_entity(alert)
       assert InformedEntity.route_type(entity) == 2

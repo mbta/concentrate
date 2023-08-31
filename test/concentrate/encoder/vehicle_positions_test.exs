@@ -4,7 +4,7 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
   import Concentrate.TestHelpers
   import Concentrate.Encoder.VehiclePositions
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
-  alias Concentrate.{TripDescriptor, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{FeedUpdate, TripDescriptor, VehiclePosition, StopTimeUpdate}
   alias Concentrate.Parser.GTFSRealtime
 
   describe "encode/1" do
@@ -119,13 +119,21 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
     end
 
     test "decoding and re-encoding vehiclepositions.pb is a no-op" do
-      decoded = GTFSRealtime.parse(File.read!(fixture_path("vehiclepositions.pb")), [])
+      decoded =
+        FeedUpdate.updates(
+          GTFSRealtime.parse(File.read!(fixture_path("vehiclepositions.pb")), [])
+        )
+
       assert Enum.sort(round_trip(decoded)) == Enum.sort(decoded)
     end
   end
 
   defp round_trip(data) do
     # return the result of decoding the encoded data
-    GTFSRealtime.parse(encode_groups(group(data)), [])
+    data
+    |> group
+    |> encode_groups()
+    |> GTFSRealtime.parse([])
+    |> FeedUpdate.updates()
   end
 end
