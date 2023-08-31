@@ -98,7 +98,7 @@ defmodule Concentrate.MergeFilter do
 
         %{
           state
-          | table: Table.update(state.table, key, event),
+          | table: Table.update(state.table, key, FeedUpdate.updates(event)),
             last_updated: Map.put(state.last_updated, key, timestamp),
             demand: Map.update!(state.demand, from, fn demand -> demand - 1 end)
         }
