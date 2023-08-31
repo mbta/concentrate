@@ -291,11 +291,11 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
 
     _ =
       Logger.info(fn ->
-        "#{__MODULE__} updated: url=#{inspect(url(machine))} records=#{length(parsed)} time=#{time / 1000}"
+        "#{__MODULE__} updated: url=#{inspect(url(machine))} records=#{Enum.count(parsed)} time=#{time / 1000}"
       end)
 
     machine =
-      if parsed == [] do
+      if Enum.empty?(parsed) do
         # don't log a success if there wasn't any data
         machine
       else
