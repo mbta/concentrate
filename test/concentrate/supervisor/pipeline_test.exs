@@ -19,6 +19,7 @@ defmodule Concentrate.Supervisor.PipelineTest do
                max_future_time: 3600}
           ]
         ],
+        source_reporters: [Concentrate.SourceReporter.Latency],
         reporters: [Concentrate.Reporter.VehicleLatency],
         encoders: [files: [{"filename", :module}, {"other_file", :other_mod}]],
         sinks: [filesystem: [directory: "/tmp"]]
@@ -26,7 +27,7 @@ defmodule Concentrate.Supervisor.PipelineTest do
 
       actual = children(config)
 
-      assert length(actual) == 8
+      assert length(actual) == 9
     end
 
     test "correctly passes parse options to the parser" do
@@ -41,6 +42,7 @@ defmodule Concentrate.Supervisor.PipelineTest do
                max_future_time: 3600}
           ]
         ],
+        source_reporters: [],
         reporters: [],
         encoders: [files: []],
         sinks: []
