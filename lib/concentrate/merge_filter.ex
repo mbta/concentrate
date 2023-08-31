@@ -21,6 +21,7 @@ defmodule Concentrate.MergeFilter do
   defstruct timeout: 1_000,
             timer: nil,
             table: Table.new(),
+            last_updated: %{},
             demand: %{},
             filters: [],
             group_filters: []
@@ -74,11 +75,31 @@ defmodule Concentrate.MergeFilter do
 
   @impl GenStage
   def handle_events(events, from, state) do
+    now = System.system_time(:millisecond) / 1_000
+
     state =
       Enum.reduce(events, state, fn event, state ->
+        key = FeedUpdate.url(event) || from
+        timestamp = FeedUpdate.timestamp(event) || now
+
+        _ =
+          case state.last_updated do
+            %{^key => last_timestamp} ->
+              latency = now - last_timestamp
+              frequency = timestamp - last_timestamp
+
+              Logger.info(
+                "#{__MODULE__} update_metrics url=#{inspect(key)} latency=#{latency} frequency=#{frequency}"
+              )
+
+            _ ->
+              :ok
+          end
+
         %{
           state
-          | table: Table.update(state.table, FeedUpdate.url(event) || from, event),
+          | table: Table.update(state.table, key, event),
+            last_updated: Map.put(state.last_updated, key, timestamp),
             demand: Map.update!(state.demand, from, fn demand -> demand - 1 end)
         }
       end)
