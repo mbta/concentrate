@@ -108,7 +108,10 @@ config :concentrate,
     # old behavior for test URLs
     nil => Concentrate.Producer.HTTPoison,
     "https" => Concentrate.Producer.HTTPoison,
-    "http" => Concentrate.Producer.HTTPoison
+    "http" => Concentrate.Producer.HTTPoison,
+    "mqtt" => Concentrate.Producer.Mqtt,
+    "mqtts" => Concentrate.Producer.Mqtt,
+    "mqtt+ssl" => Concentrate.Producer.Mqtt
   }
 
 import_config "#{config_env()}.exs"

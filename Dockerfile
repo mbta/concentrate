@@ -12,7 +12,7 @@ RUN mix local.hex --force && \
 # Install git
 RUN apk --update add git make
 
-ENV MIX_ENV=prod
+ENV MIX_ENV=prod BUILD_WITHOUT_QUIC=1
 
 ADD mix.* /root/
 ADD config /root/config

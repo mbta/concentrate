@@ -156,6 +156,8 @@ defmodule ConcentrateTest do
     "gtfs_realtime": {
       "name_1": {
         "url": "url_1",
+        "username": {"system": "#{env_var}"},
+        "password": {"system": "#{env_var}"},
         "headers": {
           "Authorization": {"system": "#{env_var}"}
         }
@@ -170,7 +172,12 @@ defmodule ConcentrateTest do
         config = parse_json_configuration(body)
 
         assert config[:sources][:gtfs_realtime][:name_1] ==
-                 {"url_1", [headers: %{"Authorization" => "secret_key"}]}
+                 {"url_1",
+                  [
+                    username: "secret_key",
+                    password: "secret_key",
+                    headers: %{"Authorization" => "secret_key"}
+                  ]}
       after
         System.delete_env(env_var)
       end
