@@ -117,6 +117,9 @@ defmodule Concentrate do
             routes: {&is_list/1, & &1},
             excluded_routes: {&is_list/1, & &1},
             fallback_url: {&is_binary/1, & &1},
+            username: {&is_possible_env_var/1, &process_possible_env_var/1},
+            password: {&is_possible_env_var/1, &process_possible_env_var/1},
+            topics: {&is_list/1, & &1},
             max_future_time: {&is_integer/1, & &1},
             fetch_after: {&is_integer/1, & &1},
             content_warning_timeout: {&is_integer/1, & &1},
@@ -135,18 +138,25 @@ defmodule Concentrate do
     end
   end
 
+  defp is_possible_env_var(value) do
+    case value do
+      %{"system" => _} -> true
+      <<_::binary>> -> true
+      _ -> false
+    end
+  end
+
+  defp process_possible_env_var(%{"system" => env_var}) do
+    System.get_env(env_var)
+  end
+
+  defp process_possible_env_var(raw_value) when is_binary(raw_value) do
+    raw_value
+  end
+
   defp process_headers(map) do
     for {key, raw_value} <- map, into: %{} do
-      value =
-        case raw_value do
-          %{"system" => env_var} ->
-            System.get_env(env_var)
-
-          raw_value when is_binary(raw_value) ->
-            raw_value
-        end
-
-      {key, value}
+      {key, process_possible_env_var(raw_value)}
     end
   end
 

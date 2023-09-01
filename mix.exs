@@ -70,6 +70,8 @@ defmodule Concentrate.MixProject do
       {:gen_stage, "~> 1.0"},
       {:gpb, "~> 4.7", only: :dev, runtime: false, only: :dev},
       {:httpoison, "~> 1.0"},
+      {:emqtt_failover, git: "https://gitlab.com/paulswartz/emqtt_failover", tag: "v0.2"},
+      {:cowlib, "2.11.0", override: true},
       {:jason, "~> 1.0"},
       {:stream_data, "~> 0.4", only: :test},
       {:tzdata, "~> 1.1.1"},
