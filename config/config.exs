@@ -104,6 +104,11 @@ config :concentrate,
   file_tap: [
     enabled?: false
   ],
-  http_producer: Concentrate.Producer.HTTPoison
+  scheme_producers: %{
+    # old behavior for test URLs
+    nil => Concentrate.Producer.HTTPoison,
+    "https" => Concentrate.Producer.HTTPoison,
+    "http" => Concentrate.Producer.HTTPoison
+  }
 
 import_config "#{config_env()}.exs"

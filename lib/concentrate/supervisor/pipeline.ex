@@ -63,7 +63,7 @@ defmodule Concentrate.Supervisor.Pipeline do
 
       child_spec(
         {
-          Application.get_env(:concentrate, :http_producer),
+          Concentrate.producer_for_url(url),
           {url, [name: source, parser: parser] ++ opts}
         },
         id: source

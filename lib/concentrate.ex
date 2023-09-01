@@ -22,6 +22,15 @@ defmodule Concentrate do
     Enum.flat_map(json, &decode_json_key_value/1)
   end
 
+  @doc """
+  Returns a Concentrate.Producer for the given URL.
+  """
+  def producer_for_url(url) do
+    %URI{scheme: scheme} = URI.parse(url)
+    scheme_producers = Application.get_env(:concentrate, :scheme_producers)
+    Map.fetch!(scheme_producers, scheme)
+  end
+
   defp decode_json_key_value({"sources", source_object}) do
     realtime = Map.get(source_object, "gtfs_realtime", %{})
     enhanced = Map.get(source_object, "gtfs_realtime_enhanced", %{})
