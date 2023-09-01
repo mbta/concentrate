@@ -12,7 +12,7 @@ defmodule Concentrate.Filter.Alert.Supervisor do
       Supervisor.start_link(
         [
           {
-            Application.get_env(:concentrate, :http_producer),
+            Concentrate.producer_for_url(config[:url]),
             {
               config[:url],
               parser: Concentrate.Parser.Alerts,
