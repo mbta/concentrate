@@ -1,6 +1,6 @@
 defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
   @moduledoc """
-  Encodes a list of parsed data into a VehiclePositions.pb file.
+  Encodes a list of parsed data into a VehiclePositions_enhanced.json file.
   """
   @behaviour Concentrate.Encoder
   alias Concentrate.{TripDescriptor, VehiclePosition}
