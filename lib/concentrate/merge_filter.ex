@@ -77,10 +77,18 @@ defmodule Concentrate.MergeFilter do
     state =
       Enum.reduce(events, state, fn event, state ->
         key = FeedUpdate.url(event) || from
+        updates = FeedUpdate.updates(event)
+
+        table =
+          if FeedUpdate.partial?(event) do
+            Table.partial_update(state.table, key, updates)
+          else
+            Table.update(state.table, key, updates)
+          end
 
         %{
           state
-          | table: Table.update(state.table, key, FeedUpdate.updates(event)),
+          | table: table,
             demand: Map.update!(state.demand, from, fn demand -> demand - 1 end)
         }
       end)
