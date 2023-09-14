@@ -70,8 +70,8 @@ defmodule Concentrate.MergeFilterTest do
       {_, state, _} = init([])
       {_, state} = handle_subscribe(:producer, [], from, state)
       {:noreply, [], state} = handle_events([first, second], from, state)
-      assert {:noreply, [[{nil, merged, []}]], _state} = handle_info(:timeout, state)
-      assert [%VehiclePosition{}, %VehiclePosition{}] = merged
+      assert {:noreply, [update], _state} = handle_info(:timeout, state)
+      assert [{_, [%VehiclePosition{}, %VehiclePosition{}], _}] = FeedUpdate.updates(update)
     end
 
     test "can apply partial? updates" do
@@ -95,8 +95,9 @@ defmodule Concentrate.MergeFilterTest do
       {_, state, _} = init([])
       {_, state} = handle_subscribe(:producer, [], from, state)
       {:noreply, [], state} = handle_events([first, second], from, state)
-      assert {:noreply, [[{nil, merged, []}]], _state} = handle_info(:timeout, state)
+      assert {:noreply, [update], _state} = handle_info(:timeout, state)
 
+      assert [{nil, merged, []}] = FeedUpdate.updates(update)
       assert [^one, ^two] = Enum.sort_by(merged, &VehiclePosition.id/1)
     end
 
@@ -115,7 +116,8 @@ defmodule Concentrate.MergeFilterTest do
       {_, state, _} = init(filters: filters)
       {_, state} = handle_subscribe(:producer, [], from, state)
       {:noreply, [], state} = handle_events(events, from, state)
-      assert {:noreply, [[{nil, [^expected], []}]], _state} = handle_info(:timeout, state)
+      assert {:noreply, [update], _state} = handle_info(:timeout, state)
+      assert FeedUpdate.updates(update) == [{nil, [expected], []}]
     end
 
     test "runs the events through the filter with options" do
@@ -133,7 +135,8 @@ defmodule Concentrate.MergeFilterTest do
       {_, state, _} = init(filters: filters)
       {_, state} = handle_subscribe(:producer, [], from, state)
       {:noreply, [], state} = handle_events(events, from, state)
-      assert {:noreply, [[{nil, [^expected], []}]], _state} = handle_info(:timeout, state)
+      assert {:noreply, [update], _state} = handle_info(:timeout, state)
+      assert FeedUpdate.updates(update) == [{nil, [expected], []}]
     end
 
     test "can filter the grouped data" do
@@ -160,8 +163,8 @@ defmodule Concentrate.MergeFilterTest do
 
       expected = [{trip, [], [stu]}]
       {:noreply, [], state} = handle_events([data], from, state)
-      {:noreply, events, _state} = handle_info(:timeout, state)
-      assert events == [expected]
+      {:noreply, [update], _state} = handle_info(:timeout, state)
+      assert FeedUpdate.updates(update) == expected
     end
 
     test "removes empty results post-filter" do
@@ -180,8 +183,8 @@ defmodule Concentrate.MergeFilterTest do
 
       expected = []
       {:noreply, [], state} = handle_events([data], from, state)
-      {:noreply, events, _state} = handle_info(:timeout, state)
-      assert events == [expected]
+      {:noreply, [update], _state} = handle_info(:timeout, state)
+      assert FeedUpdate.updates(update) == expected
     end
 
     test "allows a CANCELED TripDescriptor with no StopTimeUpdates" do
@@ -199,8 +202,8 @@ defmodule Concentrate.MergeFilterTest do
 
       expected = [{trip, [], []}]
       {:noreply, [], state} = handle_events([data], from, state)
-      {:noreply, events, _state} = handle_info(:timeout, state)
-      assert events == [expected]
+      {:noreply, [update], _state} = handle_info(:timeout, state)
+      assert FeedUpdate.updates(update) == expected
     end
 
     test "when Logging debug messages, does not crash" do

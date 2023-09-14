@@ -7,9 +7,9 @@ defmodule Concentrate.Encoder.VehiclePositions do
   import Concentrate.Encoder.GTFSRealtimeHelpers
 
   @impl Concentrate.Encoder
-  def encode_groups(groups) when is_list(groups) do
+  def encode_groups(groups, opts \\ []) when is_list(groups) do
     message = %{
-      header: feed_header(),
+      header: feed_header(opts),
       entity: Enum.flat_map(groups, &build_entity/1)
     }
 
