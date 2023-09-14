@@ -12,6 +12,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       binary = File.read!(fixture_path("vehiclepositions.pb"))
       parsed = parse(binary, [])
       assert 1_513_622_764 = FeedUpdate.timestamp(parsed)
+      refute FeedUpdate.partial?(parsed)
       assert [_ | _] = updates = FeedUpdate.updates(parsed)
 
       for vp <- updates do
@@ -23,6 +24,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       binary = File.read!(fixture_path("tripupdates.pb"))
       parsed = parse(binary, [])
       assert [_ | _] = updates = FeedUpdate.updates(parsed)
+      refute FeedUpdate.partial?(parsed)
 
       for update <- updates do
         assert update.__struct__ in [StopTimeUpdate, TripDescriptor]

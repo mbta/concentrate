@@ -21,6 +21,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
     message = :gtfs_realtime_proto.decode_msg(binary, :FeedMessage, [])
 
     feed_timestamp = message.header.timestamp
+    partial? = message.header.incrementality == :DIFFERENTIAL
 
     updates =
       message.entity
@@ -28,9 +29,10 @@ defmodule Concentrate.Parser.GTFSRealtime do
       |> Helpers.drop_fields(options.drop_fields)
 
     FeedUpdate.new(
+      updates: updates,
       url: Keyword.get(opts, :feed_url),
       timestamp: feed_timestamp,
-      updates: updates
+      partial?: partial?
     )
   end
 

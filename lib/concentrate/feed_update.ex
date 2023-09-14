@@ -8,7 +8,8 @@ defmodule Concentrate.FeedUpdate do
     :url,
     :timestamp,
     update_count: 0,
-    updates: []
+    updates: [],
+    partial?: false
   ])
 
   def new(opts) do

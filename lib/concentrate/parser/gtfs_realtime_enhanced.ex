@@ -40,15 +40,30 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
           nil
       end
 
+    partial? =
+      case json do
+        %{
+          "header" => %{
+            "incrementality" => incrementality
+          }
+        }
+        when incrementality in [1, "DIFFERENTIAL"] ->
+          true
+
+        _ ->
+          false
+      end
+
     updates =
       json
       |> decode_entities(options)
       |> Helpers.drop_fields(options.drop_fields)
 
     FeedUpdate.new(
+      updates: updates,
       url: Keyword.get(opts, :feed_url),
       timestamp: feed_timestamp,
-      updates: updates
+      partial?: partial?
     )
   end
 

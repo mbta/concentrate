@@ -21,6 +21,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       binary = File.read!(fixture_path("TripUpdates_enhanced.json"))
       parsed = parse(binary, [])
       assert 1_514_142_840 = FeedUpdate.timestamp(parsed)
+      refute FeedUpdate.partial?(parsed)
       assert [_ | _] = updates = FeedUpdate.updates(parsed)
 
       for update <- updates do
@@ -32,6 +33,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       binary = File.read!(fixture_path("alerts_enhanced.json"))
       parsed = parse(binary, [])
       assert [_ | _] = updates = FeedUpdate.updates(parsed)
+      refute FeedUpdate.partial?(parsed)
 
       for alert <- updates do
         assert alert.__struct__ == Alert
@@ -42,10 +44,39 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       binary = File.read!(fixture_path("VehiclePositions_enhanced.json"))
       parsed = parse(binary, [])
       assert [_ | _] = updates = FeedUpdate.updates(parsed)
+      refute FeedUpdate.partial?(parsed)
 
       for update <- updates do
         assert update.__struct__ in [VehiclePosition, TripDescriptor]
       end
+    end
+
+    test "partial? is true if the header has incrementality: 1" do
+      body =
+        Jason.encode!(%{
+          header: %{
+            timestamp: 0,
+            incrementality: 1
+          },
+          entity: []
+        })
+
+      parsed = parse(body, [])
+      assert FeedUpdate.partial?(parsed)
+    end
+
+    test "partial? is true if the header has incrementality: DIFFERENTIAL" do
+      body =
+        Jason.encode!(%{
+          header: %{
+            timestamp: 0,
+            incrementality: :DIFFERENTIAL
+          },
+          entity: []
+        })
+
+      parsed = parse(body, [])
+      assert FeedUpdate.partial?(parsed)
     end
 
     test "alerts decode all entity fields" do
