@@ -15,6 +15,29 @@ defmodule Concentrate.Merge.TableTest do
       end
     end
 
+    property "partial updates keep the last seen value for the given Mergeable" do
+      check all(first <- TestMergeable.mergeables(), second <- TestMergeable.mergeables()) do
+        from = :from
+
+        actual =
+          new()
+          |> partial_update(from, first)
+          |> partial_update(from, second)
+          |> items()
+          |> Enum.sort()
+
+        expected =
+          Map.merge(
+            Map.new(first, &{&1.key, &1}),
+            Map.new(second, &{&1.key, &1})
+          )
+          |> Map.values()
+          |> Enum.sort()
+
+        assert expected == actual
+      end
+    end
+
     property "with multiple sources, returns the merged data" do
       check all(multi_source_mergeables <- sourced_mergeables()) do
         # reverse so we get the latest data
