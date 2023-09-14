@@ -97,7 +97,7 @@ defmodule Concentrate.Supervisor.Pipeline do
     for module <- reporter_modules do
       child_spec(
         {Concentrate.Reporter.Consumer,
-         module: module, subscribe_to: [merge_filter: [max_demand: 1]]},
+         module: module, subscribe_to: [merge_filter: [max_demand: 10]]},
         id: module
       )
     end
@@ -111,7 +111,7 @@ defmodule Concentrate.Supervisor.Pipeline do
             Concentrate.Encoder.ProducerConsumer,
             name: encoder,
             files: [{filename, encoder}],
-            subscribe_to: [merge_filter: [max_demand: 1]],
+            subscribe_to: [merge_filter: [max_demand: 10]],
             buffer_size: 1
           },
           id: encoder
