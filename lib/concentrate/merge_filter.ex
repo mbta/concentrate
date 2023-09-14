@@ -2,11 +2,8 @@ defmodule Concentrate.MergeFilter do
   @moduledoc """
   ProducerConsumer which merges the data given to it, filters, and outputs the result.
 
-  We manage the demand from producers manually.
-  * On subscription, we ask for 1 event
-  * Once we've received an event, schedule a timeout for 1s
+  * After receiving an event, schedule a timeout for 1s
   * When the timeout happens, merge and filter the current state
-  * Request new events from producers who were part of the last merge
   """
   use GenStage
   require Logger
@@ -51,12 +48,6 @@ defmodule Concentrate.MergeFilter do
   end
 
   @impl GenStage
-  def handle_subscribe(:producer, _options, from, state) do
-    state = %{state | demand: Map.put(state.demand, from, 1)}
-    :ok = GenStage.ask(from, 1)
-    {:manual, state}
-  end
-
   def handle_subscribe(_, _, _, state) do
     {:automatic, state}
   end
@@ -65,8 +56,7 @@ defmodule Concentrate.MergeFilter do
   def handle_cancel(_reason, from, state) do
     state = %{
       state
-      | table: Table.remove(state.table, from),
-        demand: Map.delete(state.demand, from)
+      | table: Table.remove(state.table, from)
     }
 
     {:noreply, [], state}
@@ -88,8 +78,7 @@ defmodule Concentrate.MergeFilter do
 
         %{
           state
-          | table: table,
-            demand: Map.update!(state.demand, from, fn demand -> demand - 1 end)
+          | table: table
         }
       end)
 
@@ -133,7 +122,7 @@ defmodule Concentrate.MergeFilter do
         "#{__MODULE__} group_filter time=#{time / 1_000}"
       end)
 
-    state = %{state | timer: nil, demand: ask_demand(state.demand)}
+    state = %{state | timer: nil}
     {:noreply, [group_filtered], state}
   end
 
@@ -144,17 +133,6 @@ defmodule Concentrate.MergeFilter do
       end)
 
     {:noreply, [], state}
-  end
-
-  defp ask_demand(demand_map) do
-    for {from, demand} <- demand_map, into: %{} do
-      if demand == 0 do
-        GenStage.ask(from, 1)
-        {from, 1}
-      else
-        {from, demand}
-      end
-    end
   end
 
   defp parse_filter({filter, _opts}), do: filter
