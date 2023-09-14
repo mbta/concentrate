@@ -75,6 +75,32 @@ defmodule Concentrate.MergeFilterTest do
       assert [%VehiclePosition{}, %VehiclePosition{}] = merged
     end
 
+    test "can apply partial? updates" do
+      first =
+        FeedUpdate.new(
+          updates: [
+            one = VehiclePosition.new(id: "one", latitude: 1, longitude: 1),
+            VehiclePosition.new(id: "two", latitude: 1, longitude: 1, stop_sequence: 1)
+          ]
+        )
+
+      second =
+        FeedUpdate.new(
+          partial?: true,
+          updates: [
+            two = VehiclePosition.new(id: "two", latitude: 2, longitude: 2)
+          ]
+        )
+
+      from = make_from()
+      {_, state, _} = init([])
+      {_, state} = handle_subscribe(:producer, [], from, state)
+      {:noreply, [], state} = handle_events([first, second], from, state)
+      assert {:noreply, [[{nil, merged, []}]], _state} = handle_info(:timeout, state)
+
+      assert [^one, ^two] = Enum.sort_by(merged, &VehiclePosition.id/1)
+    end
+
     test "runs the events through the filter" do
       data =
         FeedUpdate.new(
