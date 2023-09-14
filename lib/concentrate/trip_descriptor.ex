@@ -16,6 +16,18 @@ defmodule Concentrate.TripDescriptor do
     schedule_relationship: :SCHEDULED
   ])
 
+  def timestamp_truncated(%__MODULE__{timestamp: number}) when is_integer(number) do
+    number
+  end
+
+  def timestamp_truncated(%__MODULE__{timestamp: number}) when is_float(number) do
+    trunc(number)
+  end
+
+  def timestamp_truncated(%__MODULE__{timestamp: nil}) do
+    nil
+  end
+
   def cancel(trip_update) do
     # single L
     %{trip_update | schedule_relationship: :CANCELED}
@@ -41,6 +53,7 @@ defmodule Concentrate.TripDescriptor do
           start_date: first.start_date || second.start_date,
           start_time: first.start_time || second.start_time,
           vehicle_id: first.vehicle_id || second.vehicle_id,
+          timestamp: first.timestamp || second.timestamp,
           schedule_relationship:
             if first.schedule_relationship == :SCHEDULED do
               second.schedule_relationship

@@ -74,7 +74,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
       stop_id: VehiclePosition.stop_id(vp),
       current_stop_sequence: VehiclePosition.stop_sequence(vp),
       current_status: VehiclePosition.status(vp),
-      timestamp: VehiclePosition.last_updated(vp),
+      timestamp: VehiclePosition.last_updated_truncated(vp),
       occupancy_status: VehiclePosition.occupancy_status(vp),
       occupancy_percentage: VehiclePosition.occupancy_percentage(vp),
       multi_carriage_details: VehiclePosition.multi_carriage_details(vp)

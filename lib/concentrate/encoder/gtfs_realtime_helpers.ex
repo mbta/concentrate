@@ -189,7 +189,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
       schedule_relationship: schedule_relationship(TripDescriptor.schedule_relationship(td))
     }
 
-    timestamp = TripDescriptor.timestamp(td)
+    timestamp = TripDescriptor.timestamp_truncated(td)
 
     trip =
       trip_data

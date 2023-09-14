@@ -42,6 +42,18 @@ defmodule Concentrate.VehiclePosition do
     super(opts)
   end
 
+  def last_updated_truncated(%__MODULE__{last_updated: number}) when is_integer(number) do
+    number
+  end
+
+  def last_updated_truncated(%__MODULE__{last_updated: number}) when is_float(number) do
+    trunc(number)
+  end
+
+  def last_updated_truncated(%__MODULE__{last_updated: nil}) do
+    nil
+  end
+
   defimpl Concentrate.Mergeable do
     def key(%{id: id}), do: id
 
