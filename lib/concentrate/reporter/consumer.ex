@@ -26,7 +26,7 @@ defmodule Concentrate.Reporter.Consumer do
         Logger.info(fn ->
           report = Enum.map_join(output, " ", &log_item/1)
 
-          "#{module} report: #{report}"
+          "report=#{module} #{report}"
         end)
       end
 

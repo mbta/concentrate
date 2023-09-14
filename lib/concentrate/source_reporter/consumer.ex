@@ -37,7 +37,7 @@ defmodule Concentrate.SourceReporter.Consumer do
     Logger.info(fn ->
       report = Enum.map_join(output, " ", &log_item/1)
 
-      "#{module} report: url=#{inspect(FeedUpdate.url(event))} #{report}"
+      "report=#{module} url=#{inspect(FeedUpdate.url(event))} #{report}"
     end)
   end
 

@@ -34,7 +34,7 @@ defmodule Concentrate.Reporter.ConsumerTest do
           assert {:noreply, [], _} = handle_events([parsed], :from, state)
         end)
 
-      assert log =~ "FakeReporter report"
+      assert log =~ "report=#{FakeReporter}"
       assert log =~ " item_count=1"
       assert log =~ ~s( state="state")
     end
