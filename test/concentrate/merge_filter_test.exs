@@ -8,11 +8,10 @@ defmodule Concentrate.MergeFilterTest do
   alias Concentrate.Encoder.GTFSRealtimeHelpers
 
   describe "handle_subscribe/4" do
-    test "asks the producer for demand" do
+    test "lets GenStage manage the demand automatically" do
       from = make_from()
       {_, state, _} = init([])
-      {_, _state} = handle_subscribe(:producer, [], from, state)
-      assert_received {:"$gen_producer", ^from, {:ask, 1}}
+      assert {:automatic, _state} = handle_subscribe(:producer, [], from, state)
     end
   end
 
@@ -252,19 +251,6 @@ defmodule Concentrate.MergeFilterTest do
 
         assert Enum.sort(actual) == Enum.sort(expected)
       end
-    end
-
-    test "asks sources from which we've received data for more" do
-      producer_0 = make_from()
-      producer_1 = make_from()
-      {_, state, _} = init([])
-      {_, state} = handle_subscribe(:producer, [], producer_0, state)
-      {_, state} = handle_subscribe(:producer, [], producer_1, state)
-      clear_mailbox()
-      {:noreply, _, state} = handle_events([FeedUpdate.new([])], producer_0, state)
-      {:noreply, _, _state} = handle_info(:timeout, state)
-      assert_received {:"$gen_producer", ^producer_0, {:ask, 1}}
-      refute_received {:"$gen_producer", ^producer_1, _}
     end
   end
 

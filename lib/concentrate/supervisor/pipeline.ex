@@ -72,13 +72,11 @@ defmodule Concentrate.Supervisor.Pipeline do
   end
 
   def merge(source_names, config) do
-    sources = outputs_with_options(source_names, max_demand: 1)
-
     [
       {
         Concentrate.MergeFilter,
         name: :merge_filter,
-        subscribe_to: sources,
+        subscribe_to: source_names,
         buffer_size: 1,
         filters: Keyword.get(config, :filters, []),
         group_filters: Keyword.get(config, :group_filters, [])
@@ -139,11 +137,5 @@ defmodule Concentrate.Supervisor.Pipeline do
 
   defp child_ids(children) do
     for child <- children, do: child.id
-  end
-
-  def outputs_with_options(outputs, options) do
-    for name <- outputs do
-      {name, options}
-    end
   end
 end
