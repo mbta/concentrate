@@ -80,13 +80,13 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   @doc """
   Header values for a GTFS-RT feed.
   """
-  def feed_header do
-    timestamp = :erlang.system_time(:seconds)
+  def feed_header(opts \\ []) do
+    timestamp = trunc(Keyword.get(opts, :timestamp) || :erlang.system_time(:seconds))
 
     %{
       gtfs_realtime_version: "2.0",
       timestamp: timestamp,
-      incrementality: :FULL_DATASET
+      incrementality: if(Keyword.get(opts, :partial?), do: :DIFFERENTIAL, else: :FULL_DATASET)
     }
   end
 

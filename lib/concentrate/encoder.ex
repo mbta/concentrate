@@ -4,5 +4,6 @@ defmodule Concentrate.Encoder do
 
   encode_groups/1: given a pre-grouped list of data, returns as binary
   """
-  @callback encode_groups([Concentrate.Encoder.GTFSRealtimeHelpers.trip_group()]) :: binary
+  @callback encode_groups([Concentrate.Encoder.GTFSRealtimeHelpers.trip_group()], Keyword.t()) ::
+              binary
 end

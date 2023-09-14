@@ -8,6 +8,18 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
   alias VehiclePosition.Consist, as: VehiclePositionConsist
 
   describe "encode/1" do
+    test "can take an optional timestamp and partial? flag" do
+      data = [
+        VehiclePosition.new(trip_id: "partial", id: "v", latitude: 1, longitude: 1)
+      ]
+
+      timestamp = System.system_time(:millisecond) / 1_000
+
+      update = round_trip(data, timestamp: timestamp, partial?: true)
+      assert FeedUpdate.timestamp(update) == trunc(timestamp)
+      assert FeedUpdate.partial?(update)
+    end
+
     test "includes consist/occupancy data if present" do
       data = [
         TripDescriptor.new(trip_id: "one", vehicle_id: "y1"),
@@ -27,7 +39,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
         )
       ]
 
-      assert data == round_trip(data)
+      assert data == FeedUpdate.updates(round_trip(data))
     end
 
     test "marks vehicles without trips as UNSCHEDULED" do
@@ -35,7 +47,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
         VehiclePosition.new(trip_id: "unscheduled", id: "u", latitude: 1, longitude: 1)
       ]
 
-      assert [td, _vp] = round_trip(data)
+      assert [td, _vp] = FeedUpdate.updates(round_trip(data))
       assert TripDescriptor.schedule_relationship(td) == :UNSCHEDULED
     end
 
@@ -44,16 +56,15 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
         VehiclePosition.new(id: "y", latitude: 1, longitude: 1)
       ]
 
-      assert [] == round_trip(data)
+      assert [] == FeedUpdate.updates(round_trip(data))
     end
   end
 
-  defp round_trip(data) do
+  defp round_trip(data, opts \\ []) do
     # return the result of decoding the encoded data
     data
     |> group()
-    |> encode_groups()
+    |> encode_groups(opts)
     |> GTFSRealtimeEnhanced.parse([])
-    |> FeedUpdate.updates()
   end
 end

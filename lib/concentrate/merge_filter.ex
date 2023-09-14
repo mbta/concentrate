@@ -94,6 +94,7 @@ defmodule Concentrate.MergeFilter do
 
   @impl GenStage
   def handle_info(:timeout, state) do
+    timestamp = System.system_time(:microsecond) / 1_000_000
     {time, merged} = :timer.tc(&Table.items/1, [state.table])
 
     _ =
@@ -122,8 +123,14 @@ defmodule Concentrate.MergeFilter do
         "#{__MODULE__} group_filter time=#{time / 1_000}"
       end)
 
+    update =
+      FeedUpdate.new(
+        timestamp: timestamp,
+        updates: group_filtered
+      )
+
     state = %{state | timer: nil}
-    {:noreply, [group_filtered], state}
+    {:noreply, [update], state}
   end
 
   def handle_info(msg, state) do

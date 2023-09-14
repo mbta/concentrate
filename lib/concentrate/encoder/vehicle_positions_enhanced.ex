@@ -9,9 +9,9 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
   import Concentrate.Encoder.VehiclePositions, only: [entity_id: 1, trip_descriptor: 1]
 
   @impl Concentrate.Encoder
-  def encode_groups(groups) when is_list(groups) do
+  def encode_groups(groups, opts \\ []) when is_list(groups) do
     message = %{
-      "header" => feed_header(),
+      "header" => feed_header(opts),
       "entity" => Enum.flat_map(groups, &build_entity/1)
     }
 
