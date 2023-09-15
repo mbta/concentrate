@@ -27,37 +27,80 @@ defmodule Concentrate.Merge.Table do
       end)
 
     data = Map.update(data, source_name, new_item_list, &Map.merge(&1, new_item_list))
-    %{table | data: data}
+    {%{table | data: data}, Map.keys(new_item_list)}
   end
 
   def update(table, source_name, items) do
+    {table, _} =
+      table
+      |> remove(source_name)
+      |> partial_update(source_name, items)
+
     table
-    |> remove(source_name)
-    |> partial_update(source_name, items)
   end
 
-  def items(%{data: empty}) when empty == %{} do
+  def items(table, keys \\ nil)
+
+  def items(%{data: empty}, _keys) when empty == %{} do
     []
   end
 
-  def items(%{data: data}) do
+  def items(%{data: data}, keys) do
     data
-    |> fold_map
+    |> fold_map(keys)
+    |> include_related_values(keys, data)
     |> Map.values()
   end
 
-  defp fold_map(map) do
-    :maps.fold(fn _key, items, acc -> merge_list(items, acc) end, %{}, map)
+  defp fold_map(map, keys)
+
+  defp fold_map(_map, []) do
+    %{}
   end
 
-  defp merge_list(items, acc) when acc == %{} do
+  defp fold_map(map, keys) do
+    :maps.fold(fn _key, items, acc -> merge_list(items, keys, acc) end, %{}, map)
+  end
+
+  defp merge_list(items, nil, acc) when acc == %{} do
     # if there's no acc, we don't need to merge at all
     items
   end
 
-  defp merge_list(items, acc) do
+  defp merge_list(items, keys, acc) when acc == %{} do
+    Map.take(items, keys)
+  end
+
+  defp merge_list(items, nil, acc) do
     Map.merge(items, acc, fn {module, _}, item, existing ->
       module.merge(existing, item)
     end)
+  end
+
+  defp merge_list(items, keys, acc) do
+    items
+    |> Map.take(keys)
+    |> merge_list(nil, acc)
+  end
+
+  defp include_related_values(items, keys, data)
+
+  defp include_related_values(items, nil, _data) do
+    items
+  end
+
+  defp include_related_values(items, _keys, data) do
+    related_keys =
+      items
+      |> Enum.flat_map(fn {{mod, _key}, item} ->
+        mod.related_keys(item)
+      end)
+      |> Enum.map(fn {mod, key} ->
+        {Mergeable.impl_for!(struct!(mod)), key}
+      end)
+
+    related_items = fold_map(data, related_keys)
+
+    Map.merge(items, related_items)
   end
 end

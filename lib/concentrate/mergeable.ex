@@ -15,4 +15,11 @@ defprotocol Concentrate.Mergeable do
   @spec merge(mergeable, mergeable) :: mergeable
         when mergeable: struct
   def merge(first, second)
+
+  @doc """
+  Returns a list of additional {module, key} to use when returning
+  partial merge items.
+  """
+  @spec related_keys(struct) :: [{module, term}]
+  def related_keys(merge)
 end

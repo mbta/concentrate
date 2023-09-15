@@ -57,6 +57,10 @@ defmodule Concentrate.VehiclePosition do
   defimpl Concentrate.Mergeable do
     def key(%{id: id}), do: id
 
+    def related_keys(%{trip_id: trip_id}) do
+      [{Concentrate.TripDescriptor, trip_id}]
+    end
+
     @doc """
     Merging VehiclePositions takes the latest position for a given vehicle.
     """

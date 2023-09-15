@@ -44,6 +44,8 @@ defmodule Concentrate.StopTimeUpdate do
 
     def key(%{trip_id: trip_id, stop_sequence: stop_sequence}), do: {trip_id, stop_sequence}
 
+    def related_keys(_), do: []
+
     def merge(first, second) do
       time_stu =
         if Concentrate.StopTimeUpdate.time(first) <= Concentrate.StopTimeUpdate.time(second),

@@ -20,14 +20,26 @@ defmodule Concentrate.TestMergeable do
   def mergeables do
     # get a keyword list of integers, filter out duplicate keys, then create
     # mergeables
-    StreamData.integer()
-    |> StreamData.keyword_of()
-    |> StreamData.map(fn list -> Enum.uniq_by(list, &elem(&1, 0)) end)
-    |> StreamData.map(fn list -> Enum.map(list, fn {k, v} -> new(k, v) end) end)
+    gen all(
+          length <- integer(0..9),
+          keys <- uniq_list_of(key(), length: length),
+          values <- list_of(integer(), length: length)
+        ) do
+      keys
+      |> Enum.zip(values)
+      |> Enum.map(fn {k, v} -> new(k, v) end)
+    end
+  end
+
+  defp key do
+    StreamData.string(:alphanumeric, length: 1)
+    |> StreamData.map(&String.to_atom/1)
   end
 
   defimpl Concentrate.Mergeable do
     def key(%{key: key}), do: key
+
+    def related_keys(_), do: []
 
     def merge(first, second) do
       value =
