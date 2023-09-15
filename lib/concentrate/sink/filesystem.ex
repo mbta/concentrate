@@ -2,7 +2,6 @@ defmodule Concentrate.Sink.Filesystem do
   @moduledoc """
   Sink which writes files to the local filesytem.
   """
-  use GenServer, restart: :temporary
   require Logger
 
   def start_link(opts, {filename, body}) do
@@ -21,9 +20,5 @@ defmodule Concentrate.Sink.Filesystem do
 
       :ok
     end)
-  end
-
-  def init(init_arg) do
-    {:ok, init_arg}
   end
 end

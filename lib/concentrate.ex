@@ -58,16 +58,7 @@ defmodule Concentrate do
   end
 
   defp decode_json_key_value({"sinks", sinks_object}) do
-    sinks =
-      case sinks_object do
-        %{"s3" => s3_object} ->
-          %{
-            s3: decode_s3(s3_object)
-          }
-
-        _ ->
-          %{}
-      end
+    sinks = decode_sinks_object(sinks_object, %{})
 
     [
       sinks: sinks
@@ -139,6 +130,26 @@ defmodule Concentrate do
     end
   end
 
+  defp decode_sinks_object(%{"s3" => s3_object} = sinks_object, acc) do
+    acc = Map.put(acc, :s3, decode_s3(s3_object))
+
+    sinks_object
+    |> Map.delete("s3")
+    |> decode_sinks_object(acc)
+  end
+
+  defp decode_sinks_object(%{"mqtt" => mqtt_object} = sinks_object, acc) do
+    acc = Map.put(acc, :mqtt, decode_mqtt(mqtt_object))
+
+    sinks_object
+    |> Map.delete("mqtt")
+    |> decode_sinks_object(acc)
+  end
+
+  defp decode_sinks_object(_, acc) do
+    acc
+  end
+
   defp is_possible_env_var(value) do
     case value do
       %{"system" => _} -> true
@@ -180,6 +191,20 @@ defmodule Concentrate do
           [{key, value} | acc]
 
         _ ->
+          acc
+      end
+    end)
+  end
+
+  defp decode_mqtt(mqtt_object) do
+    keys = ~w(url prefix username password)a
+
+    Enum.reduce(keys, [], fn key, acc ->
+      case Map.fetch(mqtt_object, Atom.to_string(key)) do
+        {:ok, value} ->
+          [{key, process_possible_env_var(value)} | acc]
+
+        :error ->
           acc
       end
     end)

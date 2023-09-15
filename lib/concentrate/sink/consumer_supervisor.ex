@@ -4,7 +4,6 @@ defmodule Concentrate.Sink.ConsumerSupervisor do
   processes.
   """
   @supervisor_opts ~w(subscribe_to)a
-  import Supervisor, only: [child_spec: 2]
 
   def start_link({sink_child, opts}) do
     supervisor_opts =
@@ -15,7 +14,12 @@ defmodule Concentrate.Sink.ConsumerSupervisor do
     opts = Keyword.drop(opts, @supervisor_opts)
 
     children = [
-      child_spec({sink_child, opts}, [])
+      %{
+        id: sink_child,
+        start: {sink_child, :start_link, [opts]},
+        type: :worker,
+        restart: :temporary
+      }
     ]
 
     ConsumerSupervisor.start_link(children, supervisor_opts)

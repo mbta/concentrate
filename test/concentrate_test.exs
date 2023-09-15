@@ -67,6 +67,14 @@ defmodule ConcentrateTest do
       "bucket": "s3-bucket",
       "prefix": "bucket_prefix",
       "ignored": "value"
+    },
+    "mqtt": {
+      "url": "mqtt://localhost",
+      "prefix": "topic/",
+      "username": "user",
+      "password": {
+        "system": "USER"
+      }
     }
   },
   "file_tap": {
@@ -92,9 +100,17 @@ defmodule ConcentrateTest do
 
       assert config[:gtfs][:url] == "gtfs_url"
       assert config[:alerts][:url] == "alerts_url"
+      assert is_list(config[:sinks][:s3])
       assert config[:sinks][:s3][:bucket] == "s3-bucket"
       assert config[:sinks][:s3][:prefix] == "bucket_prefix"
-      assert is_list(config[:sinks][:s3])
+
+      assert Enum.sort(config[:sinks][:mqtt]) == [
+               password: System.get_env("USER") || raise("USER NOT SET"),
+               prefix: "topic/",
+               url: "mqtt://localhost",
+               username: "user"
+             ]
+
       assert config[:file_tap][:enabled?]
     end
 

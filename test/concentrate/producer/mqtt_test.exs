@@ -69,7 +69,7 @@ defmodule Concentrate.Producer.MqttTest do
   end
 
   test "can accept gzip-encoded payloads" do
-    test_topic = "concentrate/test/#{System.unique_integer()}"
+    test_topic = "concentrate/test_producer/#{System.unique_integer()}"
     payload = "payload"
 
     config = {
