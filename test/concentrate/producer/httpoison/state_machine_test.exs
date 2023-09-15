@@ -216,7 +216,7 @@ defmodule Concentrate.Producer.HTTPoison.StateMachineTest do
       fetch_after = 1000
 
       log =
-        capture_log([level: :warn], fn ->
+        capture_log([level: :warning], fn ->
           assert {_machine, [], [{{:fetch, "url"}, ^fetch_after} | _]} =
                    run_machine("url", [fetch_after: fetch_after], messages)
         end)
