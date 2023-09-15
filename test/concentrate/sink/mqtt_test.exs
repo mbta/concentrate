@@ -44,6 +44,20 @@ defmodule Concentrate.Sink.MqttTest do
 
       assert :zlib.gunzip(message.payload) == body
     end
+
+    test "can write a partial feed, gzip-encoded", %{config: config} do
+      filename = "file_#{System.unique_integer()}"
+      body = "#{System.unique_integer()}"
+
+      start_with_events(config, [{filename, body, partial?: true}])
+
+      expected_topic = "#{config[:prefix]}#{filename}"
+
+      assert_receive {:message, _, message = %EmqttFailover.Message{topic: ^expected_topic}},
+                     5_000
+
+      assert :zlib.gunzip(message.payload) == body
+    end
   end
 
   defp start_with_events(config, events) do

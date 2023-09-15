@@ -4,6 +4,16 @@ defmodule Concentrate.Sink.Filesystem do
   """
   require Logger
 
+  def start_link(opts, file_data)
+
+  def start_link(opts, {filename, body, file_opts}) do
+    if file_opts[:partial?] do
+      :ignore
+    else
+      start_link(opts, {filename, body})
+    end
+  end
+
   def start_link(opts, {filename, body}) do
     directory = Keyword.fetch!(opts, :directory)
 

@@ -175,7 +175,7 @@ defmodule Concentrate do
   end
 
   defp decode_sinks_object(_, acc) do
-    acc
+    Keyword.new(acc)
   end
 
   defp is_possible_env_var(value) do
