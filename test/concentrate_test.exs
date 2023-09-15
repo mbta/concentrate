@@ -100,6 +100,7 @@ defmodule ConcentrateTest do
 
       assert config[:gtfs][:url] == "gtfs_url"
       assert config[:alerts][:url] == "alerts_url"
+      assert is_list(config[:sinks])
       assert is_list(config[:sinks][:s3])
       assert config[:sinks][:s3][:bucket] == "s3-bucket"
       assert config[:sinks][:s3][:prefix] == "bucket_prefix"
@@ -126,7 +127,7 @@ defmodule ConcentrateTest do
       assert config[:sources][:gtfs_realtime] == %{}
       assert config[:sources][:gtfs_realtime_enhanced] == %{}
       assert config[:gtfs] == nil
-      assert config[:sinks] == %{}
+      assert config[:sinks] == []
     end
 
     test "gtfs_realtime sources can have additional route configuration" do

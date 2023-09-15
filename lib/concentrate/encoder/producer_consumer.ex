@@ -41,10 +41,14 @@ defmodule Concentrate.Encoder.ProducerConsumer do
 
         _ =
           Logger.debug(fn ->
-            "#{__MODULE__} encoded filename=#{inspect(filename)} time=#{time / 1000}"
+            "#{__MODULE__} encoded filename=#{inspect(filename)} time=#{time / 1000} partial?=#{FeedUpdate.partial?(update)}"
           end)
 
-        {filename, encoded}
+        if FeedUpdate.partial?(update) do
+          {filename, encoded, partial?: true}
+        else
+          {filename, encoded}
+        end
       end
 
     {:noreply, responses, state, :hibernate}

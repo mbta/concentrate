@@ -7,13 +7,23 @@ defmodule Concentrate.Sink.S3 do
 
   @ex_aws Application.compile_env(:concentrate, [:sink_s3, :ex_aws], ExAws)
 
-  def start_link(opts, file_data) do
+  def start_link(opts, file_data)
+
+  def start_link(opts, {filename, body, file_opts}) do
+    if file_opts[:partial?] do
+      :ignore
+    else
+      start_link(opts, {filename, body})
+    end
+  end
+
+  def start_link(opts, {filename, body}) do
     opts = Concentrate.unwrap_values(opts)
     bucket = Keyword.fetch!(opts, :bucket)
     prefix = Keyword.get(opts, :prefix, "")
     acl = Keyword.get(opts, :acl, :public_read)
     state = %{bucket: bucket, prefix: prefix, acl: acl}
-    Task.start_link(__MODULE__, :upload_to_s3, [file_data, state])
+    Task.start_link(__MODULE__, :upload_to_s3, [{filename, body}, state])
   end
 
   def upload_to_s3({filename, body}, state) do

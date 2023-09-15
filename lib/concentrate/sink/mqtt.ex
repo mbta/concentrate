@@ -54,10 +54,20 @@ defmodule Concentrate.Sink.Mqtt do
   end
 
   defp publish({filename, body}, state) do
+    publish({filename, body, []}, state)
+  end
+
+  defp publish({filename, body, opts}, state) do
+    partial? = !!Keyword.get(opts, :partial?)
     topic = state.prefix <> filename
     payload = :zlib.gzip(body)
 
-    message_opts = [qos: 1, retain?: true]
+    message_opts =
+      if partial? do
+        [qos: 0]
+      else
+        [qos: 1, retain?: true]
+      end
 
     message = struct!(%EmqttFailover.Message{topic: topic, payload: payload}, message_opts)
 
@@ -66,6 +76,7 @@ defmodule Concentrate.Sink.Mqtt do
         _ =
           Logger.info(fn ->
             "#{__MODULE__} updated: \
+partial?=#{partial?} \
 topic=#{inspect(topic)} \
 bytes=#{byte_size(payload)}"
           end)
@@ -74,6 +85,7 @@ bytes=#{byte_size(payload)}"
         _ =
           Logger.warning(fn ->
             "#{__MODULE__} unable to send: \
+partial?=#{partial?} \
 topic=#{inspect(topic)} \
 reason=#{inspect(reason)}"
           end)
