@@ -122,18 +122,10 @@ defmodule Concentrate.Supervisor.Pipeline do
   end
 
   def sinks(config, output_names) do
-    opts = [subscribe_to: output_names]
-
-    for {sink_type, sink_config} <- config do
-      child_module = sink_child(sink_type)
-      child_opts = opts ++ sink_config
-
-      {Concentrate.Sink.ConsumerSupervisor, {child_module, child_opts}}
-    end
+    [
+      {Concentrate.Sink.Supervisor, config: config, sources: output_names}
+    ]
   end
-
-  defp sink_child(:filesystem), do: Concentrate.Sink.Filesystem
-  defp sink_child(:s3), do: Concentrate.Sink.S3
 
   defp child_ids(children) do
     for child <- children, do: child.id
