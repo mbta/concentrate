@@ -303,6 +303,23 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     end
   end
 
+  test "parses vehicle_id into string and logs warning if int" do
+    map = %{
+      "trip" => %{
+        "trip_id" => "trip",
+        "route_id" => "route"
+      },
+      "vehicle" => %{
+        "id" => 1234
+      },
+      "stop_time_update" => []
+    }
+
+    {[td], log} = with_log(fn -> decode_trip_update(map, Helpers.parse_options([])) end)
+    assert TripDescriptor.vehicle_id(td) == "1234"
+    assert log =~ "treating integer vehicle ID as string: 1234"
+  end
+
   describe "decode_vehicle/3" do
     test "returns nothing if there's an empty map" do
       assert decode_vehicle(%{}, Helpers.parse_options([]), nil) == []

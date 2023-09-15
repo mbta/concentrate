@@ -214,8 +214,18 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   defp decode_trip_descriptor(%{"trip" => trip} = descriptor) do
     vehicle_id =
       case descriptor do
-        %{"vehicle" => %{"id" => vehicle_id}} -> vehicle_id
-        _ -> nil
+        %{"vehicle" => %{"id" => vehicle_id}} when is_binary(vehicle_id) ->
+          vehicle_id
+
+        %{"vehicle" => %{"id" => vehicle_id}} when is_integer(vehicle_id) ->
+          Logger.warning(fn ->
+            "#{__MODULE__}: treating integer vehicle ID as string: #{inspect(vehicle_id)}"
+          end)
+
+          Integer.to_string(vehicle_id)
+
+        _ ->
+          nil
       end
 
     [
