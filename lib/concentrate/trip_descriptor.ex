@@ -36,6 +36,8 @@ defmodule Concentrate.TripDescriptor do
   defimpl Concentrate.Mergeable do
     def key(%{trip_id: trip_id}), do: trip_id
 
+    def related_keys(_), do: []
+
     def merge(first, second) do
       if {first.start_date, first.start_time} > {second.start_date, second.start_time} do
         do_merge(first, second)

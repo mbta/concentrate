@@ -94,11 +94,58 @@ defmodule Concentrate.MergeFilterTest do
       from = make_from()
       {_, state, _} = init([])
       {_, state} = handle_subscribe(:producer, [], from, state)
-      {:noreply, [], state} = handle_events([first, second], from, state)
-      assert {:noreply, [update], _state} = handle_info(:timeout, state)
+      {:noreply, [partial_update], state} = handle_events([first, second], from, state)
+      assert {:noreply, [full_update], _state} = handle_info(:timeout, state)
 
-      assert [{nil, merged, []}] = FeedUpdate.updates(update)
+      assert FeedUpdate.partial?(partial_update)
+      assert [{nil, [^two], []}] = FeedUpdate.updates(partial_update)
+
+      refute FeedUpdate.partial?(full_update)
+      assert [{nil, merged, []}] = FeedUpdate.updates(full_update)
       assert [^one, ^two] = Enum.sort_by(merged, &VehiclePosition.id/1)
+    end
+
+    test "partial? updates also include TripDescriptor even if the trip ID wasn't provided" do
+      first =
+        FeedUpdate.new(
+          url: "first",
+          updates: [
+            TripDescriptor.new(trip_id: "trip"),
+            VehiclePosition.new(
+              id: "with_trip",
+              trip_id: "trip",
+              last_updated: DateTime.utc_now(),
+              latitude: 1,
+              longitude: 1,
+              stop_sequence: 1
+            )
+          ]
+        )
+
+      second =
+        FeedUpdate.new(
+          url: "second",
+          partial?: true,
+          updates: [
+            VehiclePosition.new(
+              id: "with_trip",
+              last_updated: DateTime.utc_now(),
+              latitude: 2,
+              longitude: 2
+            )
+          ]
+        )
+
+      from = make_from()
+      {_, state, _} = init([])
+      {_, state} = handle_subscribe(:producer, [], from, state)
+      {:noreply, [partial_update], _state} = handle_events([first, second], from, state)
+
+      assert FeedUpdate.partial?(partial_update)
+      assert [{td, [with_trip], []}] = FeedUpdate.updates(partial_update)
+      assert TripDescriptor.trip_id(td) == "trip"
+      assert VehiclePosition.id(with_trip) == "with_trip"
+      assert VehiclePosition.latitude(with_trip) == 2
     end
 
     test "runs the events through the filter" do

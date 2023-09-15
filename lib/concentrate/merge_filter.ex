@@ -64,22 +64,23 @@ defmodule Concentrate.MergeFilter do
 
   @impl GenStage
   def handle_events(events, from, state) do
-    state =
-      Enum.reduce(events, state, fn event, state ->
+    {state, updated_keys} =
+      Enum.reduce(events, {state, []}, fn event, {state, updated_keys} ->
         key = FeedUpdate.url(event) || from
         updates = FeedUpdate.updates(event)
 
-        table =
+        {table, new_updated_keys} =
           if FeedUpdate.partial?(event) do
-            Table.partial_update(state.table, key, updates)
+            {table, new_updated_keys} = Table.partial_update(state.table, key, updates)
+
+            {table, new_updated_keys}
           else
-            Table.update(state.table, key, updates)
+            table = Table.update(state.table, key, updates)
+            {table, []}
           end
 
-        %{
-          state
-          | table: table
-        }
+        state = %{state | table: table}
+        {state, new_updated_keys ++ updated_keys}
       end)
 
     state =
@@ -89,13 +90,35 @@ defmodule Concentrate.MergeFilter do
         %{state | timer: Process.send_after(self(), :timeout, state.timeout)}
       end
 
-    {:noreply, [], state}
+    events =
+      if updated_keys == [] do
+        []
+      else
+        [build_update(state, updated_keys)]
+      end
+
+    {:noreply, events, state}
   end
 
   @impl GenStage
   def handle_info(:timeout, state) do
+    update = build_update(state)
+    state = %{state | timer: nil}
+    {:noreply, [update], state}
+  end
+
+  def handle_info(msg, state) do
+    _ =
+      Logger.warn(fn ->
+        "unknown message to #{__MODULE__} #{inspect(self())}: #{inspect(msg)}"
+      end)
+
+    {:noreply, [], state}
+  end
+
+  defp build_update(state, keys \\ nil) do
     timestamp = System.system_time(:microsecond) / 1_000_000
-    {time, merged} = :timer.tc(&Table.items/1, [state.table])
+    {time, merged} = :timer.tc(&Table.items/2, [state.table, keys])
 
     _ =
       Logger.debug(fn ->
@@ -123,23 +146,11 @@ defmodule Concentrate.MergeFilter do
         "#{__MODULE__} group_filter time=#{time / 1_000}"
       end)
 
-    update =
-      FeedUpdate.new(
-        timestamp: timestamp,
-        updates: group_filtered
-      )
-
-    state = %{state | timer: nil}
-    {:noreply, [update], state}
-  end
-
-  def handle_info(msg, state) do
-    _ =
-      Logger.warn(fn ->
-        "unknown message to #{__MODULE__} #{inspect(self())}: #{inspect(msg)}"
-      end)
-
-    {:noreply, [], state}
+    FeedUpdate.new(
+      updates: group_filtered,
+      timestamp: timestamp,
+      partial?: keys != nil
+    )
   end
 
   defp parse_filter({filter, _opts}), do: filter
