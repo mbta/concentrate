@@ -78,7 +78,8 @@ defmodule Concentrate do
     level =
       case level_str do
         "error" -> :error
-        "warn" -> :warn
+        "warn" -> :warning
+        "warning" -> :warning
         "info" -> :info
         "debug" -> :debug
       end

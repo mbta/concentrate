@@ -324,7 +324,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       }
 
       log =
-        capture_log([level: :warn], fn ->
+        capture_log([level: :warning], fn ->
           decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}}, 1_534_340_306)
         end)
 

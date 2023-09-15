@@ -291,12 +291,4 @@ defmodule Concentrate.MergeFilterTest do
       )
     end
   end
-
-  defp clear_mailbox do
-    receive do
-      _ -> clear_mailbox()
-    after
-      0 -> :ok
-    end
-  end
 end

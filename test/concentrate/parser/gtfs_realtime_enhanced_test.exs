@@ -509,7 +509,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       }
 
       log =
-        capture_log([level: :warn], fn ->
+        capture_log([level: :warning], fn ->
           decode_vehicle(map, Helpers.parse_options(feed_url: "test_url"), 1_534_340_306)
         end)
 

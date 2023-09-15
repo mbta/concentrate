@@ -18,10 +18,6 @@ defmodule Concentrate.Producer.HTTPoisonTest do
   setup_all do
     {:ok, _} = Application.ensure_all_started(:hackney)
 
-    on_exit(fn ->
-      Application.stop(:hackney)
-    end)
-
     {:ok, _} =
       start_supervised(%{
         id: :hackney_pool,

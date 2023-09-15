@@ -2,7 +2,8 @@ import Config
 
 config :logger,
   level: :info,
-  backends: []
+  backends: [],
+  always_evaluate_messages: true
 
 config :concentrate, :group_filters, [
   {Concentrate.GroupFilter.ScheduledStopTimes, on_time_statuses: ["on time"]}

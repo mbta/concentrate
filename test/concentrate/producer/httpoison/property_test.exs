@@ -8,17 +8,7 @@ defmodule Concentrate.Producer.HTTPoison.PropertyTest do
     {:ok, _} = Application.ensure_all_started(:bypass)
     {:ok, _} = Application.ensure_all_started(:httpoison)
 
-    on_exit(fn ->
-      Application.stop(:hackney)
-    end)
-
-    {:ok, _} =
-      start_supervised(%{
-        id: :hackney_pool,
-        start: {:hackney_pool, :start_link, [:http_producer_pool, []]},
-        type: :worker,
-        restart: :permanent
-      })
+    {:ok, _} = :hackney_pool.start_link(:http_producer_pool, [])
 
     :ok
   end
@@ -38,7 +28,6 @@ defmodule Concentrate.Producer.HTTPoison.PropertyTest do
       expected_body_count = expected_count(bodies)
 
       passed? = receive_count?(producer, demand, expected_body_count)
-      stop_supervised(producer)
       Bypass.down(bypass)
       assert passed?
     end
@@ -65,7 +54,6 @@ defmodule Concentrate.Producer.HTTPoison.PropertyTest do
 
       expected_body_count = expected_count(bodies) + expected_count(fallback_bodies)
       passed? = receive_count?(producer, demand, expected_body_count)
-      stop_supervised(producer)
       Bypass.down(bypass)
       Bypass.down(fallback_bypass)
       assert passed?
