@@ -94,7 +94,7 @@ defmodule Concentrate.MergeFilter do
       if updated_keys == [] do
         []
       else
-        [build_update(state, updated_keys)]
+        build_updates(state, updated_keys)
       end
 
     {:noreply, events, state}
@@ -102,9 +102,9 @@ defmodule Concentrate.MergeFilter do
 
   @impl GenStage
   def handle_info(:timeout, state) do
-    update = build_update(state)
+    updates = build_updates(state)
     state = %{state | timer: nil}
-    {:noreply, [update], state}
+    {:noreply, updates, state}
   end
 
   def handle_info(msg, state) do
@@ -116,7 +116,7 @@ defmodule Concentrate.MergeFilter do
     {:noreply, [], state}
   end
 
-  defp build_update(state, keys \\ nil) do
+  defp build_updates(state, keys \\ nil) do
     timestamp = System.system_time(:microsecond) / 1_000_000
     {time, merged} = :timer.tc(&Table.items/2, [state.table, keys])
 
@@ -146,11 +146,18 @@ defmodule Concentrate.MergeFilter do
         "#{__MODULE__} group_filter time=#{time / 1_000}"
       end)
 
-    FeedUpdate.new(
-      updates: group_filtered,
-      timestamp: timestamp,
-      partial?: keys != nil
-    )
+    if group_filtered != [] || is_nil(keys) do
+      # there is data, or it's a full update
+      [
+        FeedUpdate.new(
+          updates: group_filtered,
+          timestamp: timestamp,
+          partial?: keys != nil
+        )
+      ]
+    else
+      []
+    end
   end
 
   defp parse_filter({filter, _opts}), do: filter
