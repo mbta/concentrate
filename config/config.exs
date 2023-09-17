@@ -80,6 +80,7 @@ config :concentrate,
     Concentrate.GroupFilter.TripDescriptorTimestamp
   ],
   source_reporters: [
+    Concentrate.SourceReporter.Basic,
     Concentrate.SourceReporter.Latency
   ],
   reporters: [
