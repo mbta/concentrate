@@ -234,6 +234,31 @@ defmodule Concentrate.MergeFilterTest do
       assert FeedUpdate.updates(update) == expected
     end
 
+    test "does not emit empty partial? events" do
+      # such as when they've been filtered out
+      first =
+        FeedUpdate.new(
+          updates: [
+            VehiclePosition.new(id: "one", latitude: 1, longitude: 1)
+          ]
+        )
+
+      second =
+        FeedUpdate.new(
+          partial?: true,
+          updates: [
+            VehiclePosition.new(id: "one", latitude: 2, longitude: 2)
+          ]
+        )
+
+      filters = [Concentrate.Filter.VehicleWithNoTrip]
+      from = make_from()
+      {_, state, _} = init(filters: filters)
+      {_, state} = handle_subscribe(:producer, [], from, state)
+      {:noreply, [], state} = handle_events([first], from, state)
+      assert {:noreply, [], _state} = handle_events([second], from, state)
+    end
+
     test "allows a CANCELED TripDescriptor with no StopTimeUpdates" do
       filter = fn group -> group end
       from = make_from()
