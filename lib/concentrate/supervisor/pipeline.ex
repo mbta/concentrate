@@ -111,8 +111,9 @@ defmodule Concentrate.Supervisor.Pipeline do
             Concentrate.Encoder.ProducerConsumer,
             name: encoder,
             files: [{filename, encoder}],
-            subscribe_to: [merge_filter: [max_demand: 10]],
-            buffer_size: 1
+            subscribe_to: [
+              :merge_filter
+            ]
           },
           id: encoder
         )
