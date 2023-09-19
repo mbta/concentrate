@@ -111,6 +111,7 @@ defmodule Concentrate.Supervisor.Pipeline do
             Concentrate.Encoder.ProducerConsumer,
             name: encoder,
             files: [{filename, encoder}],
+            dispatcher: GenStage.BroadcastDispatcher,
             subscribe_to: [
               :merge_filter
             ]
