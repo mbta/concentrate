@@ -87,11 +87,14 @@ config :concentrate,
   ],
   encoders: [
     files: [
-      {"TripUpdates.pb", Concentrate.Encoder.TripUpdates},
-      {"TripUpdates.json", Concentrate.Encoder.TripUpdates.JSON},
+      {"TripUpdates.pb", Concentrate.Encoder.TripUpdates,
+       selector: {Concentrate.FeedUpdate, :full_update?, []}},
+      {"TripUpdates.json", Concentrate.Encoder.TripUpdates.JSON,
+       selector: {Concentrate.FeedUpdate, :full_update?, []}},
       {"VehiclePositions.pb", Concentrate.Encoder.VehiclePositions},
       {"VehiclePositions.json", Concentrate.Encoder.VehiclePositions.JSON},
-      {"TripUpdates_enhanced.json", Concentrate.Encoder.TripUpdatesEnhanced},
+      {"TripUpdates_enhanced.json", Concentrate.Encoder.TripUpdatesEnhanced,
+       selector: {Concentrate.FeedUpdate, :full_update?, []}},
       {"VehiclePositions_enhanced.json", Concentrate.Encoder.VehiclePositionsEnhanced}
     ]
   ],

@@ -105,7 +105,21 @@ defmodule Concentrate.Supervisor.Pipeline do
 
   def encoders(config) do
     children =
-      for {filename, encoder} <- config[:files] do
+      for encoder_config <- config[:files] do
+        {filename, encoder, opts} =
+          case encoder_config do
+            {filename, encoder} -> {filename, encoder, []}
+            _ -> encoder_config
+          end
+
+        opts =
+          Keyword.replace_lazy(opts, :selector, fn selector ->
+            case selector do
+              {mod, fun, args} -> &apply(mod, fun, [&1 | args])
+              fun when is_function(fun, 1) -> fun
+            end
+          end)
+
         child_spec(
           {
             Concentrate.Encoder.ProducerConsumer,
@@ -113,7 +127,7 @@ defmodule Concentrate.Supervisor.Pipeline do
             files: [{filename, encoder}],
             dispatcher: GenStage.BroadcastDispatcher,
             subscribe_to: [
-              :merge_filter
+              {:merge_filter, opts}
             ]
           },
           id: encoder

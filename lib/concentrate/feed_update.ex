@@ -17,6 +17,11 @@ defmodule Concentrate.FeedUpdate do
     super([update_count: update_count] ++ opts)
   end
 
+  @doc "Inverse of partial?"
+  def full_update?(%__MODULE__{} = update) do
+    not partial?(update)
+  end
+
   defimpl Enumerable do
     def count(update) do
       {:ok, update.update_count}
