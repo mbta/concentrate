@@ -21,9 +21,10 @@ defmodule Concentrate.Sink.Mqtt do
       end
 
     configs =
-      for password_opt <- password_opts do
+      for url <- String.split(opts[:url], " "),
+          password_opt <- password_opts do
         config_opts = Keyword.take(opts, [:username]) ++ password_opt
-        EmqttFailover.Config.from_url(opts[:url], config_opts)
+        EmqttFailover.Config.from_url(url, config_opts)
       end
 
     {:ok, client} =

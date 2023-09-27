@@ -78,7 +78,8 @@ defmodule Concentrate.Producer.Mqtt do
       end
 
     configs =
-      for password_opt <- password_opts do
+      for url <- String.split(url, " "),
+          password_opt <- password_opts do
         config_opts = Keyword.take(opts, [:username]) ++ password_opt
         Config.from_url(url, config_opts)
       end
