@@ -11,7 +11,7 @@ defmodule Concentrate.Supervisor.Pipeline do
   import Supervisor, only: [child_spec: 2]
 
   def start_link(config) do
-    Supervisor.start_link(children(config), strategy: :rest_for_one)
+    Supervisor.start_link(children(config), strategy: :one_for_all)
   end
 
   def children(config) do
