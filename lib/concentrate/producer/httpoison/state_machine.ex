@@ -42,6 +42,8 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
         Keyword.take(opts, ~w(get_opts fetch_after content_warning_timeout headers)a)
       )
 
+    state = %{state | headers: Concentrate.unwrap_values(state.headers)}
+
     state = %{state | last_success: now() - state.fetch_after - 1}
 
     case Keyword.get(opts, :fallback_url) do

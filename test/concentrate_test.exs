@@ -104,12 +104,14 @@ defmodule ConcentrateTest do
       assert config[:sinks][:s3][:bucket] == "s3-bucket"
       assert config[:sinks][:s3][:prefix] == "bucket_prefix"
 
-      assert Enum.sort(config[:sinks][:mqtt]) == [
-               password: System.get_env("USER") || raise("USER NOT SET"),
-               prefix: "topic/",
-               url: "mqtt://localhost",
-               username: "user"
-             ]
+      assert is_list(config[:sinks][:mqtt])
+
+      assert config[:sinks][:mqtt][:password].() == System.get_env("USER") ||
+               raise("USER NOT SET")
+
+      assert config[:sinks][:mqtt][:prefix] == "topic/"
+      assert config[:sinks][:mqtt][:url] == "mqtt://localhost"
+      assert config[:sinks][:mqtt][:username] == "user"
 
       assert config[:file_tap][:enabled?]
     end
@@ -187,13 +189,16 @@ defmodule ConcentrateTest do
       try do
         config = parse_json_configuration(body)
 
-        assert config[:sources][:gtfs_realtime][:name_1] ==
-                 {"url_1",
-                  [
-                    username: "secret_key",
-                    password: "secret_key",
-                    headers: %{"Authorization" => "secret_key"}
-                  ]}
+        assert {"url_1",
+                [
+                  username: username,
+                  password: password,
+                  headers: %{"Authorization" => authorization}
+                ]} = config[:sources][:gtfs_realtime][:name_1]
+
+        assert username.() == env_var_value
+        assert password.() == env_var_value
+        assert authorization.() == env_var_value
       after
         System.delete_env(env_var)
       end

@@ -9,6 +9,8 @@ defmodule Concentrate.Mqtt do
   - splits the URL and passwords on spaces
   """
   def configs(opts) do
+    opts = Concentrate.unwrap_values(opts)
+
     password_opts = password_opts(Keyword.get(opts, :password))
 
     for url <- String.split(opts[:url], " "),
