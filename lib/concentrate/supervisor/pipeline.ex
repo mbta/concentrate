@@ -124,6 +124,11 @@ defmodule Concentrate.Supervisor.Pipeline do
   end
 
   def sinks(config, output_names) do
+    config =
+      for {sink, sink_config} <- config do
+        {sink, sink_config}
+      end
+
     [
       {Concentrate.Sink.Supervisor, config: config, sources: output_names}
     ]
