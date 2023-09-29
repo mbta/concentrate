@@ -23,6 +23,34 @@ defmodule Concentrate do
   end
 
   @doc """
+  Unwraps a value which is optionally wrapped in a 0-arity function.
+
+  This wrapping is done with environment secrets, to avoid logging them.
+  """
+  def unwrap(value) when is_function(value, 0) do
+    value.()
+  end
+
+  def unwrap(value) do
+    value
+  end
+
+  @doc """
+  Unwraps the values of a keyword list or map.
+  """
+  def unwrap_values(opts) when is_list(opts) do
+    for {key, value} <- opts do
+      {key, unwrap(value)}
+    end
+  end
+
+  def unwrap_values(opts) when is_map(opts) do
+    for {key, value} <- opts, into: %{} do
+      {key, unwrap(value)}
+    end
+  end
+
+  @doc """
   Returns a Concentrate.Producer for the given URL.
   """
   def producer_for_url(url) do
@@ -159,7 +187,7 @@ defmodule Concentrate do
   end
 
   defp process_possible_env_var(%{"system" => env_var}) do
-    System.get_env(env_var)
+    fn -> System.get_env(env_var) end
   end
 
   defp process_possible_env_var(raw_value) when is_binary(raw_value) do

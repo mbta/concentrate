@@ -24,13 +24,16 @@ defmodule Concentrate.Producer.HTTPoison do
 
   @impl GenStage
   def init({url, opts}) do
+    opts = Concentrate.unwrap(opts)
+
     parser =
       case Keyword.fetch!(opts, :parser) do
         module when is_atom(module) ->
           &module.parse(&1, feed_url: url)
 
-        {module, opts} when is_atom(module) and is_list(opts) ->
-          &module.parse(&1, [feed_url: url] ++ opts)
+        {module, module_opts} when is_atom(module) and is_list(module_opts) ->
+          module_opts = Concentrate.unwrap(module_opts)
+          &module.parse(&1, [feed_url: url] ++ module_opts)
 
         fun when is_function(fun, 1) ->
           fun

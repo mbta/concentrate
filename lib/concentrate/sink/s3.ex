@@ -8,6 +8,7 @@ defmodule Concentrate.Sink.S3 do
   @ex_aws Application.compile_env(:concentrate, [:sink_s3, :ex_aws], ExAws)
 
   def start_link(opts, file_data) do
+    opts = Concentrate.unwrap_values(opts)
     bucket = Keyword.fetch!(opts, :bucket)
     prefix = Keyword.get(opts, :prefix, "")
     acl = Keyword.get(opts, :acl, :public_read)
