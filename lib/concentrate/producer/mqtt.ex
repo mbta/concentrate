@@ -4,7 +4,7 @@ defmodule Concentrate.Producer.Mqtt do
   """
   use GenStage
   require Logger
-  alias EmqttFailover.{Config, Connection}
+  alias EmqttFailover.Connection
   @start_link_opts [:name]
 
   defmodule State do
@@ -70,19 +70,7 @@ defmodule Concentrate.Producer.Mqtt do
   end
 
   defp emqtt_opts(url, opts) do
-    password_opts =
-      case Keyword.get(opts, :password) do
-        nil -> [[]]
-        "" -> [[]]
-        passwords -> for password <- String.split(passwords, " "), do: [password: password]
-      end
-
-    configs =
-      for url <- String.split(url, " "),
-          password_opt <- password_opts do
-        config_opts = Keyword.take(opts, [:username]) ++ password_opt
-        Config.from_url(url, config_opts)
-      end
+    configs = Concentrate.Mqtt.configs([url: url] ++ opts)
 
     handler =
       {EmqttFailover.ConnectionHandler.Parent, parent: self(), topics: opts[:topics] || []}
