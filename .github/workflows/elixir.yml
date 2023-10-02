@@ -6,6 +6,9 @@ on:
   schedule:
     - cron: '0 5 * * *'
 
+env:
+  BUILD_WITHOUT_QUIC: 1
+
 jobs:
   build:
 
