@@ -32,6 +32,14 @@ mix test
 mix dialyzer
 ```
 
+If you run into issues compiling `snabbkaffe`:
+
+``` shell
+rm -fr deps/quicer
+mix deps.get
+mix deps.compile
+```
+
 ## Docker
 
 Concentrate comes with a Dockerfile, allowing you to build an image that can
