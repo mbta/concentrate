@@ -21,7 +21,7 @@ defmodule Concentrate.VehiclePosition do
     :occupancy_status,
     :occupancy_percentage,
     :multi_carriage_details,
-    status: :IN_TRANSIT_TO
+    :status
   ])
 
   defmodule Consist do
@@ -92,6 +92,7 @@ defmodule Concentrate.VehiclePosition do
           bearing: first_value(second.bearing, first.bearing),
           speed: first_value(second.speed, first.speed),
           odometer: first_value(second.odometer, first.odometer),
+          status: first_value(second.status, first.status),
           stop_sequence: first_value(second.stop_sequence, first.stop_sequence),
           occupancy_status: first_value(second.occupancy_status, first.occupancy_status),
           occupancy_percentage:

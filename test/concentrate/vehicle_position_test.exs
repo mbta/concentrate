@@ -26,6 +26,25 @@ defmodule Concentrate.VehiclePositionTest do
       end
     end
 
+    test "merge/2 merges the status/stop_sequence data" do
+      first =
+        new(last_updated: 1, latitude: 1, longitude: 1, status: :STOPPED_AT, stop_sequence: 3)
+
+      second = new(last_updated: 2, latitude: 2, longitude: 2)
+
+      expected =
+        new(
+          last_updated: 2,
+          latitude: 2,
+          longitude: 2,
+          status: :STOPPED_AT,
+          stop_sequence: 3
+        )
+
+      assert Mergeable.merge(first, second) == expected
+      assert Mergeable.merge(second, first) == expected
+    end
+
     test "merge/2 merges the occupancy status information" do
       first = new(last_updated: 1, latitude: 1, longitude: 1, occupancy_status: :MANY_SEATS_FULL)
       second = new(last_updated: 2, latitude: 2, longitude: 2, occupancy_percentage: 50)
