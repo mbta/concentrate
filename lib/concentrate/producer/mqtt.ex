@@ -78,6 +78,7 @@ defmodule Concentrate.Producer.Mqtt do
     [
       configs: configs,
       client_id: EmqttFailover.client_id(prefix: "cntrt-prd"),
+      backoff: {1_000, 60_000, :jitter},
       handler: handler,
       backoff: Keyword.get(opts, :backoff)
     ]

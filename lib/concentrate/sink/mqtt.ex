@@ -18,6 +18,7 @@ defmodule Concentrate.Sink.Mqtt do
     {:ok, client} =
       EmqttFailover.Connection.start_link(
         client_id: EmqttFailover.client_id(prefix: "cntrt-snk"),
+        backoff: {1_000, 60_000, :jitter},
         configs: configs,
         handler: {EmqttFailover.ConnectionHandler.Parent, parent: self()}
       )
