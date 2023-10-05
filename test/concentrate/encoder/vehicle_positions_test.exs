@@ -22,8 +22,14 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
     test "can handle a vehicle w/o a trip" do
       data = [
         trip = TripDescriptor.new(trip_id: "trip"),
-        vehicle = VehiclePosition.new(latitude: 1.0, longitude: 1.0),
-        vehicle_no_trip = VehiclePosition.new(trip_id: "trip", latitude: 2.0, longitude: 2.0)
+        vehicle = VehiclePosition.new(latitude: 1.0, longitude: 1.0, status: :IN_TRANSIT_TO),
+        vehicle_no_trip =
+          VehiclePosition.new(
+            trip_id: "trip",
+            latitude: 2.0,
+            longitude: 2.0,
+            status: :IN_TRANSIT_TO
+          )
       ]
 
       # the trip and trip vehicle are re-arranged in the output
@@ -54,7 +60,14 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
     end
 
     test "vehicles with a non-matching trip ID generate a fake TripDescriptor" do
-      data = [VehiclePosition.new(trip_id: "trip", latitude: 1.0, longitude: 1.0)]
+      data = [
+        VehiclePosition.new(
+          trip_id: "trip",
+          latitude: 1.0,
+          longitude: 1.0,
+          status: :IN_TRANSIT_TO
+        )
+      ]
 
       assert round_trip(data) ==
                [TripDescriptor.new(trip_id: "trip", schedule_relationship: :UNSCHEDULED)] ++ data
@@ -71,7 +84,12 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
 
       assert [
                TripDescriptor.new(trip_id: "1"),
-               VehiclePosition.new(trip_id: "1", latitude: 1.0, longitude: 1.0)
+               VehiclePosition.new(
+                 trip_id: "1",
+                 latitude: 1.0,
+                 longitude: 1.0,
+                 status: :IN_TRANSIT_TO
+               )
              ] == decoded
     end
 
@@ -94,11 +112,26 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
 
       assert [
                TripDescriptor.new(trip_id: "1"),
-               VehiclePosition.new(trip_id: "1", latitude: 1.0, longitude: 1.0),
+               VehiclePosition.new(
+                 trip_id: "1",
+                 latitude: 1.0,
+                 longitude: 1.0,
+                 status: :IN_TRANSIT_TO
+               ),
                TripDescriptor.new(trip_id: "2"),
-               VehiclePosition.new(trip_id: "2", latitude: 1.0, longitude: 1.0),
+               VehiclePosition.new(
+                 trip_id: "2",
+                 latitude: 1.0,
+                 longitude: 1.0,
+                 status: :IN_TRANSIT_TO
+               ),
                TripDescriptor.new(trip_id: "3"),
-               VehiclePosition.new(trip_id: "3", latitude: 1.0, longitude: 1.0)
+               VehiclePosition.new(
+                 trip_id: "3",
+                 latitude: 1.0,
+                 longitude: 1.0,
+                 status: :IN_TRANSIT_TO
+               )
              ] == decoded
     end
 
@@ -110,6 +143,7 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
           id: "y2",
           latitude: 2,
           longitude: 2,
+          status: :IN_TRANSIT_TO,
           occupancy_status: :FULL,
           occupancy_percentage: 101
         )
