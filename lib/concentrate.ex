@@ -109,7 +109,16 @@ defmodule Concentrate do
 
   defp decode_json_key_value({"file_tap", opts}) do
     if Map.get(opts, "enabled") do
-      [file_tap: [enabled?: true]]
+      sink_opts =
+        case opts do
+          %{"sinks" => sinks} when is_list(sinks) ->
+            [sinks: Enum.map(sinks, &String.to_existing_atom/1)]
+
+          _ ->
+            []
+        end
+
+      [file_tap: [enabled?: true] ++ sink_opts]
     else
       []
     end
