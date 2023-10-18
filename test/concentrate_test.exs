@@ -78,7 +78,8 @@ defmodule ConcentrateTest do
     }
   },
   "file_tap": {
-    "enabled": true
+    "enabled": true,
+    "sinks": ["s3"]
   }
 }
       )
@@ -115,6 +116,7 @@ defmodule ConcentrateTest do
       assert config[:sinks][:mqtt][:username] == "user"
 
       assert config[:file_tap][:enabled?]
+      assert config[:file_tap][:sinks] == [:s3]
     end
 
     test "missing keys aren't configured" do

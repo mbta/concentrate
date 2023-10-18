@@ -17,11 +17,32 @@ defmodule Concentrate.Supervisor.Pipeline do
   def children(config) do
     {source_names, source_children} = sources(config[:sources])
     {output_names, output_children} = encoders(config[:encoders])
-    file_tap = [{Concentrate.Producer.FileTap, config[:file_tap]}]
     merge_filter = merge(source_names, config)
     source_reporters = source_reporters(source_names, config[:source_reporters])
     reporters = reporters(config[:reporters])
-    sinks = sinks(config[:sinks], [Concentrate.Producer.FileTap] ++ output_names)
+
+    file_tap =
+      if config[:file_tap][:enabled?] do
+        [{Concentrate.Producer.FileTap, config[:file_tap]}]
+      else
+        []
+      end
+
+    sinks =
+      case config[:file_tap][:sinks] do
+        nil when file_tap == [] ->
+          sinks(config[:sinks], output_names)
+
+        nil ->
+          # previous default
+          sinks(config[:sinks], [Concentrate.Producer.FileTap | output_names])
+
+        file_tap_sink_ids ->
+          {file_tap_sinks, non_file_tap_sinks} = Keyword.split(config[:sinks], file_tap_sink_ids)
+
+          sinks(file_tap_sinks, [Concentrate.Producer.FileTap] ++ output_names) ++
+            sinks(non_file_tap_sinks, output_names)
+      end
 
     Enum.concat([
       source_children,
@@ -105,7 +126,7 @@ defmodule Concentrate.Supervisor.Pipeline do
 
   def encoders(config) do
     children =
-      for encoder_config <- config[:files] do
+      for encoder_config <- config[:files] || [] do
         {filename, encoder, opts} =
           case encoder_config do
             {filename, encoder} -> {filename, encoder, []}

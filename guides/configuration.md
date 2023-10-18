@@ -110,7 +110,8 @@ Concentrate can be configured either by updating `config/config.exs` file, or by
         }
       },
       "file_tap": {
-        "enabled": true
+        "enabled": true,
+        "sinks": ["s3"]
       }
     }
 
