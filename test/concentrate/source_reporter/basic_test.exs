@@ -10,10 +10,11 @@ defmodule Concentrate.SourceReporter.BasicTest do
       update =
         Concentrate.FeedUpdate.new(
           url: "url",
+          timestamp: 123,
           updates: [1, 2, 3]
         )
 
-      assert {[count: 3, partial?: false], _state} = log(update, state)
+      assert {[count: 3, partial?: false, timestamp: 123], _state} = log(update, state)
     end
   end
 end
