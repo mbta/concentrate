@@ -14,10 +14,12 @@ defmodule Concentrate.SourceReporter.Basic do
   def log(update, state) do
     count = Enum.count(update)
     partial? = FeedUpdate.partial?(update)
+    timestamp = FeedUpdate.timestamp(update)
 
     stats = [
       count: count,
-      partial?: partial?
+      partial?: partial?,
+      timestamp: timestamp
     ]
 
     {stats, state}
