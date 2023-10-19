@@ -83,7 +83,8 @@ config :concentrate,
     Concentrate.Reporter.VehicleLatency,
     Concentrate.Reporter.StopTimeUpdateLatency,
     Concentrate.Reporter.Latency,
-    Concentrate.Reporter.TimeTravel
+    Concentrate.Reporter.TimeTravel,
+    Concentrate.Reporter.VehicleTimeTravel
   ],
   encoders: [
     files: [
