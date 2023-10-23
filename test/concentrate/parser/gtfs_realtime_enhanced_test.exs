@@ -481,6 +481,27 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
              ]
     end
 
+    test "does not set status if it's not in the feed" do
+      map = %{
+        "position" => %{
+          "bearing" => 135,
+          "latitude" => 42.32951,
+          "longitude" => -71.11109,
+          "odometer" => nil,
+          "speed" => nil
+        },
+        "timestamp" => 1_534_340_406,
+        "trip" => %{},
+        "vehicle" => %{
+          "id" => "vehicle"
+        }
+      }
+
+      assert [_td, vp] = decode_vehicle(map, Helpers.parse_options([]), nil)
+
+      assert VehiclePosition.status(vp) == nil
+    end
+
     test "logs when vehicle timestamp is later than feed timestamp" do
       map = %{
         "congestion_level" => nil,
