@@ -289,7 +289,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   # default
-  defp vehicle_status(nil), do: :IN_TRANSIT_TO
+  defp vehicle_status(nil), do: nil
 
   for status <- ~w(INCOMING_AT STOPPED_AT IN_TRANSIT_TO)a do
     defp vehicle_status(unquote(Atom.to_string(status))), do: unquote(status)
@@ -299,7 +299,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   for status <-
         ~w(EMPTY MANY_SEATS_AVAILABLE FEW_SEATS_AVAILABLE STANDING_ROOM_ONLY
-           CRUSHED_STANDING_ROOM_ONLY FULL NOT_ACCEPTING_PASSENGERS)a do
+           CRUSHED_STANDING_ROOM_ONLY FULL NOT_ACCEPTING_PASSENGERS
+           NO_DATA_AVAILABLE NOT_BOARDABLE)a do
     defp occupancy_status(unquote(Atom.to_string(status))), do: unquote(status)
   end
 
