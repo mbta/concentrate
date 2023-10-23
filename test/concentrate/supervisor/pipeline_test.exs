@@ -65,12 +65,24 @@ defmodule Concentrate.Supervisor.PipelineTest do
       assert {Concentrate.Producer.FileTap, _} =
                List.keyfind(actual, Concentrate.Producer.FileTap, 0)
 
+      # file tap sinks get an ID to avoid duplication
       assert [
-               {Concentrate.Sink.Supervisor,
-                [
-                  config: [filesystem: _],
-                  sources: [Concentrate.Producer.FileTap, :encoder_module]
-                ]},
+               %{
+                 id: _,
+                 start:
+                   {Concentrate.Sink.Supervisor, :start_link,
+                    [
+                      [filesystem: _],
+                      [Concentrate.Producer.FileTap, :encoder_module]
+                    ]}
+               }
+             ] =
+               Enum.filter(actual, fn value ->
+                 match?(%{start: {Concentrate.Sink.Supervisor, _, _}}, value)
+               end)
+
+      # non-file tap sinks
+      assert [
                {Concentrate.Sink.Supervisor, [config: [s3: _], sources: [:encoder_module]]}
              ] =
                Enum.filter(actual, fn value -> match?({Concentrate.Sink.Supervisor, _}, value) end)
