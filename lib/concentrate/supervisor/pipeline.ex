@@ -31,17 +31,22 @@ defmodule Concentrate.Supervisor.Pipeline do
     sinks =
       case config[:file_tap][:sinks] do
         nil when file_tap == [] ->
-          sinks(config[:sinks], output_names)
+          [sink(config[:sinks], output_names)]
 
         nil ->
           # previous default
-          sinks(config[:sinks], [Concentrate.Producer.FileTap | output_names])
+          [sink(config[:sinks], [Concentrate.Producer.FileTap | output_names])]
 
         file_tap_sink_ids ->
           {file_tap_sinks, non_file_tap_sinks} = Keyword.split(config[:sinks], file_tap_sink_ids)
 
-          sinks(file_tap_sinks, [Concentrate.Producer.FileTap] ++ output_names) ++
-            sinks(non_file_tap_sinks, output_names)
+          [
+            Supervisor.child_spec(
+              sink(file_tap_sinks, [Concentrate.Producer.FileTap] ++ output_names),
+              id: :file_tap_sinks
+            ),
+            sink(non_file_tap_sinks, output_names)
+          ]
       end
 
     Enum.concat([
@@ -158,15 +163,13 @@ defmodule Concentrate.Supervisor.Pipeline do
     {child_ids(children), children}
   end
 
-  def sinks(config, output_names) do
+  def sink(config, output_names) do
     config =
       for {sink, sink_config} <- config do
         {sink, sink_config}
       end
 
-    [
-      {Concentrate.Sink.Supervisor, config: config, sources: output_names}
-    ]
+    {Concentrate.Sink.Supervisor, config: config, sources: output_names}
   end
 
   defp child_ids(children) do
