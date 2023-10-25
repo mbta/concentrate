@@ -1,4 +1,4 @@
-defmodule Concentrate.Producer.HTTPoison.StateMachine do
+defmodule Concentrate.Producer.Req.StateMachine do
   @moduledoc """
   State machine to manage the incoming/outgoing messages for making recurring HTTP requests.
 
@@ -6,7 +6,7 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
   * `fetch_after`: number of milliseconds between fetches
   * `content_warning_timeout`: number of milliseconds after which to log an error that the file is out of date
   * `fallback_url`: (optional) URL to use once the `content_warning_timeout` is hit.
-  * `get_opts`: (optional) values to pass as options to HTTPoison
+  * `get_opts`: (optional) values to pass as options to Req.get/2
   """
   require Logger
   alias Concentrate.Producer.FileTap
@@ -16,9 +16,12 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
 
   defstruct url: "",
             get_opts: [
-              timeout: @default_timeout,
-              recv_timeout: @default_timeout,
-              hackney: [pool: :http_producer_pool]
+              connect_options: [
+                timeout: @default_timeout
+              ],
+              receive_timeout: @default_timeout,
+              redirect: false,
+              decode_body: false
             ],
             headers: %{"accept-encoding" => "gzip"},
             fetch_after: @default_fetch_after,
@@ -42,9 +45,11 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
         Keyword.take(opts, ~w(get_opts fetch_after content_warning_timeout headers)a)
       )
 
-    state = %{state | headers: Concentrate.unwrap_values(state.headers)}
-
-    state = %{state | last_success: now() - state.fetch_after - 1}
+    state = %{
+      state
+      | headers: Concentrate.unwrap_values(state.headers),
+        last_success: now() - state.fetch_after - 1
+    }
 
     case Keyword.get(opts, :fallback_url) do
       url when is_binary(url) ->
@@ -116,11 +121,11 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
 
   defp handle_message(machine, {:fetch, url}) do
     message =
-      case HTTPoison.get(url, machine.headers, machine.get_opts) do
-        {:ok, %HTTPoison.Response{} = response} ->
+      case Req.get(url, [headers: machine.headers] ++ machine.get_opts) do
+        {:ok, %Req.Response{} = response} ->
           {:http_response, response}
 
-        {:error, %HTTPoison.Error{reason: reason}} ->
+        {:error, reason} ->
           {:http_error, reason}
       end
 
@@ -129,9 +134,8 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
 
   defp handle_message(
          machine,
-         {:http_response, %{status_code: 200, headers: headers, body: body}}
+         {:http_response, %{status: 200, headers: headers, body: body}}
        ) do
-    body = decode_body(headers, body)
     {bodies, machine} = parse_bodies_if_changed(machine, body)
     machine = update_cache_headers(machine, headers)
     {machine, messages} = check_last_success(machine)
@@ -141,9 +145,11 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
     {machine, bodies, messages}
   end
 
-  defp handle_message(machine, {:http_response, %{status_code: 301, headers: headers}}) do
+  defp handle_message(
+         machine,
+         {:http_response, %{status: 301, headers: %{"location" => [new_url]}}}
+       ) do
     # permanent redirect: save the new URL
-    {:ok, new_url} = find_header(headers, "location")
     machine = %{machine | url: new_url}
     {machine, messages} = check_last_success(machine)
     message = {:fetch, new_url}
@@ -151,16 +157,18 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
     {machine, [], messages}
   end
 
-  defp handle_message(machine, {:http_response, %{status_code: 302, headers: headers}}) do
+  defp handle_message(
+         machine,
+         {:http_response, %{status: 302, headers: %{"location" => [new_url]}}}
+       ) do
     # temporary redirect: request the new URL but don't save it
-    {:ok, new_url} = find_header(headers, "location")
     {machine, messages} = check_last_success(machine)
     message = {:fetch, new_url}
     messages = include_fallback_messages(message, 0, messages)
     {machine, [], messages}
   end
 
-  defp handle_message(machine, {:http_response, %{status_code: 304}}) do
+  defp handle_message(machine, {:http_response, %{status: 304}}) do
     # not modified
     _ =
       Logger.info(fn ->
@@ -173,7 +181,7 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
     {machine, [], messages}
   end
 
-  defp handle_message(machine, {:http_response, %{status_code: code}}) do
+  defp handle_message(machine, {:http_response, %{status: code}}) do
     handle_message(machine, {:http_error, {:unexpected_code, code}})
   end
 
@@ -222,26 +230,6 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
       end)
 
     {machine, [], []}
-  end
-
-  def decode_body(headers, body) do
-    case find_header(headers, "content-encoding") do
-      :error ->
-        body
-
-      {:ok, "gzip"} ->
-        :zlib.gunzip(body)
-    end
-  end
-
-  defp find_header(headers, match_header) do
-    case Enum.find(headers, &(String.downcase(elem(&1, 0)) == match_header)) do
-      {_, value} ->
-        {:ok, value}
-
-      _ ->
-        :error
-    end
   end
 
   defp update_cache_headers(machine, headers) do

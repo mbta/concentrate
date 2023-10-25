@@ -1,12 +1,12 @@
-defmodule Concentrate.Producer.HTTPoison.StateMachineTest do
+defmodule Concentrate.Producer.Req.StateMachineTest do
   @moduledoc false
   use ExUnit.Case
-  import Concentrate.Producer.HTTPoison.StateMachine
+  import Concentrate.Producer.Req.StateMachine
   import ExUnit.CaptureLog
 
   setup_all do
     Application.ensure_all_started(:bypass)
-    Application.ensure_all_started(:httpoison)
+    Application.ensure_all_started(:req)
     :ok
   end
 
@@ -60,26 +60,6 @@ defmodule Concentrate.Producer.HTTPoison.StateMachineTest do
       {machine, _, _} = message(machine, {:http_response, make_resp([])})
       :timer.sleep(11)
       assert {_machine, _, [{_, 0}]} = fetch(machine)
-    end
-  end
-
-  describe "decode_body/2" do
-    test "decodes a gzipped body if that is the encoding" do
-      headers =
-        Enum.shuffle([
-          {"ETag", "hello"},
-          {"Content-Encoding", "gzip"}
-        ])
-
-      body = "body"
-      encoded_body = :zlib.gzip(body)
-      assert decode_body(headers, encoded_body) == body
-    end
-
-    test "defaults to not decoding" do
-      headers = [{"ETag", "hello"}]
-      body = "body"
-      assert decode_body(headers, body) == body
     end
   end
 
@@ -307,6 +287,6 @@ defmodule Concentrate.Producer.HTTPoison.StateMachineTest do
     code = Keyword.get(opts, :code, 200)
     body = Keyword.get(opts, :body, "")
     headers = Keyword.get(opts, :headers, [])
-    %HTTPoison.Response{status_code: code, body: body, headers: headers}
+    %Req.Response{status: code, body: body, headers: headers}
   end
 end

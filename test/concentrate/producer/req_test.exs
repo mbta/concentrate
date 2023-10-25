@@ -1,10 +1,10 @@
-defmodule Concentrate.Producer.HTTPoisonTest do
+defmodule Concentrate.Producer.ReqTest do
   @moduledoc false
   use ExUnit.Case
   require Logger
   import ExUnit.CaptureLog
-  import Concentrate.Producer.HTTPoison
-  alias Concentrate.Producer.HTTPoison.StateMachine
+  import Concentrate.Producer.Req
+  alias Concentrate.Producer.Req.StateMachine
   import Plug.Conn, only: [get_req_header: 2, put_resp_header: 3, send_resp: 3]
 
   defmodule TestParser do
@@ -16,15 +16,7 @@ defmodule Concentrate.Producer.HTTPoisonTest do
   end
 
   setup_all do
-    {:ok, _} = Application.ensure_all_started(:hackney)
-
-    {:ok, _} =
-      start_supervised(%{
-        id: :hackney_pool,
-        start: {:hackney_pool, :start_link, [:http_producer_pool, []]},
-        type: :worker,
-        restart: :permanent
-      })
+    {:ok, _} = Application.ensure_all_started(:req)
 
     :ok
   end
@@ -49,15 +41,15 @@ defmodule Concentrate.Producer.HTTPoisonTest do
     @tag :capture_log
     test "ignores unknown messages" do
       machine = StateMachine.init("url", parser: & &1)
-      state = %Concentrate.Producer.HTTPoison.State{machine: machine}
+      state = %Concentrate.Producer.Req.State{machine: machine}
       assert {:noreply, [], ^state} = handle_info(:unknown, state)
     end
 
     @tag :capture_log
     test "does not send more demand than requested" do
       machine = StateMachine.init("url", parser: &[&1])
-      state = %Concentrate.Producer.HTTPoison.State{machine: machine, demand: 1}
-      response = %HTTPoison.Response{status_code: 200, body: "body"}
+      state = %Concentrate.Producer.Req.State{machine: machine, demand: 1}
+      response = %Req.Response{status: 200, body: "body"}
       assert {:noreply, [_], state, :hibernate} = handle_info({:http_response, response}, state)
 
       assert {:noreply, [], state} =
@@ -156,7 +148,10 @@ defmodule Concentrate.Producer.HTTPoisonTest do
       end)
 
       {:ok, producer} =
-        start_producer(bypass, fetch_after: 50, get_opts: [timeout: 100, recv_timeout: 100])
+        start_producer(bypass,
+          fetch_after: 50,
+          get_opts: [connect_options: [timeout: 100], receive_timeout: 100]
+        )
 
       assert take_events(producer, 1) == [["reconnect"]]
     end
@@ -309,7 +304,7 @@ defmodule Concentrate.Producer.HTTPoisonTest do
     @tag :capture_log
     test "a fetch error is not fatal" do
       {:ok, pid} =
-        start_supervised({Concentrate.Producer.HTTPoison, {"nodomain.dne", parser: & &1}})
+        start_supervised({Concentrate.Producer.Req, {"http://nodomain.dne", parser: & &1}})
 
       # this will never finish, so run it in a separate process
       Task.async(fn -> take_events(pid, 1) end)
@@ -321,7 +316,7 @@ defmodule Concentrate.Producer.HTTPoisonTest do
       url = "http://127.0.0.1:#{bypass.port}/"
       opts = Keyword.put_new(opts, :parser, fn body -> [body] end)
 
-      {:ok, _} = start_supervised({Concentrate.Producer.HTTPoison, {url, opts}})
+      {:ok, _} = start_supervised({Concentrate.Producer.Req, {url, opts}})
     end
 
     defp take_events(producer, event_count) do

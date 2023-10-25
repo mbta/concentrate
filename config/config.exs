@@ -107,9 +107,9 @@ config :concentrate,
   ],
   scheme_producers: %{
     # old behavior for test URLs
-    nil => Concentrate.Producer.HTTPoison,
-    "https" => Concentrate.Producer.HTTPoison,
-    "http" => Concentrate.Producer.HTTPoison,
+    nil => Concentrate.Producer.Req,
+    "https" => Concentrate.Producer.Req,
+    "http" => Concentrate.Producer.Req,
     "mqtt" => Concentrate.Producer.Mqtt,
     "mqtts" => Concentrate.Producer.Mqtt,
     "mqtt+ssl" => Concentrate.Producer.Mqtt
