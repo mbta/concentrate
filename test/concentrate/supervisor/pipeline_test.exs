@@ -42,8 +42,7 @@ defmodule Concentrate.Supervisor.PipelineTest do
 
       actual = children(config)
 
-      assert {Concentrate.Producer.FileTap, [enabled?: true]} =
-               List.keyfind(actual, Concentrate.Producer.FileTap, 0)
+      assert Concentrate.Producer.FileTap in actual
 
       assert {Concentrate.Sink.Supervisor,
               [config: [filesystem: _], sources: [Concentrate.Producer.FileTap, :encoder_module]]} =
@@ -62,8 +61,7 @@ defmodule Concentrate.Supervisor.PipelineTest do
 
       actual = children(config)
 
-      assert {Concentrate.Producer.FileTap, _} =
-               List.keyfind(actual, Concentrate.Producer.FileTap, 0)
+      assert Concentrate.Producer.FileTap in actual
 
       # file tap sinks get an ID to avoid duplication
       assert [
