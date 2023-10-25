@@ -23,7 +23,7 @@ defmodule Concentrate.Supervisor.Pipeline do
 
     file_tap =
       if config[:file_tap][:enabled?] do
-        [{Concentrate.Producer.FileTap, config[:file_tap]}]
+        [Concentrate.Producer.FileTap]
       else
         []
       end

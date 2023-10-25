@@ -1,6 +1,6 @@
 defmodule Concentrate.Producer.FileTapTest do
   @moduledoc false
-  use ExUnit.Case, async: true
+  use ExUnit.Case
   import Concentrate.Producer.FileTap
 
   describe "start_link/2" do
@@ -59,18 +59,10 @@ defmodule Concentrate.Producer.FileTapTest do
 
       assert %{demand: 0} = state
     end
-
-    test "if the tap isn't enabled, sending a body does nothing" do
-      {_, state} = init([])
-      {:noreply, [], state} = handle_demand(1, state)
-
-      assert {:noreply, [], ^state} =
-               handle_cast({:log_body, "body", "url", DateTime.utc_now()}, state)
-    end
   end
 
   defp state(_) do
-    {:producer, state} = init(enabled?: true)
+    {:producer, state} = init([])
     {:ok, state: state}
   end
 end

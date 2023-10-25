@@ -6,13 +6,13 @@ defmodule Concentrate.Producer.FileTap do
 
   defmodule State do
     @moduledoc false
-    defstruct enabled?: false, demand: 0, bodies: %{}
+    defstruct demand: 0, bodies: %{}
   end
 
   alias __MODULE__.State
 
-  def start_link(config) do
-    GenStage.start_link(__MODULE__, config, name: __MODULE__)
+  def start_link([]) do
+    GenStage.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   def log_body(body, url, date_time) do
@@ -26,12 +26,8 @@ defmodule Concentrate.Producer.FileTap do
 
   @impl GenStage
   def handle_cast({:log_body, body, url, date_time}, state) do
-    if state.enabled? do
-      state = put_in(state.bodies[url], {body, date_time})
-      maybe_send_events(state)
-    else
-      {:noreply, [], state}
-    end
+    state = put_in(state.bodies[url], {body, date_time})
+    maybe_send_events(state)
   end
 
   @impl GenStage
