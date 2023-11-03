@@ -140,6 +140,16 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   def schedule_relationship(:SCHEDULED), do: nil
   def schedule_relationship(relationship), do: relationship
 
+  @doc """
+  Returns true if the group is non-revenue
+  """
+  def is_non_revenue?({td, _, stus} = _group) do
+    td &&
+      td.trip_id &&
+      String.starts_with?(td.trip_id, "NONREV") &&
+      Enum.all?(stus, &(&1.schedule_relationship == :SKIPPED))
+  end
+
   defp group_by_trip_id(%TripDescriptor{} = td, map) do
     if trip_id = TripDescriptor.trip_id(td) do
       Map.update(map, trip_id, {td, [], []}, &add_trip_descriptor(&1, td))

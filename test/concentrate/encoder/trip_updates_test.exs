@@ -156,5 +156,53 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
 
       refute "route_pattern_id" in Map.keys(trip)
     end
+
+    test "Non-revenue trips with skipped stops are dropped" do
+      initial = [
+        TripDescriptor.new(trip_id: "NONREV-trip", route_id: "route", direction_id: 0),
+        StopTimeUpdate.new(
+          trip_id: "NONREV-trip",
+          stop_id: "stop",
+          schedule_relationship: :SKIPPED
+        )
+      ]
+
+      decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
+
+      assert %{
+               entity: []
+             } = decoded
+    end
+
+    test "Non-revenue trips with unskipped stops are retained" do
+      initial = [
+        TripDescriptor.new(trip_id: "NONREV-trip", route_id: "route", direction_id: 0),
+        StopTimeUpdate.new(
+          trip_id: "NONREV-trip",
+          stop_id: "stop",
+          arrival_time: 1,
+          schedule_relationship: :SCHEDULED
+        )
+      ]
+
+      decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
+
+      assert %{
+               entity: [
+                 %{
+                   trip_update: %{
+                     trip: %{route_id: "route", direction_id: 0},
+                     stop_time_update: [
+                       %{
+                         arrival: %{time: 1},
+                         schedule_relationship: :SCHEDULED,
+                         stop_id: "stop"
+                       }
+                     ]
+                   }
+                 }
+               ]
+             } = decoded
+    end
   end
 end

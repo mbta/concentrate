@@ -126,5 +126,49 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
                ]
              } = encoded
     end
+
+    test "Non-revenue trips with skipped stops are dropped" do
+      parsed = [
+        TripDescriptor.new(trip_id: "NONREV-trip", route_id: "route", direction_id: 0),
+        StopTimeUpdate.new(
+          trip_id: "NONREV-trip",
+          stop_id: "stop",
+          schedule_relationship: :SKIPPED
+        )
+      ]
+
+      encoded = Jason.decode!(encode_groups(group(parsed)))
+
+      assert %{
+               "entity" => []
+             } = encoded
+    end
+
+    test "Non-revenue trips with unskipped stops are retained" do
+      parsed = [
+        TripDescriptor.new(trip_id: "NONREV-trip", route_id: "route", direction_id: 0),
+        StopTimeUpdate.new(
+          trip_id: "NONREV-trip",
+          stop_id: "stop",
+          schedule_relationship: :SCHEDULED
+        )
+      ]
+
+      encoded = Jason.decode!(encode_groups(group(parsed)))
+
+      assert %{
+               "entity" => [
+                 %{
+                   "trip_update" => %{
+                     "trip" => %{
+                       "route_id" => "route",
+                       "direction_id" => 0
+                     },
+                     "stop_time_update" => [%{"stop_id" => "stop"}]
+                   }
+                 }
+               ]
+             } = encoded
+    end
   end
 end

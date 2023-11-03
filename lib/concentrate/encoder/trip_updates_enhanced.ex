@@ -8,6 +8,8 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
 
   @impl Concentrate.Encoder
   def encode_groups(groups, opts \\ []) when is_list(groups) do
+    groups = Enum.reject(groups, &is_non_revenue?/1)
+
     message = %{
       header: feed_header(opts),
       entity: trip_update_feed_entity(groups, &build_stop_time_update/1, &enhanced_data/1)
