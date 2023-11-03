@@ -127,7 +127,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
              } = encoded
     end
 
-    test "Non-revenue trips with skipped stops are dropped" do
+    test "Non-revenue trips with skipped stops are retained in the enhanced feed" do
       parsed = [
         TripDescriptor.new(trip_id: "NONREV-trip", route_id: "route", direction_id: 0),
         StopTimeUpdate.new(
@@ -140,7 +140,24 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
       encoded = Jason.decode!(encode_groups(group(parsed)))
 
       assert %{
-               "entity" => []
+               "entity" => [
+                 %{
+                   "id" => "NONREV-trip",
+                   "trip_update" => %{
+                     "stop_time_update" => [
+                       %{
+                         "schedule_relationship" => "SKIPPED",
+                         "stop_id" => "stop"
+                       }
+                     ],
+                     "trip" => %{
+                       "direction_id" => 0,
+                       "route_id" => "route",
+                       "trip_id" => "NONREV-trip"
+                     }
+                   }
+                 }
+               ]
              } = encoded
     end
 
