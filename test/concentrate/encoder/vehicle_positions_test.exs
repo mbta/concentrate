@@ -189,6 +189,21 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
 
       assert Enum.sort(round_trip(decoded)) == Enum.sort(decoded)
     end
+
+    test "filters non-revenue trips" do
+      data = [
+        TripDescriptor.new(trip_id: "one", vehicle_id: "y1", revenue: false),
+        VehiclePosition.new(
+          trip_id: "one",
+          id: "y1",
+          latitude: 1,
+          longitude: 1,
+          status: :IN_TRANSIT_TO
+        )
+      ]
+
+      assert [] == round_trip(data)
+    end
   end
 
   defp round_trip(data) do
