@@ -8,6 +8,8 @@ defmodule Concentrate.Encoder.VehiclePositions do
 
   @impl Concentrate.Encoder
   def encode_groups(groups, opts \\ []) when is_list(groups) do
+    groups = Enum.reject(groups, &non_revenue?/1)
+
     message = %{
       header: feed_header(opts),
       entity: Enum.flat_map(groups, &build_entity/1)
