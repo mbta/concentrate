@@ -3,6 +3,14 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
   Encodes a list of parsed data into a VehiclePositions_enhanced.json file.
   """
   @behaviour Concentrate.Encoder
+  alias TransitRealtime, as: GTFS
+  alias TransitRealtime.Consist
+  alias TransitRealtime.FeedEntity
+  alias TransitRealtime.FeedMessage
+  alias TransitRealtime.Position
+  alias TransitRealtime.VehicleDescriptor
+  alias TransitRealtime.VehiclePosition
+  alias TransitRealtime.VehiclePosition.CarriageDetails
   alias Concentrate.{TripDescriptor, VehiclePosition}
   alias VehiclePosition.Consist, as: VehiclePositionConsist
   import Concentrate.Encoder.GTFSRealtimeHelpers
@@ -10,21 +18,21 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
 
   @impl Concentrate.Encoder
   def encode_groups(groups, opts \\ []) when is_list(groups) do
-    message = %{
-      "header" => feed_header(opts),
-      "entity" => Enum.flat_map(groups, &build_entity/1)
+    message = %FeedMessage{
+      header: feed_header(opts),
+      entity: Enum.flat_map(groups, &build_entity/1)
     }
 
-    Jason.encode!(message)
+    Protobuf.JSON.encode!(message)
   end
 
   def build_entity({%TripDescriptor{} = td, vps, _stus}) do
     trip = trip_descriptor(td)
 
     for vp <- vps do
-      %{
-        "id" => entity_id(vp),
-        "vehicle" => build_vehicle(vp, trip)
+      %FeedEntity{
+        id: entity_id(vp),
+        vehicle: build_vehicle(vp, trip)
       }
     end
   end
@@ -34,47 +42,54 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
     for vp <- vps,
         trip_id = VehiclePosition.trip_id(vp),
         not is_nil(trip_id) do
-      trip = %{
-        "trip_id" => trip_id,
-        "schedule_relationship" => "UNSCHEDULED"
+      trip = %GTFS.TripDescriptor{
+        trip_id: trip_id,
+        schedule_relationship: :UNSCHEDULED
       }
 
-      %{
-        "id" => entity_id(vp),
-        "vehicle" => build_vehicle(vp, trip)
+      %FeedEntity{
+        id: entity_id(vp),
+        vehicle: build_vehicle(vp, trip)
       }
     end
   end
 
-  defp build_vehicle(%VehiclePosition{} = vp, trip) do
+  @spec build_vehicle(VehiclePosition.t(), GTFS.TripDescriptor.t()) :: GTFS.VehiclePosition.t()
+  def build_vehicle(%VehiclePosition{} = vp, trip) do
     descriptor =
-      drop_nil_values(%{
-        "id" => VehiclePosition.id(vp),
-        "label" => VehiclePosition.label(vp),
-        "license_plate" => VehiclePosition.license_plate(vp),
-        "consist" => optional_map(VehiclePosition.consist(vp), &build_consist/1)
-      })
+      %VehicleDescriptor{
+        id: VehiclePosition.id(vp),
+        label: VehiclePosition.label(vp),
+        license_plate: VehiclePosition.license_plate(vp)
+      }
+      |> VehicleDescriptor.put_extension(
+        TransitRealtime.PbExtension,
+        :consist,
+        optional_map(VehiclePosition.consist(vp), &build_consist/1)
+      )
 
     position =
-      drop_nil_values(%{
-        "latitude" => VehiclePosition.latitude(vp),
-        "longitude" => VehiclePosition.longitude(vp),
-        "bearing" => VehiclePosition.bearing(vp),
-        "speed" => VehiclePosition.speed(vp)
-      })
+      %Position{
+        latitude: VehiclePosition.latitude(vp),
+        longitude: VehiclePosition.longitude(vp),
+        bearing: VehiclePosition.bearing(vp),
+        speed: VehiclePosition.speed(vp)
+      }
 
-    drop_nil_values(%{
-      "trip" => trip,
-      "vehicle" => descriptor,
-      "position" => position,
-      "stop_id" => VehiclePosition.stop_id(vp),
-      "current_stop_sequence" => VehiclePosition.stop_sequence(vp),
-      "current_status" => VehiclePosition.status(vp) || "IN_TRANSIT_TO",
-      "timestamp" => VehiclePosition.last_updated_truncated(vp),
-      "occupancy_status" => VehiclePosition.occupancy_status(vp),
-      "occupancy_percentage" => VehiclePosition.occupancy_percentage(vp),
-      "multi_carriage_details" => VehiclePosition.multi_carriage_details(vp)
-    })
+    mcd = VehiclePosition.multi_carriage_details(vp)
+
+    %GTFS.VehiclePosition{
+      trip: trip,
+      vehicle: descriptor,
+      position: position,
+      stop_id: VehiclePosition.stop_id(vp),
+      current_stop_sequence: VehiclePosition.stop_sequence(vp),
+      current_status: VehiclePosition.status(vp) || :IN_TRANSIT_TO,
+      timestamp: VehiclePosition.last_updated_truncated(vp),
+      occupancy_status: VehiclePosition.occupancy_status(vp),
+      occupancy_percentage: VehiclePosition.occupancy_percentage(vp),
+      multi_carriage_details: mcd && Enum.map(mcd, &struct!(CarriageDetails, &1))
+    }
   end
 
   defp optional_map(list, fun) when is_list(list) do
@@ -86,8 +101,8 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
   end
 
   defp build_consist(consist) do
-    %{
-      "label" => VehiclePositionConsist.label(consist)
+    %Consist{
+      label: VehiclePositionConsist.label(consist)
     }
   end
 end

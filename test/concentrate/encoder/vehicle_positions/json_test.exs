@@ -3,6 +3,7 @@ defmodule Concentrate.Encoder.VehiclePositions.JSONTest do
   use ExUnit.Case, async: true
   import Concentrate.Encoder.VehiclePositions.JSON
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
+  alias TransitRealtime.FeedMessage
   alias Concentrate.{TripDescriptor, VehiclePosition}
 
   describe "encode_groups/1" do
@@ -14,22 +15,23 @@ defmodule Concentrate.Encoder.VehiclePositions.JSONTest do
         VehiclePosition.new(trip_id: "2", latitude: 2.0, longitude: 2.0)
       ]
 
-      %{"header" => _, "entity" => entity} =
+      %{header: _, entity: entity} =
         initial
         |> group()
         |> encode_groups()
-        |> Jason.decode!()
+        |> Protobuf.JSON.decode!(FeedMessage)
 
       assert length(entity) == 2
+      first = List.first(entity)
 
-      assert List.first(entity) ==
+      assert first =
                %{
-                 "id" => "1",
-                 "vehicle" => %{
-                   "current_status" => "IN_TRANSIT_TO",
-                   "position" => %{"latitude" => 1.0, "longitude" => 1.0},
-                   "trip" => %{"schedule_relationship" => "SCHEDULED", "trip_id" => "1"},
-                   "vehicle" => %{}
+                 id: "1",
+                 vehicle: %{
+                   current_status: :IN_TRANSIT_TO,
+                   position: %{latitude: 1.0, longitude: 1.0},
+                   trip: %{schedule_relationship: :SCHEDULED, trip_id: "1"},
+                   vehicle: %{}
                  }
                }
     end

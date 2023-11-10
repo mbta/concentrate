@@ -69,7 +69,7 @@ defmodule Concentrate.MixProject do
       {:lcov_ex, "~> 0.3.2", only: :test, runtime: false},
       {:gen_stage, "~> 1.0"},
       {:gpb, "~> 4.7", only: :dev, runtime: false},
-      {:protobuf, "~> 0.12.0", only: :dev, runtime: false},
+      {:protobuf, "~> 0.12.0", only: [:dev, :test], runtime: false},
       {:httpoison, "~> 1.0"},
       {:emqtt_failover, "~> 0.3"},
       {:cowlib, "2.11.0", override: true},

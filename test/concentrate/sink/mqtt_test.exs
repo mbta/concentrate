@@ -4,6 +4,7 @@ defmodule Concentrate.Sink.MqttTest do
   import Concentrate.Sink.Mqtt
 
   @moduletag :capture_log
+  @moduletag :mqtt
 
   setup do
     prefix = "concentrate/test_sink/#{System.unique_integer()}/"

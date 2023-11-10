@@ -140,7 +140,7 @@ defmodule Concentrate.Parser.Helpers do
       when is_integer(vehicle_timestamp) and is_integer(feed_timestamp) and
              vehicle_timestamp > feed_timestamp do
     _ =
-      Logger.warn(
+      Logger.warning(
         "vehicle timestamp after feed timestamp feed_url=#{inspect(options.feed_url)} vehicle_id=#{inspect(vehicle_id)} feed_timestamp=#{inspect(feed_timestamp)} vehicle_timestamp=#{inspect(vehicle_timestamp)}"
       )
 

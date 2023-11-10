@@ -12,3 +12,12 @@ message Consist {
 extend transit_realtime.VehicleDescriptor {
     repeated Consist consist = 1001;
 }
+
+extend transit_realtime.TripUpdate.StopTimeUpdate {
+    optional string boarding_status = 1001;
+    optional string platform_id = 1002;
+}
+
+extend transit_realtime.TripDescriptor {
+    optional string route_pattern_id = 1001;
+}

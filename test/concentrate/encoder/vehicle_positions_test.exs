@@ -6,6 +6,7 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.{FeedUpdate, TripDescriptor, VehiclePosition, StopTimeUpdate}
   alias Concentrate.Parser.GTFSRealtime
+  alias TransitRealtime.FeedMessage
 
   describe "encode/1" do
     test "ignores TripUpdates without a matching vehicle" do
@@ -46,7 +47,7 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
       ]
 
       encoded = encode_groups(group(data))
-      proto = :gtfs_realtime_proto.decode_msg(encoded, :FeedMessage)
+      proto = FeedMessage.decode(encoded)
 
       assert %{
                entity: [

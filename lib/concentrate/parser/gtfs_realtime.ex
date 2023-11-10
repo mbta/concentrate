@@ -15,10 +15,12 @@ defmodule Concentrate.Parser.GTFSRealtime do
     VehiclePosition
   }
 
+  alias TransitRealtime.FeedMessage
+
   @impl Concentrate.Parser
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
     options = Helpers.parse_options(opts)
-    message = :gtfs_realtime_proto.decode_msg(binary, :FeedMessage, [])
+    message = FeedMessage.decode(binary)
 
     feed_timestamp = message.header.timestamp
     partial? = message.header.incrementality == :DIFFERENTIAL
@@ -70,7 +72,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
       vehicle = vp.vehicle
       position = vp.position
-      id = Map.get(vehicle, :id)
+      id = get_in(vehicle, [Access.key(:id)])
       timestamp = Map.get(vp, :timestamp)
 
       Helpers.log_future_vehicle_timestamp(options, feed_timestamp, timestamp, id)
@@ -81,8 +83,8 @@ defmodule Concentrate.Parser.GTFSRealtime do
             id: id,
             trip_id: trip_id,
             stop_id: Map.get(vp, :stop_id),
-            label: Map.get(vehicle, :label),
-            license_plate: Map.get(vehicle, :license_plate),
+            label: get_in(vehicle, [Access.key(:label)]),
+            license_plate: get_in(vehicle, [Access.key(:license_plate)]),
             latitude: Map.get(position, :latitude),
             longitude: Map.get(position, :longitude),
             bearing: Map.get(position, :bearing),
@@ -154,15 +156,17 @@ defmodule Concentrate.Parser.GTFSRealtime do
   end
 
   @spec decode_trip_descriptor(map()) :: [TripDescriptor.t()]
+  defp decode_trip_descriptor(%{trip: nil}), do: []
+
   defp decode_trip_descriptor(%{trip: trip} = descriptor) do
     [
       TripDescriptor.new(
-        trip_id: Map.get(trip, :trip_id),
-        route_id: Map.get(trip, :route_id),
-        direction_id: Map.get(trip, :direction_id),
-        start_date: date(Map.get(trip, :start_date)),
-        start_time: time(Map.get(trip, :start_time)),
-        schedule_relationship: Map.get(trip, :schedule_relationship, :SCHEDULED),
+        trip_id: get_in(trip, [Access.key(:trip_id)]),
+        route_id: get_in(trip, [Access.key(:route_id)]),
+        direction_id: get_in(trip, [Access.key(:direction_id)]),
+        start_date: date(get_in(trip, [Access.key(:start_date)])),
+        start_time: time(get_in(trip, [Access.key(:start_time)])),
+        schedule_relationship: get_in(trip, [Access.key(:schedule_relationship)]) || :SCHEDULED,
         vehicle_id: decode_trip_descriptor_vehicle_id(descriptor),
         timestamp: decode_trip_descriptor_timestamp(descriptor)
       )
@@ -234,9 +238,9 @@ defmodule Concentrate.Parser.GTFSRealtime do
     trip = Map.get(entity, :trip, %{})
 
     InformedEntity.new(
-      trip_id: Map.get(trip, :trip_id),
+      trip_id: trip && trip.trip_id,
       route_id: Map.get(entity, :route_id),
-      direction_id: Map.get(trip, :direction_id) || Map.get(entity, :direction_id),
+      direction_id: (trip && trip.direction_id) || Map.get(entity, :direction_id),
       route_type: Map.get(entity, :route_type),
       stop_id: Map.get(entity, :stop_id)
     )

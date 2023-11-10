@@ -3,6 +3,8 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
   use ExUnit.Case, async: true
   import Concentrate.Encoder.TripUpdates.JSON
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
+  alias TransitRealtime.FeedEntity
+  alias TransitRealtime.FeedMessage
   alias Concentrate.{TripDescriptor, StopTimeUpdate}
 
   describe "encode_groups/1" do
@@ -22,24 +24,22 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
 
       initial = trip_updates ++ stop_time_updates
 
-      %{"header" => _, "entity" => entity} =
+      %{header: _, entity: entity} =
         initial
         |> group()
         |> encode_groups()
-        |> Jason.decode!()
+        |> Protobuf.JSON.decode!(FeedMessage)
 
       assert length(entity) == 3
+      first = List.first(entity)
 
-      assert List.first(entity) ==
+      assert first =
                %{
-                 "id" => "1",
-                 "trip_update" => %{
-                   "timestamp" => 1_534_340_406,
-                   "stop_time_update" => [%{"schedule_relationship" => "SKIPPED"}],
-                   "trip" => %{
-                     "schedule_relationship" => "ADDED",
-                     "trip_id" => "1"
-                   }
+                 id: "1",
+                 trip_update: %{
+                   timestamp: 1_534_340_406,
+                   trip: %{schedule_relationship: :ADDED, trip_id: "1"},
+                   stop_time_update: [%{schedule_relationship: :SKIPPED}]
                  }
                }
     end
@@ -55,14 +55,14 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
         )
       ]
 
-      encoded = parsed |> group() |> encode_groups() |> Jason.decode!()
+      encoded = parsed |> group() |> encode_groups() |> Protobuf.JSON.decode!(FeedMessage)
 
       %{
-        "entity" => [
+        entity: [
           %{
-            "trip_update" => %{
-              "trip" => trip,
-              "stop_time_update" => [update]
+            trip_update: %{
+              trip: trip,
+              stop_time_update: [update]
             }
           }
         ]

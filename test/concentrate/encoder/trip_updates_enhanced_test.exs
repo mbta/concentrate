@@ -4,6 +4,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
   import Concentrate.TestHelpers
   import Concentrate.Encoder.TripUpdatesEnhanced
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
+  alias TransitRealtime.FeedMessage
   alias Concentrate.Parser.GTFSRealtimeEnhanced
   alias Concentrate.{TripDescriptor, VehiclePosition, StopTimeUpdate}
 
@@ -92,17 +93,11 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
         StopTimeUpdate.new(trip_id: "trip", stop_id: "stop")
       ]
 
-      encoded = Jason.decode!(encode_groups(group(parsed)))
+      encoded = Protobuf.JSON.decode!(encode_groups(group(parsed)), FeedMessage)
 
       assert %{
-               "entity" => [
-                 %{
-                   "trip_update" => %{
-                     "trip" => %{
-                       "route_pattern_id" => "pattern"
-                     }
-                   }
-                 }
+               entity: [
+                 %{trip_update: %{trip: %{route_pattern_id: "pattern"}}}
                ]
              } = encoded
     end

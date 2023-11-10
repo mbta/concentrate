@@ -180,68 +180,35 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
   describe "decode_trip_update/1" do
     test "can handle boarding status information" do
-      update = %{
-        "trip" => %{},
-        "stop_time_update" => [
-          %{
-            "boarding_status" => "ALL_ABOARD"
-          }
-        ]
-      }
+      update = %{trip: %{}, stop_time_update: [%{boarding_status: "ALL_ABOARD"}]}
 
       [_td, stop_update] = decode_trip_update(update, %Options{})
       assert StopTimeUpdate.status(stop_update) == "ALL_ABOARD"
     end
 
     test "replaces overridden statuses" do
-      update = %{
-        "trip" => %{},
-        "stop_time_update" => [
-          %{
-            "boarding_status" => "NOW BOARDING"
-          }
-        ]
-      }
+      update = %{trip: %{}, stop_time_update: [%{boarding_status: "NOW BOARDING"}]}
 
       [_td, stop_update] = decode_trip_update(update, %Options{})
       assert StopTimeUpdate.status(stop_update) == "Now boarding"
     end
 
     test "does not replace statuses that are not overridden" do
-      update = %{
-        "trip" => %{},
-        "stop_time_update" => [
-          %{
-            "boarding_status" => "UNIQUE STATUS"
-          }
-        ]
-      }
+      update = %{trip: %{}, stop_time_update: [%{boarding_status: "UNIQUE STATUS"}]}
 
       [_td, stop_update] = decode_trip_update(update, %Options{})
       assert StopTimeUpdate.status(stop_update) == "UNIQUE STATUS"
     end
 
     test "can handle platform id information" do
-      update = %{
-        "trip" => %{},
-        "stop_time_update" => [
-          %{
-            "platform_id" => "platform"
-          }
-        ]
-      }
+      update = %{trip: %{}, stop_time_update: [%{platform_id: "platform"}]}
 
       [_td, stop_update] = decode_trip_update(update, %Options{})
       assert StopTimeUpdate.platform_id(stop_update) == "platform"
     end
 
     test "treats a missing schedule relationship as SCHEDULED" do
-      update = %{
-        "trip" => %{},
-        "stop_time_update" => [
-          %{}
-        ]
-      }
+      update = %{trip: %{}, stop_time_update: [%{}]}
 
       [td, stu] = decode_trip_update(update, %Options{})
       assert TripDescriptor.schedule_relationship(td) == :SCHEDULED
@@ -249,14 +216,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     end
 
     test "only includes trip/stop update if it's under max_time" do
-      update = %{
-        "trip" => %{},
-        "stop_time_update" => [
-          %{
-            "departure" => %{"time" => 2}
-          }
-        ]
-      }
+      update = %{trip: %{}, stop_time_update: [%{"departure" => %{"time" => 2}}]}
 
       assert [] = decode_trip_update(update, %Options{max_time: 1})
       assert [_, _] = decode_trip_update(update, %Options{max_time: 2})
@@ -264,13 +224,13 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
     test "keeps the whole trip even if later updates are later than the time" do
       update = %{
-        "trip" => %{},
-        "stop_time_update" => [
+        trip: %{},
+        stop_time_update: [
           %{
-            "arrival" => %{"time" => 1}
+            arrival: %{time: 1}
           },
           %{
-            "departure" => %{"time" => 2}
+            departure: %{time: 2}
           }
         ]
       }
@@ -279,10 +239,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     end
 
     test "drops the TripDescriptor if the route is ignored" do
-      update = %{
-        "trip" => %{"route_id" => "route"},
-        "stop_time_update" => []
-      }
+      update = %{trip: %{route_id: "route"}, stop_time_update: []}
 
       assert [_] = decode_trip_update(update, Helpers.parse_options([]))
       assert [_] = decode_trip_update(update, Helpers.parse_options(routes: ["route"]))
@@ -291,12 +248,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
     test "can include a route_pattern_id in the trip descriptor" do
       map = %{
-        "trip" => %{
-          "trip_id" => "trip",
-          "route_id" => "route",
-          "route_pattern_id" => "pattern"
-        },
-        "stop_time_update" => []
+        trip: %{trip_id: "trip", route_id: "route", route_pattern_id: "pattern"},
+        stop_time_update: []
       }
 
       [td] = decode_trip_update(map, Helpers.parse_options([]))
@@ -305,12 +258,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
     test "includes timestamp if available" do
       map = %{
-        "trip" => %{
-          "trip_id" => "trip",
-          "route_id" => "route"
-        },
-        "timestamp" => 1_534_340_406,
-        "stop_time_update" => []
+        timestamp: 1_534_340_406,
+        trip: %{trip_id: "trip", route_id: "route"},
+        stop_time_update: []
       }
 
       [td] = decode_trip_update(map, Helpers.parse_options([]))
@@ -319,14 +269,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
     test "includes vehicle_id if available" do
       map = %{
-        "trip" => %{
-          "trip_id" => "trip",
-          "route_id" => "route"
-        },
-        "vehicle" => %{
-          "id" => "vehicle_id"
-        },
-        "stop_time_update" => []
+        vehicle: %{id: "vehicle_id"},
+        trip: %{trip_id: "trip", route_id: "route"},
+        stop_time_update: []
       }
 
       [td] = decode_trip_update(map, Helpers.parse_options([]))
@@ -340,13 +285,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     end
 
     test "drops the VehiclePosition if the route is ignored" do
-      map = %{
-        "trip" => %{"route_id" => "route"},
-        "position" => %{
-          "latitude" => 1.0,
-          "longitude" => 1.0
-        }
-      }
+      map = %{position: %{latitude: 1.0, longitude: 1.0}, trip: %{route_id: "route"}}
 
       assert [_, _] = decode_vehicle(map, Helpers.parse_options([]), nil)
       assert [_, _] = decode_vehicle(map, Helpers.parse_options(routes: ["route"]), nil)
@@ -355,12 +294,30 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
     test "decodes a VehiclePosition JSON map" do
       map = %{
-        "congestion_level" => nil,
-        "current_status" => "STOPPED_AT",
-        "current_stop_sequence" => 670,
-        "occupancy_status" => "MANY_SEATS_AVAILABLE",
-        "occupancy_percentage" => 50,
-        "multi_carriage_details" => [
+        position: %{
+          speed: nil,
+          latitude: 42.32951,
+          longitude: -71.11109,
+          bearing: 135,
+          odometer: nil
+        },
+        timestamp: 1_534_340_406,
+        vehicle: %{id: "G-10098", label: "3823-3605", license_plate: nil},
+        stop_id: "70257",
+        trip: %{
+          schedule_relationship: :SCHEDULED,
+          trip_id: "37165437-X",
+          start_date: "20180815",
+          start_time: nil,
+          route_id: "Green-E",
+          direction_id: 0
+        },
+        occupancy_status: MANY_SEATS_AVAILABLE,
+        occupancy_percentage: 50,
+        current_stop_sequence: 670,
+        current_status: :STOPPED_AT,
+        congestion_level: nil,
+        multi_carriage_details: [
           %{
             id: 0,
             label: "main-car",
@@ -375,29 +332,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
             occupancy_percentage: 0,
             carriage_sequence: 2
           }
-        ],
-        "position" => %{
-          "bearing" => 135,
-          "latitude" => 42.32951,
-          "longitude" => -71.11109,
-          "odometer" => nil,
-          "speed" => nil
-        },
-        "stop_id" => "70257",
-        "timestamp" => 1_534_340_406,
-        "trip" => %{
-          "direction_id" => 0,
-          "route_id" => "Green-E",
-          "schedule_relationship" => "SCHEDULED",
-          "start_date" => "20180815",
-          "start_time" => nil,
-          "trip_id" => "37165437-X"
-        },
-        "vehicle" => %{
-          "id" => "G-10098",
-          "label" => "3823-3605",
-          "license_plate" => nil
-        }
+        ]
       }
 
       assert [td, vp] = decode_vehicle(map, Helpers.parse_options([]), nil)
@@ -448,29 +383,26 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
     test "can include a consist in the VehiclePositions struct" do
       map = %{
-        "congestion_level" => nil,
-        "current_status" => "STOPPED_AT",
-        "current_stop_sequence" => 670,
-        "occupancy_status" => nil,
-        "position" => %{
-          "bearing" => 135,
-          "latitude" => 42.32951,
-          "longitude" => -71.11109,
-          "odometer" => nil,
-          "speed" => nil
+        position: %{
+          speed: nil,
+          latitude: 42.32951,
+          longitude: -71.11109,
+          bearing: 135,
+          odometer: nil
         },
-        "stop_id" => "70257",
-        "timestamp" => 1_534_340_406,
-        "trip" => %{},
-        "vehicle" => %{
-          "id" => "G-10098",
-          "label" => "3823-3605",
-          "license_plate" => nil,
-          "consist" => [
-            %{"label" => "3823"},
-            %{"label" => "3605"}
-          ]
-        }
+        timestamp: 1_534_340_406,
+        vehicle: %{
+          id: "G-10098",
+          label: "3823-3605",
+          license_plate: nil,
+          consist: [%{label: "3823"}, %{label: "3605"}]
+        },
+        stop_id: "70257",
+        trip: %{},
+        occupancy_status: nil,
+        current_stop_sequence: 670,
+        current_status: "STOPPED_AT",
+        congestion_level: nil
       }
 
       assert [_td, vp] = decode_vehicle(map, Helpers.parse_options([]), nil)
@@ -504,29 +436,26 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
     test "logs when vehicle timestamp is later than feed timestamp" do
       map = %{
-        "congestion_level" => nil,
-        "current_status" => "STOPPED_AT",
-        "current_stop_sequence" => 670,
-        "occupancy_status" => nil,
-        "position" => %{
-          "bearing" => 135,
-          "latitude" => 42.32951,
-          "longitude" => -71.11109,
-          "odometer" => nil,
-          "speed" => nil
+        position: %{
+          speed: nil,
+          latitude: 42.32951,
+          longitude: -71.11109,
+          bearing: 135,
+          odometer: nil
         },
-        "stop_id" => "70257",
-        "timestamp" => 1_534_340_406,
-        "trip" => %{},
-        "vehicle" => %{
-          "id" => "G-10098",
-          "label" => "3823-3605",
-          "license_plate" => nil,
-          "consist" => [
-            %{"label" => "3823"},
-            %{"label" => "3605"}
-          ]
-        }
+        timestamp: 1_534_340_406,
+        vehicle: %{
+          id: "G-10098",
+          label: "3823-3605",
+          license_plate: nil,
+          consist: [%{"label" => "3823"}, %{"label" => "3605"}]
+        },
+        stop_id: "70257",
+        trip: %{},
+        occupancy_status: nil,
+        current_stop_sequence: 670,
+        current_status: "STOPPED_AT",
+        congestion_level: nil
       }
 
       log =

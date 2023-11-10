@@ -6,6 +6,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.{FeedUpdate, TripDescriptor, VehiclePosition, StopTimeUpdate}
   alias Concentrate.Parser.GTFSRealtime
+  alias TransitRealtime.FeedMessage
 
   describe "encode_groups/1" do
     test "order of trip updates doesn't matter" do
@@ -15,7 +16,8 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         StopTimeUpdate.new(trip_id: "1", arrival_time: 1)
       ]
 
-      decoded = GTFSRealtime.parse(encode_groups(group(initial)), [])
+      encoded = encode_groups(group(initial))
+      decoded = GTFSRealtime.parse(encoded, [])
 
       assert [TripDescriptor.new(trip_id: "1"), StopTimeUpdate.new(trip_id: "1", arrival_time: 1)] ==
                FeedUpdate.updates(decoded)
@@ -72,7 +74,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         )
       ]
 
-      decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
+      decoded = FeedMessage.decode(encode_groups(group(initial)))
 
       assert %{
                entity: [
@@ -129,7 +131,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         StopTimeUpdate.new(trip_id: "trip", stop_id: "stop", departure_time: 1)
       ]
 
-      decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
+      decoded = FeedMessage.decode(encode_groups(group(initial)))
 
       %{
         entity: [
@@ -146,7 +148,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
         StopTimeUpdate.new(trip_id: "trip", stop_id: "stop", departure_time: 1)
       ]
 
-      decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
+      decoded = FeedMessage.decode(encode_groups(group(initial)))
 
       %{
         entity: [

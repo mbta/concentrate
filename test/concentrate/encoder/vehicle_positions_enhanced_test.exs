@@ -10,7 +10,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
   describe "encode/1" do
     test "can take an optional timestamp and partial? flag" do
       data = [
-        VehiclePosition.new(trip_id: "partial", id: "v", latitude: 1, longitude: 1)
+        VehiclePosition.new(trip_id: "partial", id: "v", latitude: 1.0, longitude: 1.0)
       ]
 
       timestamp = System.system_time(:millisecond) / 1_000
@@ -26,16 +26,16 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
         VehiclePosition.new(
           trip_id: "one",
           id: "y1",
-          latitude: 1,
-          longitude: 1,
+          latitude: 1.0,
+          longitude: 1.0,
           status: :IN_TRANSIT_TO
         ),
         TripDescriptor.new(trip_id: "two", vehicle_id: "y2"),
         VehiclePosition.new(
           trip_id: "two",
           id: "y2",
-          latitude: 2,
-          longitude: 2,
+          latitude: 2.0,
+          longitude: 2.0,
           status: :IN_TRANSIT_TO,
           occupancy_status: :FULL,
           occupancy_percentage: 101,
@@ -51,7 +51,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
 
     test "marks vehicles without trips as UNSCHEDULED" do
       data = [
-        VehiclePosition.new(trip_id: "unscheduled", id: "u", latitude: 1, longitude: 1)
+        VehiclePosition.new(trip_id: "unscheduled", id: "u", latitude: 1.0, longitude: 1.0)
       ]
 
       assert [td, _vp] = FeedUpdate.updates(round_trip(data))
@@ -60,7 +60,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
 
     test "does not use a trip if there's no trip ID" do
       data = [
-        VehiclePosition.new(id: "y", latitude: 1, longitude: 1)
+        VehiclePosition.new(id: "y", latitude: 1.0, longitude: 1.0)
       ]
 
       assert [] == FeedUpdate.updates(round_trip(data))

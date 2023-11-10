@@ -5,6 +5,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   @behaviour Concentrate.Parser
   require Logger
 
+  alias TransitRealtime.FeedMessage
+
   alias Concentrate.{
     Alert,
     Alert.InformedEntity,
@@ -25,13 +27,13 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   def parse(binary, opts) when is_binary(binary) and is_list(opts) do
     options = Helpers.parse_options(opts)
 
-    json = Jason.decode!(binary, strings: :copy)
+    json = Protobuf.JSON.decode!(binary, FeedMessage)
 
     feed_timestamp =
       case json do
         %{
-          "header" => %{
-            "timestamp" => feed_timestamp
+          header: %{
+            timestamp: feed_timestamp
           }
         } ->
           feed_timestamp
@@ -43,11 +45,11 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     partial? =
       case json do
         %{
-          "header" => %{
-            "incrementality" => incrementality
+          header: %{
+            incrementality: incrementality
           }
         }
-        when incrementality in [1, "DIFFERENTIAL"] ->
+        when incrementality in [1, :DIFFERENTIAL] ->
           true
 
         _ ->
@@ -68,17 +70,17 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   @spec decode_entities(map(), Helpers.Options.t()) :: [any()]
-  defp decode_entities(%{"alerts" => alerts}, options) do
-    for %{"id" => id} = alert <- alerts,
-        decoded <- decode_feed_entity(%{"id" => id, "alert" => alert}, options, nil) do
+  defp decode_entities(%{alert: alerts}, options) do
+    for %{id: id} = alert <- alerts,
+        decoded <- decode_feed_entity(%{id: id, alert: alert}, options, nil) do
       decoded
     end
   end
 
-  defp decode_entities(%{"entity" => entities} = json, options) do
+  defp decode_entities(%{entity: entities} = json, options) do
     %{
-      "header" => %{
-        "timestamp" => feed_timestamp
+      header: %{
+        timestamp: feed_timestamp
       }
     } = json
 
@@ -89,33 +91,33 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   @spec decode_feed_entity(map(), Helpers.Options.t(), integer | nil) :: [any()]
-  defp decode_feed_entity(%{"trip_update" => %{} = trip_update}, options, _feed_timestamp) do
+  defp decode_feed_entity(%{trip_update: %{} = trip_update}, options, _feed_timestamp) do
     decode_trip_update(trip_update, options)
   end
 
-  defp decode_feed_entity(%{"vehicle" => %{} = vehicle}, options, feed_timestamp) do
+  defp decode_feed_entity(%{vehicle: %{} = vehicle}, options, feed_timestamp) do
     decode_vehicle(vehicle, options, feed_timestamp)
   end
 
-  defp decode_feed_entity(%{"id" => id, "alert" => %{} = alert}, _options, _feed_timestamp)
-       when not is_map_key(alert, "closed_timestamp") do
+  defp decode_feed_entity(%{id: id, alert: %{} = alert}, _options, _feed_timestamp)
+       when not is_map_key(alert, :closed_timestamp) do
     [
       Alert.new(
         id: id,
         effect: alert_effect(Map.get(alert, "effect")),
         active_period:
           Enum.map(
-            Map.get(alert, "active_period") || @default_active_period,
+            get_in(alert, [Access.key(:active_period)]) || @default_active_period,
             &decode_active_period/1
           ),
         informed_entity:
-          Enum.map(Map.get(alert, "informed_entity") || [], &decode_informed_entity/1)
+          Enum.map(get_in(alert, [Access.key(:informed_entity)]) || [], &decode_informed_entity/1)
       )
     ]
   end
 
   defp decode_feed_entity(entity, _opts, feed_timestamp) do
-    Logger.warn("event=malformed_entity timestamp=#{feed_timestamp} #{inspect(entity)}")
+    Logger.warning("event=malformed_entity timestamp=#{feed_timestamp} #{inspect(entity)}")
     []
   end
 
@@ -126,13 +128,13 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   defp decode_stop_updates(
          td,
-         %{"stop_time_update" => [update | _] = updates} = trip_update,
+         %{stop_time_update: [update | _] = updates} = trip_update,
          options
        ) do
     max_time = options.max_time
 
-    {arrival_time, _} = time_from_event(Map.get(update, "arrival"))
-    {departure_time, _} = time_from_event(Map.get(update, "departure"))
+    {arrival_time, _} = time_from_event(get_in(update, [Access.key(:arrival)]))
+    {departure_time, _} = time_from_event(get_in(update, [Access.key(:departure)]))
 
     cond do
       td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) ->
@@ -144,22 +146,22 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
       true ->
         stop_updates =
           for stu <- updates do
-            {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, "arrival"))
-            {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
+            {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, :arrival))
+            {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, :departure))
 
-            boarding_status = decode_boarding_status(Map.get(stu, "boarding_status"))
+            boarding_status = decode_boarding_status(Map.get(stu, :boarding_status))
 
             StopTimeUpdate.new(
               trip_id:
-                if(descriptor = Map.get(trip_update, "trip"), do: Map.get(descriptor, "trip_id")),
-              stop_id: Map.get(stu, "stop_id"),
-              stop_sequence: Map.get(stu, "stop_sequence"),
-              schedule_relationship: schedule_relationship(Map.get(stu, "schedule_relationship")),
+                if(descriptor = Map.get(trip_update, :trip), do: Map.get(descriptor, :trip_id)),
+              stop_id: Map.get(stu, :stop_id),
+              stop_sequence: Map.get(stu, :stop_sequence),
+              schedule_relationship: Map.get(stu, :schedule_relationship),
               arrival_time: arrival_time,
               departure_time: departure_time,
               uncertainty: arrival_uncertainty || departure_uncertainty,
               status: boarding_status,
-              platform_id: Map.get(stu, "platform_id")
+              platform_id: Map.get(stu, :platform_id)
             )
           end
 
@@ -167,7 +169,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     end
   end
 
-  defp decode_stop_updates(td, %{"stop_time_update" => []}, options) do
+  defp decode_stop_updates(td, %{stop_time_update: []}, options) do
     if td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) do
       []
     else
@@ -185,10 +187,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   @spec decode_vehicle(map(), Helpers.Options.t(), integer | nil) :: [any()]
   def decode_vehicle(vp, options, feed_timestamp) do
-    position = Map.get(vp, "position", %{})
-    vehicle = Map.get(vp, "vehicle", %{})
-    id = Map.get(vehicle, "id")
-    timestamp = Map.get(vp, "timestamp")
+    position = Map.get(vp, :position, %{})
+    vehicle = Map.get(vp, :vehicle, %{})
+    id = Map.get(vehicle, :id)
+    timestamp = Map.get(vp, :timestamp)
 
     Helpers.log_future_vehicle_timestamp(options, feed_timestamp, timestamp, id)
 
@@ -200,20 +202,20 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
             VehiclePosition.new(
               id: id,
               trip_id: TripDescriptor.trip_id(trip),
-              stop_id: Map.get(vp, "stop_id"),
-              label: Map.get(vehicle, "label"),
-              license_plate: Map.get(vehicle, "license_plate"),
-              latitude: Map.get(position, "latitude"),
-              longitude: Map.get(position, "longitude"),
-              bearing: Map.get(position, "bearing"),
-              speed: Map.get(position, "speed"),
-              odometer: Map.get(position, "odometer"),
-              status: vehicle_status(Map.get(vp, "current_status")),
-              stop_sequence: Map.get(vp, "current_stop_sequence"),
+              stop_id: Map.get(vp, :stop_id),
+              label: Map.get(vehicle, :label),
+              license_plate: Map.get(vehicle, :license_plate),
+              latitude: Map.get(position, :latitude),
+              longitude: Map.get(position, :longitude),
+              bearing: Map.get(position, :bearing),
+              speed: Map.get(position, :speed),
+              odometer: Map.get(position, :odometer),
+              status: Map.get(vp, :current_status),
+              stop_sequence: Map.get(vp, :current_stop_sequence),
               last_updated: timestamp,
-              consist: decode_consist(Map.get(vehicle, "consist")),
-              occupancy_status: occupancy_status(Map.get(vp, "occupancy_status")),
-              occupancy_percentage: Map.get(vp, "occupancy_percentage"),
+              consist: decode_consist(Map.get(vehicle, :consist)),
+              occupancy_status: Map.get(vp, :occupancy_status),
+              occupancy_percentage: Map.get(vp, :occupancy_percentage),
               multi_carriage_details: Helpers.parse_multi_carriage_details(vp)
             )
           ]
@@ -226,23 +228,23 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     end
   end
 
-  defp decode_trip_descriptor(%{"trip" => trip} = descriptor) do
+  defp decode_trip_descriptor(%{trip: trip} = descriptor) do
     vehicle_id =
       case descriptor do
-        %{"vehicle" => %{"id" => vehicle_id}} -> vehicle_id
+        %{vehicle: %{id: vehicle_id}} -> vehicle_id
         _ -> nil
       end
 
     [
       TripDescriptor.new(
-        trip_id: Map.get(trip, "trip_id"),
-        route_id: Map.get(trip, "route_id"),
-        route_pattern_id: Map.get(trip, "route_pattern_id"),
-        direction_id: Map.get(trip, "direction_id"),
-        start_date: date(Map.get(trip, "start_date")),
-        start_time: Map.get(trip, "start_time"),
-        schedule_relationship: schedule_relationship(Map.get(trip, "schedule_relationship")),
-        timestamp: Map.get(descriptor, "timestamp"),
+        trip_id: Map.get(trip, :trip_id),
+        route_id: Map.get(trip, :route_id),
+        route_pattern_id: Map.get(trip, :route_pattern_id),
+        direction_id: Map.get(trip, :direction_id),
+        start_date: date(Map.get(trip, :start_date)),
+        start_time: Map.get(trip, :start_time),
+        schedule_relationship: Map.get(trip, :schedule_relationship) || :SCHEDULED,
+        timestamp: Map.get(descriptor, :timestamp),
         vehicle_id: vehicle_id
       )
     ]
@@ -258,7 +260,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   defp decode_consist(consist) do
     for c <- consist do
-      VehiclePositionConsist.new(label: Map.get(c, "label"))
+      VehiclePositionConsist.new(label: Map.get(c, :label))
     end
   end
 
@@ -280,29 +282,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp time_from_event(nil), do: {nil, nil}
-  defp time_from_event(%{"time" => time} = map), do: {time, Map.get(map, "uncertainty", nil)}
-
-  defp schedule_relationship(nil), do: :SCHEDULED
-
-  for relationship <- ~w(SCHEDULED ADDED UNSCHEDULED CANCELED SKIPPED NO_DATA)a do
-    defp schedule_relationship(unquote(Atom.to_string(relationship))), do: unquote(relationship)
-  end
-
-  # default
-  defp vehicle_status(nil), do: nil
-
-  for status <- ~w(INCOMING_AT STOPPED_AT IN_TRANSIT_TO)a do
-    defp vehicle_status(unquote(Atom.to_string(status))), do: unquote(status)
-  end
-
-  defp occupancy_status(nil), do: nil
-
-  for status <-
-        ~w(EMPTY MANY_SEATS_AVAILABLE FEW_SEATS_AVAILABLE STANDING_ROOM_ONLY
-           CRUSHED_STANDING_ROOM_ONLY FULL NOT_ACCEPTING_PASSENGERS
-           NO_DATA_AVAILABLE NOT_BOARDABLE)a do
-    defp occupancy_status(unquote(Atom.to_string(status))), do: unquote(status)
-  end
+  defp time_from_event(%{time: time} = map), do: {time, Map.get(map, :uncertainty, nil)}
 
   for effect <- ~w(
         NO_SERVICE
@@ -329,10 +309,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp decode_active_period(map) do
-    start = Map.get(map, "start") || 0
+    start = Map.get(map, :start) || 0
 
     stop =
-      if stop = Map.get(map, "end") do
+      if stop = Map.get(map, :end) do
         stop
       else
         # 2 ^ 32 - 1
@@ -343,15 +323,15 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp decode_informed_entity(map) do
-    trip = Map.get(map, "trip") || %{}
+    trip = Map.get(map, :trip) || %{}
 
     InformedEntity.new(
-      trip_id: Map.get(trip, "trip_id"),
-      route_id: Map.get(map, "route_id"),
-      direction_id: Map.get(trip, "direction_id") || Map.get(map, "direction_id"),
-      route_type: Map.get(map, "route_type"),
-      stop_id: Map.get(map, "stop_id"),
-      activities: Map.get(map, "activities") || []
+      trip_id: Map.get(trip, :trip_id),
+      route_id: Map.get(map, :route_id),
+      direction_id: Map.get(trip, :direction_id) || Map.get(map, :direction_id),
+      route_type: Map.get(map, :route_type),
+      stop_id: Map.get(map, :stop_id),
+      activities: Map.get(map, :activities) || []
     )
   end
 end

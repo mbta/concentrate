@@ -4,6 +4,9 @@ defmodule Concentrate.Producer.MqttTest do
 
   alias Concentrate.Producer.Mqtt
 
+  @moduletag timeout: 1000
+  @moduletag :mqtt
+
   setup do
     old_level = Logger.level()
     on_exit(fn -> Logger.configure(level: old_level) end)

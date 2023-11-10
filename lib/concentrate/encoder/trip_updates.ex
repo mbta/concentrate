@@ -5,15 +5,17 @@ defmodule Concentrate.Encoder.TripUpdates do
   @behaviour Concentrate.Encoder
   alias Concentrate.StopTimeUpdate
   import Concentrate.Encoder.GTFSRealtimeHelpers
+  alias TransitRealtime, as: GTFS
+  alias TransitRealtime.FeedMessage
 
   @impl Concentrate.Encoder
   def encode_groups(groups, opts \\ []) when is_list(groups) do
-    message = %{
+    message = %FeedMessage{
       header: feed_header(opts),
       entity: trip_update_feed_entity(groups, &build_stop_time_update/1)
     }
 
-    :gtfs_realtime_proto.encode_msg(message, :FeedMessage)
+    FeedMessage.encode(message)
   end
 
   def build_stop_time_update(update) do
@@ -23,16 +25,16 @@ defmodule Concentrate.Encoder.TripUpdates do
     departure =
       stop_time_event(StopTimeUpdate.departure_time(update), StopTimeUpdate.uncertainty(update))
 
-    relationship = schedule_relationship(StopTimeUpdate.schedule_relationship(update))
+    relationship = StopTimeUpdate.schedule_relationship(update)
 
     if is_map(arrival) or is_map(departure) or relationship != nil do
-      drop_nil_values(%{
+      %GTFS.TripUpdate.StopTimeUpdate{
         stop_id: StopTimeUpdate.stop_id(update),
         stop_sequence: StopTimeUpdate.stop_sequence(update),
         arrival: arrival,
         departure: departure,
         schedule_relationship: relationship
-      })
+      }
     else
       :skip
     end

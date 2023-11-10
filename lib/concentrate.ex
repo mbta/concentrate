@@ -10,6 +10,8 @@ defmodule Concentrate do
     |> parse_json_configuration
     |> Enum.each(&update_configuration/1)
 
+    Protobuf.load_extensions()
+
     Concentrate.Supervisor.start_link()
   end
 
@@ -250,4 +252,12 @@ defmodule Concentrate do
   defp update_configuration({key, value}) do
     Application.put_env(:concentrate, key, value)
   end
+
+  def atomize(thing) when is_map(thing) do
+    for {key, value} <- thing, into: %{} do
+      {String.to_atom(key), atomize(value)}
+    end
+  end
+
+  def atomize(thing), do: thing
 end

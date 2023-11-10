@@ -19,7 +19,7 @@
         "position": {
           "longitude": -70.9466909,
           "latitude": 42.2020091,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -38,7 +38,7 @@
         "position": {
           "longitude": -71.0644339,
           "latitude": 42.3329576,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -57,7 +57,7 @@
         "position": {
           "longitude": -71.1190722,
           "latitude": 42.334259,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -76,7 +76,7 @@
         "position": {
           "longitude": -71.1449572,
           "latitude": 42.520133,
-          "bearing": -1
+          "bearing": -1.0
         }
       },
       "is_deleted": false,
@@ -95,7 +95,7 @@
         "position": {
           "longitude": -71.0588145,
           "latitude": 42.3399736,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -114,7 +114,7 @@
         "position": {
           "longitude": -71.0733158,
           "latitude": 42.3886475,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -133,7 +133,7 @@
         "position": {
           "longitude": -71.03799,
           "latitude": 42.345731,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -152,7 +152,7 @@
         "position": {
           "longitude": -71.0640577,
           "latitude": 42.3509296,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -171,7 +171,7 @@
         "position": {
           "longitude": -71.0732424,
           "latitude": 42.385975,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -190,7 +190,7 @@
         "position": {
           "longitude": -71.0423268,
           "latitude": 42.348199,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -209,7 +209,7 @@
         "position": {
           "longitude": -71.2069094,
           "latitude": 42.3302989,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -228,7 +228,7 @@
         "position": {
           "longitude": -71.0726722,
           "latitude": 42.290327,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -247,7 +247,7 @@
         "position": {
           "longitude": -71.0957659,
           "latitude": 42.348935,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -266,7 +266,7 @@
         "position": {
           "longitude": -71.0815409,
           "latitude": 42.3456472,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -285,7 +285,7 @@
         "position": {
           "longitude": -71.0056683,
           "latitude": 42.2515161,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -304,7 +304,7 @@
         "position": {
           "longitude": -71.0737804,
           "latitude": 42.3893518,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -323,7 +323,7 @@
         "position": {
           "longitude": -70.9472507,
           "latitude": 42.5120543,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -342,7 +342,7 @@
         "position": {
           "longitude": -71.147861,
           "latitude": 42.3499021,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -361,7 +361,7 @@
         "position": {
           "longitude": -71.0653308,
           "latitude": 42.3319101,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -380,7 +380,7 @@
         "position": {
           "longitude": -71.0645667,
           "latitude": 42.3324093,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -399,7 +399,7 @@
         "position": {
           "longitude": -71.0843858,
           "latitude": 42.2807516,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -418,7 +418,7 @@
         "position": {
           "longitude": -71.2033502,
           "latitude": 42.3523309,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -437,7 +437,7 @@
         "position": {
           "longitude": -71.0645422,
           "latitude": 42.3321467,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -456,7 +456,7 @@
         "position": {
           "longitude": -71.0939041,
           "latitude": 42.3313722,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -475,7 +475,7 @@
         "position": {
           "longitude": -71.1004109,
           "latitude": 42.3616099,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -494,7 +494,7 @@
         "position": {
           "longitude": -71.1190463,
           "latitude": 42.3738296,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -513,7 +513,7 @@
         "position": {
           "longitude": -71.0612011,
           "latitude": 42.3000468,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -532,7 +532,7 @@
         "position": {
           "longitude": -71.1100286,
           "latitude": 42.3330491,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -551,7 +551,7 @@
         "position": {
           "longitude": -71.1325566,
           "latitude": 42.2439628,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -570,7 +570,7 @@
         "position": {
           "longitude": -71.0975292,
           "latitude": 42.3482048,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -589,7 +589,7 @@
         "position": {
           "longitude": -71.0889546,
           "latitude": 42.4055925,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -608,7 +608,7 @@
         "position": {
           "longitude": -71.0759788,
           "latitude": 42.3835135,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -627,7 +627,7 @@
         "position": {
           "longitude": -71.0643689,
           "latitude": 42.3414798,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -646,7 +646,7 @@
         "position": {
           "longitude": -71.1053395,
           "latitude": 42.3469348,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -665,7 +665,7 @@
         "position": {
           "longitude": -71.1321602,
           "latitude": 42.2373968,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -684,7 +684,7 @@
         "position": {
           "longitude": -71.0996523,
           "latitude": 42.3871805,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -703,7 +703,7 @@
         "position": {
           "longitude": -71.0942499,
           "latitude": 42.5193882,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -722,7 +722,7 @@
         "position": {
           "longitude": -71.2378967,
           "latitude": 42.2739113,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -741,7 +741,7 @@
         "position": {
           "longitude": -71.0557317,
           "latitude": 42.3528335,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -760,7 +760,7 @@
         "position": {
           "longitude": -71.0828477,
           "latitude": 42.3080607,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -779,7 +779,7 @@
         "position": {
           "longitude": -71.0659378,
           "latitude": 42.3150602,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -798,7 +798,7 @@
         "position": {
           "longitude": -71.2015294,
           "latitude": 42.3529205,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -817,7 +817,7 @@
         "position": {
           "longitude": -70.9439482,
           "latitude": 42.2412539,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -836,7 +836,7 @@
         "position": {
           "longitude": -70.9768274,
           "latitude": 42.2607545,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -855,7 +855,7 @@
         "position": {
           "longitude": -70.8449388,
           "latitude": 42.507662,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -874,7 +874,7 @@
         "position": {
           "longitude": -71.1610001,
           "latitude": 42.3631529,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -893,7 +893,7 @@
         "position": {
           "longitude": -71.0677466,
           "latitude": 42.431045,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -912,7 +912,7 @@
         "position": {
           "longitude": -71.1191576,
           "latitude": 42.3761917,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -931,7 +931,7 @@
         "position": {
           "longitude": -71.0587792,
           "latitude": 42.3398534,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -950,7 +950,7 @@
         "position": {
           "longitude": -71.1278099,
           "latitude": 42.3926949,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -969,7 +969,7 @@
         "position": {
           "longitude": -71.045158,
           "latitude": 42.3354374,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -988,7 +988,7 @@
         "position": {
           "longitude": -71.0601271,
           "latitude": 42.3534617,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -1007,7 +1007,7 @@
         "position": {
           "longitude": -71.0392276,
           "latitude": 42.3807158,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -1026,7 +1026,7 @@
         "position": {
           "longitude": -71.009675,
           "latitude": 42.2600423,
-          "bearing": -1
+          "bearing": -1.0
         }
       },
       "is_deleted": false,
@@ -1045,7 +1045,7 @@
         "position": {
           "longitude": -71.0761238,
           "latitude": 42.383941,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -1064,7 +1064,7 @@
         "position": {
           "longitude": -71.0650916,
           "latitude": 42.3324035,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1083,7 +1083,7 @@
         "position": {
           "longitude": -71.1937038,
           "latitude": 42.2071438,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1102,7 +1102,7 @@
         "position": {
           "longitude": -71.2645954,
           "latitude": 42.3724503,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -1121,7 +1121,7 @@
         "position": {
           "longitude": -71.2362942,
           "latitude": 42.306712,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -1140,7 +1140,7 @@
         "position": {
           "longitude": -70.9676509,
           "latitude": 42.460954,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -1159,7 +1159,7 @@
         "position": {
           "longitude": -71.1197041,
           "latitude": 42.3764977,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -1178,7 +1178,7 @@
         "position": {
           "longitude": -71.1227219,
           "latitude": 42.4121964,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -1197,7 +1197,7 @@
         "position": {
           "longitude": -71.1628016,
           "latitude": 42.2565112,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1216,7 +1216,7 @@
         "position": {
           "longitude": -71.056223,
           "latitude": 42.3573781,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1235,7 +1235,7 @@
         "position": {
           "longitude": -71.0743094,
           "latitude": 42.3900946,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -1254,7 +1254,7 @@
         "position": {
           "longitude": -71.0581509,
           "latitude": 42.3631923,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1273,7 +1273,7 @@
         "position": {
           "longitude": -71.0380247,
           "latitude": 42.3896272,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -1292,7 +1292,7 @@
         "position": {
           "longitude": -71.0222652,
           "latitude": 42.3853533,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -1311,7 +1311,7 @@
         "position": {
           "longitude": -71.0641958,
           "latitude": 42.286099,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -1330,7 +1330,7 @@
         "position": {
           "longitude": -70.9915403,
           "latitude": 42.4128261,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1349,7 +1349,7 @@
         "position": {
           "longitude": -71.0092969,
           "latitude": 42.2597398,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -1368,7 +1368,7 @@
         "position": {
           "longitude": -71.0649311,
           "latitude": 42.3315602,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -1387,7 +1387,7 @@
         "position": {
           "longitude": -71.0746547,
           "latitude": 42.3899593,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -1406,7 +1406,7 @@
         "position": {
           "longitude": -71.1095832,
           "latitude": 42.3028471,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -1425,7 +1425,7 @@
         "position": {
           "longitude": -70.987293,
           "latitude": 42.423569,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1444,7 +1444,7 @@
         "position": {
           "longitude": -71.1093266,
           "latitude": 42.3029851,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -1463,7 +1463,7 @@
         "position": {
           "longitude": -71.0734353,
           "latitude": 42.3872928,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1482,7 +1482,7 @@
         "position": {
           "longitude": -71.1219627,
           "latitude": 42.3723552,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -1501,7 +1501,7 @@
         "position": {
           "longitude": -70.97556,
           "latitude": 42.4544262,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -1520,7 +1520,7 @@
         "position": {
           "longitude": -71.1125666,
           "latitude": 42.3014202,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -1539,7 +1539,7 @@
         "position": {
           "longitude": -71.1117903,
           "latitude": 42.3258933,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -1558,7 +1558,7 @@
         "position": {
           "longitude": -71.185871,
           "latitude": 42.3642862,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -1577,7 +1577,7 @@
         "position": {
           "longitude": -71.0299898,
           "latitude": 42.4311739,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1596,7 +1596,7 @@
         "position": {
           "longitude": -71.1006341,
           "latitude": 42.3617291,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -1615,7 +1615,7 @@
         "position": {
           "longitude": -71.0653918,
           "latitude": 42.3405206,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -1634,7 +1634,7 @@
         "position": {
           "longitude": -71.1135427,
           "latitude": 42.3005144,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -1653,7 +1653,7 @@
         "position": {
           "longitude": -71.0799299,
           "latitude": 42.328521,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -1672,7 +1672,7 @@
         "position": {
           "longitude": -71.0889695,
           "latitude": 42.3805989,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -1691,7 +1691,7 @@
         "position": {
           "longitude": -71.0694568,
           "latitude": 42.3318529,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -1710,7 +1710,7 @@
         "position": {
           "longitude": -71.0093452,
           "latitude": 42.2598501,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -1729,7 +1729,7 @@
         "position": {
           "longitude": -71.0527299,
           "latitude": 42.4313423,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -1748,7 +1748,7 @@
         "position": {
           "longitude": -71.0584281,
           "latitude": 42.3400838,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -1767,7 +1767,7 @@
         "position": {
           "longitude": -71.0270586,
           "latitude": 42.3931433,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -1786,7 +1786,7 @@
         "position": {
           "longitude": -71.0644758,
           "latitude": 42.3406785,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1805,7 +1805,7 @@
         "position": {
           "longitude": -71.0643799,
           "latitude": 42.3406363,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -1824,7 +1824,7 @@
         "position": {
           "longitude": -71.0996405,
           "latitude": 42.3228832,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -1843,7 +1843,7 @@
         "position": {
           "longitude": -71.0795088,
           "latitude": 42.3285504,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -1862,7 +1862,7 @@
         "position": {
           "longitude": -71.1524401,
           "latitude": 42.3748791,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -1881,7 +1881,7 @@
         "position": {
           "longitude": -71.0640516,
           "latitude": 42.3487081,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -1900,7 +1900,7 @@
         "position": {
           "longitude": -70.8966368,
           "latitude": 42.5247568,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -1919,7 +1919,7 @@
         "position": {
           "longitude": -71.1088713,
           "latitude": 42.3035966,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1938,7 +1938,7 @@
         "position": {
           "longitude": -71.0897699,
           "latitude": 42.3359264,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -1957,7 +1957,7 @@
         "position": {
           "longitude": -70.959202,
           "latitude": 42.4885121,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1976,7 +1976,7 @@
         "position": {
           "longitude": -71.1221841,
           "latitude": 42.2919698,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -1995,7 +1995,7 @@
         "position": {
           "longitude": -71.1068815,
           "latitude": 42.3007422,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -2014,7 +2014,7 @@
         "position": {
           "longitude": -71.0638591,
           "latitude": 42.4249183,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -2033,7 +2033,7 @@
         "position": {
           "longitude": -71.1953718,
           "latitude": 42.4191716,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -2052,7 +2052,7 @@
         "position": {
           "longitude": -71.0932927,
           "latitude": 42.2741539,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -2071,7 +2071,7 @@
         "position": {
           "longitude": -71.2570575,
           "latitude": 42.1437168,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -2090,7 +2090,7 @@
         "position": {
           "longitude": -71.0733116,
           "latitude": 42.3875742,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -2109,7 +2109,7 @@
         "position": {
           "longitude": -71.1089178,
           "latitude": 42.3032049,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -2128,7 +2128,7 @@
         "position": {
           "longitude": -71.0748352,
           "latitude": 42.3901135,
-          "bearing": -1
+          "bearing": -1.0
         }
       },
       "is_deleted": false,
@@ -2147,7 +2147,7 @@
         "position": {
           "longitude": -71.05808,
           "latitude": 42.3402952,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -2166,7 +2166,7 @@
         "position": {
           "longitude": -70.9930839,
           "latitude": 42.4132844,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -2185,7 +2185,7 @@
         "position": {
           "longitude": -71.0588085,
           "latitude": 42.3400284,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -2204,7 +2204,7 @@
         "position": {
           "longitude": -71.084153,
           "latitude": 42.3297053,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -2223,7 +2223,7 @@
         "position": {
           "longitude": -71.0728147,
           "latitude": 42.3331682,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -2242,7 +2242,7 @@
         "position": {
           "longitude": -71.0994506,
           "latitude": 42.27038,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -2261,7 +2261,7 @@
         "position": {
           "longitude": -71.0403827,
           "latitude": 42.3472798,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -2280,7 +2280,7 @@
         "position": {
           "longitude": -71.0695336,
           "latitude": 42.3951755,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -2299,7 +2299,7 @@
         "position": {
           "longitude": -71.1147305,
           "latitude": 42.2993873,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -2318,7 +2318,7 @@
         "position": {
           "longitude": -71.1158338,
           "latitude": 42.3096393,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -2337,7 +2337,7 @@
         "position": {
           "longitude": -71.1186513,
           "latitude": 42.3747775,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -2356,7 +2356,7 @@
         "position": {
           "longitude": -71.0572923,
           "latitude": 42.3126082,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -2375,7 +2375,7 @@
         "position": {
           "longitude": -71.0155862,
           "latitude": 42.1214679,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -2394,7 +2394,7 @@
         "position": {
           "longitude": -71.0582868,
           "latitude": 42.3298807,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -2413,7 +2413,7 @@
         "position": {
           "longitude": -71.0574023,
           "latitude": 42.3410928,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -2432,7 +2432,7 @@
         "position": {
           "longitude": -71.0835079,
           "latitude": 42.3295651,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -2451,7 +2451,7 @@
         "position": {
           "longitude": -71.1582384,
           "latitude": 42.2809704,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -2470,7 +2470,7 @@
         "position": {
           "longitude": -70.9742443,
           "latitude": 42.4553791,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -2489,7 +2489,7 @@
         "position": {
           "longitude": -71.0034286,
           "latitude": 42.2407817,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -2508,7 +2508,7 @@
         "position": {
           "longitude": -70.9930054,
           "latitude": 42.411471,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -2527,7 +2527,7 @@
         "position": {
           "longitude": -71.0919658,
           "latitude": 42.2823464,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -2546,7 +2546,7 @@
         "position": {
           "longitude": -71.1192027,
           "latitude": 42.3736967,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -2565,7 +2565,7 @@
         "position": {
           "longitude": -71.1238111,
           "latitude": 42.4128032,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -2584,7 +2584,7 @@
         "position": {
           "longitude": -71.1777018,
           "latitude": 42.3198889,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -2603,7 +2603,7 @@
         "position": {
           "longitude": -71.0738645,
           "latitude": 42.3896765,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -2622,7 +2622,7 @@
         "position": {
           "longitude": -71.0091943,
           "latitude": 42.260048,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -2641,7 +2641,7 @@
         "position": {
           "longitude": -71.0739769,
           "latitude": 42.4266556,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -2660,7 +2660,7 @@
         "position": {
           "longitude": -71.0764607,
           "latitude": 42.3845139,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -2679,7 +2679,7 @@
         "position": {
           "longitude": -71.0995586,
           "latitude": 42.3143965,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -2698,7 +2698,7 @@
         "position": {
           "longitude": -71.1001199,
           "latitude": 42.4814005,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -2717,7 +2717,7 @@
         "position": {
           "longitude": -71.0891284,
           "latitude": 42.336243,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -2736,7 +2736,7 @@
         "position": {
           "longitude": -71.1102028,
           "latitude": 42.3026895,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -2755,7 +2755,7 @@
         "position": {
           "longitude": -71.0835706,
           "latitude": 42.3296437,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -2774,7 +2774,7 @@
         "position": {
           "longitude": -71.0891159,
           "latitude": 42.3363627,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -2793,7 +2793,7 @@
         "position": {
           "longitude": -71.0738814,
           "latitude": 42.3878575,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -2812,7 +2812,7 @@
         "position": {
           "longitude": -71.1080983,
           "latitude": 42.3027162,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -2831,7 +2831,7 @@
         "position": {
           "longitude": -71.0570178,
           "latitude": 42.3424538,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -2850,7 +2850,7 @@
         "position": {
           "longitude": -71.0407541,
           "latitude": 42.3481182,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -2869,7 +2869,7 @@
         "position": {
           "longitude": -71.0393293,
           "latitude": 42.3356213,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -2888,7 +2888,7 @@
         "position": {
           "longitude": -71.0276098,
           "latitude": 42.1563948,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -2907,7 +2907,7 @@
         "position": {
           "longitude": -71.058153,
           "latitude": 42.3404768,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -2926,7 +2926,7 @@
         "position": {
           "longitude": -71.0646429,
           "latitude": 42.3722687,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -2945,7 +2945,7 @@
         "position": {
           "longitude": -71.0638536,
           "latitude": 42.3407814,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -2964,7 +2964,7 @@
         "position": {
           "longitude": -71.0167075,
           "latitude": 42.2425459,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -2983,7 +2983,7 @@
         "position": {
           "longitude": -70.9740486,
           "latitude": 42.4555138,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3002,7 +3002,7 @@
         "position": {
           "longitude": -71.0830096,
           "latitude": 42.3277934,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -3021,7 +3021,7 @@
         "position": {
           "longitude": -71.0856213,
           "latitude": 42.3624994,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -3040,7 +3040,7 @@
         "position": {
           "longitude": -71.0739984,
           "latitude": 42.3892129,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -3059,7 +3059,7 @@
         "position": {
           "longitude": -71.0644613,
           "latitude": 42.3405285,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3078,7 +3078,7 @@
         "position": {
           "longitude": -71.1082157,
           "latitude": 42.338043,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -3097,7 +3097,7 @@
         "position": {
           "longitude": -71.0585466,
           "latitude": 42.3400412,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -3116,7 +3116,7 @@
         "position": {
           "longitude": -71.0097123,
           "latitude": 42.2601523,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -3135,7 +3135,7 @@
         "position": {
           "longitude": -71.1173751,
           "latitude": 42.3943316,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3154,7 +3154,7 @@
         "position": {
           "longitude": -71.0733308,
           "latitude": 42.3887632,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -3173,7 +3173,7 @@
         "position": {
           "longitude": -71.0643208,
           "latitude": 42.3323277,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -3192,7 +3192,7 @@
         "position": {
           "longitude": -71.0863642,
           "latitude": 42.3371796,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -3211,7 +3211,7 @@
         "position": {
           "longitude": -71.0049109,
           "latitude": 42.2521647,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -3230,7 +3230,7 @@
         "position": {
           "longitude": -71.0585636,
           "latitude": 42.3401294,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -3249,7 +3249,7 @@
         "position": {
           "longitude": -71.0939398,
           "latitude": 42.3126413,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -3268,7 +3268,7 @@
         "position": {
           "longitude": -71.0668711,
           "latitude": 42.3946832,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -3287,7 +3287,7 @@
         "position": {
           "longitude": -71.0773356,
           "latitude": 42.3712133,
-          "bearing": -1
+          "bearing": -1.0
         }
       },
       "is_deleted": false,
@@ -3306,7 +3306,7 @@
         "position": {
           "longitude": -71.0849932,
           "latitude": 42.3308264,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -3325,7 +3325,7 @@
         "position": {
           "longitude": -71.0034988,
           "latitude": 42.4090101,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -3344,7 +3344,7 @@
         "position": {
           "longitude": -71.1245991,
           "latitude": 42.3674603,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -3363,7 +3363,7 @@
         "position": {
           "longitude": -71.0315046,
           "latitude": 42.3385522,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3382,7 +3382,7 @@
         "position": {
           "longitude": -71.0852333,
           "latitude": 42.3290773,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -3401,7 +3401,7 @@
         "position": {
           "longitude": -71.1705833,
           "latitude": 42.2561474,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -3420,7 +3420,7 @@
         "position": {
           "longitude": -70.9390861,
           "latitude": 42.5407773,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -3439,7 +3439,7 @@
         "position": {
           "longitude": -71.0589386,
           "latitude": 42.3413982,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3458,7 +3458,7 @@
         "position": {
           "longitude": -70.9518069,
           "latitude": 42.4643567,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -3477,7 +3477,7 @@
         "position": {
           "longitude": -71.0899413,
           "latitude": 42.4220828,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3496,7 +3496,7 @@
         "position": {
           "longitude": -71.0587809,
           "latitude": 42.3403707,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -3515,7 +3515,7 @@
         "position": {
           "longitude": -71.0341002,
           "latitude": 42.392906,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -3534,7 +3534,7 @@
         "position": {
           "longitude": -71.0584012,
           "latitude": 42.3648944,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -3553,7 +3553,7 @@
         "position": {
           "longitude": -71.0899052,
           "latitude": 42.3775004,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3572,7 +3572,7 @@
         "position": {
           "longitude": -71.0654135,
           "latitude": 42.3977722,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -3591,7 +3591,7 @@
         "position": {
           "longitude": -71.0914457,
           "latitude": 42.2673449,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -3610,7 +3610,7 @@
         "position": {
           "longitude": -71.0574089,
           "latitude": 42.3302944,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3629,7 +3629,7 @@
         "position": {
           "longitude": -71.0643583,
           "latitude": 42.3411626,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -3648,7 +3648,7 @@
         "position": {
           "longitude": -71.1243448,
           "latitude": 42.2546609,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -3667,7 +3667,7 @@
         "position": {
           "longitude": -70.8705821,
           "latitude": 42.4936337,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -3686,7 +3686,7 @@
         "position": {
           "longitude": -71.0851851,
           "latitude": 42.3623846,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -3705,7 +3705,7 @@
         "position": {
           "longitude": -71.0577566,
           "latitude": 42.3411182,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3724,7 +3724,7 @@
         "position": {
           "longitude": -70.9757261,
           "latitude": 42.4567535,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -3743,7 +3743,7 @@
         "position": {
           "longitude": -71.0835929,
           "latitude": 42.3438574,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -3762,7 +3762,7 @@
         "position": {
           "longitude": -71.1198961,
           "latitude": 42.3770242,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -3781,7 +3781,7 @@
         "position": {
           "longitude": -71.1102857,
           "latitude": 42.2618011,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3800,7 +3800,7 @@
         "position": {
           "longitude": -71.0578358,
           "latitude": 42.3410118,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3819,7 +3819,7 @@
         "position": {
           "longitude": -71.1032384,
           "latitude": 42.3372549,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -3838,7 +3838,7 @@
         "position": {
           "longitude": -71.1098024,
           "latitude": 42.303293,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -3857,7 +3857,7 @@
         "position": {
           "longitude": -71.0426685,
           "latitude": 42.34752,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -3876,7 +3876,7 @@
         "position": {
           "longitude": -71.1889003,
           "latitude": 42.2946639,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -3895,7 +3895,7 @@
         "position": {
           "longitude": -71.0633223,
           "latitude": 42.35032,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -3914,7 +3914,7 @@
         "position": {
           "longitude": -71.0643772,
           "latitude": 42.3402647,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -3933,7 +3933,7 @@
         "position": {
           "longitude": -71.0738173,
           "latitude": 42.3889397,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -3952,7 +3952,7 @@
         "position": {
           "longitude": -71.090811,
           "latitude": 42.4234149,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -3971,7 +3971,7 @@
         "position": {
           "longitude": -71.0720834,
           "latitude": 42.3344871,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -3990,7 +3990,7 @@
         "position": {
           "longitude": -71.174185,
           "latitude": 42.3983778,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -4009,7 +4009,7 @@
         "position": {
           "longitude": -71.1024708,
           "latitude": 42.2990905,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -4028,7 +4028,7 @@
         "position": {
           "longitude": -71.1084025,
           "latitude": 42.3223285,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -4047,7 +4047,7 @@
         "position": {
           "longitude": -71.0649415,
           "latitude": 42.3318275,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -4066,7 +4066,7 @@
         "position": {
           "longitude": -71.0808965,
           "latitude": 42.3867765,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -4085,7 +4085,7 @@
         "position": {
           "longitude": -71.229172,
           "latitude": 42.448438,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -4104,7 +4104,7 @@
         "position": {
           "longitude": -71.0831244,
           "latitude": 42.311315,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -4123,7 +4123,7 @@
         "position": {
           "longitude": -71.0787129,
           "latitude": 42.3825237,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -4142,7 +4142,7 @@
         "position": {
           "longitude": -71.0556566,
           "latitude": 42.2823412,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -4161,7 +4161,7 @@
         "position": {
           "longitude": -71.0685058,
           "latitude": 42.3740729,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -4180,7 +4180,7 @@
         "position": {
           "longitude": -71.1633245,
           "latitude": 42.4048322,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -4199,7 +4199,7 @@
         "position": {
           "longitude": -71.0422948,
           "latitude": 42.3482044,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -4218,7 +4218,7 @@
         "position": {
           "longitude": -71.0945313,
           "latitude": 42.2929715,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -4237,7 +4237,7 @@
         "position": {
           "longitude": -71.0931904,
           "latitude": 42.2857904,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -4256,7 +4256,7 @@
         "position": {
           "longitude": -71.1691867,
           "latitude": 42.251674,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -4275,7 +4275,7 @@
         "position": {
           "longitude": -71.0292799,
           "latitude": 42.3782372,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -4294,7 +4294,7 @@
         "position": {
           "longitude": -71.1324099,
           "latitude": 42.4059768,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -4313,7 +4313,7 @@
         "position": {
           "longitude": -71.0811293,
           "latitude": 42.3400003,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -4332,7 +4332,7 @@
         "position": {
           "longitude": -71.0796095,
           "latitude": 42.3495029,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -4351,7 +4351,7 @@
         "position": {
           "longitude": -71.0740606,
           "latitude": 42.3896511,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -4370,7 +4370,7 @@
         "position": {
           "longitude": -71.0923084,
           "latitude": 42.3341478,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -4389,7 +4389,7 @@
         "position": {
           "longitude": -71.041972,
           "latitude": 42.3486967,
-          "bearing": -1
+          "bearing": -1.0
         }
       },
       "is_deleted": false,
@@ -4408,7 +4408,7 @@
         "position": {
           "longitude": -71.036068,
           "latitude": 42.3469992,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -4427,7 +4427,7 @@
         "position": {
           "longitude": -71.0688337,
           "latitude": 42.2898073,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -4446,7 +4446,7 @@
         "position": {
           "longitude": -71.0746224,
           "latitude": 42.3900532,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -4465,7 +4465,7 @@
         "position": {
           "longitude": -71.1841424,
           "latitude": 42.3574514,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -4484,7 +4484,7 @@
         "position": {
           "longitude": -71.1042736,
           "latitude": 42.345102,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -4503,7 +4503,7 @@
         "position": {
           "longitude": -71.0579856,
           "latitude": 42.3407008,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -4522,7 +4522,7 @@
         "position": {
           "longitude": -71.1191601,
           "latitude": 42.3760991,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -4541,7 +4541,7 @@
         "position": {
           "longitude": -71.0260788,
           "latitude": 42.4381737,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -4560,7 +4560,7 @@
         "position": {
           "longitude": -71.070023,
           "latitude": 42.4254632,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -4579,7 +4579,7 @@
         "position": {
           "longitude": -71.084875,
           "latitude": 42.3042929,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -4598,7 +4598,7 @@
         "position": {
           "longitude": -71.064199,
           "latitude": 42.3406309,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -4617,7 +4617,7 @@
         "position": {
           "longitude": -71.0730008,
           "latitude": 42.3867078,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -4636,7 +4636,7 @@
         "position": {
           "longitude": -71.0732764,
           "latitude": 42.3884297,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -4655,7 +4655,7 @@
         "position": {
           "longitude": -71.0619481,
           "latitude": 42.3270619,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -4674,7 +4674,7 @@
         "position": {
           "longitude": -71.0679506,
           "latitude": 42.3277407,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -4693,7 +4693,7 @@
         "position": {
           "longitude": -70.9737245,
           "latitude": 42.4556635,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -4712,7 +4712,7 @@
         "position": {
           "longitude": -71.1144478,
           "latitude": 42.3016173,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -4731,7 +4731,7 @@
         "position": {
           "longitude": -71.0545021,
           "latitude": 42.2870521,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -4750,7 +4750,7 @@
         "position": {
           "longitude": -71.0844008,
           "latitude": 42.4147088,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -4769,7 +4769,7 @@
         "position": {
           "longitude": -71.0574593,
           "latitude": 42.3409172,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -4788,7 +4788,7 @@
         "position": {
           "longitude": -71.1090544,
           "latitude": 42.3038735,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -4807,7 +4807,7 @@
         "position": {
           "longitude": -71.0587008,
           "latitude": 42.341084,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -4826,7 +4826,7 @@
         "position": {
           "longitude": -71.0585,
           "latitude": 42.3403027,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -4845,7 +4845,7 @@
         "position": {
           "longitude": -71.1347993,
           "latitude": 42.4408334,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -4864,7 +4864,7 @@
         "position": {
           "longitude": -71.1224108,
           "latitude": 42.4249373,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -4883,7 +4883,7 @@
         "position": {
           "longitude": -71.1267028,
           "latitude": 42.3744264,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -4902,7 +4902,7 @@
         "position": {
           "longitude": -71.0808198,
           "latitude": 42.3936853,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -4921,7 +4921,7 @@
         "position": {
           "longitude": -71.0665268,
           "latitude": 42.3961129,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -4940,7 +4940,7 @@
         "position": {
           "longitude": -71.03991,
           "latitude": 42.3966738,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -4959,7 +4959,7 @@
         "position": {
           "longitude": -71.1327434,
           "latitude": 42.4063542,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -4978,7 +4978,7 @@
         "position": {
           "longitude": -71.130704,
           "latitude": 42.3499653,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -4997,7 +4997,7 @@
         "position": {
           "longitude": -71.0656341,
           "latitude": 42.3990556,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -5016,7 +5016,7 @@
         "position": {
           "longitude": -70.8947248,
           "latitude": 42.5195481,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -5035,7 +5035,7 @@
         "position": {
           "longitude": -71.0567435,
           "latitude": 42.3555357,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -5054,7 +5054,7 @@
         "position": {
           "longitude": -71.0863234,
           "latitude": 42.3297317,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -5073,7 +5073,7 @@
         "position": {
           "longitude": -71.0580847,
           "latitude": 42.3648422,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -5092,7 +5092,7 @@
         "position": {
           "longitude": -71.0975553,
           "latitude": 42.3895674,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -5111,7 +5111,7 @@
         "position": {
           "longitude": -71.0313109,
           "latitude": 42.3974463,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -5130,7 +5130,7 @@
         "position": {
           "longitude": -71.0650028,
           "latitude": 42.3415993,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -5149,7 +5149,7 @@
         "position": {
           "longitude": -71.0717048,
           "latitude": 42.2931141,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -5168,7 +5168,7 @@
         "position": {
           "longitude": -71.0124361,
           "latitude": 42.3848348,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -5187,7 +5187,7 @@
         "position": {
           "longitude": -71.1289601,
           "latitude": 42.3975335,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -5206,7 +5206,7 @@
         "position": {
           "longitude": -70.9739247,
           "latitude": 42.4556351,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -5225,7 +5225,7 @@
         "position": {
           "longitude": -71.0572771,
           "latitude": 42.3301695,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -5244,7 +5244,7 @@
         "position": {
           "longitude": -71.0582782,
           "latitude": 42.3400657,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -5263,7 +5263,7 @@
         "position": {
           "longitude": -71.1376772,
           "latitude": 42.4021484,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -5282,7 +5282,7 @@
         "position": {
           "longitude": -71.0739999,
           "latitude": 42.3894173,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -5301,7 +5301,7 @@
         "position": {
           "longitude": -71.0732755,
           "latitude": 42.3858187,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -5320,7 +5320,7 @@
         "position": {
           "longitude": -70.969344,
           "latitude": 42.2258092,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -5339,7 +5339,7 @@
         "position": {
           "longitude": -71.1092415,
           "latitude": 42.303832,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -5358,7 +5358,7 @@
         "position": {
           "longitude": -71.0778111,
           "latitude": 42.3371815,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -5377,7 +5377,7 @@
         "position": {
           "longitude": -70.976676,
           "latitude": 42.4570616,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -5396,7 +5396,7 @@
         "position": {
           "longitude": -71.2484793,
           "latitude": 42.3676552,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -5415,7 +5415,7 @@
         "position": {
           "longitude": -71.0642797,
           "latitude": 42.2861271,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -5434,7 +5434,7 @@
         "position": {
           "longitude": -71.0583541,
           "latitude": 42.3406673,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -5453,7 +5453,7 @@
         "position": {
           "longitude": -70.9578808,
           "latitude": 42.4690086,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -5472,7 +5472,7 @@
         "position": {
           "longitude": -71.128389,
           "latitude": 42.4038203,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -5491,7 +5491,7 @@
         "position": {
           "longitude": -70.944045,
           "latitude": 42.5449857,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -5510,7 +5510,7 @@
         "position": {
           "longitude": -71.1279732,
           "latitude": 42.3953389,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -5529,7 +5529,7 @@
         "position": {
           "longitude": -71.0246338,
           "latitude": 42.4717892,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -5548,7 +5548,7 @@
         "position": {
           "longitude": -71.1691429,
           "latitude": 42.4250162,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -5567,7 +5567,7 @@
         "position": {
           "longitude": -71.0739254,
           "latitude": 42.4266533,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -5586,7 +5586,7 @@
         "position": {
           "longitude": -71.073359,
           "latitude": 42.4254532,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -5605,7 +5605,7 @@
         "position": {
           "longitude": -71.073526,
           "latitude": 42.3877089,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -5624,7 +5624,7 @@
         "position": {
           "longitude": -71.0977517,
           "latitude": 42.3151036,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -5643,7 +5643,7 @@
         "position": {
           "longitude": -71.1160784,
           "latitude": 42.3529789,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -5662,7 +5662,7 @@
         "position": {
           "longitude": -71.0264444,
           "latitude": 42.3440184,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -5681,7 +5681,7 @@
         "position": {
           "longitude": -71.0882771,
           "latitude": 42.3482704,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -5700,7 +5700,7 @@
         "position": {
           "longitude": -71.0898736,
           "latitude": 42.3775393,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -5719,7 +5719,7 @@
         "position": {
           "longitude": -71.0431138,
           "latitude": 42.348684,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -5738,7 +5738,7 @@
         "position": {
           "longitude": -71.1503568,
           "latitude": 42.4764003,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -5757,7 +5757,7 @@
         "position": {
           "longitude": -71.0734112,
           "latitude": 42.3884727,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -5776,7 +5776,7 @@
         "position": {
           "longitude": -71.1500623,
           "latitude": 42.4142413,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -5795,7 +5795,7 @@
         "position": {
           "longitude": -71.0415057,
           "latitude": 42.1443146,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -5814,7 +5814,7 @@
         "position": {
           "longitude": -71.1450866,
           "latitude": 42.3616389,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -5833,7 +5833,7 @@
         "position": {
           "longitude": -71.0891996,
           "latitude": 42.350211,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -5852,7 +5852,7 @@
         "position": {
           "longitude": -71.0680315,
           "latitude": 42.3565112,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -5871,7 +5871,7 @@
         "position": {
           "longitude": -71.1199053,
           "latitude": 42.2944635,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -5890,7 +5890,7 @@
         "position": {
           "longitude": -71.0463159,
           "latitude": 42.3520965,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -5909,7 +5909,7 @@
         "position": {
           "longitude": -71.1852831,
           "latitude": 42.4249329,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -5928,7 +5928,7 @@
         "position": {
           "longitude": -71.0586958,
           "latitude": 42.3404541,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -5947,7 +5947,7 @@
         "position": {
           "longitude": -71.180138,
           "latitude": 42.367355,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -5966,7 +5966,7 @@
         "position": {
           "longitude": -71.0737919,
           "latitude": 42.4267249,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -5985,7 +5985,7 @@
         "position": {
           "longitude": -71.1088821,
           "latitude": 42.3035937,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -6004,7 +6004,7 @@
         "position": {
           "longitude": -71.064654,
           "latitude": 42.3322348,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -6023,7 +6023,7 @@
         "position": {
           "longitude": -71.0731977,
           "latitude": 42.3860306,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -6042,7 +6042,7 @@
         "position": {
           "longitude": -71.0945474,
           "latitude": 42.2889721,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -6061,7 +6061,7 @@
         "position": {
           "longitude": -71.0579151,
           "latitude": 42.340297,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -6080,7 +6080,7 @@
         "position": {
           "longitude": -71.0614597,
           "latitude": 42.2996576,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -6099,7 +6099,7 @@
         "position": {
           "longitude": -71.0829678,
           "latitude": 42.392521,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -6118,7 +6118,7 @@
         "position": {
           "longitude": -71.0998018,
           "latitude": 42.3229033,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -6137,7 +6137,7 @@
         "position": {
           "longitude": -71.0734574,
           "latitude": 42.3884593,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -6156,7 +6156,7 @@
         "position": {
           "longitude": -71.0196623,
           "latitude": 42.2653164,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -6175,7 +6175,7 @@
         "position": {
           "longitude": -71.0578636,
           "latitude": 42.3403982,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -6194,7 +6194,7 @@
         "position": {
           "longitude": -71.0917547,
           "latitude": 42.2670568,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -6213,7 +6213,7 @@
         "position": {
           "longitude": -71.044952,
           "latitude": 42.349312,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -6232,7 +6232,7 @@
         "position": {
           "longitude": -71.0250563,
           "latitude": 42.3641646,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -6251,7 +6251,7 @@
         "position": {
           "longitude": -71.1612883,
           "latitude": 42.358359,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -6270,7 +6270,7 @@
         "position": {
           "longitude": -71.1095743,
           "latitude": 42.3023469,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -6289,7 +6289,7 @@
         "position": {
           "longitude": -71.1239043,
           "latitude": 42.2905048,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -6308,7 +6308,7 @@
         "position": {
           "longitude": -71.0659142,
           "latitude": 42.3569943,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -6327,7 +6327,7 @@
         "position": {
           "longitude": -71.0837094,
           "latitude": 42.3291117,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -6346,7 +6346,7 @@
         "position": {
           "longitude": -71.0952299,
           "latitude": 42.3603259,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -6365,7 +6365,7 @@
         "position": {
           "longitude": -71.234624,
           "latitude": 42.3753271,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -6384,7 +6384,7 @@
         "position": {
           "longitude": -71.0579409,
           "latitude": 42.3403494,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -6403,7 +6403,7 @@
         "position": {
           "longitude": -71.1680366,
           "latitude": 42.3506029,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -6422,7 +6422,7 @@
         "position": {
           "longitude": -71.1218413,
           "latitude": 42.3722303,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -6441,7 +6441,7 @@
         "position": {
           "longitude": -71.0588197,
           "latitude": 42.3412732,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -6460,7 +6460,7 @@
         "position": {
           "longitude": -71.0746032,
           "latitude": 42.4236223,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -6479,7 +6479,7 @@
         "position": {
           "longitude": -71.0805829,
           "latitude": 42.3335777,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -6498,7 +6498,7 @@
         "position": {
           "longitude": -71.0643576,
           "latitude": 42.3403444,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -6517,7 +6517,7 @@
         "position": {
           "longitude": -71.075642,
           "latitude": 42.3834356,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -6536,7 +6536,7 @@
         "position": {
           "longitude": -70.9362797,
           "latitude": 42.5539404,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -6555,7 +6555,7 @@
         "position": {
           "longitude": -71.1375523,
           "latitude": 42.4212995,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -6574,7 +6574,7 @@
         "position": {
           "longitude": -71.0767641,
           "latitude": 42.3227504,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -6593,7 +6593,7 @@
         "position": {
           "longitude": -71.1703799,
           "latitude": 42.3782125,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -6612,7 +6612,7 @@
         "position": {
           "longitude": -71.0759534,
           "latitude": 42.4036866,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -6631,7 +6631,7 @@
         "position": {
           "longitude": -71.09087661,
           "latitude": 42.38578148,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -6650,7 +6650,7 @@
         "position": {
           "longitude": -71.0134841,
           "latitude": 42.40842,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -6669,7 +6669,7 @@
         "position": {
           "longitude": -71.1102757,
           "latitude": 42.3028069,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -6688,7 +6688,7 @@
         "position": {
           "longitude": -71.0731777,
           "latitude": 42.3878881,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -6707,7 +6707,7 @@
         "position": {
           "longitude": -71.1098255,
           "latitude": 42.303251,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -6726,7 +6726,7 @@
         "position": {
           "longitude": -71.0650073,
           "latitude": 42.3320501,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -6745,7 +6745,7 @@
         "position": {
           "longitude": -71.0588251,
           "latitude": 42.3410848,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -6764,7 +6764,7 @@
         "position": {
           "longitude": -71.0339734,
           "latitude": 42.3929778,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -6783,7 +6783,7 @@
         "position": {
           "longitude": -70.9631961,
           "latitude": 42.4646833,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -6802,7 +6802,7 @@
         "position": {
           "longitude": -70.9803287,
           "latitude": 42.2475948,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -6821,7 +6821,7 @@
         "position": {
           "longitude": -71.058668,
           "latitude": 42.3413227,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -6840,7 +6840,7 @@
         "position": {
           "longitude": -71.009595,
           "latitude": 42.2602446,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -6859,7 +6859,7 @@
         "position": {
           "longitude": -71.038717,
           "latitude": 42.3925049,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -6878,7 +6878,7 @@
         "position": {
           "longitude": -71.1028872,
           "latitude": 42.3648048,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -6897,7 +6897,7 @@
         "position": {
           "longitude": -71.0832768,
           "latitude": 42.3282231,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -6916,7 +6916,7 @@
         "position": {
           "longitude": -70.8909347,
           "latitude": 42.5050459,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -6935,7 +6935,7 @@
         "position": {
           "longitude": -71.098363579,
           "latitude": 42.32451087,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -6954,7 +6954,7 @@
         "position": {
           "longitude": -71.0579422,
           "latitude": 42.3409546,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -6973,7 +6973,7 @@
         "position": {
           "longitude": -71.0591401,
           "latitude": 42.3413309,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -6992,7 +6992,7 @@
         "position": {
           "longitude": -71.0936189,
           "latitude": 42.2698773,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7011,7 +7011,7 @@
         "position": {
           "longitude": -71.0649798,
           "latitude": 42.3321983,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -7030,7 +7030,7 @@
         "position": {
           "longitude": -71.0798131,
           "latitude": 42.3864727,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7049,7 +7049,7 @@
         "position": {
           "longitude": -71.065192,
           "latitude": 42.3320856,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7068,7 +7068,7 @@
         "position": {
           "longitude": -71.1917673,
           "latitude": 42.4854227,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -7087,7 +7087,7 @@
         "position": {
           "longitude": -71.0414298,
           "latitude": 42.3354862,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7106,7 +7106,7 @@
         "position": {
           "longitude": -71.1097885,
           "latitude": 42.4180686,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7125,7 +7125,7 @@
         "position": {
           "longitude": -71.0581482,
           "latitude": 42.3403686,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7144,7 +7144,7 @@
         "position": {
           "longitude": -71.0641086,
           "latitude": 42.2835425,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -7163,7 +7163,7 @@
         "position": {
           "longitude": -71.1900616,
           "latitude": 42.3874526,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -7182,7 +7182,7 @@
         "position": {
           "longitude": -71.0589222,
           "latitude": 42.3409857,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7201,7 +7201,7 @@
         "position": {
           "longitude": -71.123365,
           "latitude": 42.2586236,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7220,7 +7220,7 @@
         "position": {
           "longitude": -71.0085956,
           "latitude": 42.4163331,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -7239,7 +7239,7 @@
         "position": {
           "longitude": -71.1330227,
           "latitude": 42.3530364,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7258,7 +7258,7 @@
         "position": {
           "longitude": -71.0442602,
           "latitude": 42.4081809,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -7277,7 +7277,7 @@
         "position": {
           "longitude": -71.0577983,
           "latitude": 42.3401424,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -7296,7 +7296,7 @@
         "position": {
           "longitude": -71.0050759,
           "latitude": 42.2521727,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -7315,7 +7315,7 @@
         "position": {
           "longitude": -71.0627992,
           "latitude": 42.3416321,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -7334,7 +7334,7 @@
         "position": {
           "longitude": -71.0373066,
           "latitude": 42.3468179,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -7353,7 +7353,7 @@
         "position": {
           "longitude": -71.0325179,
           "latitude": 42.4153788,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7372,7 +7372,7 @@
         "position": {
           "longitude": -71.0732484,
           "latitude": 42.3884898,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -7391,7 +7391,7 @@
         "position": {
           "longitude": -71.079508,
           "latitude": 42.305748,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7410,7 +7410,7 @@
         "position": {
           "longitude": -71.0728403,
           "latitude": 42.3869097,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -7429,7 +7429,7 @@
         "position": {
           "longitude": -71.0829662,
           "latitude": 42.3819223,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -7448,7 +7448,7 @@
         "position": {
           "longitude": -71.084611,
           "latitude": 42.3716894,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -7467,7 +7467,7 @@
         "position": {
           "longitude": -71.0727157,
           "latitude": 42.3866234,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -7486,7 +7486,7 @@
         "position": {
           "longitude": -71.0655476,
           "latitude": 42.3409479,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -7505,7 +7505,7 @@
         "position": {
           "longitude": -71.0747986,
           "latitude": 42.39009,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -7524,7 +7524,7 @@
         "position": {
           "longitude": -71.0883869,
           "latitude": 42.3362067,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -7543,7 +7543,7 @@
         "position": {
           "longitude": -71.0581546,
           "latitude": 42.3405546,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7562,7 +7562,7 @@
         "position": {
           "longitude": -71.091564,
           "latitude": 42.2670812,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7581,7 +7581,7 @@
         "position": {
           "longitude": -71.0613174,
           "latitude": 42.3548263,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -7600,7 +7600,7 @@
         "position": {
           "longitude": -71.0661303,
           "latitude": 42.3436687,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -7619,7 +7619,7 @@
         "position": {
           "longitude": -71.0874053,
           "latitude": 42.3465653,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -7638,7 +7638,7 @@
         "position": {
           "longitude": -70.9749681,
           "latitude": 42.4551132,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -7657,7 +7657,7 @@
         "position": {
           "longitude": -71.1205406,
           "latitude": 42.4208784,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7676,7 +7676,7 @@
         "position": {
           "longitude": -71.106506,
           "latitude": 42.3782515,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7695,7 +7695,7 @@
         "position": {
           "longitude": -71.0346079,
           "latitude": 42.3955921,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -7714,7 +7714,7 @@
         "position": {
           "longitude": -71.0224348,
           "latitude": 42.2058852,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -7733,7 +7733,7 @@
         "position": {
           "longitude": -71.0520219,
           "latitude": 42.320182,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -7752,7 +7752,7 @@
         "position": {
           "longitude": -70.9896605,
           "latitude": 42.262251,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -7771,7 +7771,7 @@
         "position": {
           "longitude": -71.1089104,
           "latitude": 42.303709,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7790,7 +7790,7 @@
         "position": {
           "longitude": -71.096269,
           "latitude": 42.3380133,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -7809,7 +7809,7 @@
         "position": {
           "longitude": -71.0735988,
           "latitude": 42.3878783,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -7828,7 +7828,7 @@
         "position": {
           "longitude": -71.0448805,
           "latitude": 42.3354259,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7847,7 +7847,7 @@
         "position": {
           "longitude": -71.0586842,
           "latitude": 42.3400002,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7866,7 +7866,7 @@
         "position": {
           "longitude": -71.0953947,
           "latitude": 42.3489424,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7885,7 +7885,7 @@
         "position": {
           "longitude": -71.0982564,
           "latitude": 42.3160511,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7904,7 +7904,7 @@
         "position": {
           "longitude": -71.0636233,
           "latitude": 42.288405,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -7923,7 +7923,7 @@
         "position": {
           "longitude": -71.1354152,
           "latitude": 42.3533198,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7942,7 +7942,7 @@
         "position": {
           "longitude": -71.0579674,
           "latitude": 42.3525705,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7961,7 +7961,7 @@
         "position": {
           "longitude": -71.0580964,
           "latitude": 42.3417766,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -7980,7 +7980,7 @@
         "position": {
           "longitude": -71.0813694,
           "latitude": 42.319857,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -7999,7 +7999,7 @@
         "position": {
           "longitude": -71.0735105,
           "latitude": 42.3879236,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -8018,7 +8018,7 @@
         "position": {
           "longitude": -71.09318,
           "latitude": 42.278957,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -8037,7 +8037,7 @@
         "position": {
           "longitude": 0.0,
           "latitude": -1.6777216,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -8056,7 +8056,7 @@
         "position": {
           "longitude": -71.1398439,
           "latitude": 42.2758276,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -8075,7 +8075,7 @@
         "position": {
           "longitude": -71.1219872,
           "latitude": 42.3722568,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -8094,7 +8094,7 @@
         "position": {
           "longitude": -71.1095375,
           "latitude": 42.3026738,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -8113,7 +8113,7 @@
         "position": {
           "longitude": -70.9535813,
           "latitude": 42.2427487,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8132,7 +8132,7 @@
         "position": {
           "longitude": -71.0890604,
           "latitude": 42.3363777,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -8151,7 +8151,7 @@
         "position": {
           "longitude": -71.1169148,
           "latitude": 42.309098,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -8170,7 +8170,7 @@
         "position": {
           "longitude": -71.2790987,
           "latitude": 42.4893131,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -8189,7 +8189,7 @@
         "position": {
           "longitude": -71.0817222,
           "latitude": 42.4307247,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -8208,7 +8208,7 @@
         "position": {
           "longitude": -71.1129426,
           "latitude": 42.3752395,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8227,7 +8227,7 @@
         "position": {
           "longitude": -71.0583918,
           "latitude": 42.3404082,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -8246,7 +8246,7 @@
         "position": {
           "longitude": -71.1109402,
           "latitude": 42.3592018,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -8265,7 +8265,7 @@
         "position": {
           "longitude": -71.0092974,
           "latitude": 42.2597358,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -8284,7 +8284,7 @@
         "position": {
           "longitude": -71.0898141,
           "latitude": 42.4220089,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -8303,7 +8303,7 @@
         "position": {
           "longitude": -71.0501294,
           "latitude": 42.320759,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8322,7 +8322,7 @@
         "position": {
           "longitude": -71.0393336,
           "latitude": 42.4134941,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8341,7 +8341,7 @@
         "position": {
           "longitude": -71.0296993,
           "latitude": 42.388873,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8360,7 +8360,7 @@
         "position": {
           "longitude": -71.0589374,
           "latitude": 42.3404267,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -8379,7 +8379,7 @@
         "position": {
           "longitude": -71.0813667,
           "latitude": 42.332312,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -8398,7 +8398,7 @@
         "position": {
           "longitude": -71.0670046,
           "latitude": 42.4182984,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -8417,7 +8417,7 @@
         "position": {
           "longitude": -71.0742729,
           "latitude": 42.3882716,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -8436,7 +8436,7 @@
         "position": {
           "longitude": -71.1236123,
           "latitude": 42.3577287,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -8455,7 +8455,7 @@
         "position": {
           "longitude": -71.0810399,
           "latitude": 42.3284875,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8474,7 +8474,7 @@
         "position": {
           "longitude": -71.0610089,
           "latitude": 42.3000474,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8493,7 +8493,7 @@
         "position": {
           "longitude": -71.1001783,
           "latitude": 42.3704484,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -8512,7 +8512,7 @@
         "position": {
           "longitude": -71.1099234,
           "latitude": 42.3031659,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -8531,7 +8531,7 @@
         "position": {
           "longitude": -70.9755806,
           "latitude": 42.4546652,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -8550,7 +8550,7 @@
         "position": {
           "longitude": -71.0901681,
           "latitude": 42.4226139,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8569,7 +8569,7 @@
         "position": {
           "longitude": -71.1514342,
           "latitude": 42.414768,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -8588,7 +8588,7 @@
         "position": {
           "longitude": -71.0654977,
           "latitude": 42.3409651,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -8607,7 +8607,7 @@
         "position": {
           "longitude": -71.1331549,
           "latitude": 42.3748648,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -8626,7 +8626,7 @@
         "position": {
           "longitude": -71.0750621,
           "latitude": 42.3849757,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -8645,7 +8645,7 @@
         "position": {
           "longitude": -71.0676725,
           "latitude": 42.2737505,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -8664,7 +8664,7 @@
         "position": {
           "longitude": -71.1298514,
           "latitude": 42.2851797,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -8683,7 +8683,7 @@
         "position": {
           "longitude": -71.157862,
           "latitude": 42.4164374,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -8702,7 +8702,7 @@
         "position": {
           "longitude": -70.8837607,
           "latitude": 42.2441364,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8721,7 +8721,7 @@
         "position": {
           "longitude": -71.1124966,
           "latitude": 42.3698456,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8740,7 +8740,7 @@
         "position": {
           "longitude": -71.0942803,
           "latitude": 42.3315385,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -8759,7 +8759,7 @@
         "position": {
           "longitude": -71.0568962,
           "latitude": 42.3205235,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8778,7 +8778,7 @@
         "position": {
           "longitude": -71.0745803,
           "latitude": 42.3909189,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -8797,7 +8797,7 @@
         "position": {
           "longitude": -71.0765538,
           "latitude": 42.3494652,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -8816,7 +8816,7 @@
         "position": {
           "longitude": -71.155385166,
           "latitude": 42.2858785,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -8835,7 +8835,7 @@
         "position": {
           "longitude": -71.058395,
           "latitude": 42.36327,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -8854,7 +8854,7 @@
         "position": {
           "longitude": -71.0395886,
           "latitude": 42.3692228,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -8873,7 +8873,7 @@
         "position": {
           "longitude": -71.003553,
           "latitude": 42.415743,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -8892,7 +8892,7 @@
         "position": {
           "longitude": -71.0573069,
           "latitude": 42.3568285,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -8911,7 +8911,7 @@
         "position": {
           "longitude": -71.1094892,
           "latitude": 42.3029118,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -8930,7 +8930,7 @@
         "position": {
           "longitude": -71.0093834,
           "latitude": 42.2598223,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -8949,7 +8949,7 @@
         "position": {
           "longitude": -71.0777151,
           "latitude": 42.3499867,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -8968,7 +8968,7 @@
         "position": {
           "longitude": -71.0733627,
           "latitude": 42.3875466,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -8987,7 +8987,7 @@
         "position": {
           "longitude": -71.0828795,
           "latitude": 42.3339121,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -9006,7 +9006,7 @@
         "position": {
           "longitude": -71.1002058,
           "latitude": 42.3614386,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -9025,7 +9025,7 @@
         "position": {
           "longitude": -71.0640834,
           "latitude": 42.3327619,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -9044,7 +9044,7 @@
         "position": {
           "longitude": -71.1097277,
           "latitude": 42.3030545,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -9063,7 +9063,7 @@
         "position": {
           "longitude": -71.0638109,
           "latitude": 42.3325056,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -9082,7 +9082,7 @@
         "position": {
           "longitude": -71.0336585,
           "latitude": 42.3313969,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -9101,7 +9101,7 @@
         "position": {
           "longitude": -71.0339799,
           "latitude": 42.3358577,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -9120,7 +9120,7 @@
         "position": {
           "longitude": -71.0729142,
           "latitude": 42.3884441,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -9139,7 +9139,7 @@
         "position": {
           "longitude": -71.0830736,
           "latitude": 42.3415175,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -9158,7 +9158,7 @@
         "position": {
           "longitude": -71.0652554,
           "latitude": 42.3312254,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -9177,7 +9177,7 @@
         "position": {
           "longitude": -71.0660897,
           "latitude": 42.3281632,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -9196,7 +9196,7 @@
         "position": {
           "longitude": -71.1490291,
           "latitude": 42.3350353,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -9215,7 +9215,7 @@
         "position": {
           "longitude": -71.0614315,
           "latitude": 42.2999923,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -9234,7 +9234,7 @@
         "position": {
           "longitude": -71.0391354,
           "latitude": 42.3765344,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -9253,7 +9253,7 @@
         "position": {
           "longitude": -71.1096843,
           "latitude": 42.3028755,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -9272,7 +9272,7 @@
         "position": {
           "longitude": -71.1092342,
           "latitude": 42.3497771,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -9291,7 +9291,7 @@
         "position": {
           "longitude": -71.0095324,
           "latitude": 42.2602348,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -9310,7 +9310,7 @@
         "position": {
           "longitude": -70.9755663,
           "latitude": 42.4546978,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -9329,7 +9329,7 @@
         "position": {
           "longitude": -71.0319545,
           "latitude": 42.4403659,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -9348,7 +9348,7 @@
         "position": {
           "longitude": -71.1221887,
           "latitude": 42.3728274,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -9367,7 +9367,7 @@
         "position": {
           "longitude": -71.1171763,
           "latitude": 42.2944011,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -9386,7 +9386,7 @@
         "position": {
           "longitude": -71.143428,
           "latitude": 42.3439749,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -9405,7 +9405,7 @@
         "position": {
           "longitude": -71.0774886,
           "latitude": 42.3713462,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -9424,7 +9424,7 @@
         "position": {
           "longitude": -71.1145142,
           "latitude": 42.3021049,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -9443,7 +9443,7 @@
         "position": {
           "longitude": -71.0838587,
           "latitude": 42.3293791,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -9462,7 +9462,7 @@
         "position": {
           "longitude": -71.0285775,
           "latitude": 42.2354211,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -9481,7 +9481,7 @@
         "position": {
           "longitude": -71.1245738,
           "latitude": 42.367368,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -9500,7 +9500,7 @@
         "position": {
           "longitude": -71.1013477,
           "latitude": 42.3689408,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -9519,7 +9519,7 @@
         "position": {
           "longitude": -71.0049063,
           "latitude": 42.2236853,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -9538,7 +9538,7 @@
         "position": {
           "longitude": -71.0832915,
           "latitude": 42.3286846,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -9557,7 +9557,7 @@
         "position": {
           "longitude": -71.0739626,
           "latitude": 42.3897636,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -9576,7 +9576,7 @@
         "position": {
           "longitude": -71.1108594,
           "latitude": 42.3506573,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -9595,7 +9595,7 @@
         "position": {
           "longitude": -71.1619154,
           "latitude": 42.4170019,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -9614,7 +9614,7 @@
         "position": {
           "longitude": -71.0748859,
           "latitude": 42.3878627,
-          "bearing": -1
+          "bearing": -1.0
         }
       },
       "is_deleted": false,
@@ -9633,7 +9633,7 @@
         "position": {
           "longitude": -71.0720493,
           "latitude": 42.3880501,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -9652,7 +9652,7 @@
         "position": {
           "longitude": -71.1105018,
           "latitude": 42.3532476,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -9671,7 +9671,7 @@
         "position": {
           "longitude": -71.0651454,
           "latitude": 42.3989857,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -9690,7 +9690,7 @@
         "position": {
           "longitude": -71.1571985,
           "latitude": 42.3716957,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -9709,7 +9709,7 @@
         "position": {
           "longitude": -71.083875,
           "latitude": 42.3295793,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -9728,7 +9728,7 @@
         "position": {
           "longitude": -71.0933515,
           "latitude": 42.3873816,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -9747,7 +9747,7 @@
         "position": {
           "longitude": -70.9929796,
           "latitude": 42.3981406,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -9766,7 +9766,7 @@
         "position": {
           "longitude": -71.1547376,
           "latitude": 42.3412012,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -9785,7 +9785,7 @@
         "position": {
           "longitude": -71.0356447,
           "latitude": 42.3940984,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -9804,7 +9804,7 @@
         "position": {
           "longitude": -71.1241398,
           "latitude": 42.2560144,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -9823,7 +9823,7 @@
         "position": {
           "longitude": -71.2442461,
           "latitude": 42.3762457,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -9842,7 +9842,7 @@
         "position": {
           "longitude": -70.9740761,
           "latitude": 42.45551,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -9861,7 +9861,7 @@
         "position": {
           "longitude": -71.1294499,
           "latitude": 42.2870679,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -9880,7 +9880,7 @@
         "position": {
           "longitude": -71.065979,
           "latitude": 42.4538745,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -9899,7 +9899,7 @@
         "position": {
           "longitude": -71.0647901,
           "latitude": 42.3412499,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -9918,7 +9918,7 @@
         "position": {
           "longitude": -71.0593587,
           "latitude": 42.3526688,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -9937,7 +9937,7 @@
         "position": {
           "longitude": -71.0734475,
           "latitude": 42.3876606,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -9956,7 +9956,7 @@
         "position": {
           "longitude": -71.1098691,
           "latitude": 42.3033854,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -9975,7 +9975,7 @@
         "position": {
           "longitude": -71.0318555,
           "latitude": 42.3386955,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -9994,7 +9994,7 @@
         "position": {
           "longitude": -70.9308223,
           "latitude": 42.4658522,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -10013,7 +10013,7 @@
         "position": {
           "longitude": -71.0925239,
           "latitude": 42.2676501,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -10032,7 +10032,7 @@
         "position": {
           "longitude": -71.064864,
           "latitude": 42.3411548,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -10051,7 +10051,7 @@
         "position": {
           "longitude": -71.0729568,
           "latitude": 42.3886797,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -10070,7 +10070,7 @@
         "position": {
           "longitude": -71.0639204,
           "latitude": 42.2843391,
-          "bearing": 0
+          "bearing": 0.0
         }
       },
       "is_deleted": false,
@@ -10089,7 +10089,7 @@
         "position": {
           "longitude": -71.0963859,
           "latitude": 42.379445,
-          "bearing": 180
+          "bearing": 180.0
         }
       },
       "is_deleted": false,
@@ -10108,7 +10108,7 @@
         "position": {
           "longitude": -71.0649201,
           "latitude": 42.3316364,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -10127,7 +10127,7 @@
         "position": {
           "longitude": -71.0663741,
           "latitude": 42.3477436,
-          "bearing": 270
+          "bearing": 270.0
         }
       },
       "is_deleted": false,
@@ -10146,7 +10146,7 @@
         "position": {
           "longitude": -71.1355705,
           "latitude": 42.3533548,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -10165,7 +10165,7 @@
         "position": {
           "longitude": -71.1138182,
           "latitude": 42.3002999,
-          "bearing": 225
+          "bearing": 225.0
         }
       },
       "is_deleted": false,
@@ -10184,7 +10184,7 @@
         "position": {
           "longitude": -71.1214292,
           "latitude": 42.2926205,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -10203,7 +10203,7 @@
         "position": {
           "longitude": -71.0653109,
           "latitude": 42.3320889,
-          "bearing": 315
+          "bearing": 315.0
         }
       },
       "is_deleted": false,
@@ -10222,7 +10222,7 @@
         "position": {
           "longitude": -71.0103248,
           "latitude": 42.4486388,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -10241,7 +10241,7 @@
         "position": {
           "longitude": -71.0227849,
           "latitude": 42.3992309,
-          "bearing": 45
+          "bearing": 45.0
         }
       },
       "is_deleted": false,
@@ -10260,7 +10260,7 @@
         "position": {
           "longitude": -71.0943258,
           "latitude": 42.3313761,
-          "bearing": 90
+          "bearing": 90.0
         }
       },
       "is_deleted": false,
@@ -10279,7 +10279,7 @@
         "position": {
           "longitude": -71.1450926,
           "latitude": 42.4078898,
-          "bearing": 135
+          "bearing": 135.0
         }
       },
       "is_deleted": false,
@@ -10298,7 +10298,7 @@
         "position": {
           "longitude": -71.105552,
           "latitude": 42.416917,
-          "bearing": 359
+          "bearing": 359.0
         }
       },
       "is_deleted": false,
@@ -10317,7 +10317,7 @@
         "position": {
           "longitude": -71.0443648,
           "latitude": 42.338976,
-          "bearing": 20
+          "bearing": 20.0
         }
       },
       "is_deleted": false,
@@ -10336,7 +10336,7 @@
         "position": {
           "longitude": -71.0304704,
           "latitude": 42.2769248,
-          "bearing": 50
+          "bearing": 50.0
         }
       },
       "is_deleted": false,
@@ -10355,7 +10355,7 @@
         "position": {
           "longitude": -71.0303104,
           "latitude": 42.277232,
-          "bearing": 220
+          "bearing": 220.0
         }
       },
       "is_deleted": false,
@@ -10374,7 +10374,7 @@
         "position": {
           "longitude": -71.0175872,
           "latitude": 42.263552,
-          "bearing": 142
+          "bearing": 142.0
         }
       },
       "is_deleted": false,
@@ -10393,7 +10393,7 @@
         "position": {
           "longitude": -71.0160192,
           "latitude": 42.2676512,
-          "bearing": 310
+          "bearing": 310.0
         }
       },
       "is_deleted": false,
@@ -10412,7 +10412,7 @@
         "position": {
           "longitude": -71.030592,
           "latitude": 42.2767424,
-          "bearing": 185
+          "bearing": 185.0
         }
       },
       "is_deleted": false,
@@ -10431,7 +10431,7 @@
         "position": {
           "longitude": -71.03024,
           "latitude": 42.2771648,
-          "bearing": 35
+          "bearing": 35.0
         }
       },
       "is_deleted": false,
@@ -10450,7 +10450,7 @@
         "position": {
           "longitude": -71.0441728,
           "latitude": 42.3385632,
-          "bearing": 134
+          "bearing": 134.0
         }
       },
       "is_deleted": false,

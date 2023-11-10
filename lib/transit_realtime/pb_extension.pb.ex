@@ -6,4 +6,16 @@ defmodule TransitRealtime.PbExtension do
     repeated: true,
     type: TransitRealtime.Consist
   )
+
+  extend(TransitRealtime.TripUpdate.StopTimeUpdate, :boarding_status, 1001,
+    optional: true,
+    type: :string
+  )
+
+  extend(TransitRealtime.TripUpdate.StopTimeUpdate, :platform_id, 1002,
+    optional: true,
+    type: :string
+  )
+
+  extend(TransitRealtime.TripDescriptor, :route_pattern_id, 1001, optional: true, type: :string)
 end

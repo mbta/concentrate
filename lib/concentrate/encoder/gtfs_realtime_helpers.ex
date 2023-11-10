@@ -2,6 +2,10 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   @moduledoc """
   Helper functions for encoding GTFS-Realtime files.
   """
+  alias TransitRealtime, as: GTFS
+  alias TransitRealtime.FeedEntity
+  alias TransitRealtime.FeedHeader
+  alias TransitRealtime.TripUpdate.StopTimeEvent
   alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
   import Calendar.ISO, only: [date_to_string: 4]
 
@@ -83,7 +87,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   def feed_header(opts \\ []) do
     timestamp = trunc(Keyword.get(opts, :timestamp) || :erlang.system_time(:seconds))
 
-    %{
+    %FeedHeader{
       gtfs_realtime_version: "2.0",
       timestamp: timestamp,
       incrementality: if(Keyword.get(opts, :partial?), do: :DIFFERENTIAL, else: :FULL_DATASET)
@@ -105,11 +109,11 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   ## Examples
 
       iex> stop_time_event(123)
-      %{time: 123}
+      %TransitRealtime.TripUpdate.StopTimeEvent{time: 123}
       iex> stop_time_event(nil)
       nil
       iex> stop_time_event(123, 300)
-      %{time: 123, uncertainty: 300}
+      %TransitRealtime.TripUpdate.StopTimeEvent{time: 123, uncertainty: 300}
   """
   def stop_time_event(time, uncertainty \\ nil)
 
@@ -119,14 +123,14 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
   def stop_time_event(unix_timestamp, uncertainty)
       when is_integer(uncertainty) and uncertainty > 0 do
-    %{
+    %StopTimeEvent{
       time: unix_timestamp,
       uncertainty: uncertainty
     }
   end
 
   def stop_time_event(unix_timestamp, _) do
-    %{
+    %StopTimeEvent{
       time: unix_timestamp
     }
   end
@@ -137,7 +141,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   SCHEDULED is the default and is rendered as `nil`. Other relationships are
   rendered as-is.
   """
-  def schedule_relationship(:SCHEDULED), do: nil
+  def schedule_relationship(nil), do: :SCHEDULED
   def schedule_relationship(relationship), do: relationship
 
   defp group_by_trip_id(%TripDescriptor{} = td, map) do
@@ -180,21 +184,25 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     trip_id = TripDescriptor.trip_id(td)
     id = trip_id || "#{:erlang.phash2(td)}"
 
-    trip_data = %{
-      trip_id: trip_id,
-      route_id: TripDescriptor.route_id(td),
-      direction_id: TripDescriptor.direction_id(td),
-      start_time: TripDescriptor.start_time(td),
-      start_date: encode_date(TripDescriptor.start_date(td)),
-      schedule_relationship: schedule_relationship(TripDescriptor.schedule_relationship(td))
-    }
+    trip_data =
+      %TransitRealtime.TripDescriptor{
+        trip_id: trip_id,
+        route_id: TripDescriptor.route_id(td),
+        direction_id: TripDescriptor.direction_id(td),
+        start_time: TripDescriptor.start_time(td),
+        start_date: encode_date(TripDescriptor.start_date(td)),
+        schedule_relationship: schedule_relationship(TripDescriptor.schedule_relationship(td))
+      }
 
     timestamp = TripDescriptor.timestamp_truncated(td)
 
     trip =
-      trip_data
-      |> Map.merge(enhanced_data_fn.(td))
-      |> drop_nil_values()
+      GTFS.TripDescriptor.put_extension(
+        trip_data,
+        TransitRealtime.PbExtension,
+        :route_pattern_id,
+        enhanced_data_fn.(td)
+      )
 
     vehicle = trip_update_vehicle(td, vps)
 
@@ -207,23 +215,26 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     cond do
       match?([_ | _], stop_time_update) ->
         [
-          %{
+          %FeedEntity{
             id: id,
-            trip_update:
-              drop_nil_values(%{
-                trip: trip,
-                stop_time_update: stop_time_update,
-                vehicle: vehicle,
-                timestamp: timestamp
-              })
+            trip_update: %TransitRealtime.TripUpdate{
+              trip: trip,
+              stop_time_update: stop_time_update,
+              vehicle: vehicle,
+              timestamp: timestamp
+            }
           }
         ]
 
       TripDescriptor.schedule_relationship(td) == :CANCELED ->
         [
-          %{
+          %FeedEntity{
             id: id,
-            trip_update: drop_nil_values(%{trip: trip, vehicle: vehicle, timestamp: timestamp})
+            trip_update: %TransitRealtime.TripUpdate{
+              trip: trip,
+              vehicle: vehicle,
+              timestamp: timestamp
+            }
           }
         ]
 
