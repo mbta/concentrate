@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+import "transit_realtime/gtfs-realtime.proto";
+
+package transit_realtime;
+    
+message Consist {
+    required string label = 1;
+}
+
+
+extend transit_realtime.VehicleDescriptor {
+    repeated Consist consist = 1001;
+}
