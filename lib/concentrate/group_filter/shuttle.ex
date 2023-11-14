@@ -56,10 +56,10 @@ defmodule Concentrate.GroupFilter.Shuttle do
 
       shuttling = module.stop_shuttling_on_route(route_id, stop_id, time)
 
-      if route_id == "Green-E" and stop_id == "70154" and shuttling != :through,
+      if route_id == "Green-E" and stop_id == "70154",
         do:
-          Logger.warning(
-            "event=not_shuttling_copley stop=#{stop_id} route=#{route_id} time=#{inspect(time)} shuttling=#{inspect(shuttling)}"
+          Logger.info(
+            "event=shuttling_copley stop=#{stop_id} route=#{route_id} time=#{inspect(time)} shuttling=#{inspect(shuttling)}"
           )
 
       case shuttling do
