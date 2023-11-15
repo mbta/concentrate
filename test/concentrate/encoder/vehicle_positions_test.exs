@@ -152,6 +152,37 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
       assert data == round_trip(data)
     end
 
+    test "multi_carriage_details does not get stomped by pb encoder" do
+      data = [
+        TripDescriptor.new(trip_id: "trip", vehicle_id: "3022"),
+        VehiclePosition.new(
+          trip_id: "trip",
+          id: "3022",
+          latitude: 2,
+          longitude: 2,
+          status: :IN_TRANSIT_TO,
+          multi_carriage_details: [
+            %{
+              id: "",
+              label: "3022",
+              carriage_sequence: 1,
+              occupancy_status: :MANY_SEATS_AVAILABLE,
+              occupancy_percentage: 10
+            },
+            %{
+              id: "",
+              label: "3021",
+              carriage_sequence: 2,
+              occupancy_status: :FEW_SEATS_AVAILABLE,
+              occupancy_percentage: 25
+            }
+          ]
+        )
+      ]
+
+      assert data == round_trip(data)
+    end
+
     test "decoding and re-encoding vehiclepositions.pb is a no-op" do
       decoded =
         FeedUpdate.updates(

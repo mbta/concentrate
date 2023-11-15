@@ -35,6 +35,20 @@ defmodule Concentrate.VehiclePosition do
     ])
   end
 
+  defmodule CarriageDetails do
+    @moduledoc """
+    Structure for representing a Carriage Detail inside of multi_carriage_details
+    """
+    @derive Jason.Encoder
+    defstruct_accessors([
+      :id,
+      :label,
+      :carriage_sequence,
+      :occupancy_status,
+      :occupancy_percentage
+    ])
+  end
+
   def new(opts) do
     # required fields
     _ = Keyword.fetch!(opts, :latitude)
