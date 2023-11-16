@@ -26,9 +26,7 @@ defmodule Concentrate.VehiclePosition.CarriageDetails do
           into: %{},
           do: {if(is_atom(key), do: key, else: String.to_atom(key)), val}
 
-    Map.take(
-      atomized_carriage_details,
-      ~w(id label carriage_sequence occupancy_status occupancy_percentage)a
-    )
+    Map.take(atomized_carriage_details, ~w(id label carriage_sequence occupancy_status occupancy_percentage)a)
+    }
   end
 end
