@@ -26,37 +26,7 @@ defmodule Concentrate.VehiclePosition.CarriageDetails do
           into: %{},
           do: {if(is_atom(key), do: key, else: String.to_atom(key)), val}
 
-    unatomized_occupancy_status =
-      if Map.has_key?(atomized_carriage_details, :occupancy_status),
-        do: atomized_carriage_details.occupancy_status,
-        else: nil
-
-    %{
-      id:
-        if(Map.has_key?(atomized_carriage_details, :id),
-          do: atomized_carriage_details.id,
-          else: nil
-        ),
-      label:
-        if(Map.has_key?(atomized_carriage_details, :label),
-          do: atomized_carriage_details.label,
-          else: nil
-        ),
-      carriage_sequence:
-        if(Map.has_key?(atomized_carriage_details, :carriage_sequence),
-          do: atomized_carriage_details.carriage_sequence,
-          else: nil
-        ),
-      occupancy_status:
-        if(is_atom(unatomized_occupancy_status),
-          do: unatomized_occupancy_status,
-          else: String.to_atom(unatomized_occupancy_status)
-        ),
-      occupancy_percentage:
-        if(Map.has_key?(atomized_carriage_details, :occupancy_percentage),
-          do: atomized_carriage_details.occupancy_percentage,
-          else: nil
-        )
+    Map.take(atomized_carriage_details, ~w(id label carriage_sequence occupancy_status occupancy_percentage)a)
     }
   end
 end
