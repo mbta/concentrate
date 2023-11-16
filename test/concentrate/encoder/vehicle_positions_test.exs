@@ -163,14 +163,12 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
           status: :IN_TRANSIT_TO,
           multi_carriage_details: [
             %{
-              id: "",
               label: "3022",
               carriage_sequence: 1,
               occupancy_status: :MANY_SEATS_AVAILABLE,
               occupancy_percentage: 10
             },
             %{
-              id: "",
               label: "3021",
               carriage_sequence: 2,
               occupancy_status: :FEW_SEATS_AVAILABLE,
