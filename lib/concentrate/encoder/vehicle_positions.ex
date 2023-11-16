@@ -78,7 +78,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
       occupancy_status: VehiclePosition.occupancy_status(vp),
       occupancy_percentage: VehiclePosition.occupancy_percentage(vp),
       multi_carriage_details:
-        VehiclePosition.CarriageDetails.build_multi_carriage_details_struct(
+        VehiclePosition.CarriageDetails.build_multi_carriage_details(
           VehiclePosition.multi_carriage_details(vp)
         )
     })

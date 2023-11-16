@@ -1,45 +1,21 @@
 defmodule Concentrate.VehiclePosition.CarriageDetails do
-  import Concentrate.StructHelpers
-
   @moduledoc """
-  Structure for representing a Carriage Detail inside of multi_carriage_details
+  Provides a few helper functions for cleaning up the multi_carriage_details field, mostly
+  for Protobuf encoding compatibility (atoms as keys, no nil values).
   """
-  @derive Jason.Encoder
-  defstruct_accessors([
-    :id,
-    :label,
-    :carriage_sequence,
-    :occupancy_status,
-    :occupancy_percentage
-  ])
 
-  def build_multi_carriage_details_struct(nil) do
+  import Concentrate.Encoder.GTFSRealtimeHelpers
+
+  def build_multi_carriage_details(nil) do
     nil
   end
 
   # Ensures that the nil / empty values are appropriate as per PB spec:
-  def build_multi_carriage_details_struct(multi_carriage_details) do
+  def build_multi_carriage_details(multi_carriage_details) do
     Enum.map(multi_carriage_details, fn carriage_details ->
-      %{
-        id: id,
-        label: label,
-        carriage_sequence: carriage_sequence,
-        occupancy_status: occupancy_status,
-        occupancy_percentage: occupancy_percentage
-      } = get_atomized_carriage_details(carriage_details)
-
-      # Assign safe default values to the expected struct so the values don't get swallowed:
-      %Concentrate.VehiclePosition.CarriageDetails{
-        id: if(id == nil, do: "", else: id),
-        label: if(label == nil, do: "", else: label),
-        carriage_sequence: if(carriage_sequence == nil, do: 1, else: carriage_sequence),
-        occupancy_status:
-          if(occupancy_status == nil,
-            do: :NO_DATA_AVAILABLE,
-            else: occupancy_status
-          ),
-        occupancy_percentage: if(occupancy_percentage == nil, do: -1, else: occupancy_percentage)
-      }
+      carriage_details
+      |> get_atomized_carriage_details()
+      |> drop_nil_values()
     end)
   end
 
