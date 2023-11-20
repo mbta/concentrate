@@ -73,10 +73,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
       "timestamp" => VehiclePosition.last_updated_truncated(vp),
       "occupancy_status" => VehiclePosition.occupancy_status(vp),
       "occupancy_percentage" => VehiclePosition.occupancy_percentage(vp),
-      "multi_carriage_details" =>
-        VehiclePosition.CarriageDetails.build_multi_carriage_details(
-          VehiclePosition.multi_carriage_details(vp)
-        )
+      "multi_carriage_details" => VehiclePosition.multi_carriage_details(vp)
     })
   end
 
