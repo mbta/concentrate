@@ -4,6 +4,19 @@ defmodule Concentrate.VehiclePosition.CarriageDetails do
   for Protobuf encoding compatibility (atoms as keys, no nil values).
   """
 
+  @allowed_property_atoms [:occupancy_status, :occupancy_percentage, :label, :id]
+  @allowed_status_atoms [
+    :EMPTY,
+    :MANY_SEATS_AVAILABLE,
+    :FEW_SEATS_AVAILABLE,
+    :STANDING_ROOM_ONLY,
+    :CRUSHED_STANDING_ROOM_ONLY,
+    :FULL,
+    :NOT_ACCEPTING_PASSENGERS,
+    :NO_DATA_AVAILABLE,
+    :NOT_BOARDABLE
+  ]
+
   import Concentrate.Encoder.GTFSRealtimeHelpers
 
   def build_multi_carriage_details(nil) do
@@ -25,9 +38,9 @@ defmodule Concentrate.VehiclePosition.CarriageDetails do
       for {key, val} <- carriage_details,
           into: %{},
           do:
-            {if(is_atom(key), do: key, else: String.to_atom(key)),
+            {if(is_atom(key), do: key, else: String.to_existing_atom(key)),
              if(key in ["occupancy_status", :occupancy_status] and not is_atom(val),
-               do: String.to_atom(val),
+               do: String.to_existing_atom(val),
                else: val
              )}
 
