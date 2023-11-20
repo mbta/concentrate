@@ -4,28 +4,18 @@ defmodule Concentrate.VehiclePosition.CarriageDetails do
   for Protobuf encoding compatibility (atoms as keys, no nil values).
   """
 
+  import Concentrate.StructHelpers
+  import Concentrate.Encoder.GTFSRealtimeHelpers
+
   # These are used throughout the codebase but are declared explicitly here to ensure that the calls
   # to String.to_existing_atom do not fail:
-  @allowed_property_atoms [
+  defstruct_accessors([
     :occupancy_status,
     :occupancy_percentage,
     :carriage_sequence,
     :label,
     :id
-  ]
-  @allowed_status_atoms [
-    :EMPTY,
-    :MANY_SEATS_AVAILABLE,
-    :FEW_SEATS_AVAILABLE,
-    :STANDING_ROOM_ONLY,
-    :CRUSHED_STANDING_ROOM_ONLY,
-    :FULL,
-    :NOT_ACCEPTING_PASSENGERS,
-    :NO_DATA_AVAILABLE,
-    :NOT_BOARDABLE
-  ]
-
-  import Concentrate.Encoder.GTFSRealtimeHelpers
+  ])
 
   def build_multi_carriage_details(nil) do
     nil
