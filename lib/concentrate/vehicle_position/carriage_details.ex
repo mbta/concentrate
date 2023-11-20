@@ -38,7 +38,7 @@ defmodule Concentrate.VehiclePosition.CarriageDetails do
           do:
             {if(is_atom(key), do: key, else: String.to_existing_atom(key)),
              if(key in ["occupancy_status", :occupancy_status] and not is_atom(val),
-               do: String.to_existing_atom(val),
+               do: OccupancyStatus.parse_to_atom(val),
                else: val
              )}
 
