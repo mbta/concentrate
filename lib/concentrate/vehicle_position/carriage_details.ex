@@ -4,7 +4,15 @@ defmodule Concentrate.VehiclePosition.CarriageDetails do
   for Protobuf encoding compatibility (atoms as keys, no nil values).
   """
 
-  @allowed_property_atoms [:occupancy_status, :occupancy_percentage, :label, :id]
+  # These are used throughout the codebase but are declared explicitly here to ensure that the calls
+  # to String.to_existing_atom do not fail:
+  @allowed_property_atoms [
+    :occupancy_status,
+    :occupancy_percentage,
+    :carriage_sequence,
+    :label,
+    :id
+  ]
   @allowed_status_atoms [
     :EMPTY,
     :MANY_SEATS_AVAILABLE,
