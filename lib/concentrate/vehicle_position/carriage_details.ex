@@ -4,6 +4,7 @@ defmodule Concentrate.VehiclePosition.CarriageDetails do
   for Protobuf encoding compatibility (atoms as keys, no nil values).
   """
 
+  alias Concentrate.VehiclePosition.OccupancyStatus
   import Concentrate.StructHelpers
   import Concentrate.Encoder.GTFSRealtimeHelpers
 
