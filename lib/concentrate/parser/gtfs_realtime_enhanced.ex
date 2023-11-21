@@ -214,7 +214,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
               consist: decode_consist(Map.get(vehicle, "consist")),
               occupancy_status: occupancy_status(Map.get(vp, "occupancy_status")),
               occupancy_percentage: Map.get(vp, "occupancy_percentage"),
-              multi_carriage_details: Helpers.parse_multi_carriage_details(vp)
+              multi_carriage_details:
+                VehiclePosition.CarriageDetails.build_multi_carriage_details(
+                  Helpers.parse_multi_carriage_details(vp)
+                )
             )
           ]
         else
