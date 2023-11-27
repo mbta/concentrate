@@ -19,7 +19,10 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
   end
 
   def build_entity({%TripDescriptor{} = td, vps, _stus}) do
-    trip = trip_descriptor(td)
+    trip =
+      td
+      |> trip_descriptor()
+      |> Map.put("revenue", TripDescriptor.revenue(td))
 
     for vp <- vps do
       %{

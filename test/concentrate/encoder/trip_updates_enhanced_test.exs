@@ -126,5 +126,45 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
                ]
              } = encoded
     end
+
+    test "trips encode revenue status" do
+      parsed = [
+        TripDescriptor.new(trip_id: "trip", revenue: true),
+        StopTimeUpdate.new(trip_id: "trip", stop_id: "stop")
+      ]
+
+      encoded = Jason.decode!(encode_groups(group(parsed)))
+
+      assert %{
+               "entity" => [
+                 %{
+                   "trip_update" => %{
+                     "trip" => %{
+                       "revenue" => true
+                     }
+                   }
+                 }
+               ]
+             } = encoded
+
+      parsed = [
+        TripDescriptor.new(trip_id: "trip", revenue: false),
+        StopTimeUpdate.new(trip_id: "trip", stop_id: "stop")
+      ]
+
+      encoded = Jason.decode!(encode_groups(group(parsed)))
+
+      assert %{
+               "entity" => [
+                 %{
+                   "trip_update" => %{
+                     "trip" => %{
+                       "revenue" => false
+                     }
+                   }
+                 }
+               ]
+             } = encoded
+    end
   end
 end

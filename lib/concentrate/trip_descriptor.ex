@@ -13,6 +13,7 @@ defmodule Concentrate.TripDescriptor do
     :start_time,
     :vehicle_id,
     :timestamp,
+    revenue: true,
     schedule_relationship: :SCHEDULED
   ])
 
