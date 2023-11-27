@@ -332,6 +332,45 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       [td] = decode_trip_update(map, Helpers.parse_options([]))
       assert TripDescriptor.vehicle_id(td) == "vehicle_id"
     end
+
+    test "decodes revenue status" do
+      non_revenue_map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => false
+        },
+        "stop_time_update" => []
+      }
+
+      revenue_map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true
+        },
+        "stop_time_update" => []
+      }
+
+      [td] = decode_trip_update(non_revenue_map, Helpers.parse_options([]))
+      assert TripDescriptor.revenue(td) == false
+
+      [td] = decode_trip_update(revenue_map, Helpers.parse_options([]))
+      assert TripDescriptor.revenue(td) == true
+    end
+
+    test "revenue defaults to true if not specified" do
+      map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "stop_time_update" => []
+      }
+
+      [td] = decode_trip_update(map, Helpers.parse_options([]))
+      assert TripDescriptor.revenue(td) == true
+    end
   end
 
   describe "decode_vehicle/3" do
@@ -535,6 +574,38 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         end)
 
       assert log =~ "vehicle timestamp after feed timestamp"
+    end
+
+    test "decodes revenue status" do
+      non_revenue_map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => false
+        },
+        "position" => %{
+          "latitude" => 1.0,
+          "longitude" => 1.0
+        }
+      }
+
+      revenue_map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true
+        },
+        "position" => %{
+          "latitude" => 1.0,
+          "longitude" => 1.0
+        }
+      }
+
+      [td, _vp] = decode_vehicle(non_revenue_map, Helpers.parse_options([]), nil)
+      assert TripDescriptor.revenue(td) == false
+
+      [td, _vp] = decode_vehicle(revenue_map, Helpers.parse_options([]), nil)
+      assert TripDescriptor.revenue(td) == true
     end
   end
 end
