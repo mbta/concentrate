@@ -66,7 +66,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
       assert [] == FeedUpdate.updates(round_trip(data))
     end
 
-    test "filters non-revenue trips" do
+    test "includes non-revenue trips" do
       data = [
         TripDescriptor.new(trip_id: "one", vehicle_id: "y1", revenue: false),
         VehiclePosition.new(
@@ -78,7 +78,21 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
         )
       ]
 
-      assert [] == FeedUpdate.updates(round_trip(data))
+      assert [
+               %Concentrate.TripDescriptor{
+                 trip_id: "one",
+                 vehicle_id: "y1",
+                 revenue: false,
+                 schedule_relationship: :SCHEDULED
+               },
+               %Concentrate.VehiclePosition{
+                 id: "y1",
+                 trip_id: "one",
+                 latitude: 1,
+                 longitude: 1,
+                 status: :IN_TRANSIT_TO
+               }
+             ] == FeedUpdate.updates(round_trip(data))
     end
   end
 
