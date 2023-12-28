@@ -1,8 +1,7 @@
 defmodule Concentrate.GroupFilter.RemoveUncertainStopTimesTest do
   use ExUnit.Case, async: true
   alias Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates
-  alias Concentrate.TripDescriptor
-  alias Concentrate.StopTimeUpdate
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   @mid_trip 60
   @at_terminal 120

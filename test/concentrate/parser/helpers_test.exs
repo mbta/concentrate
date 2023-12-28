@@ -1,6 +1,7 @@
 defmodule Concentrate.Parser.HelpersTest do
   use ExUnit.Case, async: true
   import Concentrate.Parser.Helpers
+  alias Concentrate.Parser.Helpers.Options
   alias Concentrate.{TripDescriptor, VehiclePosition}
 
   describe "drop_fields/2" do
@@ -27,8 +28,7 @@ defmodule Concentrate.Parser.HelpersTest do
 
   describe "parse_options/1" do
     test "handles feed_url option" do
-      assert %Concentrate.Parser.Helpers.Options{feed_url: "url"} =
-               Concentrate.Parser.Helpers.parse_options(feed_url: "url")
+      assert %Options{feed_url: "url"} = parse_options(feed_url: "url")
     end
   end
 end

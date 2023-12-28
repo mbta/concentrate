@@ -2,7 +2,7 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimesTest do
   @moduledoc false
   use ExUnit.Case, async: true
   alias Concentrate.GroupFilter.ScheduledStopTimes
-  alias Concentrate.{TripDescriptor, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   defmodule FakeStopTimes do
     def arrival_departure("trip1", 10, {2022, 1, 1}), do: {1_610_000_000, 1_610_000_001}

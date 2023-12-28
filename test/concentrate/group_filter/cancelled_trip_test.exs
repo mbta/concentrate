@@ -2,7 +2,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.CancelledTrip
-  alias Concentrate.{TripDescriptor, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   @module Concentrate.Filter.FakeCancelledTrips
 

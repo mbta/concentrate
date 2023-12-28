@@ -2,7 +2,7 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStopTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.VehicleAtSkippedStop
-  alias Concentrate.{TripDescriptor, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   describe "filter/1" do
     test "if the vehicle's stop_id is SKIPPED, change to the next stop" do

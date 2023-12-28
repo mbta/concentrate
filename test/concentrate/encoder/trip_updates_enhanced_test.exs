@@ -5,7 +5,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
   import Concentrate.Encoder.TripUpdatesEnhanced
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.Parser.GTFSRealtimeEnhanced
-  alias Concentrate.{TripDescriptor, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   describe "encode_groups/1" do
     test "decoding and re-encoding TripUpdates_enhanced.json is a no-op" do

@@ -3,7 +3,7 @@ defmodule Concentrate.Encoder.TripUpdates.JSONTest do
   use ExUnit.Case, async: true
   import Concentrate.Encoder.TripUpdates.JSON
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
-  alias Concentrate.{TripDescriptor, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   describe "encode_groups/1" do
     test "same output as EncoderTripUpdates.encode_groups/1 but in JSON" do

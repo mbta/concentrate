@@ -2,8 +2,8 @@ defmodule Concentrate.GroupFilter.VehicleStopMatchTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.VehicleStopMatch
-  alias Concentrate.{StopTimeUpdate, VehiclePosition}
   alias Concentrate.GTFS.Stops
+  alias Concentrate.{StopTimeUpdate, VehiclePosition}
 
   describe "filter/1" do
     test "updates the VehiclePosition stop_id to match the StopTimeUpdate" do

@@ -2,7 +2,7 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.ClosedStop
-  alias Concentrate.{TripDescriptor, StopTimeUpdate, VehiclePosition}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   @trip_update TripDescriptor.new(trip_id: "trip", direction_id: 1, route_id: "route")
   @valid_date_time 8

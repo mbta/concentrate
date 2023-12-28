@@ -146,8 +146,8 @@ defmodule Concentrate do
             routes: {&is_list/1, & &1},
             excluded_routes: {&is_list/1, & &1},
             fallback_url: {&is_binary/1, & &1},
-            username: {&is_possible_env_var/1, &process_possible_env_var/1},
-            password: {&is_possible_env_var/1, &process_possible_env_var/1},
+            username: {&possible_env_var?/1, &process_possible_env_var/1},
+            password: {&possible_env_var?/1, &process_possible_env_var/1},
             topics: {&is_list/1, & &1},
             max_future_time: {&is_integer/1, & &1},
             fetch_after: {&is_integer/1, & &1},
@@ -187,7 +187,7 @@ defmodule Concentrate do
     Keyword.new(acc)
   end
 
-  defp is_possible_env_var(value) do
+  defp possible_env_var?(value) do
     case value do
       %{"system" => _} -> true
       <<_::binary>> -> true
