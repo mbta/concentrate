@@ -6,14 +6,14 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
   import Concentrate.Parser.GTFSRealtimeEnhanced
 
   alias Concentrate.{
-    FeedUpdate,
-    TripDescriptor,
-    StopTimeUpdate,
-    VehiclePosition,
     Alert,
     Alert.InformedEntity,
+    FeedUpdate,
     Parser.Helpers,
-    Parser.Helpers.Options
+    Parser.Helpers.Options,
+    StopTimeUpdate,
+    TripDescriptor,
+    VehiclePosition
   }
 
   describe "parse/1" do

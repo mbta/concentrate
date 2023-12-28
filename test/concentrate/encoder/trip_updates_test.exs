@@ -4,7 +4,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
   import Concentrate.TestHelpers
   import Concentrate.Encoder.TripUpdates
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
-  alias Concentrate.{FeedUpdate, TripDescriptor, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{FeedUpdate, StopTimeUpdate, TripDescriptor, VehiclePosition}
   alias Concentrate.Parser.GTFSRealtime
 
   describe "encode_groups/1" do

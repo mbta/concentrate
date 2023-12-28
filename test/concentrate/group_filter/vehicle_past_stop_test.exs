@@ -2,7 +2,7 @@ defmodule Concentrate.GroupFilter.VehiclePastStopTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.VehiclePastStop
-  alias Concentrate.{TripDescriptor, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   describe "filter/1" do
     test "removes StopTimeUpdates if they come after the vehicle's sequence" do

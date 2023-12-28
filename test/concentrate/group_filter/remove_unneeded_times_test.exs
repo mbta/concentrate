@@ -2,7 +2,7 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimesTest do
   @moduledoc false
   use ExUnit.Case, async: true
   alias Concentrate.GroupFilter.RemoveUnneededTimes
-  alias Concentrate.{TripDescriptor, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   defmodule FakeStopTimes do
     @moduledoc "Fake implementation of GTFS.StopTimes"

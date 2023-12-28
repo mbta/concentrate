@@ -2,7 +2,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpersTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.Encoder.GTFSRealtimeHelpers
-  alias Concentrate.{TripDescriptor, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   doctest Concentrate.Encoder.GTFSRealtimeHelpers
 

@@ -13,8 +13,7 @@ defmodule Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates do
 
   If no uncertainty values are configured, enabling this filter has no effect.
   """
-  alias Concentrate.TripDescriptor
-  alias Concentrate.StopTimeUpdate
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   @behaviour Concentrate.GroupFilter
 
