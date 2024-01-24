@@ -22,6 +22,8 @@ defmodule Concentrate.VehiclePosition.OccupancyStatus do
     )
   end
 
+  def parse_to_atom(occupancy_status) when is_atom(occupancy_status), do: occupancy_status
+
   def parse_to_atom(occupancy_status) do
     atom_occ_status = String.to_existing_atom(occupancy_status)
     if valid_occupancy_status?(atom_occ_status), do: atom_occ_status, else: :NO_DATA_AVAILABLE
