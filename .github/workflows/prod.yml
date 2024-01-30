@@ -1,4 +1,4 @@
-name: Deploy to Production
+name: Deploy to Prod
 
 on: workflow_dispatch
 
@@ -9,8 +9,8 @@ jobs:
     permissions:
       id-token: write
       contents: read    
-    environment: production
-    concurrency: production
+    environment: prod
+    concurrency: prod
 
     steps:
       - uses: actions/checkout@v2
