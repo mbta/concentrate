@@ -15,37 +15,65 @@ defmodule Concentrate.VehiclePosition.CarriageDetails do
     :occupancy_percentage,
     :carriage_sequence,
     :label,
-    :id
+    :id,
+    :orientation
   ])
 
-  def build_multi_carriage_details(nil) do
+  def build_multi_carriage_details(multi_carriage_details, feed_type \\ :normal)
+
+  def build_multi_carriage_details(nil, _) do
     nil
   end
 
   # Ensures that the nil / empty values are appropriate as per PB spec:
-  def build_multi_carriage_details(multi_carriage_details) do
+  def build_multi_carriage_details(multi_carriage_details, feed_type) do
     Enum.map(multi_carriage_details, fn carriage_details ->
       carriage_details
-      |> get_atomized_carriage_details()
+      |> get_atomized_carriage_details(feed_type)
       |> drop_nil_values()
     end)
   end
 
   # Convert to atomized keys, so that both atoms and string keys are supported:
-  defp get_atomized_carriage_details(carriage_details) do
+  defp get_atomized_carriage_details(carriage_details, :enhanced) do
     atomized_carriage_details =
-      for {key, val} <- carriage_details,
-          into: %{},
-          do:
-            {if(is_atom(key), do: key, else: String.to_existing_atom(key)),
-             if(key in ["occupancy_status", :occupancy_status] and not is_atom(val),
-               do: OccupancyStatus.parse_to_atom(val),
-               else: val
-             )}
+      for pair <- carriage_details, into: %{}, do: atomize_key_value_pair(pair)
+
+    Map.take(
+      atomized_carriage_details,
+      ~w(id label carriage_sequence occupancy_status occupancy_percentage orientation)a
+    )
+  end
+
+  defp get_atomized_carriage_details(carriage_details, _) do
+    atomized_carriage_details =
+      for pair <- carriage_details, into: %{}, do: atomize_key_value_pair(pair)
 
     Map.take(
       atomized_carriage_details,
       ~w(id label carriage_sequence occupancy_status occupancy_percentage)a
     )
   end
+
+  defp atomize_key_value_pair({key, value}) when key in ["occupancy_status", :occupancy_status] do
+    {atomize_key(key), OccupancyStatus.parse_to_atom(value)}
+  end
+
+  defp atomize_key_value_pair({key, value}) when key in ["orientation", :orientation] do
+    {atomize_key(key), parse_orientation(value)}
+  end
+
+  defp atomize_key_value_pair({key, value}) do
+    {atomize_key(key), value}
+  end
+
+  defp atomize_key(key) when not is_atom(key) do
+    String.to_existing_atom(key)
+  end
+
+  defp atomize_key(key), do: key
+
+  defp parse_orientation("AB"), do: :AB
+  defp parse_orientation("BA"), do: :BA
+  defp parse_orientation(val), do: val
 end

@@ -216,7 +216,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
               occupancy_percentage: Map.get(vp, "occupancy_percentage"),
               multi_carriage_details:
                 VehiclePosition.CarriageDetails.build_multi_carriage_details(
-                  Helpers.parse_multi_carriage_details(vp)
+                  Helpers.parse_multi_carriage_details(vp),
+                  :enhanced
                 )
             )
           ]
