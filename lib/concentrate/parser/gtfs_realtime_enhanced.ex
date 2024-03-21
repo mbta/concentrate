@@ -300,7 +300,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   defp calculate_uncertainty("mid_trip"), do: 60
   defp calculate_uncertainty("at_terminal"), do: 120
-  defp calculate_uncertainty("reverse_prediction"), do: 360
+  defp calculate_uncertainty("reverse_trip"), do: 360
 
   defp schedule_relationship(nil), do: :SCHEDULED
 

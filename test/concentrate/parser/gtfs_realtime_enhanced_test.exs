@@ -428,13 +428,13 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert stu.uncertainty == 120
     end
 
-    test "decodes reverse_prediction update_type to determine uncertainty value" do
+    test "decodes reverse_trip update_type to determine uncertainty value" do
       update = %{
         "trip" => %{
           "trip_id" => "trip",
           "route_id" => "route"
         },
-        "update_type" => "reverse_prediction",
+        "update_type" => "reverse_trip",
         "stop_time_update" => [
           %{
             "arrival" => %{"time" => 100, "uncertainty" => 500},
