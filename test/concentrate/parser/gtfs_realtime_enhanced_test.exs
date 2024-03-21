@@ -371,6 +371,81 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       [td] = decode_trip_update(map, Helpers.parse_options([]))
       assert TripDescriptor.revenue(td) == true
     end
+
+    test "uses arrival/departure uncertainty values if update_type is not present" do
+      update = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "stop_time_update" => [
+          %{
+            "arrival" => %{"time" => 100, "uncertainty" => 500},
+            "departure" => %{"time" => 200, "uncertainty" => 500}
+          }
+        ]
+      }
+
+      [_td, stu] = decode_trip_update(update, %Options{})
+      assert stu.uncertainty == 500
+    end
+
+    test "decodes mid_trip update_type to determine uncertainty value" do
+      update = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "update_type" => "mid_trip",
+        "stop_time_update" => [
+          %{
+            "arrival" => %{"time" => 100, "uncertainty" => 500},
+            "departure" => %{"time" => 200, "uncertainty" => 500}
+          }
+        ]
+      }
+
+      [_td, stu] = decode_trip_update(update, %Options{})
+      assert stu.uncertainty == 60
+    end
+
+    test "decodes at_terminal update_type to determine uncertainty value" do
+      update = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "update_type" => "at_terminal",
+        "stop_time_update" => [
+          %{
+            "arrival" => %{"time" => 100, "uncertainty" => 500},
+            "departure" => %{"time" => 200, "uncertainty" => 500}
+          }
+        ]
+      }
+
+      [_td, stu] = decode_trip_update(update, %Options{})
+      assert stu.uncertainty == 120
+    end
+
+    test "decodes reverse_prediction update_type to determine uncertainty value" do
+      update = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "update_type" => "reverse_prediction",
+        "stop_time_update" => [
+          %{
+            "arrival" => %{"time" => 100, "uncertainty" => 500},
+            "departure" => %{"time" => 200, "uncertainty" => 500}
+          }
+        ]
+      }
+
+      [_td, stu] = decode_trip_update(update, %Options{})
+      assert stu.uncertainty == 360
+    end
   end
 
   describe "decode_vehicle/3" do

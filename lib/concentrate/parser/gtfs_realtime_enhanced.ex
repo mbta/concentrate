@@ -131,8 +131,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
        ) do
     max_time = options.max_time
 
-    {arrival_time, _} = time_from_event(Map.get(update, "arrival"))
-    {departure_time, _} = time_from_event(Map.get(update, "departure"))
+    {arrival_time, _} = time_from_event(Map.get(update, "arrival"), trip_update)
+    {departure_time, _} = time_from_event(Map.get(update, "departure"), trip_update)
 
     cond do
       td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) ->
@@ -144,8 +144,11 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
       true ->
         stop_updates =
           for stu <- updates do
-            {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, "arrival"))
-            {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
+            {arrival_time, arrival_uncertainty} =
+              time_from_event(Map.get(stu, "arrival"), trip_update)
+
+            {departure_time, departure_uncertainty} =
+              time_from_event(Map.get(stu, "departure"), trip_update)
 
             boarding_status = decode_boarding_status(Map.get(stu, "boarding_status"))
 
@@ -284,8 +287,20 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     Date.to_erl(date)
   end
 
-  defp time_from_event(nil), do: {nil, nil}
-  defp time_from_event(%{"time" => time} = map), do: {time, Map.get(map, "uncertainty", nil)}
+  defp time_from_event(nil, _), do: {nil, nil}
+
+  defp time_from_event(%{"time" => time} = map, %{"update_type" => update_type}) do
+    case update_type do
+      nil -> {time, Map.get(map, "uncertainty", nil)}
+      update_type -> {time, calculate_uncertainty(update_type)}
+    end
+  end
+
+  defp time_from_event(%{"time" => time} = map, _), do: {time, Map.get(map, "uncertainty", nil)}
+
+  defp calculate_uncertainty("mid_trip"), do: 60
+  defp calculate_uncertainty("at_terminal"), do: 120
+  defp calculate_uncertainty("reverse_prediction"), do: 360
 
   defp schedule_relationship(nil), do: :SCHEDULED
 
