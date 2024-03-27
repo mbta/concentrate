@@ -99,7 +99,8 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
                  %{
                    "trip_update" => %{
                      "trip" => %{
-                       "route_pattern_id" => "pattern"
+                       "route_pattern_id" => "pattern",
+                       "last_trip" => false
                      }
                    }
                  }
@@ -153,7 +154,42 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
                        "direction_id" => 0,
                        "revenue" => false,
                        "route_id" => "route",
-                       "trip_id" => "NONREV-trip"
+                       "trip_id" => "NONREV-trip",
+                       "last_trip" => false
+                     }
+                   }
+                 }
+               ]
+             } = encoded
+    end
+
+    test "last_trip field is included" do
+      parsed = [
+        TripDescriptor.new(
+          trip_id: "trip",
+          route_id: "route",
+          direction_id: 0,
+          last_trip: true
+        ),
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          stop_id: "stop"
+        )
+      ]
+
+      encoded = Jason.decode!(encode_groups(group(parsed)))
+
+      assert %{
+               "entity" => [
+                 %{
+                   "id" => "trip",
+                   "trip_update" => %{
+                     "trip" => %{
+                       "direction_id" => 0,
+                       "revenue" => true,
+                       "route_id" => "route",
+                       "trip_id" => "trip",
+                       "last_trip" => true
                      }
                    }
                  }
