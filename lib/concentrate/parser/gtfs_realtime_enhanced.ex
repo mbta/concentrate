@@ -248,7 +248,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         schedule_relationship: schedule_relationship(Map.get(trip, "schedule_relationship")),
         timestamp: Map.get(descriptor, "timestamp"),
         revenue: Map.get(trip, "revenue", true),
-        vehicle_id: vehicle_id
+        vehicle_id: vehicle_id,
+        last_trip: Map.get(trip, "last_trip", false)
       )
     ]
   end

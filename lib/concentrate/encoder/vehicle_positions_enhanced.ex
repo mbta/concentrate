@@ -12,17 +12,27 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
   def encode_groups(groups, opts \\ []) when is_list(groups) do
     message = %{
       "header" => feed_header(opts),
-      "entity" => Enum.flat_map(groups, &build_entity/1)
+      "entity" => Enum.flat_map(groups, fn group -> build_entity(group, &enhanced_data/1) end)
     }
 
     Jason.encode!(message)
   end
 
-  def build_entity({%TripDescriptor{} = td, vps, _stus}) do
+  defp enhanced_data(update) do
+    %{
+      last_trip: TripDescriptor.last_trip(update)
+    }
+  end
+
+  def build_entity(_, enhanced_data \\ fn _ -> %{} end)
+
+  def build_entity({%TripDescriptor{} = td, vps, _stus}, enhanced_data_fn) do
     trip =
       td
       |> trip_descriptor()
       |> Map.put("revenue", TripDescriptor.revenue(td))
+      |> Map.merge(enhanced_data_fn.(td))
+      |> drop_nil_values()
 
     for vp <- vps do
       %{
@@ -32,7 +42,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
     end
   end
 
-  def build_entity({nil, vps, _stus}) do
+  def build_entity({nil, vps, _stus}, _enhanced_data_fn) do
     # vehicles without a trip
     for vp <- vps,
         trip_id = VehiclePosition.trip_id(vp),
