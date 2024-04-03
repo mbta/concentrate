@@ -30,7 +30,8 @@ defmodule Concentrate.TripDescriptorTest do
           direction_id: 0,
           start_date: {2017, 12, 20},
           start_time: "12:00:00",
-          schedule_relationship: :ADDED
+          schedule_relationship: :ADDED,
+          last_trip: false
         )
 
       assert Mergeable.merge(first, second) == expected
