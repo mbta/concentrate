@@ -289,14 +289,12 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   defp time_from_event(nil, _), do: {nil, nil}
 
-  defp time_from_event(%{"time" => time} = map, %{"update_type" => update_type}) do
-    case update_type do
-      nil -> {time, Map.get(map, "uncertainty", nil)}
-      update_type -> {time, calculate_uncertainty(update_type)}
-    end
+  defp time_from_event(%{"time" => time}, %{"update_type" => update_type})
+       when not is_nil(update_type) do
+    {time, calculate_uncertainty(update_type)}
   end
 
-  defp time_from_event(%{"time" => time} = map, _), do: {time, Map.get(map, "uncertainty", nil)}
+  defp time_from_event(%{"time" => time}, _), do: {time, nil}
 
   defp calculate_uncertainty("mid_trip"), do: 60
   defp calculate_uncertainty("at_terminal"), do: 120

@@ -372,7 +372,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert TripDescriptor.revenue(td) == true
     end
 
-    test "uses arrival/departure uncertainty values if update_type is not present" do
+    test "update_type is nil if update_type is not present" do
       update = %{
         "trip" => %{
           "trip_id" => "trip",
@@ -387,7 +387,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       }
 
       [_td, stu] = decode_trip_update(update, %Options{})
-      assert stu.uncertainty == 500
+      assert stu.uncertainty == nil
     end
 
     test "decodes mid_trip update_type to determine uncertainty value" do
