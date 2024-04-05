@@ -446,6 +446,46 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       [_td, stu] = decode_trip_update(update, %Options{})
       assert stu.uncertainty == 360
     end
+    
+    test "decodes last_trip" do
+      not_last_trip = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true,
+          "last_trip" => false
+        },
+        "stop_time_update" => []
+      }
+
+      last_trip = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true,
+          "last_trip" => true
+        },
+        "stop_time_update" => []
+      }
+
+      not_specified = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true
+        },
+        "stop_time_update" => []
+      }
+
+      [td] = decode_trip_update(not_last_trip, Helpers.parse_options([]))
+      assert TripDescriptor.last_trip(td) == false
+
+      [td] = decode_trip_update(last_trip, Helpers.parse_options([]))
+      assert TripDescriptor.last_trip(td) == true
+
+      [td] = decode_trip_update(not_specified, Helpers.parse_options([]))
+      assert TripDescriptor.last_trip(td) == false
+    end
   end
 
   describe "decode_vehicle/3" do
@@ -685,6 +725,55 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
 
       [td, _vp] = decode_vehicle(revenue_map, Helpers.parse_options([]), nil)
       assert TripDescriptor.revenue(td) == true
+    end
+
+    test "decodes last_trip" do
+      not_last_trip = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true,
+          "last_trip" => false
+        },
+        "position" => %{
+          "latitude" => 1.0,
+          "longitude" => 1.0
+        }
+      }
+
+      last_trip = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true,
+          "last_trip" => true
+        },
+        "position" => %{
+          "latitude" => 1.0,
+          "longitude" => 1.0
+        }
+      }
+
+      not_specified = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true
+        },
+        "position" => %{
+          "latitude" => 1.0,
+          "longitude" => 1.0
+        }
+      }
+
+      [td, _vp] = decode_vehicle(not_last_trip, Helpers.parse_options([]), nil)
+      assert TripDescriptor.last_trip(td) == false
+
+      [td, _vp] = decode_vehicle(last_trip, Helpers.parse_options([]), nil)
+      assert TripDescriptor.last_trip(td) == true
+
+      [td, _vp] = decode_vehicle(not_specified, Helpers.parse_options([]), nil)
+      assert TripDescriptor.last_trip(td) == false
     end
   end
 end
