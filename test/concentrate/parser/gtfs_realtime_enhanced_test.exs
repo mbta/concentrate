@@ -446,7 +446,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       [_td, stu] = decode_trip_update(update, %Options{})
       assert stu.uncertainty == 360
     end
-    
+
     test "decodes last_trip" do
       not_last_trip = %{
         "trip" => %{
