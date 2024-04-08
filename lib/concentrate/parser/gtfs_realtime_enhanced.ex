@@ -131,8 +131,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
        ) do
     max_time = options.max_time
 
-    {arrival_time, _} = time_from_event(Map.get(update, "arrival"), trip_update)
-    {departure_time, _} = time_from_event(Map.get(update, "departure"), trip_update)
+    arrival_time = time_from_event(Map.get(update, "arrival"))
+    departure_time = time_from_event(Map.get(update, "departure"))
 
     cond do
       td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) ->
@@ -144,11 +144,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
       true ->
         stop_updates =
           for stu <- updates do
-            {arrival_time, arrival_uncertainty} =
-              time_from_event(Map.get(stu, "arrival"), trip_update)
+            arrival_time = time_from_event(Map.get(stu, "arrival"))
 
-            {departure_time, departure_uncertainty} =
-              time_from_event(Map.get(stu, "departure"), trip_update)
+            departure_time = time_from_event(Map.get(stu, "departure"))
 
             boarding_status = decode_boarding_status(Map.get(stu, "boarding_status"))
 
@@ -160,7 +158,6 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
               schedule_relationship: schedule_relationship(Map.get(stu, "schedule_relationship")),
               arrival_time: arrival_time,
               departure_time: departure_time,
-              uncertainty: arrival_uncertainty || departure_uncertainty,
               status: boarding_status,
               platform_id: Map.get(stu, "platform_id")
             )
@@ -288,18 +285,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     Date.to_erl(date)
   end
 
-  defp time_from_event(nil, _), do: {nil, nil}
+  defp time_from_event(nil), do: nil
 
-  defp time_from_event(%{"time" => time}, %{"update_type" => update_type})
-       when not is_nil(update_type) do
-    {time, calculate_uncertainty(update_type)}
-  end
-
-  defp time_from_event(%{"time" => time}, _), do: {time, nil}
-
-  defp calculate_uncertainty("mid_trip"), do: 60
-  defp calculate_uncertainty("at_terminal"), do: 120
-  defp calculate_uncertainty("reverse_trip"), do: 360
+  defp time_from_event(%{"time" => time}), do: time
 
   defp schedule_relationship(nil), do: :SCHEDULED
 
