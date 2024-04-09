@@ -74,7 +74,7 @@ config :concentrate,
     Concentrate.GroupFilter.VehicleStopMatch,
     Concentrate.GroupFilter.SkippedStopOnAddedTrip,
     Concentrate.GroupFilter.TripDescriptorTimestamp,
-    Concentrate.GropuFilter.UncertaintyValue
+    Concentrate.GroupFilter.UncertaintyValue
   ],
   source_reporters: [
     Concentrate.SourceReporter.Basic,
