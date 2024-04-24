@@ -131,8 +131,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
        ) do
     max_time = options.max_time
 
-    arrival_time = time_from_event(Map.get(update, "arrival"))
-    departure_time = time_from_event(Map.get(update, "departure"))
+    {arrival_time, _} = time_from_event(Map.get(update, "arrival"))
+    {departure_time, _} = time_from_event(Map.get(update, "departure"))
 
     cond do
       td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) ->
@@ -144,9 +144,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
       true ->
         stop_updates =
           for stu <- updates do
-            arrival_time = time_from_event(Map.get(stu, "arrival"))
+            {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, "arrival"))
 
-            departure_time = time_from_event(Map.get(stu, "departure"))
+            {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
 
             boarding_status = decode_boarding_status(Map.get(stu, "boarding_status"))
 
@@ -158,6 +158,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
               schedule_relationship: schedule_relationship(Map.get(stu, "schedule_relationship")),
               arrival_time: arrival_time,
               departure_time: departure_time,
+              uncertainty: arrival_uncertainty || departure_uncertainty,
               status: boarding_status,
               platform_id: Map.get(stu, "platform_id")
             )
@@ -249,7 +250,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         timestamp: Map.get(descriptor, "timestamp"),
         revenue: Map.get(trip, "revenue", true),
         vehicle_id: vehicle_id,
-        last_trip: Map.get(trip, "last_trip", false)
+        last_trip: Map.get(trip, "last_trip", false),
+        update_type: Map.get(descriptor, "update_type")
       )
     ]
   end
@@ -285,9 +287,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     Date.to_erl(date)
   end
 
-  defp time_from_event(nil), do: nil
-
-  defp time_from_event(%{"time" => time}), do: time
+  defp time_from_event(nil), do: {nil, nil}
+  defp time_from_event(%{"time" => time} = map), do: {time, Map.get(map, "uncertainty", nil)}
 
   defp schedule_relationship(nil), do: :SCHEDULED
 

@@ -7,7 +7,10 @@ defmodule Concentrate.GroupFilter.UncertaintyValue do
 
   @impl Concentrate.GroupFilter
   def filter({%TripDescriptor{update_type: update_type} = td, vps, stus}) do
-    stus = set_uncertainty(update_type, stus)
+    stus =
+      update_type
+      |> calculate_uncertainty()
+      |> set_uncertainty(stus)
 
     {td, vps, stus}
   end
@@ -16,9 +19,9 @@ defmodule Concentrate.GroupFilter.UncertaintyValue do
 
   defp set_uncertainty(nil, stus), do: stus
 
-  defp set_uncertainty(update_type, stus) do
+  defp set_uncertainty(uncertainty, stus) do
     Enum.map(stus, fn stu ->
-      StopTimeUpdate.update_uncertainty(stu, calculate_uncertainty(update_type))
+      StopTimeUpdate.update_uncertainty(stu, uncertainty)
     end)
   end
 
