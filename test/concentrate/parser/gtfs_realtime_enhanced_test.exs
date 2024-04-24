@@ -376,9 +376,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       update = %{
         "trip" => %{
           "trip_id" => "trip",
-          "route_id" => "route",
-          "update_type" => "mid_trip"
+          "route_id" => "route"
         },
+        "update_type" => "mid_trip",
         "stop_time_update" => [
           %{
             "arrival" => %{"time" => 100, "uncertainty" => 500},
