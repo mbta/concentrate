@@ -6,7 +6,8 @@ defmodule Concentrate.GroupFilter.UncertaintyValue do
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   @impl Concentrate.GroupFilter
-  def filter({%TripDescriptor{update_type: update_type} = td, vps, stus}) do
+  def filter({%TripDescriptor{update_type: update_type} = td, vps, stus})
+      when is_binary(update_type) do
     stus =
       update_type
       |> calculate_uncertainty()
