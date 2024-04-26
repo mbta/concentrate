@@ -145,6 +145,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         stop_updates =
           for stu <- updates do
             {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, "arrival"))
+
             {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
 
             boarding_status = decode_boarding_status(Map.get(stu, "boarding_status"))
@@ -249,7 +250,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         timestamp: Map.get(descriptor, "timestamp"),
         revenue: Map.get(trip, "revenue", true),
         vehicle_id: vehicle_id,
-        last_trip: Map.get(trip, "last_trip", false)
+        last_trip: Map.get(trip, "last_trip", false),
+        update_type: Map.get(descriptor, "update_type")
       )
     ]
   end

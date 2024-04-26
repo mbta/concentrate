@@ -372,6 +372,45 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert TripDescriptor.revenue(td) == true
     end
 
+    test "update_type and uncertainty values are set if present" do
+      update = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "update_type" => "mid_trip",
+        "stop_time_update" => [
+          %{
+            "arrival" => %{"time" => 100, "uncertainty" => 500},
+            "departure" => %{"time" => 200, "uncertainty" => 500}
+          }
+        ]
+      }
+
+      [td, stu] = decode_trip_update(update, %Options{})
+      assert td.update_type == "mid_trip"
+      assert stu.uncertainty == 500
+    end
+
+    test "uncertainty uses uncertainty value if update_type is not present" do
+      update = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "stop_time_update" => [
+          %{
+            "arrival" => %{"time" => 100, "uncertainty" => 500},
+            "departure" => %{"time" => 200, "uncertainty" => 500}
+          }
+        ]
+      }
+
+      [td, stu] = decode_trip_update(update, %Options{})
+      refute td.update_type
+      assert stu.uncertainty == 500
+    end
+
     test "decodes last_trip" do
       not_last_trip = %{
         "trip" => %{

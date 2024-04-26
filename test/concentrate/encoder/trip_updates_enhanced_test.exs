@@ -196,5 +196,28 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
                ]
              } = encoded
     end
+
+    test "moves update_type from trip to trip_update" do
+      parsed = [
+        TripDescriptor.new(trip_id: "trip", update_type: "mid_trip"),
+        StopTimeUpdate.new(trip_id: "trip", stop_id: "stop")
+      ]
+
+      encoded = Jason.decode!(encode_groups(group(parsed)))
+
+      assert %{
+               "entity" => [
+                 %{
+                   "trip_update" => %{
+                     "update_type" => "mid_trip",
+                     "trip" => %{}
+                   }
+                 }
+               ]
+             } = encoded
+
+      trip = get_in(encoded, ["entity", Access.at(0), "trip_update", "trip"])
+      refute trip["update_type"]
+    end
   end
 end

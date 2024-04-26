@@ -13,6 +13,7 @@ defmodule Concentrate.TripDescriptor do
     :start_time,
     :vehicle_id,
     :timestamp,
+    :update_type,
     last_trip: false,
     revenue: true,
     schedule_relationship: :SCHEDULED
@@ -59,7 +60,8 @@ defmodule Concentrate.TripDescriptor do
           vehicle_id: first.vehicle_id || second.vehicle_id,
           timestamp: first.timestamp || second.timestamp,
           last_trip: first.last_trip || second.last_trip,
-          schedule_relationship: merge_schedule_relationship(first, second)
+          schedule_relationship: merge_schedule_relationship(first, second),
+          update_type: merge_update_type(first.update_type, second.update_type)
       }
     end
 
@@ -67,5 +69,8 @@ defmodule Concentrate.TripDescriptor do
       do: second.schedule_relationship
 
     defp merge_schedule_relationship(first, _), do: first.schedule_relationship
+
+    defp merge_update_type(nil, second), do: second
+    defp merge_update_type(first, _), do: first
   end
 end

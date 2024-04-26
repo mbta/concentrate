@@ -203,6 +203,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
       |> Map.merge(enhanced_data_fn.(td))
       |> drop_nil_values()
 
+    {update_type, trip} = Map.pop(trip, :update_type)
+
     vehicle = trip_update_vehicle(td, vps)
 
     stop_time_update =
@@ -221,7 +223,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
                 trip: trip,
                 stop_time_update: stop_time_update,
                 vehicle: vehicle,
-                timestamp: timestamp
+                timestamp: timestamp,
+                update_type: update_type
               })
           }
         ]
@@ -230,7 +233,13 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
         [
           %{
             id: id,
-            trip_update: drop_nil_values(%{trip: trip, vehicle: vehicle, timestamp: timestamp})
+            trip_update:
+              drop_nil_values(%{
+                trip: trip,
+                vehicle: vehicle,
+                timestamp: timestamp,
+                update_type: update_type
+              })
           }
         ]
 
