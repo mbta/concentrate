@@ -1,8 +1,8 @@
-defmodule Concentrate.GroupFilter.SupressStopTimeUpdateTest do
+defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import ExUnit.CaptureLog
-  import Concentrate.GroupFilter.SupressStopTimeUpdate
+  import Concentrate.GroupFilter.SuppressStopTimeUpdate
   alias Concentrate.StopTimeUpdate
   alias Concentrate.TripDescriptor
 
