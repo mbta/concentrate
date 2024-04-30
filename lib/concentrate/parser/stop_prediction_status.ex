@@ -4,13 +4,9 @@ defmodule Concentrate.Parser.StopPredictionStatus do
   filter out StopTimeUpdate structs for that combination.
   """
 
-  alias Concentrate.TripDescriptor
-
-  @spec flagged_stops_on_route(TripDescriptor.t()) :: nil | MapSet.t()
-  def flagged_stops_on_route(%TripDescriptor{} = td) do
-    route_id = TripDescriptor.route_id(td)
-    direction_id = TripDescriptor.direction_id(td)
-
+  @spec flagged_stops_on_route(binary() | integer(), 0 | 1) :: nil | MapSet.t()
+  def flagged_stops_on_route(route_id, direction_id)
+      when not is_nil(route_id) and direction_id in [0, 1] do
     if route_id != nil and direction_id != nil do
       # TEMP: temporary test data
       MapSet.new([123])
@@ -19,5 +15,5 @@ defmodule Concentrate.Parser.StopPredictionStatus do
     end
   end
 
-  def flagged_stops_on_route(_), do: nil
+  def flagged_stops_on_route(_, _), do: nil
 end
