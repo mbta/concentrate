@@ -1,6 +1,6 @@
 defmodule Concentrate.GroupFilter.SupressStopTimeUpdate do
   @moduledoc """
-  Filters out StopTimeUpdates with a null arrival and departure time but a schedule_relationship of scheduled.
+  Filters out StopTimeUpdates if stop on route and direction is currently flagged to suppress predictions.
   """
   @behaviour Concentrate.GroupFilter
   alias Concentrate.Parser.StopPredictionStatus
