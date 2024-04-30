@@ -26,7 +26,7 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
             )
           end)
 
-        _ = log_suppressed_stus(suppressed_stus, route_id, direction_id)
+        log_suppressed_stus(suppressed_stus, route_id, direction_id)
 
         {td, vps, unsuppressed_stus}
     end
@@ -38,7 +38,7 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
     do: MapSet.member?(suppressed_stops, stop_id)
 
   defp log_suppressed_stus(stus, route_id, direction_id) do
-    Enum.map(stus, fn stu ->
+    Enum.each(stus, fn stu ->
       stop_id = StopTimeUpdate.stop_id(stu)
 
       Logger.info(fn ->
