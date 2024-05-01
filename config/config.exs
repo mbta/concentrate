@@ -75,6 +75,7 @@ config :concentrate,
     Concentrate.GroupFilter.SkippedStopOnAddedTrip,
     Concentrate.GroupFilter.TripDescriptorTimestamp,
     Concentrate.GroupFilter.UncertaintyValue
+    # Concentrate.GroupFilter.SuppressStopTimeUpdate Enable once fully implemented
   ],
   source_reporters: [
     Concentrate.SourceReporter.Basic,
