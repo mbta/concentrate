@@ -6,6 +6,11 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
   alias Concentrate.StopTimeUpdate
   alias Concentrate.TripDescriptor
 
+  defmodule FakeStopPredictionStatus do
+    def flagged_stops_on_route("Red", 0), do: MapSet.new([123])
+    def flagged_stops_on_route(_, _), do: nil
+  end
+
   describe "filter/1" do
     test "removes stop_time_updates of the corresponding trip_id + direction_id + stop_id combos if they are currently flagged and logs a messge" do
       td = TripDescriptor.new(route_id: "Red", direction_id: 0, update_type: "mid_trip")
@@ -22,7 +27,7 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
 
       log =
         capture_log(fn ->
-          assert {^td, [], [^stu1, ^stu3]} = filter({td, [], stus})
+          assert {^td, [], [^stu1, ^stu3]} = filter({td, [], stus}, FakeStopPredictionStatus)
         end)
 
       assert log =~
@@ -44,7 +49,8 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
 
       log =
         capture_log(fn ->
-          assert {^td, [], [^stu1, ^stu2, ^stu3]} = filter({td, [], stus})
+          assert {^td, [], [^stu1, ^stu2, ^stu3]} =
+                   filter({td, [], stus}, FakeStopPredictionStatus)
         end)
 
       refute log =~ "suppressed based on RTS feed trigger"
@@ -65,7 +71,8 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
 
       log =
         capture_log(fn ->
-          assert {^td, [], [^stu1, ^stu2, ^stu3]} = filter({td, [], stus})
+          assert {^td, [], [^stu1, ^stu2, ^stu3]} =
+                   filter({td, [], stus}, FakeStopPredictionStatus)
         end)
 
       refute log =~ "suppressed based on RTS feed trigger"

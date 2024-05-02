@@ -3,17 +3,21 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
   Filters out StopTimeUpdates if stop on route and direction is currently flagged to suppress predictions.
   """
   @behaviour Concentrate.GroupFilter
-  alias Concentrate.Parser.StopPredictionStatus
   alias Concentrate.StopTimeUpdate
   alias Concentrate.TripDescriptor
   require Logger
 
   @impl Concentrate.GroupFilter
-  def filter({td, vps, stus}) do
+  def filter(
+        trip_group,
+        stop_prediction_status_module \\ Concentrate.Filter.Suppress.StopPredictionStatus
+      )
+
+  def filter({td, vps, stus}, module) do
     route_id = TripDescriptor.route_id(td)
     direction_id = TripDescriptor.direction_id(td)
 
-    case StopPredictionStatus.flagged_stops_on_route(route_id, direction_id) do
+    case module.flagged_stops_on_route(route_id, direction_id) do
       nil ->
         {td, vps, stus}
 
@@ -32,7 +36,7 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
     end
   end
 
-  def filter(other), do: other
+  def filter(other, _), do: other
 
   defp stop_id_suppressed?(suppressed_stops, stop_id),
     do: MapSet.member?(suppressed_stops, stop_id)
