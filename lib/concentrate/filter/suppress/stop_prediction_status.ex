@@ -45,9 +45,9 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatus do
                                     direction_id: direction_id,
                                     stop_id: stop_id
                                   } ->
-      Logger.info(fn ->
+      Logger.info(
         "Cleared prediction suppression for stop_id=#{stop_id} route_id=#{route_id} direction_id=#{direction_id} based on RTS feed"
-      end)
+      )
     end)
   end
 
