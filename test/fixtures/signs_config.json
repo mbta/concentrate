@@ -1,0 +1,1426 @@
+{
+  "stops": [
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70180"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "170141"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70100"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70006"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70242"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70509"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70095"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70241"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70166"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70083"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70013"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-C",
+      "stop_id": "70159"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70176"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70510"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70011"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70038"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Green-B",
+      "stop_id": "70196"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70054"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70502"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70152"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70012"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-C",
+      "stop_id": "70201"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70047"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70151"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70018"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70065"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70028"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70064"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "71150"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70046"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-B",
+      "stop_id": "70201"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-C",
+      "stop_id": "70155"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70278"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70014"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-D",
+      "stop_id": "70156"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70182"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-D",
+      "stop_id": "70203"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70063"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70099"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-C",
+      "stop_id": "70150"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70502"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-B",
+      "stop_id": "70154"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "Braintree-02"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70155"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70159"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "70152"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70005"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70240"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "170140"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70202"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "Alewife-01"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70026"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-D",
+      "stop_id": "70158"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70089"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70239"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70200"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "170136"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70187"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-C",
+      "stop_id": "70158"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70055"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70198"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-E",
+      "stop_id": "70201"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70173"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70002"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70029"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70032"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70153"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70070"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70010"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-C",
+      "stop_id": "70151"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-E",
+      "stop_id": "70156"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "170137"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-C",
+      "stop_id": "70200"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70052"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70015"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70168"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70186"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-C",
+      "stop_id": "70154"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70167"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70208"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70032"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70177"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70165"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "Oak Grove-02"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "Alewife-02"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70179"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70078"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "71199"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Mattapan",
+      "stop_id": "70267"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-D",
+      "stop_id": "70154"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70200"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "70202"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-D",
+      "stop_id": "70201"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-B",
+      "stop_id": "70158"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "70157"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70008"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-E",
+      "stop_id": "70158"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70512"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70150"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70157"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70159"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70092"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Mattapan",
+      "stop_id": "70270"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70501"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-E",
+      "stop_id": "70154"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70079"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70506"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "Forest Hills-02"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70105"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70041"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70075"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70091"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "71199"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70160"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70175"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70204"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Mattapan",
+      "stop_id": "70268"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70007"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70072"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-C",
+      "stop_id": "70153"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70514"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70094"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "70153"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70051"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70020"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70207"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "Union Square-01"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70171"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "70155"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70205"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70023"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70202"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70104"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70077"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70058"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "Union Square-02"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70504"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70048"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "Oak Grove-01"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70073"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70174"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70003"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70183"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Mattapan",
+      "stop_id": "70269"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "71151"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70155"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70036"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70043"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70513"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70027"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70061"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70040"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70162"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Mattapan",
+      "stop_id": "70271"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70074"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70098"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-C",
+      "stop_id": "70202"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Mattapan",
+      "stop_id": "70261"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70164"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70009"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70033"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70057"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70022"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70068"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70205"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "71199"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70508"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-C",
+      "stop_id": "70157"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70085"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70045"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "Braintree-01"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70082"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70170"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-E",
+      "stop_id": "70203"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70044"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70096"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Mattapan",
+      "stop_id": "70263"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70157"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70080"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70042"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "70200"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70087"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70030"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70071"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70501"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70169"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70103"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70053"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-B",
+      "stop_id": "70159"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70049"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70016"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70505"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70086"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70279"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70172"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70069"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70208"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-C",
+      "stop_id": "70152"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70001"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70019"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70507"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-B",
+      "stop_id": "70156"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70204"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70056"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70090"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70206"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70021"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70163"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Green-C",
+      "stop_id": "70156"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70067"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70097"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70050"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70081"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70207"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70102"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70031"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70076"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Mattapan",
+      "stop_id": "70264"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70017"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70181"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-C",
+      "stop_id": "71199"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70059"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "Forest Hills-01"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Mattapan",
+      "stop_id": "70274"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70199"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "flagged",
+      "route_id": "Green-D",
+      "stop_id": "70178"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70024"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70025"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70101"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70066"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Orange",
+      "stop_id": "70004"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "flagged",
+      "route_id": "Green-E",
+      "stop_id": "70206"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Blue",
+      "stop_id": "70039"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70088"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Mattapan",
+      "stop_id": "70272"
+    },
+    {
+      "direction_id": 0,
+      "predictions": "normal",
+      "route_id": "Green-C",
+      "stop_id": "70197"
+    },
+    {
+      "direction_id": 1,
+      "predictions": "normal",
+      "route_id": "Red",
+      "stop_id": "70084"
+    }
+  ]
+}
