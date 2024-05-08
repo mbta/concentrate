@@ -38,7 +38,7 @@ config :concentrate,
     gtfs_realtime: [
       vehicle_positions: "https://cdn.mbta.com/realtime/VehiclePositions.pb",
       trip_updates: "https://cdn.mbta.com/realtime/TripUpdates.pb"
-    ],
+    ]
   ],
   signs_stops_config: [
     url: "https://mbta-signs.s3.amazonaws.com/stops-config.json"

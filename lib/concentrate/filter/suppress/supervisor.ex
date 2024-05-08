@@ -23,7 +23,8 @@ defmodule Concentrate.Filter.Suppress.Supervisor do
               name: :stop_prediction_status_producer
             }
           },
-          {Concentrate.Filter.Suppress.StopPredictionStatus, subscribe_to: [:stop_prediction_status_producer]}
+          {Concentrate.Filter.Suppress.StopPredictionStatus,
+           subscribe_to: [:stop_prediction_status_producer]}
         ],
         strategy: :rest_for_one
       )
