@@ -38,7 +38,10 @@ config :concentrate,
     gtfs_realtime: [
       vehicle_positions: "https://cdn.mbta.com/realtime/VehiclePositions.pb",
       trip_updates: "https://cdn.mbta.com/realtime/TripUpdates.pb"
-    ]
+    ],
+  ],
+  signs_stops_config: [
+    url: "https://mbta-signs.s3.amazonaws.com/stops-config.json"
   ],
   alerts: [
     url: "https://cdn.mbta.com/realtime/Alerts.pb"
@@ -74,8 +77,8 @@ config :concentrate,
     Concentrate.GroupFilter.VehicleStopMatch,
     Concentrate.GroupFilter.SkippedStopOnAddedTrip,
     Concentrate.GroupFilter.TripDescriptorTimestamp,
-    Concentrate.GroupFilter.UncertaintyValue
-    # Concentrate.GroupFilter.SuppressStopTimeUpdate Enable once fully implemented
+    Concentrate.GroupFilter.UncertaintyValue,
+    Concentrate.GroupFilter.SuppressStopTimeUpdate
   ],
   source_reporters: [
     Concentrate.SourceReporter.Basic,
