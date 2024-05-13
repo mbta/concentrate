@@ -18,7 +18,7 @@ defmodule Concentrate.Filter.Suppress.Supervisor do
             {
               config[:url],
               parser: Concentrate.Parser.SignsConfig,
-              fetch_after: 10_000,
+              fetch_after: 1_000,
               content_warning_timeout: @one_day,
               name: :stop_prediction_status_producer
             }

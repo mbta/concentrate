@@ -57,7 +57,7 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatus do
     if route_id != nil and direction_id != nil do
       @table
       |> :ets.tab2list()
-      |> Keyword.get(:entries)
+      |> Keyword.get(:entries, [])
       |> Enum.filter(fn %{route_id: r, direction_id: d} ->
         r == route_id and d == direction_id
       end)

@@ -44,6 +44,33 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatusTest do
       assert log =~
                "Cleared prediction suppression for stop_id=2 route_id=Red direction_id=0 based on RTS feed"
     end
+
+    test "empties state when supplied with :empty list" do
+      handle_events(@entries, :from, :state)
+
+      log =
+        capture_log(fn ->
+          handle_events([:empty], :from, :state)
+        end)
+
+      assert log =~
+               "Cleared prediction suppression for stop_id=1 route_id=Red direction_id=0 based on RTS feed"
+
+      assert log =~
+               "Cleared prediction suppression for stop_id=2 route_id=Red direction_id=0 based on RTS feed"
+
+      assert log =~
+               "Cleared prediction suppression for stop_id=3 route_id=Red direction_id=1 based on RTS feed"
+
+      assert log =~
+               "Cleared prediction suppression for stop_id=4 route_id=Red direction_id=1 based on RTS feed"
+
+      assert log =~
+               "Cleared prediction suppression for stop_id=5 route_id=Blue direction_id=0 based on RTS feed"
+
+      assert log =~
+               "Cleared prediction suppression for stop_id=6 route_id=Blue direction_id=1 based on RTS feed"
+    end
   end
 
   defp supervised(_) do

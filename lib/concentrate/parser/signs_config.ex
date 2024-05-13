@@ -5,9 +5,11 @@ defmodule Concentrate.Parser.SignsConfig do
   @behaviour Concentrate.Parser
 
   @impl Concentrate.Parser
-  def parse(binary, opts) when is_binary(binary) and is_list(opts) do
-    json = Jason.decode!(binary, strings: :copy)
-    map_entities(json)
+  def parse(binary, _opts) when is_binary(binary) do
+    binary
+    |> Jason.decode!(strings: :copy)
+    |> map_entities()
+    |> check_empty()
   end
 
   defp map_entities(%{"stops" => items}) do
@@ -23,4 +25,7 @@ defmodule Concentrate.Parser.SignsConfig do
   end
 
   defp map_entities(_), do: []
+
+  defp check_empty([]), do: [:empty]
+  defp check_empty(entities), do: entities
 end

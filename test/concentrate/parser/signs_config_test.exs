@@ -17,7 +17,7 @@ defmodule Concentrate.Parser.SignsConfigTest do
       body = Map.get(body, "stops")
       body = Jason.encode!(body)
 
-      assert [] = parse(body, [])
+      assert [:empty] = parse(body, [])
     end
   end
 end

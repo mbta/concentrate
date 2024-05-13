@@ -41,7 +41,7 @@ config :concentrate,
     ]
   ],
   signs_stops_config: [
-    url: "https://mbta-signs.s3.amazonaws.com/stops-config.json"
+    url: "s3://mbta-signs-dev/stops-config.json"
   ],
   alerts: [
     url: "https://cdn.mbta.com/realtime/Alerts.pb"
@@ -117,7 +117,8 @@ config :concentrate,
     "http" => Concentrate.Producer.HTTPoison,
     "mqtt" => Concentrate.Producer.Mqtt,
     "mqtts" => Concentrate.Producer.Mqtt,
-    "mqtt+ssl" => Concentrate.Producer.Mqtt
+    "mqtt+ssl" => Concentrate.Producer.Mqtt,
+    "s3" => Concentrate.Producer.S3
   }
 
 import_config "#{config_env()}.exs"
