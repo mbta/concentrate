@@ -9,7 +9,6 @@ defmodule Concentrate.Parser.SignsConfig do
     binary
     |> Jason.decode!(strings: :copy)
     |> map_entities()
-    |> check_empty()
   end
 
   defp map_entities(%{"stops" => items}) do
@@ -25,7 +24,4 @@ defmodule Concentrate.Parser.SignsConfig do
   end
 
   defp map_entities(_), do: []
-
-  defp check_empty([]), do: [:empty]
-  defp check_empty(entities), do: entities
 end

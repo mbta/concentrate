@@ -99,7 +99,7 @@ defmodule Concentrate.Producer.S3 do
             etag: get_header(headers, "etag")
         }
 
-        {:noreply, state.parser.(body, state.parser_opts), state}
+        {:noreply, parse_response(body, state), state}
 
       {:ok, %{status_code: 304}} ->
         {:noreply, [], state}
@@ -137,5 +137,12 @@ defmodule Concentrate.Producer.S3 do
     Enum.find_value(headers, fn {key, value} ->
       String.downcase(key) == header and value
     end)
+  end
+
+  defp parse_response(body, state) do
+    case state.parser.(body, state.parser_opts) do
+      [] -> [:empty]
+      events -> events
+    end
   end
 end
