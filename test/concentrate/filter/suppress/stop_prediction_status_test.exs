@@ -20,6 +20,9 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatusTest do
       handle_events(@entries, :from, :state)
 
       assert MapSet.new([1, 2]) == flagged_stops_on_route("Red", 0)
+      assert MapSet.new([3, 4]) == flagged_stops_on_route("Red", 1)
+      assert MapSet.new([5]) == flagged_stops_on_route("Blue", 0)
+      assert MapSet.new([6]) == flagged_stops_on_route("Blue", 1)
     end
 
     test "returns nil if missing stop_id or direction_id" do
@@ -43,6 +46,11 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatusTest do
 
       assert log =~
                "Cleared prediction suppression for stop_id=2 route_id=Red direction_id=0 based on RTS feed"
+
+      assert MapSet.new([]) == flagged_stops_on_route("Red", 0)
+      assert MapSet.new([3, 4]) == flagged_stops_on_route("Red", 1)
+      assert MapSet.new([5]) == flagged_stops_on_route("Blue", 0)
+      assert MapSet.new([6]) == flagged_stops_on_route("Blue", 1)
     end
 
     test "empties state when supplied with :empty list" do
@@ -70,6 +78,11 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatusTest do
 
       assert log =~
                "Cleared prediction suppression for stop_id=6 route_id=Blue direction_id=1 based on RTS feed"
+
+      assert MapSet.new([]) == flagged_stops_on_route("Red", 0)
+      assert MapSet.new([]) == flagged_stops_on_route("Red", 1)
+      assert MapSet.new([]) == flagged_stops_on_route("Blue", 0)
+      assert MapSet.new([]) == flagged_stops_on_route("Blue", 1)
     end
   end
 
