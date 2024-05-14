@@ -27,6 +27,8 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatus do
     {:noreply, [], state, :hibernate}
   end
 
+  defp store_new_state([:empty]), do: store_new_state([])
+
   defp store_new_state(events) do
     currently_suppressed_stops = :ets.tab2list(@table) |> Keyword.get(:entries, [])
     :ets.delete_all_objects(@table)
