@@ -27,6 +27,8 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatus do
     {:noreply, [], state, :hibernate}
   end
 
+  defp store_new_state([:empty]), do: store_new_state([])
+
   defp store_new_state(events) do
     currently_suppressed_stops = :ets.tab2list(@table) |> Keyword.get(:entries, [])
     :ets.delete_all_objects(@table)
@@ -57,7 +59,7 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatus do
     if route_id != nil and direction_id != nil do
       @table
       |> :ets.tab2list()
-      |> Keyword.get(:entries)
+      |> Keyword.get(:entries, [])
       |> Enum.filter(fn %{route_id: r, direction_id: d} ->
         r == route_id and d == direction_id
       end)
