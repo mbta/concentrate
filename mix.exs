@@ -42,7 +42,7 @@ defmodule Concentrate.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger | env_applications(Mix.env())],
+      extra_applications: env_applications(Mix.env()) ++ [:logger],
       mod: {Concentrate, []}
     ]
   end
