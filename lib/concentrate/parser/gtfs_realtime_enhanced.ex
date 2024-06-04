@@ -115,7 +115,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp decode_feed_entity(entity, _opts, feed_timestamp) do
-    Logger.warn("event=malformed_entity timestamp=#{feed_timestamp} #{inspect(entity)}")
+    Logger.warning("event=malformed_entity timestamp=#{feed_timestamp} #{inspect(entity)}")
     []
   end
 
