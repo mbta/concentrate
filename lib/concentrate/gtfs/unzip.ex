@@ -3,7 +3,8 @@ defmodule Concentrate.GTFS.Unzip do
   Unzips the GTFS file into constituent files.
   """
   @behaviour Concentrate.Parser
-  @file_list ['agency.txt', 'routes.txt', 'trips.txt', 'stop_times.txt', 'stops.txt']
+  # zip file_list takes charlists
+  @file_list [~c"agency.txt", ~c"routes.txt", ~c"trips.txt", ~c"stop_times.txt", ~c"stops.txt"]
 
   def parse(binary, _opts) do
     {:ok, files} = :zip.unzip(binary, [:memory, file_list: @file_list])

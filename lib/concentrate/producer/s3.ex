@@ -105,7 +105,7 @@ defmodule Concentrate.Producer.S3 do
         {:noreply, [], state}
 
       {_, error} ->
-        Logger.warn(
+        Logger.warning(
           "#{__MODULE__} error fetching s3 url=#{state.url}} error=#{inspect(error, limit: :infinity)}"
         )
 
