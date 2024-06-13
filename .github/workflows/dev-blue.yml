@@ -1,0 +1,35 @@
+name: Deploy to Dev-blue
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * *'
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev-blue
+    concurrency: dev-blue
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: mbta/actions/build-push-ecr@v2
+        id: build-push
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          docker-repo: ${{ secrets.DOCKER_REPO }}
+      - uses: mbta/actions/deploy-ecs@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          ecs-cluster: concentrate
+          ecs-service: concentrate-dev-blue
+          docker-tag: ${{ steps.build-push.outputs.docker-tag }}
+      - uses: mbta/actions/notify-slack-deploy@v1
+        if: ${{ !cancelled() }}
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          job-status: ${{ job.status }}
