@@ -4,8 +4,8 @@ defmodule Concentrate.MergeFilterTest do
   use ExUnitProperties
   import ExUnit.CaptureLog, only: [capture_log: 1]
   import Concentrate.MergeFilter
-  alias Concentrate.{Merge, FeedUpdate, TripDescriptor, VehiclePosition, StopTimeUpdate}
   alias Concentrate.Encoder.GTFSRealtimeHelpers
+  alias Concentrate.{FeedUpdate, Merge, StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   describe "handle_subscribe/4" do
     test "lets GenStage manage the demand automatically" do

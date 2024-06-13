@@ -4,7 +4,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
   import ExUnit.CaptureLog
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtime
-  alias Concentrate.{FeedUpdate, VehiclePosition, TripDescriptor, StopTimeUpdate, Alert}
+  alias Concentrate.{Alert, FeedUpdate, StopTimeUpdate, TripDescriptor, VehiclePosition}
   alias Concentrate.Parser.Helpers.Options
 
   describe "parse/1" do

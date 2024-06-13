@@ -40,6 +40,9 @@ config :concentrate,
       trip_updates: "https://cdn.mbta.com/realtime/TripUpdates.pb"
     ]
   ],
+  signs_stops_config: [
+    url: "s3://mbta-signs-dev/stops-config.json"
+  ],
   alerts: [
     url: "https://cdn.mbta.com/realtime/Alerts.pb"
   ],
@@ -73,7 +76,9 @@ config :concentrate,
     Concentrate.GroupFilter.VehicleAtSkippedStop,
     Concentrate.GroupFilter.VehicleStopMatch,
     Concentrate.GroupFilter.SkippedStopOnAddedTrip,
-    Concentrate.GroupFilter.TripDescriptorTimestamp
+    Concentrate.GroupFilter.TripDescriptorTimestamp,
+    Concentrate.GroupFilter.UncertaintyValue,
+    Concentrate.GroupFilter.SuppressStopTimeUpdate
   ],
   source_reporters: [
     Concentrate.SourceReporter.Basic,
@@ -112,7 +117,8 @@ config :concentrate,
     "http" => Concentrate.Producer.HTTPoison,
     "mqtt" => Concentrate.Producer.Mqtt,
     "mqtts" => Concentrate.Producer.Mqtt,
-    "mqtt+ssl" => Concentrate.Producer.Mqtt
+    "mqtt+ssl" => Concentrate.Producer.Mqtt,
+    "s3" => Concentrate.Producer.S3
   }
 
 import_config "#{config_env()}.exs"

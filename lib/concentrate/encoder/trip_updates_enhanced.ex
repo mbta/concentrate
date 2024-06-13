@@ -17,7 +17,12 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
   end
 
   defp enhanced_data(update) do
-    %{route_pattern_id: TripDescriptor.route_pattern_id(update)}
+    %{
+      route_pattern_id: TripDescriptor.route_pattern_id(update),
+      revenue: TripDescriptor.revenue(update),
+      last_trip: TripDescriptor.last_trip(update),
+      update_type: TripDescriptor.update_type(update)
+    }
   end
 
   defp build_stop_time_update(update) do

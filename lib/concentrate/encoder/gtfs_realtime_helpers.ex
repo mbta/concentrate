@@ -140,6 +140,13 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   def schedule_relationship(:SCHEDULED), do: nil
   def schedule_relationship(relationship), do: relationship
 
+  @doc """
+  Returns true if the group is non-revenue
+  """
+  def non_revenue?({td, _, _} = _group) do
+    td && not td.revenue
+  end
+
   defp group_by_trip_id(%TripDescriptor{} = td, map) do
     if trip_id = TripDescriptor.trip_id(td) do
       Map.update(map, trip_id, {td, [], []}, &add_trip_descriptor(&1, td))
@@ -196,6 +203,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
       |> Map.merge(enhanced_data_fn.(td))
       |> drop_nil_values()
 
+    {update_type, trip} = Map.pop(trip, :update_type)
+
     vehicle = trip_update_vehicle(td, vps)
 
     stop_time_update =
@@ -214,7 +223,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
                 trip: trip,
                 stop_time_update: stop_time_update,
                 vehicle: vehicle,
-                timestamp: timestamp
+                timestamp: timestamp,
+                update_type: update_type
               })
           }
         ]
@@ -223,7 +233,13 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
         [
           %{
             id: id,
-            trip_update: drop_nil_values(%{trip: trip, vehicle: vehicle, timestamp: timestamp})
+            trip_update:
+              drop_nil_values(%{
+                trip: trip,
+                vehicle: vehicle,
+                timestamp: timestamp,
+                update_type: update_type
+              })
           }
         ]
 

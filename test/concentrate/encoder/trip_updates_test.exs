@@ -4,7 +4,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
   import Concentrate.TestHelpers
   import Concentrate.Encoder.TripUpdates
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
-  alias Concentrate.{FeedUpdate, TripDescriptor, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{FeedUpdate, StopTimeUpdate, TripDescriptor, VehiclePosition}
   alias Concentrate.Parser.GTFSRealtime
 
   describe "encode_groups/1" do
@@ -155,6 +155,28 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
       } = decoded
 
       refute "route_pattern_id" in Map.keys(trip)
+    end
+
+    test "Non-revenue trips with are dropped" do
+      initial = [
+        TripDescriptor.new(
+          trip_id: "NONREV-trip",
+          route_id: "route",
+          direction_id: 0,
+          revenue: false
+        ),
+        StopTimeUpdate.new(
+          trip_id: "NONREV-trip",
+          stop_id: "stop",
+          schedule_relationship: :SKIPPED
+        )
+      ]
+
+      decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
+
+      assert %{
+               entity: []
+             } = decoded
     end
   end
 end

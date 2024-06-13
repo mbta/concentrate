@@ -4,7 +4,7 @@ defmodule Concentrate.Reporter.TimeTravelTest do
   import ExUnit.CaptureLog
 
   alias Concentrate.Reporter.TimeTravel
-  alias Concentrate.{TripDescriptor, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   defp build_trip(timings) do
     td = %TripDescriptor{

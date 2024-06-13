@@ -11,7 +11,7 @@ defmodule Concentrate.GTFS.UnzipTest do
         end
 
       # all the zip module arguments are charlists, hence the single quotes
-      {:ok, {_, zip_file}} = :zip.create('gtfs.zip', bodies, [:memory])
+      {:ok, {_, zip_file}} = :zip.create(~c"gtfs.zip", bodies, [:memory])
       assert is_binary(zip_file)
       parsed = parse(zip_file, [])
       assert find_body(parsed, "trips.txt") == "trips.txt body"

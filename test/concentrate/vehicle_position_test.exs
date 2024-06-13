@@ -74,14 +74,16 @@ defmodule Concentrate.VehiclePositionTest do
               label: "main-car",
               occupancy_status: :MANY_SEATS_FULL,
               occupancy_percentage: 80,
-              carriage_sequence: 1
+              carriage_sequence: 1,
+              orientation: :AB
             },
             %{
               id: 0,
               label: "second-car",
               occupancy_status: :EMPTY,
               occupancy_percentage: 0,
-              carriage_sequence: 2
+              carriage_sequence: 2,
+              orientation: :BA
             }
           ]
         )
@@ -99,14 +101,16 @@ defmodule Concentrate.VehiclePositionTest do
               label: "main-car",
               occupancy_status: :MANY_SEATS_FULL,
               occupancy_percentage: 80,
-              carriage_sequence: 1
+              carriage_sequence: 1,
+              orientation: :AB
             },
             %{
               id: 0,
               label: "second-car",
               occupancy_status: :EMPTY,
               occupancy_percentage: 0,
-              carriage_sequence: 2
+              carriage_sequence: 2,
+              orientation: :BA
             }
           ]
         )

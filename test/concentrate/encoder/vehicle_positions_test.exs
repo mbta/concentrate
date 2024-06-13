@@ -4,7 +4,7 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
   import Concentrate.TestHelpers
   import Concentrate.Encoder.VehiclePositions
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
-  alias Concentrate.{FeedUpdate, TripDescriptor, VehiclePosition, StopTimeUpdate}
+  alias Concentrate.{FeedUpdate, StopTimeUpdate, TripDescriptor, VehiclePosition}
   alias Concentrate.Parser.GTFSRealtime
 
   describe "encode/1" do
@@ -152,6 +152,35 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
       assert data == round_trip(data)
     end
 
+    test "multi_carriage_details does not get stomped by pb encoder" do
+      data = [
+        TripDescriptor.new(trip_id: "trip", vehicle_id: "3022"),
+        VehiclePosition.new(
+          trip_id: "trip",
+          id: "3022",
+          latitude: 2,
+          longitude: 2,
+          status: :IN_TRANSIT_TO,
+          multi_carriage_details: [
+            %{
+              label: "3022",
+              carriage_sequence: 1,
+              occupancy_status: :MANY_SEATS_AVAILABLE,
+              occupancy_percentage: 10
+            },
+            %{
+              label: "3021",
+              carriage_sequence: 2,
+              occupancy_status: :FEW_SEATS_AVAILABLE,
+              occupancy_percentage: 25
+            }
+          ]
+        )
+      ]
+
+      assert data == round_trip(data)
+    end
+
     test "decoding and re-encoding vehiclepositions.pb is a no-op" do
       decoded =
         FeedUpdate.updates(
@@ -159,6 +188,21 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
         )
 
       assert Enum.sort(round_trip(decoded)) == Enum.sort(decoded)
+    end
+
+    test "filters non-revenue trips" do
+      data = [
+        TripDescriptor.new(trip_id: "one", vehicle_id: "y1", revenue: false),
+        VehiclePosition.new(
+          trip_id: "one",
+          id: "y1",
+          latitude: 1,
+          longitude: 1,
+          status: :IN_TRANSIT_TO
+        )
+      ]
+
+      assert [] == round_trip(data)
     end
   end
 

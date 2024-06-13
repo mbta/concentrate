@@ -1,0 +1,24 @@
+name: Deploy to ECS
+
+on:
+  schedule:
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+        required: true
+        default: dev
+  push:
+    branches: master
+
+jobs:
+  call-workflow:
+    uses: mbta/workflows/.github/workflows/deploy-ecs.yml@v2
+    with:
+      app-name: concentrate
+      environment: ${{ github.event.inputs.environment || 'dev' }}
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      docker-repo: ${{ secrets.DOCKER_REPO }}
+      slack-webhook: ${{ secrets.SLACK_WEBHOOK }}

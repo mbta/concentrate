@@ -115,7 +115,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp decode_feed_entity(entity, _opts, feed_timestamp) do
-    Logger.warn("event=malformed_entity timestamp=#{feed_timestamp} #{inspect(entity)}")
+    Logger.warning("event=malformed_entity timestamp=#{feed_timestamp} #{inspect(entity)}")
     []
   end
 
@@ -145,6 +145,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         stop_updates =
           for stu <- updates do
             {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, "arrival"))
+
             {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
 
             boarding_status = decode_boarding_status(Map.get(stu, "boarding_status"))
@@ -214,7 +215,11 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
               consist: decode_consist(Map.get(vehicle, "consist")),
               occupancy_status: occupancy_status(Map.get(vp, "occupancy_status")),
               occupancy_percentage: Map.get(vp, "occupancy_percentage"),
-              multi_carriage_details: Helpers.parse_multi_carriage_details(vp)
+              multi_carriage_details:
+                VehiclePosition.CarriageDetails.build_multi_carriage_details(
+                  Helpers.parse_multi_carriage_details(vp),
+                  :enhanced
+                )
             )
           ]
         else
@@ -243,7 +248,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         start_time: Map.get(trip, "start_time"),
         schedule_relationship: schedule_relationship(Map.get(trip, "schedule_relationship")),
         timestamp: Map.get(descriptor, "timestamp"),
-        vehicle_id: vehicle_id
+        revenue: Map.get(trip, "revenue", true),
+        vehicle_id: vehicle_id,
+        last_trip: Map.get(trip, "last_trip", false),
+        update_type: Map.get(descriptor, "update_type")
       )
     ]
   end

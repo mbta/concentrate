@@ -2,7 +2,7 @@ defmodule Concentrate.Filter.SkippedStopOnAddedTripTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.SkippedStopOnAddedTrip
-  alias Concentrate.{TripDescriptor, StopTimeUpdate}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   @trip_id "trip"
 

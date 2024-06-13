@@ -6,14 +6,14 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
   import Concentrate.Parser.GTFSRealtimeEnhanced
 
   alias Concentrate.{
-    FeedUpdate,
-    TripDescriptor,
-    StopTimeUpdate,
-    VehiclePosition,
     Alert,
     Alert.InformedEntity,
+    FeedUpdate,
     Parser.Helpers,
-    Parser.Helpers.Options
+    Parser.Helpers.Options,
+    StopTimeUpdate,
+    TripDescriptor,
+    VehiclePosition
   }
 
   describe "parse/1" do
@@ -332,6 +332,124 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       [td] = decode_trip_update(map, Helpers.parse_options([]))
       assert TripDescriptor.vehicle_id(td) == "vehicle_id"
     end
+
+    test "decodes revenue status" do
+      non_revenue_map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => false
+        },
+        "stop_time_update" => []
+      }
+
+      revenue_map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true
+        },
+        "stop_time_update" => []
+      }
+
+      [td] = decode_trip_update(non_revenue_map, Helpers.parse_options([]))
+      assert TripDescriptor.revenue(td) == false
+
+      [td] = decode_trip_update(revenue_map, Helpers.parse_options([]))
+      assert TripDescriptor.revenue(td) == true
+    end
+
+    test "revenue defaults to true if not specified" do
+      map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "stop_time_update" => []
+      }
+
+      [td] = decode_trip_update(map, Helpers.parse_options([]))
+      assert TripDescriptor.revenue(td) == true
+    end
+
+    test "update_type and uncertainty values are set if present" do
+      update = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "update_type" => "mid_trip",
+        "stop_time_update" => [
+          %{
+            "arrival" => %{"time" => 100, "uncertainty" => 500},
+            "departure" => %{"time" => 200, "uncertainty" => 500}
+          }
+        ]
+      }
+
+      [td, stu] = decode_trip_update(update, %Options{})
+      assert td.update_type == "mid_trip"
+      assert stu.uncertainty == 500
+    end
+
+    test "uncertainty uses uncertainty value if update_type is not present" do
+      update = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "stop_time_update" => [
+          %{
+            "arrival" => %{"time" => 100, "uncertainty" => 500},
+            "departure" => %{"time" => 200, "uncertainty" => 500}
+          }
+        ]
+      }
+
+      [td, stu] = decode_trip_update(update, %Options{})
+      refute td.update_type
+      assert stu.uncertainty == 500
+    end
+
+    test "decodes last_trip" do
+      not_last_trip = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true,
+          "last_trip" => false
+        },
+        "stop_time_update" => []
+      }
+
+      last_trip = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true,
+          "last_trip" => true
+        },
+        "stop_time_update" => []
+      }
+
+      not_specified = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true
+        },
+        "stop_time_update" => []
+      }
+
+      [td] = decode_trip_update(not_last_trip, Helpers.parse_options([]))
+      assert TripDescriptor.last_trip(td) == false
+
+      [td] = decode_trip_update(last_trip, Helpers.parse_options([]))
+      assert TripDescriptor.last_trip(td) == true
+
+      [td] = decode_trip_update(not_specified, Helpers.parse_options([]))
+      assert TripDescriptor.last_trip(td) == false
+    end
   end
 
   describe "decode_vehicle/3" do
@@ -366,14 +484,16 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
             label: "main-car",
             occupancy_status: :MANY_SEATS_FULL,
             occupancy_percentage: 80,
-            carriage_sequence: 1
+            carriage_sequence: 1,
+            orientation: :AB
           },
           %{
             id: 1,
             label: "second-car",
             occupancy_status: :EMPTY,
             occupancy_percentage: 0,
-            carriage_sequence: 2
+            carriage_sequence: 2,
+            orientation: :BA
           }
         ],
         "position" => %{
@@ -433,14 +553,16 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
                      label: "main-car",
                      occupancy_status: :MANY_SEATS_FULL,
                      occupancy_percentage: 80,
-                     carriage_sequence: 1
+                     carriage_sequence: 1,
+                     orientation: :AB
                    },
                    %{
                      id: 1,
                      label: "second-car",
                      occupancy_status: :EMPTY,
                      occupancy_percentage: 0,
-                     carriage_sequence: 2
+                     carriage_sequence: 2,
+                     orientation: :BA
                    }
                  ]
                )
@@ -535,6 +657,87 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         end)
 
       assert log =~ "vehicle timestamp after feed timestamp"
+    end
+
+    test "decodes revenue status" do
+      non_revenue_map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => false
+        },
+        "position" => %{
+          "latitude" => 1.0,
+          "longitude" => 1.0
+        }
+      }
+
+      revenue_map = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true
+        },
+        "position" => %{
+          "latitude" => 1.0,
+          "longitude" => 1.0
+        }
+      }
+
+      [td, _vp] = decode_vehicle(non_revenue_map, Helpers.parse_options([]), nil)
+      assert TripDescriptor.revenue(td) == false
+
+      [td, _vp] = decode_vehicle(revenue_map, Helpers.parse_options([]), nil)
+      assert TripDescriptor.revenue(td) == true
+    end
+
+    test "decodes last_trip" do
+      not_last_trip = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true,
+          "last_trip" => false
+        },
+        "position" => %{
+          "latitude" => 1.0,
+          "longitude" => 1.0
+        }
+      }
+
+      last_trip = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true,
+          "last_trip" => true
+        },
+        "position" => %{
+          "latitude" => 1.0,
+          "longitude" => 1.0
+        }
+      }
+
+      not_specified = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route",
+          "revenue" => true
+        },
+        "position" => %{
+          "latitude" => 1.0,
+          "longitude" => 1.0
+        }
+      }
+
+      [td, _vp] = decode_vehicle(not_last_trip, Helpers.parse_options([]), nil)
+      assert TripDescriptor.last_trip(td) == false
+
+      [td, _vp] = decode_vehicle(last_trip, Helpers.parse_options([]), nil)
+      assert TripDescriptor.last_trip(td) == true
+
+      [td, _vp] = decode_vehicle(not_specified, Helpers.parse_options([]), nil)
+      assert TripDescriptor.last_trip(td) == false
     end
   end
 end
