@@ -12,5 +12,9 @@ defmodule Concentrate.GroupFilter.TripDescriptorTimestamp do
     {TripDescriptor.update_timestamp(td, timestamp), vps, stus}
   end
 
+  def filter({%TripDescriptor{route_id: "Green-" <> _}, _, _} = glides_trips) do
+    glides_trips
+  end
+
   def filter(other), do: other
 end
