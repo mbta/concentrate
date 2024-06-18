@@ -20,7 +20,7 @@ defmodule Concentrate.FeedUpdateTest do
 
     property "implements slice" do
       check all(u <- feed_update(), start <- integer(-5..5), stop <- integer(-5..5)) do
-        assert Enum.slice(u, start..stop) == Enum.slice(FeedUpdate.updates(u), start..stop)
+        assert Enum.slice(u, start..stop//1) == Enum.slice(FeedUpdate.updates(u), start..stop//1)
       end
     end
 

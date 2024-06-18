@@ -73,7 +73,7 @@ defmodule Concentrate.MixProject do
       {:emqtt_failover, "~> 0.3"},
       {:cowlib, "2.11.0", override: true},
       {:jason, "~> 1.0"},
-      {:stream_data, "~> 0.4", only: :test},
+      {:stream_data, "~> 1.1", only: :test},
       {:tzdata, "~> 1.1.1"},
       {:sentry, "~> 8.0"}
     ]
