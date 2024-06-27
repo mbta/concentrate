@@ -4,6 +4,7 @@ defmodule Concentrate.GroupFilter.Shuttle do
   """
   @behaviour Concentrate.GroupFilter
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
+  require Logger
 
   @impl Concentrate.GroupFilter
   def filter(trip_group, shuttle_module \\ Concentrate.Filter.Alert.Shuttles)
@@ -49,15 +50,19 @@ defmodule Concentrate.GroupFilter.Shuttle do
 
       case module.stop_shuttling_on_route(route_id, stop_id, time) do
         nil ->
+          Logger.info("modifying_shuttle_stop (nil) stu=#{inspect(stu.stop_id, limit: :infinity)}")
           drop_arrival_time_if_after_shuttle(stu, has_shuttled?)
 
         :through ->
+          Logger.info("modifying_shuttle_stop (through) stu=#{inspect(stu.stop_id, limit: :infinity)}")
           {[StopTimeUpdate.skip(stu)], {has_started?, true}}
 
         :start ->
+          Logger.info("modifying_shuttle_stop (start) stu=#{inspect(stu.stop_id, limit: :infinity)}")
           {[StopTimeUpdate.update_departure_time(stu, nil)], {true, true}}
 
         :stop ->
+          Logger.info("modifying_shuttle_stop (stop) stu=#{inspect(stu.stop_id, limit: :infinity)}")
           {[StopTimeUpdate.update_arrival_time(stu, nil)], {false, false}}
       end
     else
