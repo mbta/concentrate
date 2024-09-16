@@ -5,6 +5,9 @@ defmodule Concentrate.GTFS.FakeTrips do
 
   def direction_id("trip"), do: 1
   def direction_id(_), do: nil
+
+  def route_type("trip"), do: 3
+  def route_type(_), do: nil
 end
 
 defmodule Concentrate.Filter.FakeCancelledTrips do

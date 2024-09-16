@@ -1,6 +1,6 @@
 defmodule Concentrate.GTFS.Trips do
   @moduledoc """
-  Server which maintains a list of trip -> {route_id, direction_id} mappings.
+  Server which maintains a list of trip -> {route_id, direction_id, route_type} mappings.
   """
   use GenStage
   require Logger
@@ -23,18 +23,34 @@ defmodule Concentrate.GTFS.Trips do
     ArgumentError -> nil
   end
 
+  def route_type(trip_id) do
+    hd(:ets.lookup_element(@table, trip_id, 4))
+  rescue
+    ArgumentError -> nil
+  end
+
   def init(opts) do
     @table = :ets.new(@table, [:named_table, :public, :duplicate_bag])
     {:consumer, %{}, opts}
   end
 
   def handle_events(events, _from, state) do
+    route_id_type_map =
+      for event <- events,
+          {"routes.txt", trip_body} <- event,
+          lines = String.split(trip_body, "\n"),
+          {:ok, row} <- CSV.decode(lines, headers: true) do
+        {copy(row["route_id"]), String.to_integer(row["route_type"])}
+      end
+      |> Map.new()
+
     inserts =
       for event <- events,
           {"trips.txt", trip_body} <- event,
           lines = String.split(trip_body, "\n"),
           {:ok, row} <- CSV.decode(lines, headers: true) do
-        {copy(row["trip_id"]), copy(row["route_id"]), String.to_integer(row["direction_id"])}
+        {copy(row["trip_id"]), copy(row["route_id"]), String.to_integer(row["direction_id"]),
+         route_id_type_map[row["route_id"]]}
       end
 
     _ =
