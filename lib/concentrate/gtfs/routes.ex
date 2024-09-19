@@ -1,6 +1,6 @@
-defmodule Concentrate.GTFS.Trips do
+defmodule Concentrate.GTFS.Routes do
   @moduledoc """
-  Server which maintains a list of trip -> {route_id, direction_id} mappings.
+  Server which maintains a list of route_id -> route_type mappings.
   """
   use GenStage
   require Logger
@@ -11,14 +11,8 @@ defmodule Concentrate.GTFS.Trips do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def route_id(trip_id) do
-    hd(:ets.lookup_element(@table, trip_id, 2))
-  rescue
-    ArgumentError -> nil
-  end
-
-  def direction_id(trip_id) do
-    hd(:ets.lookup_element(@table, trip_id, 3))
+  def route_type(route_id) do
+    hd(:ets.lookup_element(@table, route_id, 2))
   rescue
     ArgumentError -> nil
   end
@@ -31,10 +25,10 @@ defmodule Concentrate.GTFS.Trips do
   def handle_events(events, _from, state) do
     inserts =
       for event <- events,
-          {"trips.txt", trip_body} <- event,
-          lines = String.split(trip_body, "\n"),
+          {"routes.txt", route_body} <- event,
+          lines = String.split(route_body, "\n"),
           {:ok, row} <- CSV.decode(lines, headers: true) do
-        {copy(row["trip_id"]), copy(row["route_id"]), String.to_integer(row["direction_id"])}
+        {copy(row["route_id"]), String.to_integer(row["route_type"])}
       end
 
     _ =

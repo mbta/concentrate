@@ -4,16 +4,16 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   """
   @behaviour Concentrate.GroupFilter
   alias Concentrate.Filter.Alert.CancelledTrips
-  alias Concentrate.GTFS.Trips
+  alias Concentrate.GTFS.Routes
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   @impl Concentrate.GroupFilter
-  def filter(trip_group, module \\ CancelledTrips, trips_module \\ Trips)
+  def filter(trip_group, module \\ CancelledTrips, routes_module \\ Routes)
 
   def filter(
         {%TripDescriptor{} = td, _vps, [stu | _] = stop_time_updates} = group,
         module,
-        trips_module
+        routes_module
       ) do
     trip_id = TripDescriptor.trip_id(td)
     route_id = TripDescriptor.route_id(td)
@@ -23,7 +23,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
       TripDescriptor.schedule_relationship(td) == :CANCELED ->
         cancel_group(group)
 
-      bus_block_waiver?(stop_time_updates, trips_module.route_type(trip_id)) ->
+      bus_block_waiver?(stop_time_updates, routes_module.route_type(trip_id)) ->
         cancel_group(group)
 
       is_nil(time) ->
