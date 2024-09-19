@@ -23,7 +23,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
       TripDescriptor.schedule_relationship(td) == :CANCELED ->
         cancel_group(group)
 
-      bus_block_waiver?(stop_time_updates, routes_module.route_type(trip_id)) ->
+      bus_block_waiver?(stop_time_updates, routes_module.route_type(route_id)) ->
         cancel_group(group)
 
       is_nil(time) ->
