@@ -69,6 +69,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
     test "cancels the group if all stop updates have already been given a skipped status" do
       td =
         TripDescriptor.new(
+          route_id: "1",
           trip_id: "trip",
           start_date: {1970, 1, 2}
         )
@@ -91,6 +92,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
     test "does not cancel the group if all stop updates have already been given a skipped status but route_type is not 3" do
       td =
         TripDescriptor.new(
+          route_id: "Red",
           trip_id: "red_trip",
           start_date: {1970, 1, 2}
         )
@@ -113,6 +115,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
     test "does not cancel the group if only some stop updates have already been given a skipped schedule relationship" do
       td =
         TripDescriptor.new(
+          route_id: "86",
           trip_id: "trip",
           start_date: {1970, 1, 2}
         )
