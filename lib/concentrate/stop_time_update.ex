@@ -9,6 +9,7 @@ defmodule Concentrate.StopTimeUpdate do
     :stop_id,
     :arrival_time,
     :departure_time,
+    :passthrough_time,
     :stop_sequence,
     :status,
     :track,
@@ -56,6 +57,7 @@ defmodule Concentrate.StopTimeUpdate do
         first
         | arrival_time: time_stu.arrival_time,
           departure_time: time_stu.departure_time,
+          passthrough_time: first.passthrough_time || second.passthrough_time,
           status: first.status || second.status,
           track: first.track || second.track,
           schedule_relationship:

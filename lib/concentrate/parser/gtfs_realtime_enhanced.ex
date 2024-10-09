@@ -158,6 +158,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
               schedule_relationship: schedule_relationship(Map.get(stu, "schedule_relationship")),
               arrival_time: arrival_time,
               departure_time: departure_time,
+              passthrough_time: Map.get(stu, "passthrough_time"),
               uncertainty: arrival_uncertainty || departure_uncertainty,
               status: boarding_status,
               platform_id: Map.get(stu, "platform_id")
