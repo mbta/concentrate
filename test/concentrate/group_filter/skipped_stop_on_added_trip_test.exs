@@ -31,6 +31,32 @@ defmodule Concentrate.Filter.SkippedStopOnAddedTripTest do
       assert {^td, [], [^stu]} = filter({td, [], [stu]})
     end
 
+    test "keeps stus with passthough_times from ADDED trips" do
+      td = TripDescriptor.new(trip_id: @trip_id, schedule_relationship: :ADDED)
+
+      stu =
+        StopTimeUpdate.new(
+          trip_id: @trip_id,
+          schedule_relationship: :SKIPPED,
+          passthrough_time: 500
+        )
+
+      assert {^td, [], [^stu]} = filter({td, [], [stu]})
+    end
+
+    test "keeps stus with passthough_times from UNSCHEDULED trips" do
+      td = TripDescriptor.new(trip_id: @trip_id, schedule_relationship: :UNSCHEDULED)
+
+      stu =
+        StopTimeUpdate.new(
+          trip_id: @trip_id,
+          schedule_relationship: :SKIPPED,
+          passthrough_time: 500
+        )
+
+      assert {^td, [], [^stu]} = filter({td, [], [stu]})
+    end
+
     test "other values are returned as-is" do
       assert filter(:value) == :value
     end

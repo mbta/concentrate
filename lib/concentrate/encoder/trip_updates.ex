@@ -27,7 +27,8 @@ defmodule Concentrate.Encoder.TripUpdates do
 
     relationship = schedule_relationship(StopTimeUpdate.schedule_relationship(update))
 
-    if is_map(arrival) or is_map(departure) or relationship != nil do
+    if (is_map(arrival) or is_map(departure) or relationship != nil) and
+         StopTimeUpdate.passthrough_time(update) == nil do
       drop_nil_values(%{
         stop_id: StopTimeUpdate.stop_id(update),
         stop_sequence: StopTimeUpdate.stop_sequence(update),
