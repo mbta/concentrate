@@ -9,7 +9,11 @@ defmodule Concentrate.GroupFilter.SkippedStopOnAddedTrip do
   def filter({%TripDescriptor{} = td, vps, stus}) do
     stus =
       if TripDescriptor.schedule_relationship(td) in ~w(ADDED UNSCHEDULED)a do
-        Enum.reject(stus, &(StopTimeUpdate.schedule_relationship(&1) == :SKIPPED))
+        Enum.reject(
+          stus,
+          &(StopTimeUpdate.schedule_relationship(&1) == :SKIPPED &&
+              StopTimeUpdate.passthrough_time(&1) == nil)
+        )
       else
         stus
       end
