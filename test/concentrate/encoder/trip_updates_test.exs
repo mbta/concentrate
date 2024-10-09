@@ -178,5 +178,29 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
                entity: []
              } = decoded
     end
+
+    test "stop time updates with a passthrough_time are removed" do
+      initial = [
+        TripDescriptor.new(trip_id: "1"),
+        StopTimeUpdate.new(trip_id: "1", stop_sequence: 1, departure_time: 1),
+        StopTimeUpdate.new(trip_id: "1", stop_sequence: 2, arrival_time: 2, passthrough_time: 2),
+        StopTimeUpdate.new(trip_id: "1", stop_sequence: 3, arrival_time: 3, departure_time: 4),
+        StopTimeUpdate.new(trip_id: "1", stop_sequence: 4, departure_time: 5, passthrough_time: 5)
+      ]
+
+      decoded = GTFSRealtime.parse(encode_groups(group(initial)), [])
+
+      assert [
+               TripDescriptor.new(trip_id: "1"),
+               StopTimeUpdate.new(trip_id: "1", stop_sequence: 1, departure_time: 1),
+               StopTimeUpdate.new(
+                 trip_id: "1",
+                 stop_sequence: 3,
+                 arrival_time: 3,
+                 departure_time: 4
+               )
+             ] ==
+               FeedUpdate.updates(decoded)
+    end
   end
 end
