@@ -21,6 +21,7 @@ defmodule Concentrate.GTFS.Supervisor do
               name: :gtfs_producer
             }
           },
+          {Concentrate.GTFS.Routes, subscribe_to: [:gtfs_producer]},
           {Concentrate.GTFS.Trips, subscribe_to: [:gtfs_producer]},
           {Concentrate.GTFS.Stops, subscribe_to: [:gtfs_producer]},
           {Concentrate.GTFS.StopTimes, subscribe_to: [:gtfs_producer]}
