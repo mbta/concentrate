@@ -219,5 +219,80 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
       trip = get_in(encoded, ["entity", Access.at(0), "trip_update", "trip"])
       refute trip["update_type"]
     end
+
+    test "includes passthrough_time" do
+      parsed = [
+        TripDescriptor.new(
+          trip_id: "trip",
+          route_id: "route",
+          direction_id: 0,
+          schedule_relationship: :ADDED,
+          revenue: true
+        ),
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          stop_id: "stop_1",
+          schedule_relationship: :SKIPPED,
+          departure_time: 100,
+          passthrough_time: 100
+        ),
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          stop_id: "stop_2",
+          schedule_relationship: :SKIPPED,
+          arrival_time: 200,
+          departure_time: 250,
+          passthrough_time: 200
+        ),
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          stop_id: "stop_3",
+          arrival_time: 300,
+          departure_time: 400
+        )
+      ]
+
+      encoded = Jason.decode!(encode_groups(group(parsed)))
+
+      assert %{
+               "entity" => [
+                 %{
+                   "id" => "trip",
+                   "trip_update" => %{
+                     "trip" => %{
+                       "direction_id" => 0,
+                       "revenue" => true,
+                       "route_id" => "route",
+                       "trip_id" => "trip",
+                       "last_trip" => false
+                     },
+                     "stop_time_update" => [
+                       %{
+                         "arrival" => %{"time" => 300},
+                         "departure" => %{"time" => 400},
+                         "stop_id" => "stop_3"
+                       } = stu_3,
+                       %{
+                         "passthrough_time" => 200,
+                         "schedule_relationship" => "SKIPPED",
+                         "stop_id" => "stop_2"
+                       } = stu_2,
+                       %{
+                         "passthrough_time" => 100,
+                         "schedule_relationship" => "SKIPPED",
+                         "stop_id" => "stop_1"
+                       } = stu_1
+                     ]
+                   }
+                 }
+               ]
+             } = encoded
+
+      refute Map.get(stu_1, "arrival")
+      refute Map.get(stu_1, "departure")
+      refute Map.get(stu_2, "arrival")
+      refute Map.get(stu_2, "departure")
+      refute Map.get(stu_3, "passthrough_time")
+    end
   end
 end

@@ -411,6 +411,30 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert stu.uncertainty == 500
     end
 
+    test "parses passthrough_time" do
+      update = %{
+        "trip" => %{
+          "trip_id" => "trip",
+          "route_id" => "route"
+        },
+        "stop_time_update" => [
+          %{
+            "arrival" => %{"time" => 100, "uncertainty" => 500},
+            "departure" => %{"time" => 200, "uncertainty" => 500},
+            "passthrough_time" => 100
+          },
+          %{
+            "arrival" => %{"time" => 300, "uncertainty" => 500},
+            "departure" => %{"time" => 400, "uncertainty" => 500}
+          }
+        ]
+      }
+
+      [_td, stu1, stu2] = decode_trip_update(update, %Options{})
+      assert stu1.passthrough_time == 100
+      refute stu2.passthrough_time
+    end
+
     test "decodes last_trip" do
       not_last_trip = %{
         "trip" => %{
