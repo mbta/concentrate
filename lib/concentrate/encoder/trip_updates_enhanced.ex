@@ -29,13 +29,22 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
     drop_nil_values(%{
       stop_id: StopTimeUpdate.stop_id(update),
       stop_sequence: StopTimeUpdate.stop_sequence(update),
-      arrival:
-        stop_time_event(StopTimeUpdate.arrival_time(update), StopTimeUpdate.uncertainty(update)),
-      departure:
-        stop_time_event(StopTimeUpdate.departure_time(update), StopTimeUpdate.uncertainty(update)),
+      arrival: determine_arrival_value(update),
+      departure: determine_departure_value(update),
+      passthrough_time: StopTimeUpdate.passthrough_time(update),
       schedule_relationship: schedule_relationship(StopTimeUpdate.schedule_relationship(update)),
       boarding_status: StopTimeUpdate.status(update),
       platform_id: StopTimeUpdate.platform_id(update)
     })
   end
+
+  defp determine_arrival_value(%{passthrough_time: nil} = update),
+    do: stop_time_event(StopTimeUpdate.arrival_time(update), StopTimeUpdate.uncertainty(update))
+
+  defp determine_arrival_value(_), do: nil
+
+  defp determine_departure_value(%{passthrough_time: nil} = update),
+    do: stop_time_event(StopTimeUpdate.departure_time(update), StopTimeUpdate.uncertainty(update))
+
+  defp determine_departure_value(_), do: nil
 end
