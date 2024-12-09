@@ -10,9 +10,11 @@ defmodule Concentrate.GroupFilter.ClosedStop do
   def filter(update, stops_module \\ ClosedStops)
 
   def filter({%TripDescriptor{} = td, vps, stus}, stops_module) do
+    route_id = TripDescriptor.route_id(td)
+
     match = [
       trip_id: TripDescriptor.trip_id(td),
-      route_id: TripDescriptor.route_id(td),
+      route_id: route_id,
       direction_id: TripDescriptor.direction_id(td)
     ]
 
@@ -21,7 +23,7 @@ defmodule Concentrate.GroupFilter.ClosedStop do
         time = StopTimeUpdate.time(stu)
 
         if is_integer(time) do
-          entities = stops_module.stop_closed_for(StopTimeUpdate.stop_id(stu), time)
+          entities = stops_module.stop_closed_for(StopTimeUpdate.stop_id(stu), route_id, time)
           update_stu_from_closed_entities(stu, match, entities)
         else
           stu

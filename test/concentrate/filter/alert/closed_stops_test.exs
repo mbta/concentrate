@@ -9,7 +9,7 @@ defmodule Concentrate.Filter.Alert.ClosedStopsTest do
     :ok
   end
 
-  describe "stop_closed_for/2" do
+  describe "stop_closed_for/3" do
     setup :supervised
 
     test "returns a list of entities for which the stop is closed at the given time" do
@@ -28,10 +28,10 @@ defmodule Concentrate.Filter.Alert.ClosedStopsTest do
 
       handle_events([[alert]], :from, :state)
 
-      assert stop_closed_for("stop", 5) == [stop_only]
-      assert stop_closed_for("other", 20) == [stop_route]
-      assert stop_closed_for("stop", 12) == []
-      assert stop_closed_for("unknown", 8) == []
+      assert stop_closed_for("stop", "route", 5) == [stop_only]
+      assert stop_closed_for("other", "route", 20) == [stop_route]
+      assert stop_closed_for("stop", "route", 12) == []
+      assert stop_closed_for("unknown", "route", 8) == []
     end
 
     test "for route types 3 and 4, :DETOUR is also a closed stop" do
@@ -52,18 +52,18 @@ defmodule Concentrate.Filter.Alert.ClosedStopsTest do
 
       handle_events([[alert]], :from, :state)
 
-      assert stop_closed_for("bus", 5) == [bus]
-      assert stop_closed_for("ferry", 6) == [ferry]
+      assert stop_closed_for("bus", "bus_route", 5) == [bus]
+      assert stop_closed_for("ferry", "ferry_route", 6) == [ferry]
 
       for name <- ~w(light_rail heavy_rail commuter_rail) do
-        assert stop_closed_for(name, 6) == []
+        assert stop_closed_for(name, "#{name}_route", 6) == []
       end
     end
   end
 
   describe "missing ETS table" do
     test "stop_closed_for/2 returns empty list" do
-      assert stop_closed_for("stop", 0) == []
+      assert stop_closed_for("stop", "route", 0) == []
     end
   end
 end
