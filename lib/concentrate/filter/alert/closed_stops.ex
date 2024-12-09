@@ -13,9 +13,12 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  @spec stop_closed_for(String.t(), String.t(), integer) :: [Alert.InformedEntity.t()]
-  def stop_closed_for(stop_id, _route_id, timestamp) when is_binary(stop_id) do
-    TimeTable.date_overlaps(@table, stop_id, timestamp)
+  @spec stop_closed_for(String.t(), String.t() | nil, integer) :: [Alert.InformedEntity.t()]
+  def stop_closed_for(stop_id, route_id, timestamp) when is_binary(stop_id) do
+    case TimeTable.date_overlaps(@table, {stop_id, route_id}, timestamp) do
+      [] -> TimeTable.date_overlaps(@table, {stop_id, nil}, timestamp)
+      entities -> entities
+    end
   end
 
   def init(opts) do
@@ -31,7 +34,7 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
           entity <- closed_stop_entities(alert),
           stop_id = InformedEntity.stop_id(entity),
           {start, stop} <- Alert.active_period(alert) do
-        {stop_id, start, stop, entity}
+        {{stop_id, InformedEntity.route_id(entity)}, start, stop, entity}
       end
 
     _ =
