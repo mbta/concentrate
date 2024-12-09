@@ -58,7 +58,7 @@ defmodule Concentrate.Filter.FakeClosedStops do
   @moduledoc "Fake implementation of Filter.Alerts.ClosedStops"
   alias Concentrate.Alert.InformedEntity
 
-  def stop_closed_for("stop", unix) do
+  def stop_closed_for("stop", route_id, unix) do
     cond do
       unix < 5 ->
         []
@@ -66,20 +66,23 @@ defmodule Concentrate.Filter.FakeClosedStops do
       unix > 10 ->
         []
 
-      true ->
+      route_id == "route" ->
         [
           InformedEntity.new(trip_id: "trip", route_id: "route")
         ]
+
+      true ->
+        []
     end
   end
 
-  def stop_closed_for("route_stop", _) do
+  def stop_closed_for("route_stop", "other_route", _) do
     [
-      InformedEntity.new(route_id: "other_route")
+      InformedEntity.new(stop_id: "route_stop", route_id: "other_route")
     ]
   end
 
-  def stop_closed_for(_, _) do
+  def stop_closed_for(_, _, _) do
     []
   end
 end

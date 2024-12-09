@@ -13,8 +13,8 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  @spec stop_closed_for(String.t(), integer) :: [Alert.InformedEntity.t()]
-  def stop_closed_for(stop_id, timestamp) when is_binary(stop_id) do
+  @spec stop_closed_for(String.t(), String.t(), integer) :: [Alert.InformedEntity.t()]
+  def stop_closed_for(stop_id, _route_id, timestamp) when is_binary(stop_id) do
     TimeTable.date_overlaps(@table, stop_id, timestamp)
   end
 
