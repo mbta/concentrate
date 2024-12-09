@@ -23,7 +23,8 @@ defmodule Concentrate.Filter.Alert.ClosedStopsTest do
           informed_entity: [
             stop_only = InformedEntity.new(stop_id: "stop"),
             stop_route = InformedEntity.new(stop_id: "other", route_id: "route"),
-            stop_route_2 = InformedEntity.new(stop_id: "other", route_id: "route 2")
+            stop_route_2 = InformedEntity.new(stop_id: "other", route_id: "route 2"),
+            InformedEntity.new(stop_id: "partially_closed", activities: ["RIDE", "EXIT"])
           ]
         )
 
@@ -35,6 +36,7 @@ defmodule Concentrate.Filter.Alert.ClosedStopsTest do
       assert stop_closed_for("other", "route 2", 20) == [stop_route_2]
       assert stop_closed_for("other", "other_route", 20) == []
       assert stop_closed_for("stop", "route", 12) == []
+      assert stop_closed_for("partially_closed", "route", 5) == []
       assert stop_closed_for("unknown", "route", 8) == []
     end
 
