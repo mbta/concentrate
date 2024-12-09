@@ -52,7 +52,10 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
   defp closed_stop_entities(alert) do
     cond do
       Alert.effect(alert) == :NO_SERVICE ->
-        for entity <- Alert.informed_entity(alert), not is_nil(InformedEntity.stop_id(entity)) do
+        for entity <- Alert.informed_entity(alert),
+            not is_nil(InformedEntity.stop_id(entity)),
+            "BOARD" in InformedEntity.activities(entity),
+            "EXIT" in InformedEntity.activities(entity) do
           entity
         end
 
