@@ -40,6 +40,11 @@ defmodule Concentrate.StopTimeUpdate do
     schedule_relationship == :SKIPPED
   end
 
+  @spec boarding_status_cancelled?(%__MODULE__{}) :: boolean()
+  def boarding_status_cancelled?(%__MODULE__{status: boarding_status}) do
+    boarding_status == "Cancelled"
+  end
+
   defimpl Concentrate.Mergeable do
     require Logger
 
