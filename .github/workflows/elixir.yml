@@ -14,8 +14,19 @@ jobs:
     name: Build and test
     runs-on: ubuntu-22.04
 
+    services:
+      mosquitto:
+        image: eclipse-mosquitto:2.0
+        ports:
+          - 1883:1883
+        volumes:
+          - ./mosquitto:/mosquitto/config/
+        options: --name mqtt
+
     steps:
       - uses: actions/checkout@v2
+      - name: Restart MQTT to load mosquitto/mosquitto.conf from checkout
+        run: docker restart mqtt
       # cache the ASDF directory, using the values from .tool-versions
       - name: ASDF cache
         uses: actions/cache@v2
