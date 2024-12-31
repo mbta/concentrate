@@ -9,6 +9,8 @@ end
 
 defmodule Concentrate.GTFS.FakeRoutes do
   @moduledoc "Fake implementation of GTFS.Routes"
+  def route_type("CR-" <> _cr_line), do: 2
+
   def route_type(route_id) when is_binary(route_id) do
     case Integer.parse(route_id) do
       :error -> nil

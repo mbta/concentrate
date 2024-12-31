@@ -10,6 +10,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   @impl Concentrate.GroupFilter
   def filter(trip_group, module \\ CancelledTrips, routes_module \\ Routes)
 
+  # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
   def filter(
         {%TripDescriptor{} = td, _vps, [stu | _] = stop_time_updates} = group,
         module,
@@ -24,6 +25,9 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
         cancel_group(group)
 
       bus_block_waiver?(stop_time_updates, routes_module.route_type(route_id)) ->
+        cancel_group(group)
+
+      cancelled_cr_trip?(stop_time_updates, routes_module.route_type(route_id)) ->
         cancel_group(group)
 
       is_nil(time) ->
@@ -47,6 +51,12 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   end
 
   defp bus_block_waiver?(_, _), do: false
+
+  defp cancelled_cr_trip?(stop_time_updates, 2) do
+    Enum.all?(stop_time_updates, &StopTimeUpdate.boarding_status_cancelled?/1)
+  end
+
+  defp cancelled_cr_trip?(_, _), do: false
 
   defp cancel_group({td, vps, stus}) do
     td = TripDescriptor.cancel(td)
