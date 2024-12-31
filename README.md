@@ -28,9 +28,10 @@ ln -s ../../hooks/pre-commit .git/hooks/pre-commit
 # make sure everything passes! (slowest to fastest)
 mix format --check-formatted
 mix credo
-mix test
 mix dialyzer
 ```
+
+See [the section on tests below](#tests) for information on running unit tests, which requires having a local MQTT broker running.
 
 If you run into issues compiling `snabbkaffe`:
 
@@ -39,6 +40,22 @@ rm -fr deps/quicer
 mix deps.get
 mix deps.compile
 ```
+
+### Tests
+[tests]: #tests
+
+To run the tests, first install and setup Colima, Docker, and docker-compose:
+
+```shell
+brew install docker docker-compose colima
+colima start
+mkdir -p ${DOCKER_CONFIG:-"~/.docker"}/cli-plugins
+ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose ${DOCKER_CONFIG:-"~/.docker"}/cli-plugins/docker-compose
+```
+
+Then, start the Compose configuration in a separate window or tab and run the tests: 
+1. `docker compose up` 
+1. `mix test`
 
 ## Docker
 

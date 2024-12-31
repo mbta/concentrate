@@ -9,7 +9,7 @@ defmodule Concentrate.Sink.MqttTest do
     prefix = "concentrate/test_sink/#{System.unique_integer()}/"
 
     config = [
-      url: "mqtt://test.mosquitto.org",
+      url: "mqtt://localhost:1883",
       prefix: prefix
     ]
 
