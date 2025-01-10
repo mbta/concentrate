@@ -150,12 +150,19 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
             boarding_status = decode_boarding_status(Map.get(stu, "boarding_status"))
 
+            schedule_relationship =
+              if boarding_status == "Cancelled" do
+                :SKIPPED
+              else
+                schedule_relationship(Map.get(stu, "schedule_relationship"))
+              end
+
             StopTimeUpdate.new(
               trip_id:
                 if(descriptor = Map.get(trip_update, "trip"), do: Map.get(descriptor, "trip_id")),
               stop_id: Map.get(stu, "stop_id"),
               stop_sequence: Map.get(stu, "stop_sequence"),
-              schedule_relationship: schedule_relationship(Map.get(stu, "schedule_relationship")),
+              schedule_relationship: schedule_relationship,
               arrival_time: arrival_time,
               departure_time: departure_time,
               passthrough_time: Map.get(stu, "passthrough_time"),
