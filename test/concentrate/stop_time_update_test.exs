@@ -38,20 +38,6 @@ defmodule Concentrate.StopTimeUpdateTest do
     end
   end
 
-  describe "boarding_status_cancelled?/1" do
-    test "returns false if stop time update status is not cancelled" do
-      on_time = update_status(@stu, "On time")
-
-      assert boarding_status_cancelled?(on_time) == false
-    end
-
-    test "returns true if stop time update status is 'Cancelled'" do
-      cancelled = update_status(@stu, "Cancelled")
-
-      assert boarding_status_cancelled?(cancelled) == true
-    end
-  end
-
   describe "Concentrate.Mergeable" do
     test "takes non-nil values, uses arrival/departure times from earliest arrival." do
       first = @stu

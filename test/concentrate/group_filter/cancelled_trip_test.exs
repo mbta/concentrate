@@ -141,52 +141,6 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
       assert StopTimeUpdate.schedule_relationship(stu_actual2) == :SCHEDULED
     end
 
-    test "cancels the group if all stop updates have already been given a cancelled boarding status" do
-      td =
-        TripDescriptor.new(
-          route_id: "CR-Test",
-          trip_id: "trip",
-          start_date: {1970, 1, 2}
-        )
-
-      stu =
-        StopTimeUpdate.new(
-          trip_id: "trip",
-          status: "Cancelled",
-          arrival_time: 87_000,
-          schedule_relationship: :SCHEDULED
-        )
-
-      group = {td, [], [stu, stu]}
-      {td_actual, [], [stu_actual1, stu_actual2]} = filter(group, @module, @fake_routes_module)
-      assert TripDescriptor.schedule_relationship(td_actual) == :CANCELED
-      assert StopTimeUpdate.schedule_relationship(stu_actual1) == :SKIPPED
-      assert StopTimeUpdate.schedule_relationship(stu_actual2) == :SKIPPED
-    end
-
-    test "does not cancel the group if all stop updates have already been given a skipped status but route_type is not 2" do
-      td =
-        TripDescriptor.new(
-          route_id: "Red",
-          trip_id: "red_trip",
-          start_date: {1970, 1, 2}
-        )
-
-      stu =
-        StopTimeUpdate.new(
-          trip_id: "red_trip",
-          status: "Cancelled",
-          arrival_time: 87_000,
-          schedule_relationship: :SCHEDULED
-        )
-
-      group = {td, [], [stu, stu]}
-      {td_actual, [], [stu_actual1, stu_actual2]} = filter(group, @module, @fake_routes_module)
-      assert TripDescriptor.schedule_relationship(td_actual) == :SCHEDULED
-      assert StopTimeUpdate.schedule_relationship(stu_actual1) == :SCHEDULED
-      assert StopTimeUpdate.schedule_relationship(stu_actual2) == :SCHEDULED
-    end
-
     test "leaves non-cancelled trips alone" do
       td =
         TripDescriptor.new(
