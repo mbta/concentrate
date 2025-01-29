@@ -221,6 +221,24 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert StopTimeUpdate.status(stop_update) == "UNIQUE STATUS"
     end
 
+    test "handles cancelled status" do
+      update = %{
+        "trip" => %{},
+        "stop_time_update" => [
+          %{
+            "boarding_status" => "CANCELLED",
+            "arrival" => nil,
+            "departure" => %{"time" => 1234}
+          }
+        ]
+      }
+
+      [_td, stop_update] = decode_trip_update(update, %Options{})
+      assert StopTimeUpdate.schedule_relationship(stop_update) == :SKIPPED
+      assert stop_update |> StopTimeUpdate.arrival_time() |> is_nil()
+      assert stop_update |> StopTimeUpdate.departure_time() |> is_nil()
+    end
+
     test "can handle platform id information" do
       update = %{
         "trip" => %{},

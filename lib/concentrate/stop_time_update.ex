@@ -30,7 +30,7 @@ defmodule Concentrate.StopTimeUpdate do
   @doc """
   Marks the update as skipped (when the stop is closed, for example).
   """
-  @spec skip(%__MODULE__{}) :: t
+  @spec skip(%__MODULE__{} | t) :: t
   def skip(%__MODULE__{} = stu) do
     %{stu | schedule_relationship: :SKIPPED, arrival_time: nil, departure_time: nil, status: nil}
   end
