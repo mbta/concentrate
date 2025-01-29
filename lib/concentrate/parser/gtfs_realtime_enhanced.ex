@@ -150,26 +150,29 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
             boarding_status = decode_boarding_status(Map.get(stu, "boarding_status"))
 
-            schedule_relationship =
-              if boarding_status == "Cancelled" do
-                :SKIPPED
-              else
-                schedule_relationship(Map.get(stu, "schedule_relationship"))
-              end
+            stop_time_update =
+              StopTimeUpdate.new(
+                trip_id:
+                  if(descriptor = Map.get(trip_update, "trip"),
+                    do: Map.get(descriptor, "trip_id")
+                  ),
+                stop_id: Map.get(stu, "stop_id"),
+                stop_sequence: Map.get(stu, "stop_sequence"),
+                schedule_relationship:
+                  schedule_relationship(Map.get(stu, "schedule_relationship")),
+                arrival_time: arrival_time,
+                departure_time: departure_time,
+                passthrough_time: Map.get(stu, "passthrough_time"),
+                uncertainty: arrival_uncertainty || departure_uncertainty,
+                status: boarding_status,
+                platform_id: Map.get(stu, "platform_id")
+              )
 
-            StopTimeUpdate.new(
-              trip_id:
-                if(descriptor = Map.get(trip_update, "trip"), do: Map.get(descriptor, "trip_id")),
-              stop_id: Map.get(stu, "stop_id"),
-              stop_sequence: Map.get(stu, "stop_sequence"),
-              schedule_relationship: schedule_relationship,
-              arrival_time: arrival_time,
-              departure_time: departure_time,
-              passthrough_time: Map.get(stu, "passthrough_time"),
-              uncertainty: arrival_uncertainty || departure_uncertainty,
-              status: boarding_status,
-              platform_id: Map.get(stu, "platform_id")
-            )
+            if boarding_status == "Cancelled" do
+              StopTimeUpdate.skip(stop_time_update)
+            else
+              stop_time_update
+            end
           end
 
         td ++ stop_updates
