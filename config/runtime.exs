@@ -22,3 +22,9 @@ if is_prod? and is_release? do
       capture_log_messages: true
   end
 end
+
+config :concentrate,
+  screenplay_stops_config: [
+    url: "#{System.get_env("SCREENPLAY_API_URL")}/suppressed-predictions/suppression_data",
+    api_key: System.get_env("SCREENPLAY_API_KEY")
+  ]

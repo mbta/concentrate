@@ -1,4 +1,4 @@
-defmodule Concentrate.Filter.Suppress.StopPredictionStatus do
+defmodule Concentrate.Filter.Suppress.RTS.StopPredictionStatus do
   @moduledoc """
   Server which stores a set of route_id, direction_id, and stop_ids which is used to
   filter out StopTimeUpdate structs for that combination.

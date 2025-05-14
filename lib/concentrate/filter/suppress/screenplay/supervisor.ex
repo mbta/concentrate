@@ -1,8 +1,8 @@
-defmodule Concentrate.Filter.Suppress.Supervisor do
+defmodule Concentrate.Filter.Suppress.Screenplay.Supervisor do
   @moduledoc """
-  Supervisor for the extra servers needed for suppressing predictions based on signs config.
+  Supervisor for the extra servers needed for suppressing predictions based on Screenplay API.
 
-  * HTTP producer to fetch the signs config
+  * HTTP producer to fetch the Screenplay API response
   * Consumer / map of suppressed stops
   """
   @one_day 86_400_000
@@ -17,14 +17,15 @@ defmodule Concentrate.Filter.Suppress.Supervisor do
             Concentrate.producer_for_url(config[:url]),
             {
               config[:url],
-              parser: Concentrate.Parser.SignsConfig,
+              parser: Concentrate.Parser.ScreenplayConfig,
               fetch_after: 1_000,
               content_warning_timeout: @one_day,
-              name: :stop_prediction_status_producer
+              name: :screenplay_stop_prediction_status_producer,
+              headers: %{"x-api-key" => config[:api_key]}
             }
           },
-          {Concentrate.Filter.Suppress.StopPredictionStatus,
-           subscribe_to: [:stop_prediction_status_producer]}
+          {Concentrate.Filter.Suppress.Screenplay.StopPredictionStatus,
+           subscribe_to: [:screenplay_stop_prediction_status_producer]}
         ],
         strategy: :rest_for_one
       )

@@ -1,7 +1,7 @@
-defmodule Concentrate.Filter.Suppress.StopPredictionStatusTest do
+defmodule Concentrate.Filter.Suppress.RTS.StopPredictionStatusTest do
   @moduledoc false
   use ExUnit.Case
-  import Concentrate.Filter.Suppress.StopPredictionStatus
+  import Concentrate.Filter.Suppress.RTS.StopPredictionStatus
   import ExUnit.CaptureLog
 
   @entries [
@@ -87,7 +87,7 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatusTest do
   end
 
   defp supervised(_) do
-    start_supervised(Concentrate.Filter.Suppress.StopPredictionStatus)
+    start_supervised(Concentrate.Filter.Suppress.RTS.StopPredictionStatus)
     :ok
   end
 end

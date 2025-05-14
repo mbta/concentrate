@@ -24,3 +24,5 @@ concentrate-*.tar
 
 # Ignore any local configuration
 /config/*.local.exs
+
+.envrc
