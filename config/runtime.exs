@@ -25,6 +25,6 @@ end
 
 config :concentrate,
   screenplay_stops_config: [
-    url: "#{System.get_env("SCREENPLAY_API_URL")}/suppressed-predictions/suppression_data",
+    url: "#{System.get_env("SCREENPLAY_API_URL")}/api/suppressed-predictions/suppression_data",
     api_key: System.get_env("SCREENPLAY_API_KEY")
   ]
