@@ -85,10 +85,6 @@ defmodule Concentrate do
     [gtfs: [url: url]]
   end
 
-  defp decode_json_key_value({"signs_stops_config", %{"url" => url}}) do
-    [signs_stops_config: [url: url]]
-  end
-
   defp decode_json_key_value({"sinks", sinks_object}) do
     sinks = decode_sinks_object(sinks_object, %{})
 
