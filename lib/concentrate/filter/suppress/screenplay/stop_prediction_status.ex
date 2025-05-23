@@ -47,7 +47,7 @@ defmodule Concentrate.Filter.Suppress.Screenplay.StopPredictionStatus do
                                     suppression_type: suppression_type
                                   } ->
       Logger.info(
-        "Cleared prediction suppression for stop_id=#{stop_id} route_id=#{route_id} direction_id=#{direction_id} suppression_type=#{suppression_type} based on Screenplay API"
+        "event=clear_screenplay_prediction_suppression stop_id=#{stop_id} route_id=#{route_id} direction_id=#{direction_id} suppression_type=#{suppression_type}"
       )
     end)
   end
