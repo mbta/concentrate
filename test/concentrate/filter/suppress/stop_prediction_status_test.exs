@@ -46,10 +46,10 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatusTest do
         end)
 
       assert log =~
-               "Cleared prediction suppression for stop_id=1 route_id=Red direction_id=0 suppression_type=stop based on Screenplay API"
+               "event=clear_screenplay_prediction_suppression stop_id=1 route_id=Red direction_id=0 suppression_type=stop"
 
       assert log =~
-               "Cleared prediction suppression for stop_id=2 route_id=Red direction_id=0 suppression_type=terminal based on Screenplay API"
+               "event=clear_screenplay_prediction_suppression stop_id=2 route_id=Red direction_id=0 suppression_type=terminal"
 
       assert MapSet.new([]) == flagged_stops_on_route("Red", 0, "mid_trip")
       assert MapSet.new([3]) == flagged_stops_on_route("Red", 1, "mid_trip")
@@ -67,22 +67,22 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatusTest do
         end)
 
       assert log =~
-               "Cleared prediction suppression for stop_id=1 route_id=Red direction_id=0 suppression_type=stop based on Screenplay API"
+               "event=clear_screenplay_prediction_suppression stop_id=1 route_id=Red direction_id=0 suppression_type=stop"
 
       assert log =~
-               "Cleared prediction suppression for stop_id=2 route_id=Red direction_id=0 suppression_type=terminal based on Screenplay API"
+               "event=clear_screenplay_prediction_suppression stop_id=2 route_id=Red direction_id=0 suppression_type=terminal"
 
       assert log =~
-               "Cleared prediction suppression for stop_id=3 route_id=Red direction_id=1 suppression_type=stop based on Screenplay API"
+               "event=clear_screenplay_prediction_suppression stop_id=3 route_id=Red direction_id=1 suppression_type=stop"
 
       assert log =~
-               "Cleared prediction suppression for stop_id=4 route_id=Red direction_id=1 suppression_type=terminal based on Screenplay API"
+               "event=clear_screenplay_prediction_suppression stop_id=4 route_id=Red direction_id=1 suppression_type=terminal"
 
       assert log =~
-               "Cleared prediction suppression for stop_id=5 route_id=Blue direction_id=0 suppression_type=stop based on Screenplay API"
+               "event=clear_screenplay_prediction_suppression stop_id=5 route_id=Blue direction_id=0 suppression_type=stop"
 
       assert log =~
-               "Cleared prediction suppression for stop_id=6 route_id=Blue direction_id=1 suppression_type=stop based on Screenplay API"
+               "event=clear_screenplay_prediction_suppression stop_id=6 route_id=Blue direction_id=1 suppression_type=stop"
 
       assert MapSet.new([]) == flagged_stops_on_route("Red", 0, "mid_trip")
       assert MapSet.new([]) == flagged_stops_on_route("Red", 1, "mid_trip")
