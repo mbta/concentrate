@@ -1,4 +1,4 @@
-defmodule Concentrate.Filter.Suppress.Screenplay.Supervisor do
+defmodule Concentrate.Filter.Suppress.Supervisor do
   @moduledoc """
   Supervisor for the extra servers needed for suppressing predictions based on Screenplay API.
 
@@ -24,7 +24,7 @@ defmodule Concentrate.Filter.Suppress.Screenplay.Supervisor do
               headers: %{"x-api-key" => config[:api_key]}
             }
           },
-          {Concentrate.Filter.Suppress.Screenplay.StopPredictionStatus,
+          {Concentrate.Filter.Suppress.StopPredictionStatus,
            subscribe_to: [:screenplay_stop_prediction_status_producer]}
         ],
         strategy: :rest_for_one
