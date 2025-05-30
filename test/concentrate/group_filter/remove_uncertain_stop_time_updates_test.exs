@@ -13,7 +13,10 @@ defmodule Concentrate.GroupFilter.RemoveUncertainStopTimesTest do
         {nil, [], [StopTimeUpdate.new(trip_id: "green_c_trip", uncertainty: @reverse_prediction)]}
 
       assert RemoveUncertainStopTimeUpdates.filter(group, %{
-               "Red" => [@at_terminal, @reverse_prediction]
+               "Red" => [
+                 %{@at_terminal => [0, 1]},
+                 %{@reverse_prediction => [0, 1]}
+               ]
              }) == group
     end
 
@@ -31,22 +34,30 @@ defmodule Concentrate.GroupFilter.RemoveUncertainStopTimesTest do
          [StopTimeUpdate.new(trip_id: "red_trip", uncertainty: @mid_trip)]}
 
       assert RemoveUncertainStopTimeUpdates.filter(group, %{
-               "Red" => [@at_terminal, @reverse_prediction]
+               "Red" => %{@at_terminal => [0, 1], @reverse_prediction => [0, 1]}
+             }) == group
+
+      group =
+        {TripDescriptor.new(trip_id: "red_trip", route_id: "Red", direction_id: 0), [],
+         [StopTimeUpdate.new(trip_id: "red_trip", uncertainty: @reverse_prediction)]}
+
+      assert RemoveUncertainStopTimeUpdates.filter(group, %{
+               "Red" => %{@at_terminal => [1], @reverse_prediction => [1]}
              }) == group
     end
 
     test "removes uncertain predictions for specified routes" do
       group =
-        {TripDescriptor.new(trip_id: "red_trip", route_id: "Red"), [],
+        {TripDescriptor.new(trip_id: "red_trip", route_id: "Red", direction_id: 0), [],
          [
            StopTimeUpdate.new(trip_id: "red_trip", uncertainty: @at_terminal),
            StopTimeUpdate.new(trip_id: "red_trip", uncertainty: @reverse_prediction)
          ]}
 
       assert RemoveUncertainStopTimeUpdates.filter(group, %{
-               "Red" => [@at_terminal, @reverse_prediction]
+               "Red" => %{@at_terminal => [0, 1], @reverse_prediction => [0, 1]}
              }) ==
-               {TripDescriptor.new(trip_id: "red_trip", route_id: "Red"), [], []}
+               {TripDescriptor.new(trip_id: "red_trip", route_id: "Red", direction_id: 0), [], []}
     end
   end
 end

@@ -67,6 +67,10 @@ config :concentrate,
       # https://github.com/mbta/commuter_rail_boarding/blob/79a493f/config/config.exs#L34-L63
       on_time_statuses: ["All aboard", "Now boarding", "On time", "On Time"]
     },
+    {
+      Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates,
+      uncertainties_by_route: %{"Green-C" => [120, 360], "Green-D" => [120, 360]}
+    },
     Concentrate.GroupFilter.TimeOutOfRange,
     Concentrate.GroupFilter.RemoveUnneededTimes,
     Concentrate.GroupFilter.Shuttle,
