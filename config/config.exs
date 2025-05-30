@@ -69,7 +69,7 @@ config :concentrate,
     },
     {
       Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates,
-      uncertainties_by_route: %{"Green-C" => %{120 => [1], 360 => [1]}, "Green-D" => %{120 => [0], 360 => [0]}}
+      uncertainties_by_route: %{"Green-C" => %{120 => [1], 360 => [1]}, "Green-D" => %{120 => [0], 360 => [0]}, "Green-E" => %{120 => [0], 360 => [0]}}
     },
     Concentrate.GroupFilter.TimeOutOfRange,
     Concentrate.GroupFilter.RemoveUnneededTimes,
