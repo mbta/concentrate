@@ -6,7 +6,8 @@ config :logger,
   always_evaluate_messages: true
 
 config :concentrate, :group_filters, [
-  {Concentrate.GroupFilter.ScheduledStopTimes, on_time_statuses: ["on time"]}
+  {Concentrate.GroupFilter.ScheduledStopTimes, on_time_statuses: ["on time"]},
+  Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates
 ]
 
 config :concentrate, :sink_s3, ex_aws: Concentrate.TestExAws
