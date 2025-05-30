@@ -28,7 +28,7 @@ defmodule Concentrate.GroupFilter.RemoveUncertainStopTimesTest do
       assert RemoveUncertainStopTimeUpdates.filter(group, %{}) == group
     end
 
-    test "keeps terminal and reverse predictions for specified routes for uncertainties not specified" do
+    test "keeps terminal and reverse predictions for specified routes for uncertainties and directions not specified" do
       group =
         {TripDescriptor.new(trip_id: "red_trip", route_id: "Red"), [],
          [StopTimeUpdate.new(trip_id: "red_trip", uncertainty: @mid_trip)]}
