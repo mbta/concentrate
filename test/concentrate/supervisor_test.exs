@@ -15,7 +15,8 @@ defmodule Concentrate.SupervisorTest do
 
   describe "children/1" do
     test "builds the right number of children" do
-      # currently, the right number is 6: HTTP pool, alerts, signs_stops_config, GTFS, pipeline, health
+      # currently, the right number is 6: HTTP pool, alerts,
+      # screenplay_config, GTFS, pipeline, health
       actual = children([])
 
       assert length(actual) == 6

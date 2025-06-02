@@ -40,9 +40,6 @@ config :concentrate,
       trip_updates: "https://cdn.mbta.com/realtime/TripUpdates.pb"
     ]
   ],
-  signs_stops_config: [
-    url: "s3://mbta-signs-dev/stops-config.json"
-  ],
   alerts: [
     url: "https://cdn.mbta.com/realtime/Alerts.pb"
   ],
@@ -124,8 +121,7 @@ config :concentrate,
     "http" => Concentrate.Producer.HTTPoison,
     "mqtt" => Concentrate.Producer.Mqtt,
     "mqtts" => Concentrate.Producer.Mqtt,
-    "mqtt+ssl" => Concentrate.Producer.Mqtt,
-    "s3" => Concentrate.Producer.S3
+    "mqtt+ssl" => Concentrate.Producer.Mqtt
   }
 
 import_config "#{config_env()}.exs"
