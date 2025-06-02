@@ -18,7 +18,8 @@ defmodule Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates do
   @behaviour Concentrate.GroupFilter
 
   @type route_id() :: String.t()
-  @type uncertainties() :: [integer()]
+  # uncertainty => direction_id(s) in which that uncertainty should be suppressed
+  @type uncertainties() :: [%{integer() => [integer()]}]
   @type uncertainties_by_route() :: %{
           route_id() => uncertainties()
         }
@@ -35,14 +36,25 @@ defmodule Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates do
 
   def filter({trip_descriptor, vehicle_positions, stop_time_updates}, exclusions) do
     route_id = TripDescriptor.route_id(trip_descriptor)
+    direction_id = TripDescriptor.direction_id(trip_descriptor)
     route_exclusions = Map.get(exclusions, route_id, nil)
-    {trip_descriptor, vehicle_positions, exclude(stop_time_updates, route_exclusions)}
+
+    {trip_descriptor, vehicle_positions,
+     exclude(stop_time_updates, route_exclusions, direction_id)}
   end
 
-  @spec exclude([StopTimeUpdate.t()], uncertainties() | nil) :: [StopTimeUpdate.t()]
-  defp exclude(updates, nil), do: updates
+  @spec exclude([StopTimeUpdate.t()], uncertainties() | nil, 0 | 1) :: [StopTimeUpdate.t()]
+  defp exclude(updates, nil, _direction_id), do: updates
 
-  defp exclude(updates, uncertainties) do
-    Enum.reject(updates, &(StopTimeUpdate.uncertainty(&1) in uncertainties))
+  defp exclude(updates, uncertainties, direction_id) do
+    Enum.reject(updates, fn stop_time_update ->
+      case Map.get(uncertainties, StopTimeUpdate.uncertainty(stop_time_update)) do
+        nil ->
+          false
+
+        direction_ids ->
+          direction_id in direction_ids
+      end
+    end)
   end
 end
