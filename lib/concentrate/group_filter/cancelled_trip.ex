@@ -63,6 +63,10 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
 
   defp bus_block_waiver?(_, _), do: false
 
+  defp cancel_group({td, vps, nil}, gtfs_stop_times) do
+    cancel_group({td, vps, []}, gtfs_stop_times)
+  end
+
   defp cancel_group({td, vps, []}, gtfs_stop_times) do
     td = TripDescriptor.cancel(td)
     trip_id = TripDescriptor.trip_id(td)
