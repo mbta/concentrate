@@ -132,6 +132,23 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
       )
     end
 
+    test "does not create SKIPPED STUs for a cancelled trip for which we don't have stop times" do
+      td =
+        TripDescriptor.new(
+          route_id: "1",
+          trip_id: "unknown",
+          start_date: {1970, 1, 2},
+          schedule_relationship: :CANCELED
+        )
+
+      group = {td, [], []}
+
+      {td_actual, [], []} =
+        filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+
+      assert TripDescriptor.schedule_relationship(td_actual) == :CANCELED
+    end
+
     test "does not cancel the group if all stop updates have already been given a skipped status but route_type is not 3" do
       td =
         TripDescriptor.new(

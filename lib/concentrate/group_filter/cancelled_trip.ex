@@ -67,17 +67,24 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
     td = TripDescriptor.cancel(td)
     trip_id = TripDescriptor.trip_id(td)
 
+    stops_for_trip = gtfs_stop_times.stops_for_trip(trip_id)
+
     stus =
-      trip_id
-      |> gtfs_stop_times.stops_for_trip()
-      |> Enum.map(fn {stop_sequence, stop_id} ->
-        StopTimeUpdate.new(
-          trip_id: trip_id,
-          stop_sequence: stop_sequence,
-          stop_id: stop_id,
-          schedule_relationship: :SKIPPED
-        )
-      end)
+      case stops_for_trip do
+        [_ | _] ->
+          Enum.map(stops_for_trip, fn
+            {stop_sequence, stop_id} ->
+              StopTimeUpdate.new(
+                trip_id: trip_id,
+                stop_sequence: stop_sequence,
+                stop_id: stop_id,
+                schedule_relationship: :SKIPPED
+              )
+          end)
+
+        :unknown ->
+          []
+      end
 
     {td, vps, stus}
   end

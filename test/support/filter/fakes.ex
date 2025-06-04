@@ -21,6 +21,8 @@ end
 
 defmodule Concentrate.GTFS.FakeStopTimes do
   @moduledoc "Fake implementation of GTFS.StopTimes"
+  def stops_for_trip("unknown"), do: :unknown
+
   def stops_for_trip(trip_id) when is_binary(trip_id) do
     [
       {1, "1"},
