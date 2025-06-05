@@ -143,8 +143,8 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
 
       group = {td, [], []}
 
-      {td_actual, [], []} =
-        filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+      assert {td_actual, [], []} =
+               filter(group, @module, @fake_routes_module, @fake_stop_times_module)
 
       assert TripDescriptor.schedule_relationship(td_actual) == :CANCELED
     end
