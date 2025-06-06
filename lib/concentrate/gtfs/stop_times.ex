@@ -62,6 +62,29 @@ defmodule Concentrate.GTFS.StopTimes do
     end
   end
 
+  @doc "Gets every stop that the GTFS static trip visits, ordered by sequence"
+  @spec stops_for_trip(String.t()) :: list({integer(), String.t()})
+  def stops_for_trip(trip_id) do
+    case select_stops_for_trip(trip_id) do
+      [_ | _] = stops ->
+        stops
+        |> Stream.map(fn [sequence, stop] -> {sequence, stop} end)
+        |> Enum.sort_by(fn {sequence, _stop_id} -> sequence end)
+
+      [] ->
+        :unknown
+
+      nil ->
+        :unknown
+    end
+  end
+
+  defp select_stops_for_trip(trip_id) do
+    :ets.match(Concentrate.GTFS.StopTimes, {{trip_id, :"$1"}, {:"$2", :_, :_, :_, :_, :_}})
+  rescue
+    ArgumentError -> nil
+  end
+
   @spec lookup(object_key) :: object_value | nil
   defp lookup(key) do
     :ets.lookup_element(@table, key, 2)
