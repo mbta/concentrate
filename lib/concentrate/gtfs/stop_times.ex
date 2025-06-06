@@ -82,7 +82,9 @@ defmodule Concentrate.GTFS.StopTimes do
   defp select_stops_for_trip(trip_id) do
     :ets.match(Concentrate.GTFS.StopTimes, {{trip_id, :"$1"}, {:"$2", :_, :_, :_, :_, :_}})
   rescue
-    ArgumentError -> nil
+    e in ArgumentError ->
+      Logger.info("event=stop_times_ets_error trip_id=#{trip_id} e=#{inspect(e)}")
+      nil
   end
 
   @spec lookup(object_key) :: object_value | nil
