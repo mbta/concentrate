@@ -7,6 +7,8 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   alias Concentrate.GTFS.{Routes, StopTimes}
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
+  require Logger
+
   @impl Concentrate.GroupFilter
   def filter(
         trip_group,
@@ -72,6 +74,10 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
     trip_id = TripDescriptor.trip_id(td)
 
     stops_for_trip = gtfs_stop_times.stops_for_trip(trip_id)
+
+    Logger.info(
+      "event=canceled_trip_populate_stus td=#{inspect(td)} stops_for_trip=#{inspect(stops_for_trip)}"
+    )
 
     stus =
       case stops_for_trip do
