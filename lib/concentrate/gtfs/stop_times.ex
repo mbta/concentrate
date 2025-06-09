@@ -80,7 +80,7 @@ defmodule Concentrate.GTFS.StopTimes do
   end
 
   defp select_stops_for_trip(trip_id) do
-    :ets.match(Concentrate.GTFS.StopTimes, {{trip_id, :"$1"}, {:"$2", :_, :_, :_, :_, :_}})
+    :ets.match(Concentrate.GTFS.StopTimes, {{trip_id}, {:"$1", :_, :_, :_, :_, :_, :_}})
   rescue
     ArgumentError -> nil
   end
