@@ -167,7 +167,10 @@ defmodule Concentrate.GTFS.StopTimes do
     pick_up? = type_to_boolean(row["pickup_type"])
     drop_off? = type_to_boolean(row["drop_off_type"])
 
-    [{{trip_id, stop_sequence}, {stop_id, arrival, departure, time_zone, pick_up?, drop_off?}}]
+    [
+      {{trip_id, stop_sequence}, {stop_id, arrival, departure, time_zone, pick_up?, drop_off?}},
+      {{trip_id}, {stop_sequence, stop_id, arrival, departure, time_zone, pick_up?, drop_off?}}
+    ]
   end
 
   defp build_inserts(_, _), do: []
