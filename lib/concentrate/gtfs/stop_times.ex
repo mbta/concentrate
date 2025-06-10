@@ -68,8 +68,6 @@ defmodule Concentrate.GTFS.StopTimes do
     case select_stops_for_trip(trip_id) do
       [[stops | _] | _] ->
         stops
-        |> Stream.map(fn {sequence, stop_id, _, _, _, _, _} -> {sequence, stop_id} end)
-        |> Enum.sort_by(fn {sequence, _stop_id} -> sequence end)
 
       _ ->
         :unknown
@@ -156,23 +154,29 @@ defmodule Concentrate.GTFS.StopTimes do
     inserts_by_trip_id =
       Enum.reduce(inserts_by_trip_id_stop_sequence, %{}, fn {
                                                               {trip_id, stop_sequence},
-                                                              {stop_id, arrival, departure,
-                                                               time_zone, pick_up?, drop_off?}
+                                                              {stop_id, _arrival, _departure,
+                                                               _time_zone, _pick_up?, _drop_off?}
                                                             },
                                                             acc ->
         Map.update(
           acc,
           trip_id,
-          [{stop_sequence, stop_id, arrival, departure, time_zone, pick_up?, drop_off?}],
+          [{stop_sequence, stop_id}],
           fn trip_stop_times ->
             [
-              {stop_sequence, stop_id, arrival, departure, time_zone, pick_up?, drop_off?}
+              {stop_sequence, stop_id}
               | trip_stop_times
             ]
           end
         )
       end)
       |> Map.to_list()
+      |> Enum.map(fn {trip_id, stop_times} ->
+        sorted_stop_times =
+          Enum.sort_by(stop_times, fn {stop_sequence, _stop_id} -> stop_sequence end)
+
+        {trip_id, sorted_stop_times}
+      end)
 
     inserts_by_trip_id_stop_sequence ++ inserts_by_trip_id
   end
