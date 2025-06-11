@@ -66,23 +66,16 @@ defmodule Concentrate.GTFS.StopTimes do
   @spec stops_for_trip(String.t()) :: list({integer(), String.t()})
   def stops_for_trip(trip_id) do
     case select_stops_for_trip(trip_id) do
-      [_ | _] = stops ->
+      [[stops | _] | _] ->
         stops
-        |> Stream.map(fn [sequence, stop] -> {sequence, stop} end)
-        |> Enum.sort_by(fn {sequence, _stop_id} -> sequence end)
 
-      [] ->
-        :unknown
-
-      nil ->
+      _ ->
         :unknown
     end
   end
 
   defp select_stops_for_trip(trip_id) do
-    :ets.match(Concentrate.GTFS.StopTimes, {{trip_id, :"$1"}, {:"$2", :_, :_, :_, :_, :_}})
-  rescue
-    ArgumentError -> nil
+    :ets.match(Concentrate.GTFS.StopTimes, {trip_id, :"$1"})
   end
 
   @spec lookup(object_key) :: object_value | nil
@@ -119,6 +112,7 @@ defmodule Concentrate.GTFS.StopTimes do
        }) do
     trip_time_zones = trip_time_zones(agencies, routes, trips)
     inserts = stop_times_inserts(stop_times, trip_time_zones)
+
     true = :ets.delete_all_objects(@table)
     :ets.insert(@table, inserts)
 
@@ -148,13 +142,43 @@ defmodule Concentrate.GTFS.StopTimes do
   end
 
   defp stop_times_inserts(stop_times, trip_time_zones) do
-    stop_times
-    |> Helpers.io_stream()
-    |> CSV.decode(headers: true, num_workers: System.schedulers())
-    |> Enum.flat_map(fn
-      {:ok, %{"trip_id" => trip_id} = row} -> build_inserts(row, trip_time_zones[trip_id])
-      {:error, _} -> []
-    end)
+    inserts_by_trip_id_stop_sequence =
+      stop_times
+      |> Helpers.io_stream()
+      |> CSV.decode(headers: true, num_workers: System.schedulers())
+      |> Enum.flat_map(fn
+        {:ok, %{"trip_id" => trip_id} = row} -> build_inserts(row, trip_time_zones[trip_id])
+        {:error, _} -> []
+      end)
+
+    inserts_by_trip_id =
+      Enum.reduce(inserts_by_trip_id_stop_sequence, %{}, fn {
+                                                              {trip_id, stop_sequence},
+                                                              {stop_id, _arrival, _departure,
+                                                               _time_zone, _pick_up?, _drop_off?}
+                                                            },
+                                                            acc ->
+        Map.update(
+          acc,
+          trip_id,
+          [{stop_sequence, stop_id}],
+          fn trip_stop_times ->
+            [
+              {stop_sequence, stop_id}
+              | trip_stop_times
+            ]
+          end
+        )
+      end)
+      |> Map.to_list()
+      |> Enum.map(fn {trip_id, stop_times} ->
+        sorted_stop_times =
+          Enum.sort_by(stop_times, fn {stop_sequence, _stop_id} -> stop_sequence end)
+
+        {trip_id, sorted_stop_times}
+      end)
+
+    inserts_by_trip_id_stop_sequence ++ inserts_by_trip_id
   end
 
   defp build_inserts(row, time_zone) when is_binary(time_zone) do
@@ -167,7 +191,9 @@ defmodule Concentrate.GTFS.StopTimes do
     pick_up? = type_to_boolean(row["pickup_type"])
     drop_off? = type_to_boolean(row["drop_off_type"])
 
-    [{{trip_id, stop_sequence}, {stop_id, arrival, departure, time_zone, pick_up?, drop_off?}}]
+    [
+      {{trip_id, stop_sequence}, {stop_id, arrival, departure, time_zone, pick_up?, drop_off?}}
+    ]
   end
 
   defp build_inserts(_, _), do: []
