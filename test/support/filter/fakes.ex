@@ -19,20 +19,6 @@ defmodule Concentrate.GTFS.FakeRoutes do
   def route_type(_), do: nil
 end
 
-defmodule Concentrate.GTFS.FakeStopTimes do
-  @moduledoc "Fake implementation of GTFS.StopTimes"
-  def stops_for_trip("unknown"), do: :unknown
-
-  def stops_for_trip(trip_id) when is_binary(trip_id) do
-    [
-      {1, "1"},
-      {2, "2"},
-      {3, "3"},
-      {4, "4"}
-    ]
-  end
-end
-
 defmodule Concentrate.Filter.FakeCancelledTrips do
   @moduledoc "Fake implementation of Filter.Alerts.CancelledTrips"
   def route_cancelled?("route", {1970, 1, 2}) do
