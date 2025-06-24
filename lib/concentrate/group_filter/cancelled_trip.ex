@@ -7,6 +7,8 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   alias Concentrate.GTFS.Routes
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
+  require Logger
+
   @impl Concentrate.GroupFilter
   def filter(trip_group, module \\ CancelledTrips, routes_module \\ Routes)
 
@@ -42,7 +44,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
 
   def filter(other, _module, _trips_module), do: other
 
-  defp bus_block_waiver?(stop_time_updates, 3) do
+  defp bus_block_waiver?([_ | _] = stop_time_updates, 3) do
     Enum.all?(stop_time_updates, &StopTimeUpdate.skipped?(&1))
   end
 
