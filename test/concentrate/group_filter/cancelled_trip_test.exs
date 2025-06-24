@@ -89,6 +89,72 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
       assert StopTimeUpdate.schedule_relationship(stu_actual2) == :SKIPPED
     end
 
+    test "does not cancel the group if there are no stop time updates" do
+      td =
+        TripDescriptor.new(
+          route_id: "1",
+          trip_id: "trip",
+          start_date: {1970, 1, 2}
+        )
+
+      group = {td, [], []}
+
+      {td_actual, [], []} =
+        filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+
+      assert TripDescriptor.schedule_relationship(td_actual) == :SCHEDULED
+    end
+
+    test "creates SKIPPED STUs if there are no STUs for a CANCELED trip" do
+      td =
+        TripDescriptor.new(
+          route_id: "1",
+          trip_id: "trip",
+          start_date: {1970, 1, 2},
+          schedule_relationship: :CANCELED
+        )
+
+      group = {td, [], []}
+
+      {td_actual, [], stus} =
+        filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+
+      assert TripDescriptor.schedule_relationship(td_actual) == :CANCELED
+
+      fake_stops = @fake_stop_times_module.stops_for_trip("trip")
+
+      Enum.each(
+        fake_stops,
+        fn {expected_sequence, expected_stop} ->
+          assert Enum.any?(stus, fn %StopTimeUpdate{
+                                      stop_sequence: sequence,
+                                      stop_id: stop_id,
+                                      schedule_relationship: schedule_relationship
+                                    } ->
+                   sequence == expected_sequence && stop_id == expected_stop &&
+                     schedule_relationship == :SKIPPED
+                 end)
+        end
+      )
+    end
+
+    test "does not create SKIPPED STUs for a cancelled trip for which we don't have stop times" do
+      td =
+        TripDescriptor.new(
+          route_id: "1",
+          trip_id: "unknown",
+          start_date: {1970, 1, 2},
+          schedule_relationship: :CANCELED
+        )
+
+      group = {td, [], []}
+
+      assert {td_actual, [], []} =
+               filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+
+      assert TripDescriptor.schedule_relationship(td_actual) == :CANCELED
+    end
+
     test "does not cancel the group if all stop updates have already been given a skipped status but route_type is not 3" do
       td =
         TripDescriptor.new(
