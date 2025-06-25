@@ -99,7 +99,6 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
       assert StopTimeUpdate.schedule_relationship(stu_actual2) == :SKIPPED
     end
 
-<<<<<<< HEAD
     test "does not cancel the group if there are no stop time updates" do
       td =
         TripDescriptor.new(
@@ -116,8 +115,6 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
       assert TripDescriptor.schedule_relationship(td_actual) == :SCHEDULED
     end
 
-=======
->>>>>>> parent of 62148fb (Revert cancellations (#372))
     test "creates SKIPPED STUs if there are no STUs for a CANCELED trip" do
       td =
         TripDescriptor.new(
