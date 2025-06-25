@@ -9,10 +9,13 @@ single output files.
 
 Concentrate can either be configured via `config/config.exs` or a JSON environment variable as `CONCENTRATE_JSON`: more details are available in [configuration.md](guides/configuration.md).
 
+An example run commands bash script for configuring Concentrate is available in `.envrc.example`. Note that you must run apply this configuration in a bash shell by using `source` instead of via `direnv` or a
+similar tool, since it runs bash commands.
+
 ## Architecture
 
 See [architecture.md](guides/architecture.md) for the overall architecture of the system.
-
+ fc
 ## Development Setup
 
 ```

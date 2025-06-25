@@ -6,6 +6,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
 
   @module Concentrate.Filter.FakeCancelledTrips
   @fake_routes_module Concentrate.GTFS.FakeRoutes
+  @fake_stop_times_module Concentrate.GTFS.FakeStopTimes
 
   describe "filter/2" do
     test "cancels the group if the trip is cancelled by an alert" do
@@ -22,7 +23,10 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
         )
 
       group = {td, [], [stu]}
-      {new_td, [], [new_stu]} = filter(group, @module, @fake_routes_module)
+
+      {new_td, [], [new_stu]} =
+        filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+
       assert TripDescriptor.schedule_relationship(new_td) == :CANCELED
       assert StopTimeUpdate.schedule_relationship(new_stu) == :SKIPPED
     end
@@ -42,7 +46,10 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
         )
 
       group = {td, [], [stu]}
-      {new_td, [], [new_stu]} = filter(group, @module, @fake_routes_module)
+
+      {new_td, [], [new_stu]} =
+        filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+
       assert TripDescriptor.schedule_relationship(new_td) == :CANCELED
       assert StopTimeUpdate.schedule_relationship(new_stu) == :SKIPPED
     end
@@ -62,7 +69,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
         )
 
       group = {td, [], [stu]}
-      {_td, [], [stu]} = filter(group, @module, @fake_routes_module)
+      {_td, [], [stu]} = filter(group, @module, @fake_routes_module, @fake_stop_times_module)
       assert StopTimeUpdate.schedule_relationship(stu) == :SKIPPED
     end
 
@@ -83,12 +90,16 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
         )
 
       group = {td, [], [stu, stu]}
-      {td_actual, [], [stu_actual1, stu_actual2]} = filter(group, @module, @fake_routes_module)
+
+      {td_actual, [], [stu_actual1, stu_actual2]} =
+        filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+
       assert TripDescriptor.schedule_relationship(td_actual) == :CANCELED
       assert StopTimeUpdate.schedule_relationship(stu_actual1) == :SKIPPED
       assert StopTimeUpdate.schedule_relationship(stu_actual2) == :SKIPPED
     end
 
+<<<<<<< HEAD
     test "does not cancel the group if there are no stop time updates" do
       td =
         TripDescriptor.new(
@@ -105,6 +116,8 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
       assert TripDescriptor.schedule_relationship(td_actual) == :SCHEDULED
     end
 
+=======
+>>>>>>> parent of 62148fb (Revert cancellations (#372))
     test "creates SKIPPED STUs if there are no STUs for a CANCELED trip" do
       td =
         TripDescriptor.new(
@@ -172,7 +185,10 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
         )
 
       group = {td, [], [stu, stu]}
-      {td_actual, [], [stu_actual1, stu_actual2]} = filter(group, @module, @fake_routes_module)
+
+      {td_actual, [], [stu_actual1, stu_actual2]} =
+        filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+
       assert TripDescriptor.schedule_relationship(td_actual) == :SCHEDULED
       assert StopTimeUpdate.schedule_relationship(stu_actual1) == :SKIPPED
       assert StopTimeUpdate.schedule_relationship(stu_actual2) == :SKIPPED
@@ -201,7 +217,10 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
         )
 
       group = {td, [], [stu1, stu2]}
-      {td_actual, [], [stu_actual1, stu_actual2]} = filter(group, @module, @fake_routes_module)
+
+      {td_actual, [], [stu_actual1, stu_actual2]} =
+        filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+
       assert TripDescriptor.schedule_relationship(td_actual) == :SCHEDULED
       assert StopTimeUpdate.schedule_relationship(stu_actual1) == :SKIPPED
       assert StopTimeUpdate.schedule_relationship(stu_actual2) == :SCHEDULED
@@ -221,7 +240,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
         )
 
       group = {td, [], [stu]}
-      assert filter(group, @module, @fake_routes_module) == group
+      assert filter(group, @module, @fake_routes_module, @fake_stop_times_module) == group
     end
 
     test "does not cancel the group if the route was cancelled at a different time" do
@@ -239,7 +258,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
         )
 
       group = {td, [], [stu]}
-      assert filter(group, @module, @fake_routes_module) == group
+      assert filter(group, @module, @fake_routes_module, @fake_stop_times_module) == group
     end
 
     test "other values are returned as-is" do

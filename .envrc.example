@@ -1,0 +1,134 @@
+export CONCENTRATE_JSON=`cat <<EOF
+{
+  "alerts": {
+    "url": "https://mbta-realtime-test.s3.amazonaws.com/alerts_enhanced.json"
+  },
+  "gtfs": {
+    "url": "https://mbta-gtfs-s3.s3.amazonaws.com/MBTA_GTFS-dev-green.zip"
+  },
+  "signs_stops_config": {
+    "url": "s3://mbta-signs-dev/stops-config.json"
+  },
+  "log_level": "debug",
+  "sinks": {
+    "filesystem": {
+      "directory": "/tmp"
+    }
+  },
+  "sources": {
+    "gtfs_realtime": {
+      "bus_tripupdates": {
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "https://api.goswift.ly/real-time/mbta-bus-test/gtfs-rt-trip-updates"
+      },
+      "bus_vehiclepositions": {
+        "drop_fields": {
+          "VehiclePosition": [
+            "speed",
+            "label"
+          ]
+        },
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "https://api.goswift.ly/real-time/mbta-bus-test/gtfs-rt-vehicle-positions"
+      },
+      "cr_tripupdates": {
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "https://api.goswift.ly/real-time/mbta-cr-test/gtfs-rt-trip-updates"
+      },
+      "cr_vehiclepositions": {
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "https://api.goswift.ly/real-time/mbta-cr-test/gtfs-rt-vehicle-positions"
+      },
+      "winthrop_tripupdates": {
+        "drop_fields": {
+          "VehiclePosition": [
+            "speed"
+          ]
+        },
+        "fetch_after": 1700,
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "https://api.goswift.ly/real-time/mbta-winthrop/gtfs-rt-trip-updates"
+      },
+      "winthrop_vehiclepositions": {
+        "drop_fields": {
+          "VehiclePosition": [
+            "speed"
+          ]
+        },
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "https://api.goswift.ly/real-time/mbta-winthrop/gtfs-rt-vehicle-positions"
+      },
+      "bye_bye_bye_tripupdates": "https://mbta-gtfs-s3-dev-green.s3.amazonaws.com/bye-bye-bye/TripUpdates.pb",
+      "ferry_tripupdates": {
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "https://api.goswift.ly/real-time/mbta-ferry/gtfs-rt-trip-updates"
+      },
+      "ferry_vehiclepositions": {
+        "drop_fields": {
+          "VehiclePosition": [
+            "speed",
+            "label"
+          ]
+        },
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "https://api.goswift.ly/real-time/mbta-ferry/gtfs-rt-vehicle-positions"
+      }
+    },
+    "gtfs_realtime_enhanced": {
+      "busloc_tripupdates": "https://mbta-busloc-s3.s3.amazonaws.com/dev/TripUpdates_enhanced.json",
+      "busloc_vehiclepositions": {
+        "drop_fields": {
+          "VehiclePosition": [
+            "speed"
+          ]
+        },
+        "url": "https://mbta-busloc-s3.s3.amazonaws.com/dev/VehiclePositions_enhanced.json"
+      },
+      "rtr_tripupdates": "https://mbta-gtfs-s3-dev-green.s3.amazonaws.com/rtr/TripUpdates_enhanced.json",
+      "rtr_vehiclepositions": {
+        "fetch_after": 500,
+        "url": "https://mbta-gtfs-s3-dev-green.s3.amazonaws.com/rtr/VehiclePositions_enhanced.json"
+      },
+      "keolis_tripupdates": "https://mbta-gtfs-commuter-rail-staging.s3.amazonaws.com/TripUpdates_enhanced.json",
+      "keolis_vehicle_positions": {
+        "url": "https://mbta-gtfs-commuter-rail-staging.s3.amazonaws.com/VehiclePositions_enhanced.json",
+        "fetch_after": 500
+      }
+    }
+  }
+}
+EOF
+`
+export API_KEY=
