@@ -8,9 +8,6 @@ config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
 config :ex_aws, json_codec: Jason
 
-# per https://github.com/edgurgel/httpoison/issues/130, set the SSL version to pick a better default
-config :ssl, protocol_version: :"tlsv1.2"
-
 config :concentrate,
   boarding_status_override: %{
     "ARRIVED" => "Arrived",
@@ -109,9 +106,9 @@ config :concentrate,
   ],
   scheme_producers: %{
     # old behavior for test URLs
-    nil => Concentrate.Producer.HTTPoison,
-    "https" => Concentrate.Producer.HTTPoison,
-    "http" => Concentrate.Producer.HTTPoison,
+    nil => HttpStage,
+    "https" => HttpStage,
+    "http" => HttpStage,
     "mqtt" => Concentrate.Producer.Mqtt,
     "mqtts" => Concentrate.Producer.Mqtt,
     "mqtt+ssl" => Concentrate.Producer.Mqtt
