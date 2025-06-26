@@ -66,6 +66,7 @@ defmodule Concentrate.MixProject do
       {:ehmon, git: "https://github.com/mbta/ehmon.git", branch: "master", only: ~w(test prod)a},
       {:ex_aws, "~> 2.4"},
       {:ex_aws_s3, "~> 2.3"},
+      {:http_stage, "~> 0.2.1"},
       {:lcov_ex, "~> 0.3.2", only: :test, runtime: false},
       {:gen_stage, "~> 1.0"},
       {:gpb, "~> 4.7", only: :dev, runtime: false, only: :dev},
