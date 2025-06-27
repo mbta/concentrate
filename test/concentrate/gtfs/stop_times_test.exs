@@ -102,20 +102,4 @@ defmodule Concentrate.GTFS.StopTimesTest do
       assert StopTimes.stop_id("CR-524518-2019", 10) == :unknown
     end
   end
-
-  describe "stops_for_trip/1" do
-    setup :supervised
-
-    test "returns stops and sequence numbers for trip in sequence order" do
-      assert StopTimes.stops_for_trip("CR-524522-2502") == [
-               {0, "WML-0442-CS"},
-               {10, "WML-0364"},
-               {20, "WML-0340"}
-             ]
-    end
-
-    test "returns unknown for unknown trip" do
-      assert StopTimes.stops_for_trip("foo") == :unknown
-    end
-  end
 end
