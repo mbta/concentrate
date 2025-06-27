@@ -15,7 +15,6 @@ similar tool, since it runs bash commands.
 ## Architecture
 
 See [architecture.md](guides/architecture.md) for the overall architecture of the system.
- fc
 ## Development Setup
 
 ```
