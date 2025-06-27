@@ -1,0 +1,134 @@
+export CONCENTRATE_JSON=`cat <<EOF
+{
+  "alerts": {
+    "url": "example.com"
+  },
+  "gtfs": {
+    "url": "example.com"
+  },
+  "signs_stops_config": {
+    "url": "s3://example/stops-config.json"
+  },
+  "log_level": "debug",
+  "sinks": {
+    "filesystem": {
+      "directory": "/tmp"
+    }
+  },
+  "sources": {
+    "gtfs_realtime": {
+      "bus_tripupdates": {
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "example.com"
+      },
+      "bus_vehiclepositions": {
+        "drop_fields": {
+          "VehiclePosition": [
+            "speed",
+            "label"
+          ]
+        },
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "example.com"
+      },
+      "cr_tripupdates": {
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "example.com"
+      },
+      "cr_vehiclepositions": {
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "example.com"
+      },
+      "winthrop_tripupdates": {
+        "drop_fields": {
+          "VehiclePosition": [
+            "speed"
+          ]
+        },
+        "fetch_after": 1700,
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "example.com"
+      },
+      "winthrop_vehiclepositions": {
+        "drop_fields": {
+          "VehiclePosition": [
+            "speed"
+          ]
+        },
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "example.com"
+      },
+      "bye_bye_bye_tripupdates": "example.com"
+      "ferry_tripupdates": {
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "example.com"
+      },
+      "ferry_vehiclepositions": {
+        "drop_fields": {
+          "VehiclePosition": [
+            "speed",
+            "label"
+          ]
+        },
+        "headers": {
+          "Authorization": {
+            "system": "API_KEY"
+          }
+        },
+        "url": "example.com"
+      }
+    },
+    "gtfs_realtime_enhanced": {
+      "busloc_tripupdates": "example.com"
+      "busloc_vehiclepositions": {
+        "drop_fields": {
+          "VehiclePosition": [
+            "speed"
+          ]
+        },
+        "url": "example.com"
+      },
+      "rtr_tripupdates": "example.com"
+      "rtr_vehiclepositions": {
+        "fetch_after": 500,
+        "url": "example.com"
+      },
+      "keolis_tripupdates": "example.com"
+      "keolis_vehicle_positions": {
+        "url": "example.com"
+        "fetch_after": 500
+      }
+    }
+  }
+}
+EOF
+`
+export API_KEY=
