@@ -52,23 +52,38 @@ defmodule Concentrate.Filter.Suppress.StopPredictionStatus do
     end)
   end
 
-  @spec flagged_stops_on_route(binary() | integer(), 0 | 1, String.t() | nil) :: [] | MapSet.t()
-  def flagged_stops_on_route(route_id, direction_id, update_type)
-      when not is_nil(route_id) and direction_id in [0, 1] and is_binary(update_type) do
+  @spec suppressed_stops_on_route(binary() | integer(), 0 | 1) :: MapSet.t()
+  def suppressed_stops_on_route(route_id, direction_id)
+      when not is_nil(route_id) and direction_id in [0, 1] do
     @table
     |> :ets.tab2list()
     |> Keyword.get(:entries, [])
-    |> Enum.filter(fn
-      %{route_id: r, direction_id: d, suppression_type: suppression_type} ->
-        relevant_trip_type? =
-          (suppression_type == "terminal" and update_type == "at_terminal") or
-            (suppression_type == "stop" and update_type != "at_terminal")
-
-        relevant_trip_type? and r == route_id and d == direction_id
-    end)
+    |> Enum.filter(
+      &(stop_suppression?(&1) and &1.route_id == route_id and &1.direction_id == direction_id)
+    )
     |> Enum.map(fn %{stop_id: s} -> s end)
     |> MapSet.new()
   end
 
-  def flagged_stops_on_route(_, _, _), do: []
+  def suppressed_stops_on_route(_, _), do: MapSet.new()
+
+  @spec terminals_suppressed(binary() | integer(), 0 | 1) :: MapSet.t()
+  def terminals_suppressed(route_id, direction_id)
+      when not is_nil(route_id) and direction_id in [0, 1] do
+    @table
+    |> :ets.tab2list()
+    |> Keyword.get(:entries, [])
+    |> Enum.filter(
+      &(terminal_suppression?(&1) and &1.route_id == route_id and &1.direction_id == direction_id)
+    )
+    |> Enum.map(fn %{stop_id: s} -> s end)
+    |> MapSet.new()
+  end
+
+  def terminals_suppressed(_, _), do: MapSet.new()
+
+  defp stop_suppression?(%{suppression_type: "stop"}), do: true
+  defp stop_suppression?(_), do: false
+  defp terminal_suppression?(%{suppression_type: "terminal"}), do: true
+  defp terminal_suppression?(_), do: false
 end

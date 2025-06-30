@@ -27,3 +27,4 @@ concentrate-*.tar
 
 # ignore environment run commands
 .envrc
+.elixir_ls
