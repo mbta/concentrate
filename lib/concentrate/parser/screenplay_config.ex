@@ -1,6 +1,6 @@
-defmodule Concentrate.Parser.SignsConfig do
+defmodule Concentrate.Parser.ScreenplayConfig do
   @moduledoc """
-  Parser for signs config predction suppresion feed.
+  Parser for Screenplay predction suppresion API response.
   """
   @behaviour Concentrate.Parser
 
@@ -11,17 +11,16 @@ defmodule Concentrate.Parser.SignsConfig do
     |> map_entities()
   end
 
-  defp map_entities(%{"stops" => items}) do
+  defp map_entities(items) do
     items
-    |> Enum.filter(fn i -> Map.get(i, "predictions") == "flagged" end)
+    |> Enum.filter(fn i -> Map.get(i, "suppression_type") != "none" end)
     |> Enum.map(fn i ->
       %{
         route_id: Map.get(i, "route_id"),
         direction_id: Map.get(i, "direction_id"),
-        stop_id: Map.get(i, "stop_id")
+        stop_id: Map.get(i, "stop_id"),
+        suppression_type: Map.get(i, "suppression_type")
       }
     end)
   end
-
-  defp map_entities(_), do: []
 end

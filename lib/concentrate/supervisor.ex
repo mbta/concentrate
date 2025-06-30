@@ -16,11 +16,19 @@ defmodule Concentrate.Supervisor do
   def children(config) do
     pool = pool()
     alerts = alerts(config[:alerts])
-    signs_stops_config = signs_stops_config(config[:signs_stops_config])
+    screenplay_stops_config = screenplay_stops_config(config[:screenplay_stops_config])
     gtfs = gtfs(config[:gtfs])
     pipeline = pipeline(config)
     health = health()
-    Enum.concat([pool, alerts, signs_stops_config, gtfs, pipeline, health])
+
+    Enum.concat([
+      pool,
+      alerts,
+      screenplay_stops_config,
+      gtfs,
+      pipeline,
+      health
+    ])
   end
 
   def pool do
@@ -35,7 +43,7 @@ defmodule Concentrate.Supervisor do
     ]
   end
 
-  def signs_stops_config(config) do
+  def screenplay_stops_config(config) do
     [
       {Concentrate.Filter.Suppress.Supervisor, config}
     ]

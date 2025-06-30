@@ -3,8 +3,8 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
   Filters out StopTimeUpdates if stop on route and direction is currently flagged to suppress predictions.
   """
   @behaviour Concentrate.GroupFilter
-  alias Concentrate.StopTimeUpdate
-  alias Concentrate.TripDescriptor
+  alias Concentrate.GTFS.Stops
+  alias Concentrate.{StopTimeUpdate, TripDescriptor}
   require Logger
 
   @impl Concentrate.GroupFilter
@@ -16,9 +16,10 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
   def filter({td, vps, stus}, module) do
     route_id = TripDescriptor.route_id(td)
     direction_id = TripDescriptor.direction_id(td)
+    update_type = TripDescriptor.update_type(td)
 
-    case module.flagged_stops_on_route(route_id, direction_id) do
-      nil ->
+    case module.flagged_stops_on_route(route_id, direction_id, update_type) do
+      [] ->
         {td, vps, stus}
 
       suppressed_stops ->
@@ -38,15 +39,19 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
 
   def filter(other, _), do: other
 
-  defp stop_id_suppressed?(suppressed_stops, stop_id),
-    do: MapSet.member?(suppressed_stops, stop_id)
+  defp stop_id_suppressed?(suppressed_stops, stop_id) do
+    case Stops.parent_station_id(stop_id) do
+      "place-jfk" -> MapSet.member?(suppressed_stops, stop_id)
+      parent_station_id -> MapSet.member?(suppressed_stops, parent_station_id)
+    end
+  end
 
   defp log_suppressed_stus(stus, route_id, direction_id) do
     Enum.each(stus, fn stu ->
       stop_id = StopTimeUpdate.stop_id(stu)
 
       Logger.info(fn ->
-        "Predictions for stop_id=#{stop_id} route_id=#{route_id} direction_id=#{direction_id} have been suppressed based on RTS feed trigger"
+        "Predictions for stop_id=#{stop_id} route_id=#{route_id} direction_id=#{direction_id} have been suppressed based on Screenplay API trigger"
       end)
     end)
   end
