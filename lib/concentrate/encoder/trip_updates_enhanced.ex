@@ -38,13 +38,9 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
     })
   end
 
-  defp determine_arrival_value(%{passthrough_time: nil} = update),
+  defp determine_arrival_value(update),
     do: stop_time_event(StopTimeUpdate.arrival_time(update), StopTimeUpdate.uncertainty(update))
 
-  defp determine_arrival_value(_), do: nil
-
-  defp determine_departure_value(%{passthrough_time: nil} = update),
+  defp determine_departure_value(update),
     do: stop_time_event(StopTimeUpdate.departure_time(update), StopTimeUpdate.uncertainty(update))
-
-  defp determine_departure_value(_), do: nil
 end
