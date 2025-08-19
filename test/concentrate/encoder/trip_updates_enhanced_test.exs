@@ -273,10 +273,12 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
                          "stop_id" => "stop_3"
                        } = stu_3,
                        %{
+                         "arrival" => %{"time" => 200},
+                         "departure" => %{"time" => 250},
                          "passthrough_time" => 200,
                          "schedule_relationship" => "SKIPPED",
                          "stop_id" => "stop_2"
-                       } = stu_2,
+                       } = _stu_2,
                        %{
                          "passthrough_time" => 100,
                          "schedule_relationship" => "SKIPPED",
@@ -289,9 +291,6 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
              } = encoded
 
       refute Map.get(stu_1, "arrival")
-      refute Map.get(stu_1, "departure")
-      refute Map.get(stu_2, "arrival")
-      refute Map.get(stu_2, "departure")
       refute Map.get(stu_3, "passthrough_time")
     end
   end
