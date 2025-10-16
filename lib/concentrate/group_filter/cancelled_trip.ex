@@ -14,14 +14,16 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
         trip_group,
         module \\ CancelledTrips,
         routes_module \\ Routes,
-        gtfs_stop_times \\ StopTimes
+        gtfs_stop_times \\ StopTimes,
+        now_fn \\ &now/0
       )
 
   def filter(
         {%TripDescriptor{} = td, _vps, stop_time_updates} = group,
         module,
         routes_module,
-        gtfs_stop_times
+        gtfs_stop_times,
+        now_fn
       ) do
     trip_id = TripDescriptor.trip_id(td)
     route_id = TripDescriptor.route_id(td)
@@ -32,7 +34,13 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
       TripDescriptor.schedule_relationship(td) == :CANCELED ->
         cancel_group(group, gtfs_stop_times)
 
-      bus_block_waiver?(stop_time_updates, routes_module.route_type(route_id)) ->
+      bus_block_waiver?(
+        td,
+        stop_time_updates,
+        gtfs_stop_times,
+        now_fn,
+        routes_module.route_type(route_id)
+      ) ->
         cancel_group(group, gtfs_stop_times)
 
       is_nil(time) ->
@@ -49,7 +57,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
     end
   end
 
-  def filter(other, _module, _trips_module, _gtfs_stop_times), do: other
+  def filter(other, _module, _trips_module, _gtfs_stop_times, _now_fn), do: other
 
   defp maybe_time([stu | _]) do
     StopTimeUpdate.time(stu)
@@ -59,11 +67,50 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
     nil
   end
 
-  defp bus_block_waiver?([_ | _] = stop_time_updates, 3) do
-    Enum.all?(stop_time_updates, &StopTimeUpdate.skipped?(&1))
+  defp bus_block_waiver?(td, [_ | _] = stop_time_updates, gtfs_stop_times, now_fn, 3) do
+    if Enum.all?(stop_time_updates, &StopTimeUpdate.skipped?(&1)) do
+      trip_id = TripDescriptor.trip_id(td)
+      trip_date = TripDescriptor.start_date(td)
+      now = now_fn.()
+
+      future_scheduled_stops_for_trip =
+        case gtfs_stop_times.stops_for_trip(trip_id) do
+          :unknown ->
+            nil
+
+          stop_times ->
+            stop_times
+            |> Enum.map(fn {stop_sequence, stop_id} ->
+              case gtfs_stop_times.arrival_departure(trip_id, stop_sequence, trip_date) do
+                {arrival, departure} -> {stop_sequence, stop_id, arrival, departure}
+                :unknown -> nil
+              end
+            end)
+            |> Enum.reject(fn stop_time ->
+              if is_nil(stop_time) do
+                true
+              else
+                {_, _, arrival, departure} = stop_time
+
+                now > (arrival || departure)
+              end
+            end)
+        end
+
+      all_stu_stops_and_stop_sequences =
+        Enum.map(stop_time_updates, fn stu ->
+          {StopTimeUpdate.stop_id(stu), StopTimeUpdate.stop_sequence(stu)}
+        end)
+
+      Enum.all?(future_scheduled_stops_for_trip, fn {stop_sequence, stop_id, _, _} ->
+        {stop_id, stop_sequence} in all_stu_stops_and_stop_sequences
+      end)
+    else
+      false
+    end
   end
 
-  defp bus_block_waiver?(_, _), do: false
+  defp bus_block_waiver?(_, _, _, _, _), do: false
 
   defp cancel_group({td, vps, nil}, gtfs_stop_times) do
     cancel_group({td, vps, []}, gtfs_stop_times)
@@ -99,5 +146,9 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
     td = TripDescriptor.cancel(td)
     stus = Enum.map(stus, &StopTimeUpdate.skip/1)
     {td, vps, stus}
+  end
+
+  defp now do
+    System.system_time(:second)
   end
 end
