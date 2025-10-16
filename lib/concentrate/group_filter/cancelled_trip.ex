@@ -74,28 +74,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
       now = now_fn.()
 
       future_scheduled_stops_for_trip =
-        case gtfs_stop_times.stops_for_trip(trip_id) do
-          :unknown ->
-            nil
-
-          stop_times ->
-            stop_times
-            |> Enum.map(fn {stop_sequence, stop_id} ->
-              case gtfs_stop_times.arrival_departure(trip_id, stop_sequence, trip_date) do
-                {arrival, departure} -> {stop_sequence, stop_id, arrival, departure}
-                :unknown -> nil
-              end
-            end)
-            |> Enum.reject(fn stop_time ->
-              if is_nil(stop_time) do
-                true
-              else
-                {_, _, arrival, departure} = stop_time
-
-                now > (arrival || departure)
-              end
-            end)
-        end
+        future_scheduled_stops_for_trip(trip_id, trip_date, now, gtfs_stop_times)
 
       all_stu_stops_and_stop_sequences =
         Enum.map(stop_time_updates, fn stu ->
@@ -150,5 +129,30 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
 
   defp now do
     System.system_time(:second)
+  end
+
+  defp future_scheduled_stops_for_trip(trip_id, trip_date, now, gtfs_stop_times) do
+    case gtfs_stop_times.stops_for_trip(trip_id) do
+      :unknown ->
+        nil
+
+      stop_times ->
+        stop_times
+        |> Enum.map(fn {stop_sequence, stop_id} ->
+          case gtfs_stop_times.arrival_departure(trip_id, stop_sequence, trip_date) do
+            {arrival, departure} -> {stop_sequence, stop_id, arrival, departure}
+            :unknown -> nil
+          end
+        end)
+        |> Enum.reject(fn stop_time ->
+          if is_nil(stop_time) do
+            true
+          else
+            {_, _, arrival, departure} = stop_time
+
+            now > (arrival || departure)
+          end
+        end)
+    end
   end
 end
