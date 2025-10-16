@@ -3,8 +3,8 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhancedTest do
   use ExUnit.Case, async: true
   import Concentrate.Encoder.VehiclePositionsEnhanced
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
-  alias Concentrate.Parser.GTFSRealtimeEnhanced
   alias Concentrate.{FeedUpdate, TripDescriptor, VehiclePosition}
+  alias Concentrate.Parser.GTFSRealtimeEnhanced
   alias VehiclePosition.Consist, as: VehiclePositionConsist
 
   describe "encode/1" do

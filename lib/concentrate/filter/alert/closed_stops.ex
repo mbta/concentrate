@@ -4,8 +4,8 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
   """
   use GenStage
   require Logger
-  alias Concentrate.Filter.Alert.TimeTable
   alias Concentrate.{Alert, Alert.InformedEntity}
+  alias Concentrate.Filter.Alert.TimeTable
 
   @table __MODULE__
 

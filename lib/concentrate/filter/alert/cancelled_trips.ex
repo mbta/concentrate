@@ -4,8 +4,8 @@ defmodule Concentrate.Filter.Alert.CancelledTrips do
   """
   use GenStage
   require Logger
-  alias Concentrate.Filter.Alert.TimeTable
   alias Concentrate.{Alert, Alert.InformedEntity}
+  alias Concentrate.Filter.Alert.TimeTable
 
   @table __MODULE__
   @empty_value []
