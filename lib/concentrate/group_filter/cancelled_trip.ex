@@ -136,23 +136,29 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
       :unknown ->
         nil
 
-      stop_times ->
-        stop_times
-        |> Enum.map(fn {stop_sequence, stop_id} ->
-          case gtfs_stop_times.arrival_departure(trip_id, stop_sequence, trip_date) do
-            {arrival, departure} -> {stop_sequence, stop_id, arrival, departure}
-            :unknown -> nil
-          end
-        end)
-        |> Enum.reject(fn stop_time ->
-          if is_nil(stop_time) do
-            true
-          else
-            {_, _, arrival, departure} = stop_time
+      stops_for_trip ->
+        stops_for_trip
+        |> arrivals_departures_from_stops(trip_id, trip_date, gtfs_stop_times)
+        |> Enum.reject(&nil_or_past_arrival_departure?(&1, now))
+    end
+  end
 
-            now > (arrival || departure)
-          end
-        end)
+  defp arrivals_departures_from_stops(stops_for_trip, trip_id, trip_date, gtfs_stop_times) do
+    Enum.map(stops_for_trip, fn {stop_sequence, stop_id} ->
+      case gtfs_stop_times.arrival_departure(trip_id, stop_sequence, trip_date) do
+        {arrival, departure} -> {stop_sequence, stop_id, arrival, departure}
+        :unknown -> nil
+      end
+    end)
+  end
+
+  defp nil_or_past_arrival_departure?(stop_time, now) do
+    if is_nil(stop_time) do
+      true
+    else
+      {_, _, arrival, departure} = stop_time
+
+      now > (arrival || departure)
     end
   end
 end
