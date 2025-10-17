@@ -74,7 +74,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
       now = now_fn.()
 
       future_scheduled_stops_for_trip =
-        future_scheduled_stops_for_trip(trip_id, trip_date, now, gtfs_stop_times)
+        future_scheduled_stops_for_trip(trip_id, trip_date, now, gtfs_stop_times) || []
 
       all_stu_stops_and_stop_sequences =
         Enum.map(stop_time_updates, fn stu ->

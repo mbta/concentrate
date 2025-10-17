@@ -10,6 +10,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
 
   defmodule FakeStopTimesForBlockWaiver do
     def stops_for_trip("trip"), do: [{10, "stop1"}, {20, "stop2"}, {30, "stop3"}]
+    def stops_for_trip(_), do: :unknown
 
     def arrival_departure("trip", 10, {1970, 1, 2}), do: {85_000, 85_001}
     def arrival_departure("trip", 20, {1970, 1, 2}), do: {87_000, 87_001}
@@ -102,6 +103,52 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
       stu2 =
         StopTimeUpdate.new(
           trip_id: "trip",
+          status: :SCHEDULED,
+          arrival_time: 87_100,
+          schedule_relationship: :SKIPPED,
+          stop_id: "stop3",
+          stop_sequence: 30
+        )
+
+      now_fn = fn -> 86_000 end
+
+      group = {td, [], [stu1, stu2]}
+
+      {td_actual, [], [stu_actual1, stu_actual2]} =
+        filter(
+          group,
+          @module,
+          @fake_routes_module,
+          Concentrate.GroupFilter.CancelledTripTest.FakeStopTimesForBlockWaiver,
+          now_fn
+        )
+
+      assert TripDescriptor.schedule_relationship(td_actual) == :CANCELED
+      assert StopTimeUpdate.schedule_relationship(stu_actual1) == :SKIPPED
+      assert StopTimeUpdate.schedule_relationship(stu_actual2) == :SKIPPED
+    end
+
+    test "cancels the group if all stop updates have a skipped status and stops for trip are unknown" do
+      td =
+        TripDescriptor.new(
+          route_id: "1",
+          trip_id: "other_trip",
+          start_date: {1970, 1, 2}
+        )
+
+      stu1 =
+        StopTimeUpdate.new(
+          trip_id: "other_trip",
+          status: :SCHEDULED,
+          arrival_time: 87_000,
+          schedule_relationship: :SKIPPED,
+          stop_id: "stop2",
+          stop_sequence: 20
+        )
+
+      stu2 =
+        StopTimeUpdate.new(
+          trip_id: "other_trip",
           status: :SCHEDULED,
           arrival_time: 87_100,
           schedule_relationship: :SKIPPED,
