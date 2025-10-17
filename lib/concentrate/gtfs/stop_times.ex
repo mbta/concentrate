@@ -67,7 +67,28 @@ defmodule Concentrate.GTFS.StopTimes do
   def stops_for_trip(trip_id) do
     case select_stops_for_trip(trip_id) do
       [[stops | _] | _] ->
-        stops
+        Enum.map(stops, fn {stop_sequence, stop_id, _arrival, _departure, _time_zone} ->
+          {stop_sequence, stop_id}
+        end)
+
+      _ ->
+        :unknown
+    end
+  end
+
+  @doc """
+  Gets every stop that the GTFS static trip visits, ordered by sequence and with
+  arrival / departure times
+  """
+  @spec stops_for_trip_with_arrival_departure(String.t(), :calendar.date()) ::
+          list({integer(), String.t(), integer(), integer()})
+  def stops_for_trip_with_arrival_departure(trip_id, date) do
+    case select_stops_for_trip(trip_id) do
+      [[stops | _] | _] ->
+        Enum.map(stops, fn {stop_sequence, stop_id, arrival, departure, time_zone} ->
+          {stop_sequence, stop_id, to_unix!(date, arrival, time_zone),
+           to_unix!(date, departure, time_zone)}
+        end)
 
       _ ->
         :unknown
@@ -154,17 +175,17 @@ defmodule Concentrate.GTFS.StopTimes do
     inserts_by_trip_id =
       Enum.reduce(inserts_by_trip_id_stop_sequence, %{}, fn {
                                                               {trip_id, stop_sequence},
-                                                              {stop_id, _arrival, _departure,
-                                                               _time_zone, _pick_up?, _drop_off?}
+                                                              {stop_id, arrival, departure,
+                                                               time_zone, _pick_up?, _drop_off?}
                                                             },
                                                             acc ->
         Map.update(
           acc,
           trip_id,
-          [{stop_sequence, stop_id}],
+          [{stop_sequence, stop_id, arrival, departure, time_zone}],
           fn trip_stop_times ->
             [
-              {stop_sequence, stop_id}
+              {stop_sequence, stop_id, arrival, departure, time_zone}
               | trip_stop_times
             ]
           end
@@ -173,7 +194,9 @@ defmodule Concentrate.GTFS.StopTimes do
       |> Map.to_list()
       |> Enum.map(fn {trip_id, stop_times} ->
         sorted_stop_times =
-          Enum.sort_by(stop_times, fn {stop_sequence, _stop_id} -> stop_sequence end)
+          Enum.sort_by(stop_times, fn {stop_sequence, _stop_id, _arrival, _departure, _time_zone} ->
+            stop_sequence
+          end)
 
         {trip_id, sorted_stop_times}
       end)
