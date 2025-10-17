@@ -9,10 +9,11 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
   @fake_stop_times_module Concentrate.GTFS.FakeStopTimes
 
   defmodule FakeStopTimesForBlockWaiver do
-    def stops_for_trip("trip"), do: [{10, "stop1"}, {20, "stop2"}]
+    def stops_for_trip("trip"), do: [{10, "stop1"}, {20, "stop2"}, {30, "stop3"}]
 
-    def arrival_departure("trip", 10, {1970, 1, 2}), do: {87_000, 87_001}
-    def arrival_departure("trip", 20, {1970, 1, 2}), do: {87_100, 87_101}
+    def arrival_departure("trip", 10, {1970, 1, 2}), do: {85_000, 85_001}
+    def arrival_departure("trip", 20, {1970, 1, 2}), do: {87_000, 87_001}
+    def arrival_departure("trip", 30, {1970, 1, 2}), do: {87_100, 87_101}
   end
 
   describe "filter/2" do
@@ -80,7 +81,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
       assert StopTimeUpdate.schedule_relationship(stu) == :SKIPPED
     end
 
-    test "cancels the group if all stop updates have already been given a skipped status" do
+    test "cancels the group if all future stop updates have already been given a skipped status" do
       td =
         TripDescriptor.new(
           route_id: "1",
@@ -94,18 +95,18 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           status: :SCHEDULED,
           arrival_time: 87_000,
           schedule_relationship: :SKIPPED,
-          stop_id: "stop1",
-          stop_sequence: 10
+          stop_id: "stop2",
+          stop_sequence: 20
         )
 
       stu2 =
         StopTimeUpdate.new(
           trip_id: "trip",
           status: :SCHEDULED,
-          arrival_time: 87_000,
+          arrival_time: 87_100,
           schedule_relationship: :SKIPPED,
-          stop_id: "stop2",
-          stop_sequence: 20
+          stop_id: "stop3",
+          stop_sequence: 30
         )
 
       now_fn = fn -> 86_000 end
@@ -140,8 +141,8 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           status: :SCHEDULED,
           arrival_time: 87_000,
           schedule_relationship: :SKIPPED,
-          stop_id: "stop1",
-          stop_sequence: 10
+          stop_id: "stop2",
+          stop_sequence: 20
         )
 
       now_fn = fn -> 86_000 end
