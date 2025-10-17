@@ -9,12 +9,14 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
   @fake_stop_times_module Concentrate.GTFS.FakeStopTimes
 
   defmodule FakeStopTimesForBlockWaiver do
-    def stops_for_trip("trip"), do: [{10, "stop1"}, {20, "stop2"}, {30, "stop3"}]
-    def stops_for_trip(_), do: :unknown
+    def stops_for_trip_with_arrival_departure("trip", _date),
+      do: [
+        {10, "stop1", 85_000, 85_001},
+        {20, "stop2", 87_000, 87_001},
+        {30, "stop3", 87_100, 87_101}
+      ]
 
-    def arrival_departure("trip", 10, {1970, 1, 2}), do: {85_000, 85_001}
-    def arrival_departure("trip", 20, {1970, 1, 2}), do: {87_000, 87_001}
-    def arrival_departure("trip", 30, {1970, 1, 2}), do: {87_100, 87_101}
+    def stops_for_trip_with_arrival_departure(_, _), do: :unknown
   end
 
   describe "filter/2" do
