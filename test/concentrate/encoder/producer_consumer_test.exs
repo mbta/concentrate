@@ -3,8 +3,8 @@ defmodule Concentrate.Encoder.ProducerConsumerTest do
   use ExUnit.Case, async: true
   import Concentrate.Encoder.ProducerConsumer
   import Concentrate.Encoder.GTFSRealtimeHelpers
-  alias Concentrate.{FeedUpdate, StopTimeUpdate, TripDescriptor}
   alias Concentrate.Encoder.{TripUpdates, VehiclePositions}
+  alias Concentrate.{FeedUpdate, StopTimeUpdate, TripDescriptor}
 
   describe "handle_events/3" do
     test "encodes each file and outputs it" do
