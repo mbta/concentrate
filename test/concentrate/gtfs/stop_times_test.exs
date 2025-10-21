@@ -118,4 +118,21 @@ defmodule Concentrate.GTFS.StopTimesTest do
       assert StopTimes.stops_for_trip("foo") == :unknown
     end
   end
+
+  describe "stops_for_trip_with_arrival_departure/2" do
+    setup :supervised
+
+    test "returns stops, sequence numbers, and arrival / departure times for trip in sequence order" do
+      assert StopTimes.stops_for_trip_with_arrival_departure("CR-524522-2502", {2025, 10, 17}) ==
+               [
+                 {0, "WML-0442-CS", 1_760_699_400, 1_760_699_400},
+                 {10, "WML-0364", 1_760_700_180, 1_760_700_180},
+                 {20, "WML-0340", 1_760_700_420, 1_760_700_420}
+               ]
+    end
+
+    test "returns unknown for unknown trip" do
+      assert StopTimes.stops_for_trip_with_arrival_departure("foo", {2025, 10, 17}) == :unknown
+    end
+  end
 end
