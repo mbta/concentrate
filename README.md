@@ -19,7 +19,10 @@ See [architecture.md](guides/architecture.md) for the overall architecture of th
 
 ```
 # after installing asdf from https://github.com/asdf-vm/asdf..
-asdf install
+asdf plugin add elixir
+asdf plugin add erlang
+asdf install elixir
+asdf install erlang
 
 # get Elixir dependencies
 mix deps.get
