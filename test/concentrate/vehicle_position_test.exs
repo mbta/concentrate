@@ -88,7 +88,27 @@ defmodule Concentrate.VehiclePositionTest do
           ]
         )
 
-      second = new(last_updated: 2, latitude: 2, longitude: 2)
+      second = new(
+        last_updated: 2,
+        latitude: 2,
+        longitude: 2,
+        multi_carriage_details: [
+            %{
+              id: 0,
+              occupancy_status: :MANY_SEATS_FULL,
+              occupancy_percentage: 80,
+              carriage_sequence: 1,
+              orientation: :AB
+            },
+            %{
+              id: 0,
+              occupancy_status: :EMPTY,
+              occupancy_percentage: 0,
+              carriage_sequence: 2,
+              orientation: :BA
+            }
+          ]
+      )
 
       expected =
         new(
