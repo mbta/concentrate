@@ -71,7 +71,7 @@ defmodule Concentrate.MixProject do
       {:gpb, "~> 4.7", only: :dev, runtime: false, only: :dev},
       {:httpoison, "~> 1.0"},
       {:emqtt_failover, "~> 0.3"},
-      {:cowlib, "2.11.0", override: true},
+      {:cowlib, "2.16.0", override: true},
       {:jason, "~> 1.0"},
       {:stream_data, "~> 1.1", only: :test},
       {:tzdata, "~> 1.1.1"},
