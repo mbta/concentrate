@@ -19,3 +19,8 @@ updates:
   - dependency-name: dialyxir
     versions:
     - 1.1.0
+  - dependency-name: hackney
+    versions:
+    - 1.24.0
+    - 1.24.1
+    - 1.25.0
