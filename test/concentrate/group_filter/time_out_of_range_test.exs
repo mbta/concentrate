@@ -9,7 +9,7 @@ defmodule Concentrate.GroupFilter.TimeOutOfRangeTest do
   end
 
   describe "filter/1" do
-    test "removes StopTimeUpdates if they're in the past or future" do
+    test "removes StopTimeUpdates if they're in the future but not if they're in the past" do
       stu = StopTimeUpdate.new(arrival_time: 1000)
       assert {_, [], [^stu]} = filter({nil, [], [stu]}, &now/0)
 
@@ -17,7 +17,7 @@ defmodule Concentrate.GroupFilter.TimeOutOfRangeTest do
       assert {_, [], [^stu]} = filter({nil, [], [stu]}, &now/0)
 
       stu = StopTimeUpdate.new(arrival_time: 4)
-      assert {_, [], []} = filter({nil, [], [stu]}, &now/0)
+      assert {_, [], [^stu]} = filter({nil, [], [stu]}, &now/0)
 
       stu = StopTimeUpdate.new(arrival_time: 400)
       assert {_, [], [^stu]} = filter({nil, [], [stu]}, &now/0)
