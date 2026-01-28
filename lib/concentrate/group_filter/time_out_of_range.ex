@@ -5,8 +5,6 @@ defmodule Concentrate.GroupFilter.TimeOutOfRange do
   alias Concentrate.StopTimeUpdate
   @behaviour Concentrate.GroupFilter
 
-  # 10 minutes
-  @min_time_in_past 60 * 10
   # 3 hours
   @max_time_in_future 10_800
 
@@ -15,10 +13,9 @@ defmodule Concentrate.GroupFilter.TimeOutOfRange do
 
   def filter({td, vps, stus}, now_fn) do
     now = now_fn.()
-    min_time = now - @min_time_in_past
     max_time = now + @max_time_in_future
 
-    {stus, _} = Enum.flat_map_reduce(stus, false, &maybe_drop_stu(&1, &2, min_time, max_time))
+    {stus, _} = Enum.flat_map_reduce(stus, false, &maybe_drop_stu(&1, &2, max_time))
     {td, vps, stus}
   end
 
@@ -30,20 +27,20 @@ defmodule Concentrate.GroupFilter.TimeOutOfRange do
     System.system_time(:second)
   end
 
-  defp maybe_drop_stu(stu, has_valid_time?, min_time, max_time)
+  defp maybe_drop_stu(stu, has_valid_time?, max_time)
 
-  defp maybe_drop_stu(stu, true, _, _) do
+  defp maybe_drop_stu(stu, true, _) do
     {[stu], true}
   end
 
-  defp maybe_drop_stu(stu, false, min_time, max_time) do
+  defp maybe_drop_stu(stu, false, max_time) do
     time = StopTimeUpdate.time(stu)
 
     cond do
       is_nil(time) ->
         {[stu], false}
 
-      time > max_time or time < min_time ->
+      time > max_time ->
         {[], false}
 
       true ->
