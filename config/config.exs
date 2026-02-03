@@ -75,7 +75,18 @@ config :concentrate,
     Concentrate.GroupFilter.SkippedStopOnAddedTrip,
     Concentrate.GroupFilter.TripDescriptorTimestamp,
     Concentrate.GroupFilter.UncertaintyValue,
-    Concentrate.GroupFilter.SuppressStopTimeUpdate
+    {Concentrate.GroupFilter.SuppressStopTimeUpdate,
+     terminal_suppression_by_time: %{
+       "place-matt" => %{
+         1 => {~T[04:00:00], ~T[07:30:00]},
+         2 => {~T[04:00:00], ~T[07:30:00]},
+         3 => {~T[04:00:00], ~T[07:30:00]},
+         4 => {~T[04:00:00], ~T[07:30:00]},
+         5 => {~T[04:00:00], ~T[07:30:00]},
+         6 => {~T[04:00:00], ~T[07:30:00]},
+         7 => {~T[04:00:00], ~T[07:30:00]}
+       }
+     }}
   ],
   source_reporters: [
     Concentrate.SourceReporter.Basic,
