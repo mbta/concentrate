@@ -12,6 +12,7 @@ config :ex_aws, json_codec: Jason
 config :ssl, protocol_version: :"tlsv1.2"
 
 config :concentrate,
+  time_zone: "America/New_York",
   boarding_status_override: %{
     "ARRIVED" => "Arrived",
     "CANCELLED" => "Cancelled",

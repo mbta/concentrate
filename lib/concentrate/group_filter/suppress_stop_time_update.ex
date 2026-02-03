@@ -13,6 +13,7 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
   config_path = [:group_filters, __MODULE__, :terminal_suppression_by_time]
 
   @terminal_suppression_by_time Application.compile_env(:concentrate, config_path, %{})
+  @time_zone Application.compile_env(:concentrate, :time_zone)
 
   @impl Concentrate.GroupFilter
   def filter(
@@ -45,8 +46,7 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
   def filter(other, _, _), do: other
 
   defp now do
-    # TODO: Make time zone configurable
-    DateTime.now("America/New_York")
+    DateTime.now(@time_zone)
   end
 
   defp perform_terminal_suppression(stus, td, suppressed_terminals) do
