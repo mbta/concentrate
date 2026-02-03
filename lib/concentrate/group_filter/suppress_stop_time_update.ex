@@ -1,6 +1,9 @@
 defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
   @moduledoc """
   Filters out StopTimeUpdates if stop on route and direction is currently flagged to suppress predictions.
+  Stops can be flagged for prediction suppression in a couple of different ways:
+  - Via the Screenplay API
+  - Via an application-configurable time range
   """
   @behaviour Concentrate.GroupFilter
   alias Concentrate.GTFS.Stops
