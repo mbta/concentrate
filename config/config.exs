@@ -12,6 +12,7 @@ config :ex_aws, json_codec: Jason
 config :ssl, protocol_version: :"tlsv1.2"
 
 config :concentrate,
+  time_zone: "America/New_York",
   boarding_status_override: %{
     "ARRIVED" => "Arrived",
     "CANCELLED" => "Cancelled",
@@ -75,7 +76,19 @@ config :concentrate,
     Concentrate.GroupFilter.SkippedStopOnAddedTrip,
     Concentrate.GroupFilter.TripDescriptorTimestamp,
     Concentrate.GroupFilter.UncertaintyValue,
-    Concentrate.GroupFilter.SuppressStopTimeUpdate
+    {Concentrate.GroupFilter.SuppressStopTimeUpdate,
+     terminal_suppression_by_time: %{
+       "place-matt" => %{
+         # Suppress from 4:00 AM to 2 minutes after the last AM pullout
+         1 => {~T[04:00:00], ~T[07:19:00]},
+         2 => {~T[04:00:00], ~T[07:19:00]},
+         3 => {~T[04:00:00], ~T[07:19:00]},
+         4 => {~T[04:00:00], ~T[07:19:00]},
+         5 => {~T[04:00:00], ~T[07:19:00]},
+         6 => {~T[04:00:00], ~T[05:42:00]},
+         7 => {~T[04:00:00], ~T[06:02:00]}
+       }
+     }}
   ],
   source_reporters: [
     Concentrate.SourceReporter.Basic,
