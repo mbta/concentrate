@@ -2,6 +2,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   @moduledoc """
   Helper functions for encoding GTFS-Realtime files.
   """
+  require Logger
   alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
   import Calendar.ISO, only: [date_to_string: 4]
 
@@ -212,6 +213,10 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
         [_ | _] -> render_stop_time_updates(stus, stop_time_update_fn)
         [] -> nil
       end
+
+    Logger.info(
+      "event=build_trip_update_entity trip_id=#{trip_id} route_id=#{trip_data.route_id} trip_data=#{inspect(trip)} stus=#{inspect(stus)} stop_time_update=#{inspect(stop_time_update)}"
+    )
 
     cond do
       match?([_ | _], stop_time_update) ->

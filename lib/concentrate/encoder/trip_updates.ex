@@ -3,6 +3,7 @@ defmodule Concentrate.Encoder.TripUpdates do
   Encodes a list of parsed data into a TripUpdates.pb file.
   """
   @behaviour Concentrate.Encoder
+  require Logger
   alias Concentrate.StopTimeUpdate
   import Concentrate.Encoder.GTFSRealtimeHelpers
 
@@ -14,6 +15,8 @@ defmodule Concentrate.Encoder.TripUpdates do
       header: feed_header(opts),
       entity: trip_update_feed_entity(groups, &build_stop_time_update/1)
     }
+
+    Logger.info("event=trip_update_encoded entity=#{inspect(message.entity)}")
 
     :gtfs_realtime_proto.encode_msg(message, :FeedMessage)
   end
