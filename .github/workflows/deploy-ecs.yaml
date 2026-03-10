@@ -18,7 +18,7 @@ jobs:
     with:
       app-name: concentrate
       environment: ${{ github.event.inputs.environment || 'dev' }}
-      docker-tag: ${{ github.event.inputs.environment || 'dev' }}
+      docker-additional-tag: ${{ github.event.inputs.environment || 'dev' }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       docker-repo: ${{ secrets.DOCKER_REPO }}
