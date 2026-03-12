@@ -136,14 +136,14 @@ defmodule Concentrate.MergeFilter do
 
     _ =
       Logger.debug(fn ->
-        "#{__MODULE__} group time=#{time / 1_000} grouped=#{inspect(grouped)}"
+        "#{__MODULE__} group time=#{time / 1_000} grouped_length=#{length(grouped)}"
       end)
 
     {time, group_filtered} = :timer.tc(&group_filter/2, [grouped, state.group_filters])
 
     _ =
       Logger.debug(fn ->
-        "#{__MODULE__} group_filter time=#{time / 1_000} group_filtered=#{inspect(group_filtered)}"
+        "#{__MODULE__} group_filter time=#{time / 1_000} group_filtered_length=#{length(group_filtered)}"
       end)
 
     if group_filtered != [] || is_nil(keys) do
