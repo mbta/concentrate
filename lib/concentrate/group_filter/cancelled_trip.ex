@@ -41,18 +41,6 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
         now_fn,
         routes_module.route_type(route_id)
       ) ->
-        stus_log =
-          Enum.map(stop_time_updates, fn stu ->
-            %{
-              stop_id: StopTimeUpdate.stop_id(stu),
-              schedule_relationship: StopTimeUpdate.schedule_relationship(stu)
-            }
-          end)
-
-        Logger.info(
-          "event=bus_block_waiver_cancel trip_id=#{trip_id} route_id=#{route_id} stus=#{inspect(stus_log)}"
-        )
-
         cancel_group(group, gtfs_stop_times)
 
       is_nil(time) ->

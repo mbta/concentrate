@@ -2,7 +2,6 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   @moduledoc """
   Helper functions for encoding GTFS-Realtime files.
   """
-  require Logger
   alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
   import Calendar.ISO, only: [date_to_string: 4]
 
