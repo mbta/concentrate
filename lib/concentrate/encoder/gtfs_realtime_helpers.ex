@@ -214,10 +214,6 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
         [] -> nil
       end
 
-    Logger.info(
-      "event=build_trip_update_entity trip_id=#{trip_id} route_id=#{trip_data.route_id} trip_data=#{inspect(trip)} stus=#{inspect(stus)} stop_time_update=#{inspect(stop_time_update)}"
-    )
-
     cond do
       match?([_ | _], stop_time_update) ->
         [

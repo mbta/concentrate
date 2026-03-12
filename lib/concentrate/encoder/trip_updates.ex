@@ -16,8 +16,6 @@ defmodule Concentrate.Encoder.TripUpdates do
       entity: trip_update_feed_entity(groups, &build_stop_time_update/1)
     }
 
-    Logger.info("event=trip_update_encoded entity=#{inspect(message.entity)}")
-
     :gtfs_realtime_proto.encode_msg(message, :FeedMessage)
   end
 
