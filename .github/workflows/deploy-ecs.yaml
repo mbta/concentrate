@@ -14,10 +14,11 @@ on:
 
 jobs:
   call-workflow:
-    uses: mbta/workflows/.github/workflows/deploy-ecs.yml@v2
+    uses: mbta/workflows/.github/workflows/deploy-ecs.yml@v5
     with:
       app-name: concentrate
       environment: ${{ github.event.inputs.environment || 'dev' }}
+      docker-additional-tags: ${{ github.event.inputs.environment || 'dev' }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       docker-repo: ${{ secrets.DOCKER_REPO }}
