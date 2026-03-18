@@ -52,6 +52,8 @@ defmodule Concentrate.Producer.Mqtt do
 
   @impl GenStage
   def handle_info({:message, _pid, msg}, state) do
+    Logger.info("event=mqtt_message payload=#{inspect(msg)}")
+
     parsed =
       state.parser.(
         decode_payload(msg.payload),
