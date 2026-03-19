@@ -1,0 +1,6450 @@
+# tripupdates.txtpb
+# This file contains a single text-format transit_realtime.FeedMessage message.
+# Generated on 2026-04-08 from tripupdates.pb, which was originally sampled from
+# real data in our logs in December 2017.
+header {
+  gtfs_realtime_version: "1.0"
+  incrementality: FULL_DATASET
+  timestamp: 1513622773
+}
+entity {
+  id: "1513622773_ADDED-1873"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1873"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 540
+      arrival {
+        time: 1513622831
+      }
+      departure {
+        time: 1513622831
+      }
+      stop_id: "70167"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513622932
+      }
+      departure {
+        time: 1513622932
+      }
+      stop_id: "70165"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623041
+      }
+      departure {
+        time: 1513623041
+      }
+      stop_id: "70163"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623203
+      }
+      stop_id: "70161"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10034"
+      label: "3877-3709"
+    }
+  }
+}
+entity {
+  id: "1513622773_34657632"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34657632"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-C"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 270
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70218"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 280
+      arrival {
+        time: 1513622842
+      }
+      departure {
+        time: 1513622842
+      }
+      stop_id: "70216"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 290
+      arrival {
+        time: 1513622907
+      }
+      departure {
+        time: 1513622907
+      }
+      stop_id: "70214"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 300
+      arrival {
+        time: 1513623012
+      }
+      departure {
+        time: 1513623012
+      }
+      stop_id: "70212"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513623212
+      }
+      departure {
+        time: 1513623212
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623350
+      }
+      departure {
+        time: 1513623350
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623494
+      }
+      departure {
+        time: 1513623494
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623607
+      }
+      departure {
+        time: 1513623607
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513623734
+      }
+      departure {
+        time: 1513623734
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513623830
+      }
+      departure {
+        time: 1513623830
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513623942
+      }
+      departure {
+        time: 1513623942
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 620
+      arrival {
+        time: 1513624055
+      }
+      departure {
+        time: 1513624055
+      }
+      stop_id: "70203"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513624151
+      }
+      stop_id: "70205"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10151"
+      label: "3821"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1868"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1868"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513622855
+      }
+      departure {
+        time: 1513622855
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513622951
+      }
+      departure {
+        time: 1513622951
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513623063
+      }
+      departure {
+        time: 1513623063
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 620
+      arrival {
+        time: 1513623176
+      }
+      departure {
+        time: 1513623176
+      }
+      stop_id: "70203"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513623272
+      }
+      departure {
+        time: 1513623272
+      }
+      stop_id: "70205"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 640
+      arrival {
+        time: 1513623449
+      }
+      departure {
+        time: 1513623449
+      }
+      stop_id: "70207"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 650
+      arrival {
+        time: 1513623561
+      }
+      stop_id: "70209"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10008"
+      label: "3883-3617"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1874"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1874"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 90
+      arrival {
+        time: 1513622819
+      }
+      departure {
+        time: 1513622819
+      }
+      stop_id: "70159"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 100
+      arrival {
+        time: 1513622957
+      }
+      departure {
+        time: 1513622957
+      }
+      stop_id: "70157"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513623051
+      }
+      departure {
+        time: 1513623051
+      }
+      stop_id: "70155"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623215
+      }
+      departure {
+        time: 1513623215
+      }
+      stop_id: "70239"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513623304
+      }
+      departure {
+        time: 1513623304
+      }
+      stop_id: "70241"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513623375
+      }
+      departure {
+        time: 1513623375
+      }
+      stop_id: "70243"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513623498
+      }
+      departure {
+        time: 1513623498
+      }
+      stop_id: "70245"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 620
+      arrival {
+        time: 1513623608
+      }
+      departure {
+        time: 1513623608
+      }
+      stop_id: "70247"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513623695
+      }
+      departure {
+        time: 1513623695
+      }
+      stop_id: "70249"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 640
+      arrival {
+        time: 1513623770
+      }
+      departure {
+        time: 1513623770
+      }
+      stop_id: "70251"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 650
+      arrival {
+        time: 1513623826
+      }
+      departure {
+        time: 1513623826
+      }
+      stop_id: "70253"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 660
+      arrival {
+        time: 1513623975
+      }
+      departure {
+        time: 1513623975
+      }
+      stop_id: "70255"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 670
+      arrival {
+        time: 1513624028
+      }
+      departure {
+        time: 1513624028
+      }
+      stop_id: "70257"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 680
+      arrival {
+        time: 1513624080
+      }
+      stop_id: "70259"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10056"
+      label: "3862-3833"
+    }
+  }
+}
+entity {
+  id: "1513622773_34658756"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34658756"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 480
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70179"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 490
+      arrival {
+        time: 1513622905
+      }
+      departure {
+        time: 1513622905
+      }
+      stop_id: "70177"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 500
+      arrival {
+        time: 1513623004
+      }
+      departure {
+        time: 1513623004
+      }
+      stop_id: "70175"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 510
+      arrival {
+        time: 1513623146
+      }
+      departure {
+        time: 1513623146
+      }
+      stop_id: "70173"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 520
+      arrival {
+        time: 1513623325
+      }
+      departure {
+        time: 1513623325
+      }
+      stop_id: "70171"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 530
+      arrival {
+        time: 1513623446
+      }
+      departure {
+        time: 1513623446
+      }
+      stop_id: "70169"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 540
+      arrival {
+        time: 1513623590
+      }
+      departure {
+        time: 1513623590
+      }
+      stop_id: "70167"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513623691
+      }
+      departure {
+        time: 1513623691
+      }
+      stop_id: "70165"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623800
+      }
+      departure {
+        time: 1513623800
+      }
+      stop_id: "70163"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623962
+      }
+      stop_id: "70161"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10162"
+      label: "3860-3645"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1872"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1872"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 30
+      arrival {
+        time: 1513622826
+      }
+      departure {
+        time: 1513622826
+      }
+      stop_id: "70204"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 40
+      arrival {
+        time: 1513622930
+      }
+      departure {
+        time: 1513622930
+      }
+      stop_id: "70202"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 80
+      arrival {
+        time: 1513623083
+      }
+      departure {
+        time: 1513623083
+      }
+      stop_id: "70199"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 90
+      arrival {
+        time: 1513623205
+      }
+      departure {
+        time: 1513623205
+      }
+      stop_id: "70159"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 100
+      arrival {
+        time: 1513623343
+      }
+      departure {
+        time: 1513623343
+      }
+      stop_id: "70157"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513623437
+      }
+      departure {
+        time: 1513623437
+      }
+      stop_id: "70155"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623601
+      }
+      departure {
+        time: 1513623601
+      }
+      stop_id: "70239"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513623690
+      }
+      departure {
+        time: 1513623690
+      }
+      stop_id: "70241"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513623761
+      }
+      departure {
+        time: 1513623761
+      }
+      stop_id: "70243"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513623884
+      }
+      departure {
+        time: 1513623884
+      }
+      stop_id: "70245"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 620
+      arrival {
+        time: 1513623994
+      }
+      departure {
+        time: 1513623994
+      }
+      stop_id: "70247"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513624081
+      }
+      departure {
+        time: 1513624081
+      }
+      stop_id: "70249"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 640
+      arrival {
+        time: 1513624156
+      }
+      departure {
+        time: 1513624156
+      }
+      stop_id: "70251"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 650
+      arrival {
+        time: 1513624212
+      }
+      departure {
+        time: 1513624212
+      }
+      stop_id: "70253"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 660
+      arrival {
+        time: 1513624361
+      }
+      departure {
+        time: 1513624361
+      }
+      stop_id: "70255"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 670
+      arrival {
+        time: 1513624414
+      }
+      departure {
+        time: 1513624414
+      }
+      stop_id: "70257"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 680
+      arrival {
+        time: 1513624466
+      }
+      stop_id: "70259"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10012"
+      label: "3838"
+    }
+  }
+}
+entity {
+  id: "1513622773_34659400"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34659400"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-E"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 660
+      arrival {
+        time: 1513622832
+      }
+      departure {
+        time: 1513622832
+      }
+      stop_id: "70255"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 670
+      arrival {
+        time: 1513622885
+      }
+      departure {
+        time: 1513622885
+      }
+      stop_id: "70257"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 680
+      arrival {
+        time: 1513622937
+      }
+      stop_id: "70259"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10052"
+      label: "3890"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1857"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1857"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 510
+      arrival {
+        time: 1513622879
+      }
+      departure {
+        time: 1513622879
+      }
+      stop_id: "70173"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 520
+      arrival {
+        time: 1513623058
+      }
+      departure {
+        time: 1513623058
+      }
+      stop_id: "70171"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 530
+      arrival {
+        time: 1513623179
+      }
+      departure {
+        time: 1513623179
+      }
+      stop_id: "70169"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 540
+      arrival {
+        time: 1513623317
+      }
+      departure {
+        time: 1513623317
+      }
+      stop_id: "70167"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513623418
+      }
+      departure {
+        time: 1513623418
+      }
+      stop_id: "70165"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623527
+      }
+      departure {
+        time: 1513623527
+      }
+      stop_id: "70163"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623689
+      }
+      stop_id: "70161"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10105"
+      label: "3628-3866"
+    }
+  }
+}
+entity {
+  id: "1513622773_34657654"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34657654"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 320
+      arrival {
+        time: 1513622872
+      }
+      departure {
+        time: 1513622872
+      }
+      stop_id: "70211"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 330
+      arrival {
+        time: 1513622959
+      }
+      departure {
+        time: 1513622959
+      }
+      stop_id: "70213"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 340
+      arrival {
+        time: 1513623006
+      }
+      departure {
+        time: 1513623006
+      }
+      stop_id: "70215"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 350
+      arrival {
+        time: 1513623068
+      }
+      departure {
+        time: 1513623068
+      }
+      stop_id: "70217"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 360
+      arrival {
+        time: 1513623190
+      }
+      departure {
+        time: 1513623190
+      }
+      stop_id: "70219"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 370
+      arrival {
+        time: 1513623299
+      }
+      departure {
+        time: 1513623299
+      }
+      stop_id: "70223"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 380
+      arrival {
+        time: 1513623375
+      }
+      departure {
+        time: 1513623375
+      }
+      stop_id: "70225"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 390
+      arrival {
+        time: 1513623402
+      }
+      departure {
+        time: 1513623402
+      }
+      stop_id: "70227"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 400
+      arrival {
+        time: 1513623457
+      }
+      departure {
+        time: 1513623457
+      }
+      stop_id: "70229"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 410
+      arrival {
+        time: 1513623537
+      }
+      departure {
+        time: 1513623537
+      }
+      stop_id: "70231"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 420
+      arrival {
+        time: 1513623594
+      }
+      departure {
+        time: 1513623594
+      }
+      stop_id: "70233"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 430
+      arrival {
+        time: 1513623681
+      }
+      departure {
+        time: 1513623681
+      }
+      stop_id: "70235"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 440
+      arrival {
+        time: 1513623760
+      }
+      stop_id: "70237"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10201"
+      label: "3819-3614"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1884"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1884"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 130
+      arrival {
+        time: 1513622793
+      }
+      departure {
+        time: 1513622793
+      }
+      stop_id: "70151"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 140
+      arrival {
+        time: 1513622879
+      }
+      departure {
+        time: 1513622879
+      }
+      stop_id: "70149"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 150
+      arrival {
+        time: 1513622973
+      }
+      departure {
+        time: 1513622973
+      }
+      stop_id: "70147"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 160
+      arrival {
+        time: 1513623047
+      }
+      departure {
+        time: 1513623047
+      }
+      stop_id: "70145"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 170
+      arrival {
+        time: 1513623195
+      }
+      departure {
+        time: 1513623195
+      }
+      stop_id: "70143"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 180
+      arrival {
+        time: 1513623285
+      }
+      departure {
+        time: 1513623285
+      }
+      stop_id: "70141"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 190
+      arrival {
+        time: 1513623371
+      }
+      departure {
+        time: 1513623371
+      }
+      stop_id: "70139"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 200
+      arrival {
+        time: 1513623446
+      }
+      departure {
+        time: 1513623446
+      }
+      stop_id: "70137"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 210
+      arrival {
+        time: 1513623536
+      }
+      departure {
+        time: 1513623536
+      }
+      stop_id: "70135"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 220
+      arrival {
+        time: 1513623629
+      }
+      departure {
+        time: 1513623629
+      }
+      stop_id: "70131"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 230
+      arrival {
+        time: 1513623771
+      }
+      departure {
+        time: 1513623771
+      }
+      stop_id: "70129"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 240
+      arrival {
+        time: 1513623827
+      }
+      departure {
+        time: 1513623827
+      }
+      stop_id: "70127"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 250
+      arrival {
+        time: 1513623908
+      }
+      departure {
+        time: 1513623908
+      }
+      stop_id: "70125"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 260
+      arrival {
+        time: 1513624002
+      }
+      departure {
+        time: 1513624002
+      }
+      stop_id: "70121"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 270
+      arrival {
+        time: 1513624111
+      }
+      departure {
+        time: 1513624111
+      }
+      stop_id: "70117"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 280
+      arrival {
+        time: 1513624184
+      }
+      departure {
+        time: 1513624184
+      }
+      stop_id: "70115"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 290
+      arrival {
+        time: 1513624260
+      }
+      departure {
+        time: 1513624260
+      }
+      stop_id: "70113"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 300
+      arrival {
+        time: 1513624360
+      }
+      departure {
+        time: 1513624360
+      }
+      stop_id: "70111"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 310
+      arrival {
+        time: 1513624515
+      }
+      stop_id: "70107"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10040"
+      label: "3810-3820"
+    }
+  }
+}
+entity {
+  id: "1513622773_34657702"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34657702"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-B"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 200
+      arrival {
+        time: 1513622796
+      }
+      departure {
+        time: 1513622796
+      }
+      stop_id: "70137"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 210
+      arrival {
+        time: 1513622886
+      }
+      departure {
+        time: 1513622886
+      }
+      stop_id: "70135"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 220
+      arrival {
+        time: 1513622979
+      }
+      departure {
+        time: 1513622979
+      }
+      stop_id: "70131"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 230
+      arrival {
+        time: 1513623121
+      }
+      departure {
+        time: 1513623121
+      }
+      stop_id: "70129"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 240
+      arrival {
+        time: 1513623177
+      }
+      departure {
+        time: 1513623177
+      }
+      stop_id: "70127"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 250
+      arrival {
+        time: 1513623258
+      }
+      departure {
+        time: 1513623258
+      }
+      stop_id: "70125"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 260
+      arrival {
+        time: 1513623352
+      }
+      departure {
+        time: 1513623352
+      }
+      stop_id: "70121"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 270
+      arrival {
+        time: 1513623461
+      }
+      departure {
+        time: 1513623461
+      }
+      stop_id: "70117"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 280
+      arrival {
+        time: 1513623534
+      }
+      departure {
+        time: 1513623534
+      }
+      stop_id: "70115"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 290
+      arrival {
+        time: 1513623610
+      }
+      departure {
+        time: 1513623610
+      }
+      stop_id: "70113"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 300
+      arrival {
+        time: 1513623710
+      }
+      departure {
+        time: 1513623710
+      }
+      stop_id: "70111"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 310
+      arrival {
+        time: 1513623865
+      }
+      stop_id: "70107"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10089"
+      label: "3850-3678"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1862"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1862"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 510
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70246"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 520
+      arrival {
+        time: 1513622870
+      }
+      departure {
+        time: 1513622870
+      }
+      stop_id: "70244"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 530
+      arrival {
+        time: 1513622946
+      }
+      departure {
+        time: 1513622946
+      }
+      stop_id: "70242"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 540
+      arrival {
+        time: 1513623015
+      }
+      departure {
+        time: 1513623015
+      }
+      stop_id: "70240"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623121
+      }
+      departure {
+        time: 1513623121
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623234
+      }
+      departure {
+        time: 1513623234
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513623367
+      }
+      departure {
+        time: 1513623367
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513623463
+      }
+      departure {
+        time: 1513623463
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513623575
+      }
+      departure {
+        time: 1513623575
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 620
+      arrival {
+        time: 1513623688
+      }
+      departure {
+        time: 1513623688
+      }
+      stop_id: "70203"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513623784
+      }
+      departure {
+        time: 1513623784
+      }
+      stop_id: "70205"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 640
+      arrival {
+        time: 1513623961
+      }
+      departure {
+        time: 1513623961
+      }
+      stop_id: "70207"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 650
+      arrival {
+        time: 1513624073
+      }
+      stop_id: "70209"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10014"
+      label: "3847-3698"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1888"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1888"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70155"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 120
+      arrival {
+        time: 1513622937
+      }
+      departure {
+        time: 1513622937
+      }
+      stop_id: "70153"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 130
+      arrival {
+        time: 1513623095
+      }
+      departure {
+        time: 1513623095
+      }
+      stop_id: "70151"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 450
+      arrival {
+        time: 1513623247
+      }
+      departure {
+        time: 1513623247
+      }
+      stop_id: "70187"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 460
+      arrival {
+        time: 1513623341
+      }
+      departure {
+        time: 1513623341
+      }
+      stop_id: "70183"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 470
+      arrival {
+        time: 1513623485
+      }
+      departure {
+        time: 1513623485
+      }
+      stop_id: "70181"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 480
+      arrival {
+        time: 1513623592
+      }
+      departure {
+        time: 1513623592
+      }
+      stop_id: "70179"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 490
+      arrival {
+        time: 1513623724
+      }
+      departure {
+        time: 1513623724
+      }
+      stop_id: "70177"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 500
+      arrival {
+        time: 1513623823
+      }
+      departure {
+        time: 1513623823
+      }
+      stop_id: "70175"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 510
+      arrival {
+        time: 1513623965
+      }
+      departure {
+        time: 1513623965
+      }
+      stop_id: "70173"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 520
+      arrival {
+        time: 1513624144
+      }
+      departure {
+        time: 1513624144
+      }
+      stop_id: "70171"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 530
+      arrival {
+        time: 1513624265
+      }
+      departure {
+        time: 1513624265
+      }
+      stop_id: "70169"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 540
+      arrival {
+        time: 1513624410
+      }
+      departure {
+        time: 1513624410
+      }
+      stop_id: "70167"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513624511
+      }
+      departure {
+        time: 1513624511
+      }
+      stop_id: "70165"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513624620
+      }
+      departure {
+        time: 1513624620
+      }
+      stop_id: "70163"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513624782
+      }
+      stop_id: "70161"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10193"
+      label: "3659-3870"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1856"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1856"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513622877
+      }
+      departure {
+        time: 1513622877
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513622990
+      }
+      departure {
+        time: 1513622990
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513623114
+      }
+      departure {
+        time: 1513623114
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513623210
+      }
+      departure {
+        time: 1513623210
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513623322
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10136"
+      label: "3827-3608"
+    }
+  }
+}
+entity {
+  id: "1513622773_34658754"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34658754"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 500
+      arrival {
+        time: 1513622814
+      }
+      departure {
+        time: 1513622814
+      }
+      stop_id: "70175"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 510
+      arrival {
+        time: 1513622956
+      }
+      departure {
+        time: 1513622956
+      }
+      stop_id: "70173"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 520
+      arrival {
+        time: 1513623135
+      }
+      departure {
+        time: 1513623135
+      }
+      stop_id: "70171"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 530
+      arrival {
+        time: 1513623256
+      }
+      departure {
+        time: 1513623256
+      }
+      stop_id: "70169"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 540
+      arrival {
+        time: 1513623400
+      }
+      departure {
+        time: 1513623400
+      }
+      stop_id: "70167"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513623501
+      }
+      departure {
+        time: 1513623501
+      }
+      stop_id: "70165"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623610
+      }
+      departure {
+        time: 1513623610
+      }
+      stop_id: "70163"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623772
+      }
+      stop_id: "70161"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10042"
+      label: "3849-3654"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1876"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1876"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 380
+      arrival {
+        time: 1513622790
+      }
+      departure {
+        time: 1513622790
+      }
+      stop_id: "70174"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 390
+      arrival {
+        time: 1513622916
+      }
+      departure {
+        time: 1513622916
+      }
+      stop_id: "70176"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 400
+      arrival {
+        time: 1513623047
+      }
+      departure {
+        time: 1513623047
+      }
+      stop_id: "70178"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 410
+      arrival {
+        time: 1513623148
+      }
+      departure {
+        time: 1513623148
+      }
+      stop_id: "70180"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 420
+      arrival {
+        time: 1513623286
+      }
+      departure {
+        time: 1513623286
+      }
+      stop_id: "70182"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 430
+      arrival {
+        time: 1513623398
+      }
+      departure {
+        time: 1513623398
+      }
+      stop_id: "70186"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513623588
+      }
+      departure {
+        time: 1513623588
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623726
+      }
+      departure {
+        time: 1513623726
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623870
+      }
+      departure {
+        time: 1513623870
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623983
+      }
+      departure {
+        time: 1513623983
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513624110
+      }
+      departure {
+        time: 1513624110
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513624206
+      }
+      departure {
+        time: 1513624206
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513624318
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10093"
+      label: "3841-3627"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1864"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1864"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513622874
+      }
+      departure {
+        time: 1513622874
+      }
+      stop_id: "70239"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513622963
+      }
+      departure {
+        time: 1513622963
+      }
+      stop_id: "70241"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513623034
+      }
+      departure {
+        time: 1513623034
+      }
+      stop_id: "70243"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513623157
+      }
+      departure {
+        time: 1513623157
+      }
+      stop_id: "70245"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 620
+      arrival {
+        time: 1513623274
+      }
+      departure {
+        time: 1513623274
+      }
+      stop_id: "70247"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513623361
+      }
+      departure {
+        time: 1513623361
+      }
+      stop_id: "70249"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 640
+      arrival {
+        time: 1513623436
+      }
+      departure {
+        time: 1513623436
+      }
+      stop_id: "70251"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 650
+      arrival {
+        time: 1513623492
+      }
+      departure {
+        time: 1513623492
+      }
+      stop_id: "70253"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 660
+      arrival {
+        time: 1513623628
+      }
+      departure {
+        time: 1513623628
+      }
+      stop_id: "70255"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 670
+      arrival {
+        time: 1513623681
+      }
+      departure {
+        time: 1513623681
+      }
+      stop_id: "70257"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 680
+      arrival {
+        time: 1513623733
+      }
+      stop_id: "70259"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10003"
+      label: "3830-3622"
+    }
+  }
+}
+entity {
+  id: "1513622773_34658755"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34658755"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 490
+      arrival {
+        time: 1513622785
+      }
+      departure {
+        time: 1513622785
+      }
+      stop_id: "70177"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 500
+      arrival {
+        time: 1513622884
+      }
+      departure {
+        time: 1513622884
+      }
+      stop_id: "70175"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 510
+      arrival {
+        time: 1513623026
+      }
+      departure {
+        time: 1513623026
+      }
+      stop_id: "70173"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 520
+      arrival {
+        time: 1513623205
+      }
+      departure {
+        time: 1513623205
+      }
+      stop_id: "70171"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 530
+      arrival {
+        time: 1513623326
+      }
+      departure {
+        time: 1513623326
+      }
+      stop_id: "70169"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 540
+      arrival {
+        time: 1513623470
+      }
+      departure {
+        time: 1513623470
+      }
+      stop_id: "70167"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513623571
+      }
+      departure {
+        time: 1513623571
+      }
+      stop_id: "70165"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623680
+      }
+      departure {
+        time: 1513623680
+      }
+      stop_id: "70163"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623842
+      }
+      stop_id: "70161"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10002"
+      label: "3881-3649"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1877"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1877"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10017"
+      label: "3885-3713"
+    }
+  }
+}
+entity {
+  id: "1513622773_34657703"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34657703"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-B"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 290
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70113"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 300
+      arrival {
+        time: 1513622873
+      }
+      departure {
+        time: 1513622873
+      }
+      stop_id: "70111"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 310
+      arrival {
+        time: 1513623028
+      }
+      stop_id: "70107"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10071"
+      label: "3606-3863"
+    }
+  }
+}
+entity {
+  id: "1513622773_34657674"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34657674"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 10
+      arrival {
+        time: 1513622872
+      }
+      departure {
+        time: 1513622872
+      }
+      stop_id: "70110"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 20
+      arrival {
+        time: 1513622969
+      }
+      departure {
+        time: 1513622969
+      }
+      stop_id: "70112"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 30
+      arrival {
+        time: 1513623038
+      }
+      departure {
+        time: 1513623038
+      }
+      stop_id: "70114"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 40
+      arrival {
+        time: 1513623138
+      }
+      departure {
+        time: 1513623138
+      }
+      stop_id: "70116"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 50
+      arrival {
+        time: 1513623241
+      }
+      departure {
+        time: 1513623241
+      }
+      stop_id: "70120"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 60
+      arrival {
+        time: 1513623369
+      }
+      departure {
+        time: 1513623369
+      }
+      stop_id: "70124"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 70
+      arrival {
+        time: 1513623439
+      }
+      departure {
+        time: 1513623439
+      }
+      stop_id: "70126"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 80
+      arrival {
+        time: 1513623519
+      }
+      departure {
+        time: 1513623519
+      }
+      stop_id: "70128"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 90
+      arrival {
+        time: 1513623611
+      }
+      departure {
+        time: 1513623611
+      }
+      stop_id: "70130"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 100
+      arrival {
+        time: 1513623850
+      }
+      departure {
+        time: 1513623850
+      }
+      stop_id: "70134"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513623945
+      }
+      departure {
+        time: 1513623945
+      }
+      stop_id: "70136"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 120
+      arrival {
+        time: 1513624025
+      }
+      departure {
+        time: 1513624025
+      }
+      stop_id: "70138"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 130
+      arrival {
+        time: 1513624125
+      }
+      departure {
+        time: 1513624125
+      }
+      stop_id: "70140"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 140
+      arrival {
+        time: 1513624198
+      }
+      departure {
+        time: 1513624198
+      }
+      stop_id: "70142"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 150
+      arrival {
+        time: 1513624308
+      }
+      departure {
+        time: 1513624308
+      }
+      stop_id: "70144"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 160
+      arrival {
+        time: 1513624391
+      }
+      departure {
+        time: 1513624391
+      }
+      stop_id: "70146"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 170
+      arrival {
+        time: 1513624501
+      }
+      departure {
+        time: 1513624501
+      }
+      stop_id: "70148"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513624599
+      }
+      departure {
+        time: 1513624599
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513624756
+      }
+      departure {
+        time: 1513624756
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513624900
+      }
+      departure {
+        time: 1513624900
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513625013
+      }
+      departure {
+        time: 1513625013
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513625140
+      }
+      departure {
+        time: 1513625140
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513625236
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10068"
+      label: "3855-3691"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1883"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1883"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Mattapan"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 7
+      arrival {
+        time: 1513622795
+      }
+      departure {
+        time: 1513622795
+      }
+      stop_id: "70273"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 8
+      arrival {
+        time: 1513622826
+      }
+      stop_id: "70275"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10112"
+      label: "3268"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1858"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1858"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 390
+      arrival {
+        time: 1513622821
+      }
+      departure {
+        time: 1513622821
+      }
+      stop_id: "70176"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 400
+      arrival {
+        time: 1513622952
+      }
+      departure {
+        time: 1513622952
+      }
+      stop_id: "70178"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 410
+      arrival {
+        time: 1513623053
+      }
+      departure {
+        time: 1513623053
+      }
+      stop_id: "70180"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 420
+      arrival {
+        time: 1513623191
+      }
+      departure {
+        time: 1513623191
+      }
+      stop_id: "70182"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 430
+      arrival {
+        time: 1513623303
+      }
+      departure {
+        time: 1513623303
+      }
+      stop_id: "70186"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513623493
+      }
+      departure {
+        time: 1513623493
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623631
+      }
+      departure {
+        time: 1513623631
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623775
+      }
+      departure {
+        time: 1513623775
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623888
+      }
+      departure {
+        time: 1513623888
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513624015
+      }
+      departure {
+        time: 1513624015
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513624111
+      }
+      departure {
+        time: 1513624111
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513624223
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10132"
+      label: "3861-3626"
+    }
+  }
+}
+entity {
+  id: "1513622773_34659388"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34659388"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-E"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70205"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 640
+      arrival {
+        time: 1513622950
+      }
+      departure {
+        time: 1513622950
+      }
+      stop_id: "70207"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 650
+      arrival {
+        time: 1513623062
+      }
+      stop_id: "70209"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10090"
+      label: "3851-3705"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1865"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1865"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513622829
+      }
+      departure {
+        time: 1513622829
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513622986
+      }
+      departure {
+        time: 1513622986
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623130
+      }
+      departure {
+        time: 1513623130
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623243
+      }
+      departure {
+        time: 1513623243
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513623376
+      }
+      departure {
+        time: 1513623376
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513623472
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10184"
+      label: "3815"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1870"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1870"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 90
+      arrival {
+        time: 1513622819
+      }
+      departure {
+        time: 1513622819
+      }
+      stop_id: "70159"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 100
+      arrival {
+        time: 1513622956
+      }
+      departure {
+        time: 1513622956
+      }
+      stop_id: "70157"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513623050
+      }
+      departure {
+        time: 1513623050
+      }
+      stop_id: "70155"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 120
+      arrival {
+        time: 1513623214
+      }
+      departure {
+        time: 1513623214
+      }
+      stop_id: "70153"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 130
+      arrival {
+        time: 1513623372
+      }
+      departure {
+        time: 1513623372
+      }
+      stop_id: "70151"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 140
+      arrival {
+        time: 1513623458
+      }
+      departure {
+        time: 1513623458
+      }
+      stop_id: "70149"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 150
+      arrival {
+        time: 1513623552
+      }
+      departure {
+        time: 1513623552
+      }
+      stop_id: "70147"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 160
+      arrival {
+        time: 1513623626
+      }
+      departure {
+        time: 1513623626
+      }
+      stop_id: "70145"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 170
+      arrival {
+        time: 1513623774
+      }
+      departure {
+        time: 1513623774
+      }
+      stop_id: "70143"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 180
+      arrival {
+        time: 1513623864
+      }
+      departure {
+        time: 1513623864
+      }
+      stop_id: "70141"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 190
+      arrival {
+        time: 1513623950
+      }
+      departure {
+        time: 1513623950
+      }
+      stop_id: "70139"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 200
+      arrival {
+        time: 1513624032
+      }
+      departure {
+        time: 1513624032
+      }
+      stop_id: "70137"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 210
+      arrival {
+        time: 1513624122
+      }
+      departure {
+        time: 1513624122
+      }
+      stop_id: "70135"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 220
+      arrival {
+        time: 1513624211
+      }
+      departure {
+        time: 1513624211
+      }
+      stop_id: "70131"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 230
+      arrival {
+        time: 1513624353
+      }
+      departure {
+        time: 1513624353
+      }
+      stop_id: "70129"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 240
+      arrival {
+        time: 1513624409
+      }
+      departure {
+        time: 1513624409
+      }
+      stop_id: "70127"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 250
+      arrival {
+        time: 1513624490
+      }
+      departure {
+        time: 1513624490
+      }
+      stop_id: "70125"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 260
+      arrival {
+        time: 1513624584
+      }
+      departure {
+        time: 1513624584
+      }
+      stop_id: "70121"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 270
+      arrival {
+        time: 1513624693
+      }
+      departure {
+        time: 1513624693
+      }
+      stop_id: "70117"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 280
+      arrival {
+        time: 1513624766
+      }
+      departure {
+        time: 1513624766
+      }
+      stop_id: "70115"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 290
+      arrival {
+        time: 1513624842
+      }
+      departure {
+        time: 1513624842
+      }
+      stop_id: "70113"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 300
+      arrival {
+        time: 1513624942
+      }
+      departure {
+        time: 1513624942
+      }
+      stop_id: "70111"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 310
+      arrival {
+        time: 1513625097
+      }
+      stop_id: "70107"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10092"
+      label: "3852-3708"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1867"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1867"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 620
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70247"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513622860
+      }
+      departure {
+        time: 1513622860
+      }
+      stop_id: "70249"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 640
+      arrival {
+        time: 1513622935
+      }
+      departure {
+        time: 1513622935
+      }
+      stop_id: "70251"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 650
+      arrival {
+        time: 1513622991
+      }
+      departure {
+        time: 1513622991
+      }
+      stop_id: "70253"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 660
+      arrival {
+        time: 1513623140
+      }
+      departure {
+        time: 1513623140
+      }
+      stop_id: "70255"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 670
+      arrival {
+        time: 1513623193
+      }
+      departure {
+        time: 1513623193
+      }
+      stop_id: "70257"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 680
+      arrival {
+        time: 1513623245
+      }
+      stop_id: "70259"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10059"
+      label: "3834-3824"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1890"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1890"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513622930
+      }
+      departure {
+        time: 1513622930
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623074
+      }
+      departure {
+        time: 1513623074
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623187
+      }
+      departure {
+        time: 1513623187
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513623311
+      }
+      departure {
+        time: 1513623311
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513623407
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10198"
+    }
+  }
+}
+entity {
+  id: "1513622773_34657633"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34657633"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-C"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 200
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70234"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 210
+      arrival {
+        time: 1513622875
+      }
+      departure {
+        time: 1513622875
+      }
+      stop_id: "70232"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 220
+      arrival {
+        time: 1513622962
+      }
+      departure {
+        time: 1513622962
+      }
+      stop_id: "70230"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 230
+      arrival {
+        time: 1513623029
+      }
+      departure {
+        time: 1513623029
+      }
+      stop_id: "70228"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 240
+      arrival {
+        time: 1513623085
+      }
+      departure {
+        time: 1513623085
+      }
+      stop_id: "70226"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 250
+      arrival {
+        time: 1513623160
+      }
+      departure {
+        time: 1513623160
+      }
+      stop_id: "70224"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 260
+      arrival {
+        time: 1513623240
+      }
+      departure {
+        time: 1513623240
+      }
+      stop_id: "70220"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 270
+      arrival {
+        time: 1513623365
+      }
+      departure {
+        time: 1513623365
+      }
+      stop_id: "70218"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 280
+      arrival {
+        time: 1513623434
+      }
+      departure {
+        time: 1513623434
+      }
+      stop_id: "70216"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 290
+      arrival {
+        time: 1513623499
+      }
+      departure {
+        time: 1513623499
+      }
+      stop_id: "70214"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 300
+      arrival {
+        time: 1513623604
+      }
+      departure {
+        time: 1513623604
+      }
+      stop_id: "70212"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513623804
+      }
+      departure {
+        time: 1513623804
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623942
+      }
+      departure {
+        time: 1513623942
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513624086
+      }
+      departure {
+        time: 1513624086
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513624199
+      }
+      departure {
+        time: 1513624199
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513624323
+      }
+      departure {
+        time: 1513624323
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513624419
+      }
+      departure {
+        time: 1513624419
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513624531
+      }
+      departure {
+        time: 1513624531
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 620
+      arrival {
+        time: 1513624644
+      }
+      departure {
+        time: 1513624644
+      }
+      stop_id: "70203"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513624740
+      }
+      stop_id: "70205"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10172"
+      label: "3840-3658"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1889"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1889"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513622829
+      }
+      departure {
+        time: 1513622829
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513622986
+      }
+      departure {
+        time: 1513622986
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623130
+      }
+      departure {
+        time: 1513623130
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623243
+      }
+      departure {
+        time: 1513623243
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513623376
+      }
+      departure {
+        time: 1513623376
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513623472
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10199"
+      label: "3615"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1882"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1882"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 20
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70206"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 30
+      arrival {
+        time: 1513622881
+      }
+      departure {
+        time: 1513622881
+      }
+      stop_id: "70204"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 40
+      arrival {
+        time: 1513622985
+      }
+      departure {
+        time: 1513622985
+      }
+      stop_id: "70202"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 60
+      arrival {
+        time: 1513623138
+      }
+      departure {
+        time: 1513623138
+      }
+      stop_id: "70197"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 90
+      arrival {
+        time: 1513623271
+      }
+      departure {
+        time: 1513623271
+      }
+      stop_id: "70159"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 100
+      arrival {
+        time: 1513623408
+      }
+      departure {
+        time: 1513623408
+      }
+      stop_id: "70157"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513623502
+      }
+      departure {
+        time: 1513623502
+      }
+      stop_id: "70155"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 120
+      arrival {
+        time: 1513623666
+      }
+      departure {
+        time: 1513623666
+      }
+      stop_id: "70153"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 130
+      arrival {
+        time: 1513623824
+      }
+      departure {
+        time: 1513623824
+      }
+      stop_id: "70151"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 320
+      arrival {
+        time: 1513623973
+      }
+      departure {
+        time: 1513623973
+      }
+      stop_id: "70211"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 330
+      arrival {
+        time: 1513624060
+      }
+      departure {
+        time: 1513624060
+      }
+      stop_id: "70213"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 340
+      arrival {
+        time: 1513624107
+      }
+      departure {
+        time: 1513624107
+      }
+      stop_id: "70215"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 350
+      arrival {
+        time: 1513624169
+      }
+      departure {
+        time: 1513624169
+      }
+      stop_id: "70217"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 360
+      arrival {
+        time: 1513624289
+      }
+      departure {
+        time: 1513624289
+      }
+      stop_id: "70219"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 370
+      arrival {
+        time: 1513624398
+      }
+      departure {
+        time: 1513624398
+      }
+      stop_id: "70223"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 380
+      arrival {
+        time: 1513624474
+      }
+      departure {
+        time: 1513624474
+      }
+      stop_id: "70225"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 390
+      arrival {
+        time: 1513624501
+      }
+      departure {
+        time: 1513624501
+      }
+      stop_id: "70227"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 400
+      arrival {
+        time: 1513624556
+      }
+      departure {
+        time: 1513624556
+      }
+      stop_id: "70229"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 410
+      arrival {
+        time: 1513624636
+      }
+      departure {
+        time: 1513624636
+      }
+      stop_id: "70231"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 420
+      arrival {
+        time: 1513624693
+      }
+      departure {
+        time: 1513624693
+      }
+      stop_id: "70233"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 430
+      arrival {
+        time: 1513624784
+      }
+      departure {
+        time: 1513624784
+      }
+      stop_id: "70235"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 440
+      arrival {
+        time: 1513624863
+      }
+      stop_id: "70237"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10126"
+      label: "3811-3631"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1887"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1887"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513622832
+      }
+      departure {
+        time: 1513622832
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513622944
+      }
+      departure {
+        time: 1513622944
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 620
+      arrival {
+        time: 1513623057
+      }
+      departure {
+        time: 1513623057
+      }
+      stop_id: "70203"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513623153
+      }
+      stop_id: "70205"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10054"
+      label: "3685-3876"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1879"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1879"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 80
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70199"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 90
+      arrival {
+        time: 1513622895
+      }
+      departure {
+        time: 1513622895
+      }
+      stop_id: "70159"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 100
+      arrival {
+        time: 1513623033
+      }
+      departure {
+        time: 1513623033
+      }
+      stop_id: "70157"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513623127
+      }
+      departure {
+        time: 1513623127
+      }
+      stop_id: "70155"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 120
+      arrival {
+        time: 1513623291
+      }
+      departure {
+        time: 1513623291
+      }
+      stop_id: "70153"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 130
+      arrival {
+        time: 1513623449
+      }
+      departure {
+        time: 1513623449
+      }
+      stop_id: "70151"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 450
+      arrival {
+        time: 1513623601
+      }
+      departure {
+        time: 1513623601
+      }
+      stop_id: "70187"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 460
+      arrival {
+        time: 1513623695
+      }
+      departure {
+        time: 1513623695
+      }
+      stop_id: "70183"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 470
+      arrival {
+        time: 1513623839
+      }
+      departure {
+        time: 1513623839
+      }
+      stop_id: "70181"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 480
+      arrival {
+        time: 1513623946
+      }
+      departure {
+        time: 1513623946
+      }
+      stop_id: "70179"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 490
+      arrival {
+        time: 1513624078
+      }
+      departure {
+        time: 1513624078
+      }
+      stop_id: "70177"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 500
+      arrival {
+        time: 1513624177
+      }
+      departure {
+        time: 1513624177
+      }
+      stop_id: "70175"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 510
+      arrival {
+        time: 1513624319
+      }
+      departure {
+        time: 1513624319
+      }
+      stop_id: "70173"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 520
+      arrival {
+        time: 1513624498
+      }
+      departure {
+        time: 1513624498
+      }
+      stop_id: "70171"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 530
+      arrival {
+        time: 1513624619
+      }
+      departure {
+        time: 1513624619
+      }
+      stop_id: "70169"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 540
+      arrival {
+        time: 1513624763
+      }
+      departure {
+        time: 1513624763
+      }
+      stop_id: "70167"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513624864
+      }
+      departure {
+        time: 1513624864
+      }
+      stop_id: "70165"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513624973
+      }
+      departure {
+        time: 1513624973
+      }
+      stop_id: "70163"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513625135
+      }
+      stop_id: "70161"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10108"
+      label: "3704-3826"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1886"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1886"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 100
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70157"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513622867
+      }
+      departure {
+        time: 1513622867
+      }
+      stop_id: "70155"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 120
+      arrival {
+        time: 1513623031
+      }
+      departure {
+        time: 1513623031
+      }
+      stop_id: "70153"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 130
+      arrival {
+        time: 1513623189
+      }
+      departure {
+        time: 1513623189
+      }
+      stop_id: "70151"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 320
+      arrival {
+        time: 1513623338
+      }
+      departure {
+        time: 1513623338
+      }
+      stop_id: "70211"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 330
+      arrival {
+        time: 1513623425
+      }
+      departure {
+        time: 1513623425
+      }
+      stop_id: "70213"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 340
+      arrival {
+        time: 1513623472
+      }
+      departure {
+        time: 1513623472
+      }
+      stop_id: "70215"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 350
+      arrival {
+        time: 1513623534
+      }
+      departure {
+        time: 1513623534
+      }
+      stop_id: "70217"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 360
+      arrival {
+        time: 1513623654
+      }
+      departure {
+        time: 1513623654
+      }
+      stop_id: "70219"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 370
+      arrival {
+        time: 1513623763
+      }
+      departure {
+        time: 1513623763
+      }
+      stop_id: "70223"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 380
+      arrival {
+        time: 1513623839
+      }
+      departure {
+        time: 1513623839
+      }
+      stop_id: "70225"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 390
+      arrival {
+        time: 1513623866
+      }
+      departure {
+        time: 1513623866
+      }
+      stop_id: "70227"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 400
+      arrival {
+        time: 1513623921
+      }
+      departure {
+        time: 1513623921
+      }
+      stop_id: "70229"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 410
+      arrival {
+        time: 1513624001
+      }
+      departure {
+        time: 1513624001
+      }
+      stop_id: "70231"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 420
+      arrival {
+        time: 1513624058
+      }
+      departure {
+        time: 1513624058
+      }
+      stop_id: "70233"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 430
+      arrival {
+        time: 1513624149
+      }
+      departure {
+        time: 1513624149
+      }
+      stop_id: "70235"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 440
+      arrival {
+        time: 1513624228
+      }
+      stop_id: "70237"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10114"
+      label: "3632-3872"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1854"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1854"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 350
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70168"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 360
+      arrival {
+        time: 1513622921
+      }
+      departure {
+        time: 1513622921
+      }
+      stop_id: "70170"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 370
+      arrival {
+        time: 1513623109
+      }
+      departure {
+        time: 1513623109
+      }
+      stop_id: "70172"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 380
+      arrival {
+        time: 1513623271
+      }
+      departure {
+        time: 1513623271
+      }
+      stop_id: "70174"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 390
+      arrival {
+        time: 1513623397
+      }
+      departure {
+        time: 1513623397
+      }
+      stop_id: "70176"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 400
+      arrival {
+        time: 1513623528
+      }
+      departure {
+        time: 1513623528
+      }
+      stop_id: "70178"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 410
+      arrival {
+        time: 1513623629
+      }
+      departure {
+        time: 1513623629
+      }
+      stop_id: "70180"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 420
+      arrival {
+        time: 1513623767
+      }
+      departure {
+        time: 1513623767
+      }
+      stop_id: "70182"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 430
+      arrival {
+        time: 1513623879
+      }
+      departure {
+        time: 1513623879
+      }
+      stop_id: "70186"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513624069
+      }
+      departure {
+        time: 1513624069
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513624207
+      }
+      departure {
+        time: 1513624207
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513624351
+      }
+      departure {
+        time: 1513624351
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513624464
+      }
+      departure {
+        time: 1513624464
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513624591
+      }
+      departure {
+        time: 1513624591
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513624687
+      }
+      departure {
+        time: 1513624687
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513624799
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10004"
+      label: "3806-3624"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1869"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1869"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 650
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70209"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10013"
+      label: "3889-3651"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1891"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1891"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 20
+      arrival {
+        time: 1513623062
+      }
+      departure {
+        time: 1513623062
+      }
+      stop_id: "70206"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 30
+      arrival {
+        time: 1513623178
+      }
+      departure {
+        time: 1513623178
+      }
+      stop_id: "70204"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 40
+      arrival {
+        time: 1513623282
+      }
+      departure {
+        time: 1513623282
+      }
+      stop_id: "70202"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 60
+      arrival {
+        time: 1513623435
+      }
+      departure {
+        time: 1513623435
+      }
+      stop_id: "70197"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 90
+      arrival {
+        time: 1513623568
+      }
+      departure {
+        time: 1513623568
+      }
+      stop_id: "70159"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 100
+      arrival {
+        time: 1513623706
+      }
+      departure {
+        time: 1513623706
+      }
+      stop_id: "70157"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513623800
+      }
+      departure {
+        time: 1513623800
+      }
+      stop_id: "70155"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 120
+      arrival {
+        time: 1513623964
+      }
+      departure {
+        time: 1513623964
+      }
+      stop_id: "70153"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 130
+      arrival {
+        time: 1513624121
+      }
+      departure {
+        time: 1513624121
+      }
+      stop_id: "70151"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 320
+      arrival {
+        time: 1513624270
+      }
+      departure {
+        time: 1513624270
+      }
+      stop_id: "70211"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 330
+      arrival {
+        time: 1513624357
+      }
+      departure {
+        time: 1513624357
+      }
+      stop_id: "70213"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 340
+      arrival {
+        time: 1513624404
+      }
+      departure {
+        time: 1513624404
+      }
+      stop_id: "70215"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 350
+      arrival {
+        time: 1513624466
+      }
+      departure {
+        time: 1513624466
+      }
+      stop_id: "70217"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 360
+      arrival {
+        time: 1513624588
+      }
+      departure {
+        time: 1513624588
+      }
+      stop_id: "70219"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 370
+      arrival {
+        time: 1513624697
+      }
+      departure {
+        time: 1513624697
+      }
+      stop_id: "70223"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 380
+      arrival {
+        time: 1513624773
+      }
+      departure {
+        time: 1513624773
+      }
+      stop_id: "70225"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 390
+      arrival {
+        time: 1513624800
+      }
+      departure {
+        time: 1513624800
+      }
+      stop_id: "70227"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 400
+      arrival {
+        time: 1513624855
+      }
+      departure {
+        time: 1513624855
+      }
+      stop_id: "70229"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 410
+      arrival {
+        time: 1513624935
+      }
+      departure {
+        time: 1513624935
+      }
+      stop_id: "70231"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 420
+      arrival {
+        time: 1513624992
+      }
+      departure {
+        time: 1513624992
+      }
+      stop_id: "70233"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 430
+      arrival {
+        time: 1513625079
+      }
+      departure {
+        time: 1513625079
+      }
+      stop_id: "70235"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 440
+      arrival {
+        time: 1513625158
+      }
+      stop_id: "70237"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10039"
+      label: "3644-3884"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1871"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1871"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 40
+      arrival {
+        time: 1513622778
+      }
+      departure {
+        time: 1513622778
+      }
+      stop_id: "70116"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 50
+      arrival {
+        time: 1513622881
+      }
+      departure {
+        time: 1513622881
+      }
+      stop_id: "70120"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 60
+      arrival {
+        time: 1513623009
+      }
+      departure {
+        time: 1513623009
+      }
+      stop_id: "70124"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 70
+      arrival {
+        time: 1513623079
+      }
+      departure {
+        time: 1513623079
+      }
+      stop_id: "70126"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 80
+      arrival {
+        time: 1513623159
+      }
+      departure {
+        time: 1513623159
+      }
+      stop_id: "70128"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 90
+      arrival {
+        time: 1513623251
+      }
+      departure {
+        time: 1513623251
+      }
+      stop_id: "70130"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 100
+      arrival {
+        time: 1513623490
+      }
+      departure {
+        time: 1513623490
+      }
+      stop_id: "70134"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513623585
+      }
+      departure {
+        time: 1513623585
+      }
+      stop_id: "70136"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 120
+      arrival {
+        time: 1513623665
+      }
+      departure {
+        time: 1513623665
+      }
+      stop_id: "70138"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 130
+      arrival {
+        time: 1513623765
+      }
+      departure {
+        time: 1513623765
+      }
+      stop_id: "70140"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 140
+      arrival {
+        time: 1513623838
+      }
+      departure {
+        time: 1513623838
+      }
+      stop_id: "70142"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 150
+      arrival {
+        time: 1513623948
+      }
+      departure {
+        time: 1513623948
+      }
+      stop_id: "70144"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 160
+      arrival {
+        time: 1513624031
+      }
+      departure {
+        time: 1513624031
+      }
+      stop_id: "70146"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 170
+      arrival {
+        time: 1513624141
+      }
+      departure {
+        time: 1513624141
+      }
+      stop_id: "70148"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513624239
+      }
+      departure {
+        time: 1513624239
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513624396
+      }
+      departure {
+        time: 1513624396
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513624540
+      }
+      departure {
+        time: 1513624540
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513624653
+      }
+      departure {
+        time: 1513624653
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513624780
+      }
+      departure {
+        time: 1513624780
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513624876
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10065"
+      label: "3633-3858"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1875"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1875"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513622875
+      }
+      departure {
+        time: 1513622875
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623013
+      }
+      departure {
+        time: 1513623013
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623157
+      }
+      departure {
+        time: 1513623157
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623270
+      }
+      departure {
+        time: 1513623270
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513623397
+      }
+      departure {
+        time: 1513623397
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513623493
+      }
+      departure {
+        time: 1513623493
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513623605
+      }
+      departure {
+        time: 1513623605
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 620
+      arrival {
+        time: 1513623718
+      }
+      departure {
+        time: 1513623718
+      }
+      stop_id: "70203"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513623814
+      }
+      stop_id: "70205"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10076"
+      label: "3805-3696"
+    }
+  }
+}
+entity {
+  id: "1513622773_34663426"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34663426"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Mattapan"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 8
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70262"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10086"
+      label: "3254"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1878"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1878"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513622826
+      }
+      departure {
+        time: 1513622826
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513622983
+      }
+      departure {
+        time: 1513622983
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623127
+      }
+      departure {
+        time: 1513623127
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623240
+      }
+      departure {
+        time: 1513623240
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513623364
+      }
+      departure {
+        time: 1513623364
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513623460
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10053"
+      label: "3712-3843"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1863"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1863"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 360
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70219"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 370
+      arrival {
+        time: 1513622882
+      }
+      departure {
+        time: 1513622882
+      }
+      stop_id: "70223"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 380
+      arrival {
+        time: 1513622958
+      }
+      departure {
+        time: 1513622958
+      }
+      stop_id: "70225"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 390
+      arrival {
+        time: 1513622985
+      }
+      departure {
+        time: 1513622985
+      }
+      stop_id: "70227"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 400
+      arrival {
+        time: 1513623040
+      }
+      departure {
+        time: 1513623040
+      }
+      stop_id: "70229"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 410
+      arrival {
+        time: 1513623120
+      }
+      departure {
+        time: 1513623120
+      }
+      stop_id: "70231"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 420
+      arrival {
+        time: 1513623177
+      }
+      departure {
+        time: 1513623177
+      }
+      stop_id: "70233"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 430
+      arrival {
+        time: 1513623268
+      }
+      departure {
+        time: 1513623268
+      }
+      stop_id: "70235"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 440
+      arrival {
+        time: 1513623347
+      }
+      stop_id: "70237"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10049"
+      label: "3653-3887"
+    }
+  }
+}
+entity {
+  id: "1513622773_34659387"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34659387"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-E"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 460
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70256"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 470
+      arrival {
+        time: 1513622890
+      }
+      departure {
+        time: 1513622890
+      }
+      stop_id: "70254"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 480
+      arrival {
+        time: 1513623008
+      }
+      departure {
+        time: 1513623008
+      }
+      stop_id: "70252"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 490
+      arrival {
+        time: 1513623097
+      }
+      departure {
+        time: 1513623097
+      }
+      stop_id: "70250"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 500
+      arrival {
+        time: 1513623205
+      }
+      departure {
+        time: 1513623205
+      }
+      stop_id: "70248"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 510
+      arrival {
+        time: 1513623316
+      }
+      departure {
+        time: 1513623316
+      }
+      stop_id: "70246"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 520
+      arrival {
+        time: 1513623413
+      }
+      departure {
+        time: 1513623413
+      }
+      stop_id: "70244"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 530
+      arrival {
+        time: 1513623489
+      }
+      departure {
+        time: 1513623489
+      }
+      stop_id: "70242"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 540
+      arrival {
+        time: 1513623558
+      }
+      departure {
+        time: 1513623558
+      }
+      stop_id: "70240"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623664
+      }
+      departure {
+        time: 1513623664
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623777
+      }
+      departure {
+        time: 1513623777
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513623910
+      }
+      departure {
+        time: 1513623910
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513624006
+      }
+      departure {
+        time: 1513624006
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513624118
+      }
+      departure {
+        time: 1513624118
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 620
+      arrival {
+        time: 1513624231
+      }
+      departure {
+        time: 1513624231
+      }
+      stop_id: "70203"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 630
+      arrival {
+        time: 1513624327
+      }
+      departure {
+        time: 1513624327
+      }
+      stop_id: "70205"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 640
+      arrival {
+        time: 1513624504
+      }
+      departure {
+        time: 1513624504
+      }
+      stop_id: "70207"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 650
+      arrival {
+        time: 1513624616
+      }
+      stop_id: "70209"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10205"
+      label: "3618"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1880"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1880"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 220
+      arrival {
+        time: 1513622816
+      }
+      departure {
+        time: 1513622816
+      }
+      stop_id: "70131"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 230
+      arrival {
+        time: 1513622958
+      }
+      departure {
+        time: 1513622958
+      }
+      stop_id: "70129"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 240
+      arrival {
+        time: 1513623014
+      }
+      departure {
+        time: 1513623014
+      }
+      stop_id: "70127"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 250
+      arrival {
+        time: 1513623095
+      }
+      departure {
+        time: 1513623095
+      }
+      stop_id: "70125"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 260
+      arrival {
+        time: 1513623189
+      }
+      departure {
+        time: 1513623189
+      }
+      stop_id: "70121"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 270
+      arrival {
+        time: 1513623298
+      }
+      departure {
+        time: 1513623298
+      }
+      stop_id: "70117"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 280
+      arrival {
+        time: 1513623371
+      }
+      departure {
+        time: 1513623371
+      }
+      stop_id: "70115"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 290
+      arrival {
+        time: 1513623447
+      }
+      departure {
+        time: 1513623447
+      }
+      stop_id: "70113"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 300
+      arrival {
+        time: 1513623547
+      }
+      departure {
+        time: 1513623547
+      }
+      stop_id: "70111"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 310
+      arrival {
+        time: 1513623702
+      }
+      stop_id: "70107"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10029"
+      label: "3846-3699"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1859"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1859"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 80
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70128"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 90
+      arrival {
+        time: 1513622865
+      }
+      departure {
+        time: 1513622865
+      }
+      stop_id: "70130"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 100
+      arrival {
+        time: 1513623099
+      }
+      departure {
+        time: 1513623099
+      }
+      stop_id: "70134"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513623194
+      }
+      departure {
+        time: 1513623194
+      }
+      stop_id: "70136"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 120
+      arrival {
+        time: 1513623274
+      }
+      departure {
+        time: 1513623274
+      }
+      stop_id: "70138"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 130
+      arrival {
+        time: 1513623374
+      }
+      departure {
+        time: 1513623374
+      }
+      stop_id: "70140"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 140
+      arrival {
+        time: 1513623447
+      }
+      departure {
+        time: 1513623447
+      }
+      stop_id: "70142"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 150
+      arrival {
+        time: 1513623557
+      }
+      departure {
+        time: 1513623557
+      }
+      stop_id: "70144"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 160
+      arrival {
+        time: 1513623640
+      }
+      departure {
+        time: 1513623640
+      }
+      stop_id: "70146"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 170
+      arrival {
+        time: 1513623750
+      }
+      departure {
+        time: 1513623750
+      }
+      stop_id: "70148"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513623848
+      }
+      departure {
+        time: 1513623848
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513624005
+      }
+      departure {
+        time: 1513624005
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513624149
+      }
+      departure {
+        time: 1513624149
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513624262
+      }
+      departure {
+        time: 1513624262
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513624386
+      }
+      departure {
+        time: 1513624386
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513624482
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10210"
+      label: "3831"
+    }
+  }
+}
+entity {
+  id: "1513622773_34663370"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34663370"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Mattapan"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 1
+      departure {
+        time: 1513622899
+      }
+      stop_id: "70261"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 2
+      arrival {
+        time: 1513622932
+      }
+      departure {
+        time: 1513622932
+      }
+      stop_id: "70263"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 3
+      arrival {
+        time: 1513623015
+      }
+      departure {
+        time: 1513623015
+      }
+      stop_id: "70265"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 4
+      arrival {
+        time: 1513623084
+      }
+      departure {
+        time: 1513623084
+      }
+      stop_id: "70267"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 5
+      arrival {
+        time: 1513623123
+      }
+      departure {
+        time: 1513623123
+      }
+      stop_id: "70269"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 6
+      arrival {
+        time: 1513623195
+      }
+      departure {
+        time: 1513623195
+      }
+      stop_id: "70271"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 7
+      arrival {
+        time: 1513623244
+      }
+      departure {
+        time: 1513623244
+      }
+      stop_id: "70273"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 8
+      arrival {
+        time: 1513623275
+      }
+      stop_id: "70275"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10086"
+      label: "3254"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1866"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1866"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    stop_time_update {
+      stop_sequence: 430
+      arrival {
+        time: 1513622807
+      }
+      departure {
+        time: 1513622807
+      }
+      stop_id: "70235"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 440
+      arrival {
+        time: 1513622886
+      }
+      stop_id: "70237"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10203"
+      label: "3664-3868"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1855"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1855"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513622773
+      }
+      departure {
+        time: 1513622773
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513622869
+      }
+      departure {
+        time: 1513622869
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 610
+      arrival {
+        time: 1513622981
+      }
+      stop_id: "70201"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10037"
+      label: "3842-3629"
+    }
+  }
+}
+entity {
+  id: "1513622773_ADDED-1885"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1885"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    stop_time_update {
+      stop_sequence: 100
+      arrival {
+        time: 1513622784
+      }
+      departure {
+        time: 1513622784
+      }
+      stop_id: "70134"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 110
+      arrival {
+        time: 1513622879
+      }
+      departure {
+        time: 1513622879
+      }
+      stop_id: "70136"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 120
+      arrival {
+        time: 1513622959
+      }
+      departure {
+        time: 1513622959
+      }
+      stop_id: "70138"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 130
+      arrival {
+        time: 1513623059
+      }
+      departure {
+        time: 1513623059
+      }
+      stop_id: "70140"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 140
+      arrival {
+        time: 1513623132
+      }
+      departure {
+        time: 1513623132
+      }
+      stop_id: "70142"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 150
+      arrival {
+        time: 1513623242
+      }
+      departure {
+        time: 1513623242
+      }
+      stop_id: "70144"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 160
+      arrival {
+        time: 1513623325
+      }
+      departure {
+        time: 1513623325
+      }
+      stop_id: "70146"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 170
+      arrival {
+        time: 1513623435
+      }
+      departure {
+        time: 1513623435
+      }
+      stop_id: "70148"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513623533
+      }
+      departure {
+        time: 1513623533
+      }
+      stop_id: "70150"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623690
+      }
+      departure {
+        time: 1513623690
+      }
+      stop_id: "70152"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 570
+      arrival {
+        time: 1513623834
+      }
+      departure {
+        time: 1513623834
+      }
+      stop_id: "70154"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 580
+      arrival {
+        time: 1513623947
+      }
+      departure {
+        time: 1513623947
+      }
+      stop_id: "70156"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 590
+      arrival {
+        time: 1513624074
+      }
+      departure {
+        time: 1513624074
+      }
+      stop_id: "70158"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 600
+      arrival {
+        time: 1513624170
+      }
+      stop_id: "70200"
+      schedule_relationship: SCHEDULED
+    }
+    vehicle {
+      id: "10038"
+      label: "3674-3845"
+    }
+  }
+}

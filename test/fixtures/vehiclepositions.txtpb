@@ -1,0 +1,1256 @@
+# vehiclepositions.txtpb
+# This file contains a single text-format transit_realtime.FeedMessage message.
+# Generated on 2026-04-08 from vehiclepositions.pb, which was originally sampled
+# from real data in our logs in December 2017.
+header {
+  gtfs_realtime_version: "1.0"
+  incrementality: FULL_DATASET
+  timestamp: 1513622764
+}
+entity {
+  id: "1513622761_10068"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34657674"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3400612
+      longitude: -71.165123
+      bearing: 90
+    }
+    current_stop_sequence: 10
+    current_status: IN_TRANSIT_TO
+    timestamp: 1513622761
+    stop_id: "70110"
+    vehicle {
+      id: "10068"
+      label: "3855-3691"
+    }
+  }
+}
+entity {
+  id: "1513622750_10162"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34658756"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3313293
+      longitude: -71.1265106
+      bearing: 270
+    }
+    current_stop_sequence: 480
+    current_status: STOPPED_AT
+    timestamp: 1513622750
+    stop_id: "70179"
+    vehicle {
+      id: "10162"
+      label: "3860-3645"
+    }
+  }
+}
+entity {
+  id: "1513622760_10034"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1873"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3189316
+      longitude: -71.2091
+      bearing: 225
+    }
+    current_stop_sequence: 540
+    current_status: IN_TRANSIT_TO
+    timestamp: 1513622760
+    stop_id: "70167"
+    vehicle {
+      id: "10034"
+      label: "3877-3709"
+    }
+  }
+}
+entity {
+  id: "1513622635_10071"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34657703"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-B"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3384705
+      longitude: -71.1528168
+      bearing: 225
+    }
+    current_stop_sequence: 290
+    current_status: STOPPED_AT
+    timestamp: 1513622635
+    stop_id: "70113"
+    vehicle {
+      id: "10071"
+      label: "3606-3863"
+    }
+  }
+}
+entity {
+  id: "1513622760_10093"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1876"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3345795
+      longitude: -71.150177
+      bearing: 45
+    }
+    current_stop_sequence: 380
+    current_status: INCOMING_AT
+    timestamp: 1513622760
+    stop_id: "70174"
+    vehicle {
+      id: "10093"
+      label: "3841-3627"
+    }
+  }
+}
+entity {
+  id: "1513622725_10193"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1888"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3501816
+      longitude: -71.0771
+      bearing: 240
+    }
+    current_stop_sequence: 110
+    current_status: STOPPED_AT
+    timestamp: 1513622725
+    stop_id: "70155"
+    vehicle {
+      id: "10193"
+      label: "3659-3870"
+    }
+  }
+}
+entity {
+  id: "1513622739_10052"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34659400"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-E"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.33218
+      longitude: -71.1117935
+      bearing: 225
+    }
+    current_stop_sequence: 660
+    current_status: INCOMING_AT
+    timestamp: 1513622739
+    stop_id: "70255"
+    vehicle {
+      id: "10052"
+      label: "3890"
+    }
+  }
+}
+entity {
+  id: "1513622729_10136"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1856"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3478813
+      longitude: -71.0862732
+      bearing: 105
+    }
+    current_stop_sequence: 570
+    current_status: IN_TRANSIT_TO
+    timestamp: 1513622729
+    stop_id: "70154"
+    vehicle {
+      id: "10136"
+      label: "3827-3608"
+    }
+  }
+}
+entity {
+  id: "1513622756_10004"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1854"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3219414
+      longitude: -71.2059326
+      bearing: 45
+    }
+    current_stop_sequence: 350
+    current_status: INCOMING_AT
+    timestamp: 1513622756
+    stop_id: "70168"
+    vehicle {
+      id: "10004"
+      label: "3806-3624"
+    }
+  }
+}
+entity {
+  id: "1513622716_10008"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1868"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3518
+      longitude: -71.0708084
+      bearing: 60
+    }
+    current_stop_sequence: 590
+    current_status: IN_TRANSIT_TO
+    timestamp: 1513622716
+    stop_id: "70158"
+    vehicle {
+      id: "10008"
+      label: "3883-3617"
+    }
+  }
+}
+entity {
+  id: "1513622687_10184"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1865"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3490486
+      longitude: -71.0988
+      bearing: 100
+    }
+    current_stop_sequence: 550
+    current_status: INCOMING_AT
+    timestamp: 1513622687
+    stop_id: "70150"
+    vehicle {
+      id: "10184"
+      label: "3815"
+    }
+  }
+}
+entity {
+  id: "1513622758_10037"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1855"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3524513
+      longitude: -71.064827
+      bearing: 20
+    }
+    current_stop_sequence: 590
+    current_status: STOPPED_AT
+    timestamp: 1513622758
+    stop_id: "70158"
+    vehicle {
+      id: "10037"
+      label: "3842-3629"
+    }
+  }
+}
+entity {
+  id: "1513622723_10017"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1877"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3592682
+      longitude: -71.0594482
+      bearing: 35
+    }
+    current_stop_sequence: 610
+    current_status: STOPPED_AT
+    timestamp: 1513622723
+    stop_id: "70201"
+    vehicle {
+      id: "10017"
+      label: "3885-3713"
+    }
+  }
+}
+entity {
+  id: "1513622757_10132"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1858"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3353119
+      longitude: -71.1466293
+      bearing: 90
+    }
+    current_stop_sequence: 390
+    current_status: INCOMING_AT
+    timestamp: 1513622757
+    stop_id: "70176"
+    vehicle {
+      id: "10132"
+      label: "3861-3626"
+    }
+  }
+}
+entity {
+  id: "1513622704_10086"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34663426"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Mattapan"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.2836685
+      longitude: -71.0631638
+      bearing: 315
+    }
+    current_stop_sequence: 8
+    current_status: STOPPED_AT
+    timestamp: 1513622704
+    stop_id: "70262"
+    vehicle {
+      id: "10086"
+      label: "3254"
+    }
+  }
+}
+entity {
+  id: "1513622764_10042"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34658754"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3360481
+      longitude: -71.1431274
+      bearing: 270
+    }
+    current_stop_sequence: 500
+    current_status: INCOMING_AT
+    timestamp: 1513622764
+    stop_id: "70175"
+    vehicle {
+      id: "10042"
+      label: "3849-3654"
+    }
+  }
+}
+entity {
+  id: "1513622758_10210"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1859"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.348671
+      longitude: -71.134613
+      bearing: 45
+    }
+    current_stop_sequence: 80
+    current_status: STOPPED_AT
+    timestamp: 1513622758
+    stop_id: "70128"
+    vehicle {
+      id: "10210"
+      label: "3831"
+    }
+  }
+}
+entity {
+  id: "1513622761_10203"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1866"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3376617
+      longitude: -71.1424103
+      bearing: 225
+    }
+    current_stop_sequence: 430
+    current_status: INCOMING_AT
+    timestamp: 1513622761
+    stop_id: "70235"
+    vehicle {
+      id: "10203"
+      label: "3664-3868"
+    }
+  }
+}
+entity {
+  id: "1513622762_10029"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1880"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3510513
+      longitude: -71.1264496
+      bearing: 225
+    }
+    current_stop_sequence: 220
+    current_status: INCOMING_AT
+    timestamp: 1513622762
+    stop_id: "70131"
+    vehicle {
+      id: "10029"
+      label: "3846-3699"
+    }
+  }
+}
+entity {
+  id: "1513622692_10003"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1864"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.349781
+      longitude: -71.0785522
+      bearing: 240
+    }
+    current_stop_sequence: 580
+    current_status: IN_TRANSIT_TO
+    timestamp: 1513622692
+    stop_id: "70239"
+    vehicle {
+      id: "10003"
+      label: "3830-3622"
+    }
+  }
+}
+entity {
+  id: "1513622696_10014"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1862"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3379402
+      longitude: -71.0948792
+      bearing: 45
+    }
+    current_stop_sequence: 510
+    current_status: STOPPED_AT
+    timestamp: 1513622696
+    stop_id: "70246"
+    vehicle {
+      id: "10014"
+      label: "3847-3698"
+    }
+  }
+}
+entity {
+  id: "1513622738_10198"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1890"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3488808
+      longitude: -71.0951
+      bearing: 90
+    }
+    current_stop_sequence: 550
+    current_status: STOPPED_AT
+    timestamp: 1513622738
+    stop_id: "70150"
+    vehicle {
+      id: "10198"
+    }
+  }
+}
+entity {
+  id: "1513622759_10039"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1891"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3657188
+      longitude: -71.0638504
+      bearing: 50
+    }
+    current_stop_sequence: 20
+    current_status: IN_TRANSIT_TO
+    timestamp: 1513622759
+    stop_id: "70206"
+    vehicle {
+      id: "10039"
+      label: "3644-3884"
+    }
+  }
+}
+entity {
+  id: "1513622687_10199"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1889"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3490486
+      longitude: -71.0988
+      bearing: 100
+    }
+    current_stop_sequence: 550
+    current_status: INCOMING_AT
+    timestamp: 1513622687
+    stop_id: "70150"
+    vehicle {
+      id: "10199"
+      label: "3615"
+    }
+  }
+}
+entity {
+  id: "1513622761_10201"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34657654"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3489189
+      longitude: -71.0962601
+      bearing: 260
+    }
+    current_stop_sequence: 320
+    current_status: IN_TRANSIT_TO
+    timestamp: 1513622761
+    stop_id: "70211"
+    vehicle {
+      id: "10201"
+      label: "3819-3614"
+    }
+  }
+}
+entity {
+  id: "1513622762_10172"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34657633"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-C"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3375893
+      longitude: -71.1424637
+      bearing: 45
+    }
+    current_stop_sequence: 200
+    current_status: STOPPED_AT
+    timestamp: 1513622762
+    stop_id: "70234"
+    vehicle {
+      id: "10172"
+      label: "3840-3658"
+    }
+  }
+}
+entity {
+  id: "1513622753_10056"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1874"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3555908
+      longitude: -71.0633392
+      bearing: 210
+    }
+    current_stop_sequence: 90
+    current_status: INCOMING_AT
+    timestamp: 1513622753
+    stop_id: "70159"
+    vehicle {
+      id: "10056"
+      label: "3862-3833"
+    }
+  }
+}
+entity {
+  id: "1513622747_10090"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34659388"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-E"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3656311
+      longitude: -71.0605698
+      bearing: 315
+    }
+    current_stop_sequence: 630
+    current_status: STOPPED_AT
+    timestamp: 1513622747
+    stop_id: "70205"
+    vehicle {
+      id: "10090"
+      label: "3851-3705"
+    }
+  }
+}
+entity {
+  id: "1513622761_10049"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1863"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3425
+      longitude: -71.1199188
+      bearing: 225
+    }
+    current_stop_sequence: 360
+    current_status: INCOMING_AT
+    timestamp: 1513622761
+    stop_id: "70219"
+    vehicle {
+      id: "10049"
+      label: "3653-3887"
+    }
+  }
+}
+entity {
+  id: "1513622739_10126"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1882"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3656311
+      longitude: -71.0605774
+      bearing: 135
+    }
+    current_stop_sequence: 20
+    current_status: STOPPED_AT
+    timestamp: 1513622739
+    stop_id: "70206"
+    vehicle {
+      id: "10126"
+      label: "3811-3631"
+    }
+  }
+}
+entity {
+  id: "1513622739_10059"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1867"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3361397
+      longitude: -71.0996323
+      bearing: 225
+    }
+    current_stop_sequence: 620
+    current_status: STOPPED_AT
+    timestamp: 1513622739
+    stop_id: "70247"
+    vehicle {
+      id: "10059"
+      label: "3834-3824"
+    }
+  }
+}
+entity {
+  id: "1513622761_10112"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1883"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Mattapan"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.267971
+      longitude: -71.0830765
+      bearing: 225
+    }
+    current_stop_sequence: 7
+    current_status: INCOMING_AT
+    timestamp: 1513622761
+    stop_id: "70273"
+    vehicle {
+      id: "10112"
+      label: "3268"
+    }
+  }
+}
+entity {
+  id: "1513622743_10002"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34658755"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3349495
+      longitude: -71.1384888
+      bearing: 315
+    }
+    current_stop_sequence: 490
+    current_status: INCOMING_AT
+    timestamp: 1513622743
+    stop_id: "70177"
+    vehicle {
+      id: "10002"
+      label: "3881-3649"
+    }
+  }
+}
+entity {
+  id: "1513622764_10065"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1871"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3415108
+      longitude: -71.1477737
+      bearing: 90
+    }
+    current_stop_sequence: 40
+    current_status: INCOMING_AT
+    timestamp: 1513622764
+    stop_id: "70116"
+    vehicle {
+      id: "10065"
+      label: "3633-3858"
+    }
+  }
+}
+entity {
+  id: "1513622743_10108"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1879"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3563118
+      longitude: -71.062767
+      bearing: 210
+    }
+    current_stop_sequence: 80
+    current_status: STOPPED_AT
+    timestamp: 1513622743
+    stop_id: "70199"
+    vehicle {
+      id: "10108"
+      label: "3704-3826"
+    }
+  }
+}
+entity {
+  id: "1513622757_10040"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1884"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3489685
+      longitude: -71.093277
+      bearing: 310
+    }
+    current_stop_sequence: 130
+    current_status: INCOMING_AT
+    timestamp: 1513622757
+    stop_id: "70151"
+    vehicle {
+      id: "10040"
+      label: "3810-3820"
+    }
+  }
+}
+entity {
+  id: "1513622748_10012"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1872"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3642693
+      longitude: -71.0593567
+      bearing: 135
+    }
+    current_stop_sequence: 30
+    current_status: INCOMING_AT
+    timestamp: 1513622748
+    stop_id: "70204"
+    vehicle {
+      id: "10012"
+      label: "3838"
+    }
+  }
+}
+entity {
+  id: "1513622745_10114"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1886"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3518791
+      longitude: -71.0708466
+      bearing: 240
+    }
+    current_stop_sequence: 100
+    current_status: STOPPED_AT
+    timestamp: 1513622745
+    stop_id: "70157"
+    vehicle {
+      id: "10114"
+      label: "3632-3872"
+    }
+  }
+}
+entity {
+  id: "1513622691_10105"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1857"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3350601
+      longitude: -71.1490326
+      bearing: 270
+    }
+    current_stop_sequence: 510
+    current_status: IN_TRANSIT_TO
+    timestamp: 1513622691
+    stop_id: "70173"
+    vehicle {
+      id: "10105"
+      label: "3628-3866"
+    }
+  }
+}
+entity {
+  id: "1513622700_10092"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1870"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3555908
+      longitude: -71.0633392
+      bearing: 210
+    }
+    current_stop_sequence: 90
+    current_status: INCOMING_AT
+    timestamp: 1513622700
+    stop_id: "70159"
+    vehicle {
+      id: "10092"
+      label: "3852-3708"
+    }
+  }
+}
+entity {
+  id: "1513622760_10053"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1878"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3490486
+      longitude: -71.0988
+      bearing: 100
+    }
+    current_stop_sequence: 550
+    current_status: INCOMING_AT
+    timestamp: 1513622760
+    stop_id: "70150"
+    vehicle {
+      id: "10053"
+      label: "3712-3843"
+    }
+  }
+}
+entity {
+  id: "1513622756_10089"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34657702"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-B"
+      direction_id: 0
+    }
+    position {
+      latitude: 42.3517494
+      longitude: -71.1208801
+      bearing: 315
+    }
+    current_stop_sequence: 200
+    current_status: INCOMING_AT
+    timestamp: 1513622756
+    stop_id: "70137"
+    vehicle {
+      id: "10089"
+      label: "3850-3678"
+    }
+  }
+}
+entity {
+  id: "1513622461_10013"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1869"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-E"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3710785
+      longitude: -71.0772324
+      bearing: 305
+    }
+    current_stop_sequence: 650
+    current_status: STOPPED_AT
+    timestamp: 1513622461
+    stop_id: "70209"
+    vehicle {
+      id: "10013"
+      label: "3889-3651"
+    }
+  }
+}
+entity {
+  id: "1513622760_10151"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34657632"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-C"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3428
+      longitude: -71.1186676
+      bearing: 45
+    }
+    current_stop_sequence: 270
+    current_status: INCOMING_AT
+    timestamp: 1513622760
+    stop_id: "70218"
+    vehicle {
+      id: "10151"
+      label: "3821"
+    }
+  }
+}
+entity {
+  id: "1513622752_10076"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1875"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3466492
+      longitude: -71.1048813
+      bearing: 60
+    }
+    current_stop_sequence: 550
+    current_status: IN_TRANSIT_TO
+    timestamp: 1513622752
+    stop_id: "70150"
+    vehicle {
+      id: "10076"
+      label: "3805-3696"
+    }
+  }
+}
+entity {
+  id: "1513622694_10205"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "34659387"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-E"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3316917
+      longitude: -71.1119308
+      bearing: 315
+    }
+    current_stop_sequence: 460
+    current_status: STOPPED_AT
+    timestamp: 1513622694
+    stop_id: "70256"
+    vehicle {
+      id: "10205"
+      label: "3618"
+    }
+  }
+}
+entity {
+  id: "1513622760_10038"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1885"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-B"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3505516
+      longitude: -71.1278915
+      bearing: 90
+    }
+    current_stop_sequence: 100
+    current_status: INCOMING_AT
+    timestamp: 1513622760
+    stop_id: "70134"
+    vehicle {
+      id: "10038"
+      label: "3674-3845"
+    }
+  }
+}
+entity {
+  id: "1513622728_10054"
+  is_deleted: false
+  vehicle {
+    trip {
+      trip_id: "ADDED-1887"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-C"
+      direction_id: 1
+    }
+    position {
+      latitude: 42.3530083
+      longitude: -71.064537
+      bearing: 20
+    }
+    current_stop_sequence: 600
+    current_status: INCOMING_AT
+    timestamp: 1513622728
+    stop_id: "70200"
+    vehicle {
+      id: "10054"
+      label: "3685-3876"
+    }
+  }
+}
