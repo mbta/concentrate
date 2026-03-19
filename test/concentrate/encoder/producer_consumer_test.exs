@@ -4,7 +4,7 @@ defmodule Concentrate.Encoder.ProducerConsumerTest do
   import Concentrate.Encoder.ProducerConsumer
   import Concentrate.Encoder.GTFSRealtimeHelpers
   alias Concentrate.Encoder.{TripUpdates, VehiclePositions}
-  alias Concentrate.{FeedUpdate, StopTimeUpdate, TripDescriptor}
+  alias Concentrate.{FeedUpdate, StopTimeUpdate, TripDescriptor, TripProperties}
 
   describe "handle_events/3" do
     test "encodes each file and outputs it" do
@@ -16,7 +16,8 @@ defmodule Concentrate.Encoder.ProducerConsumerTest do
           updates:
             group([
               TripDescriptor.new(trip_id: "trip"),
-              StopTimeUpdate.new(trip_id: "trip", departure_time: 1)
+              StopTimeUpdate.new(trip_id: "trip", departure_time: 1),
+              TripProperties.new(trip_id: "trip", trip_headsign: "boo")
             ])
         )
 

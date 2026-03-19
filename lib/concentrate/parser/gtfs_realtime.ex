@@ -1,6 +1,7 @@
 defmodule Concentrate.Parser.GTFSRealtime do
   @moduledoc """
-  Parser for [GTFS-Realtime](https://developers.google.com/transit/gtfs-realtime/) ProtoBuf files.
+  Parser for [GTFS-RT](https://developers.google.com/transit/gtfs-realtime/)
+  ProtoBuf files.
   """
   @behaviour Concentrate.Parser
   alias Concentrate.Parser.Helpers
@@ -12,6 +13,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
     FeedUpdate,
     StopTimeUpdate,
     TripDescriptor,
+    TripProperties,
     VehiclePosition
   }
 
@@ -36,15 +38,25 @@ defmodule Concentrate.Parser.GTFSRealtime do
     )
   end
 
-  @spec decode_feed_entity(map(), Helpers.Options.t(), integer | nil) :: [any()]
+  @spec decode_feed_entity(map(), Helpers.Options.t(), integer | nil) ::
+          [
+            TripDescriptor.t()
+            | VehiclePosition.t()
+            | StopTimeUpdate.t()
+            | TripProperties.t()
+            | Alert.t()
+          ]
   def decode_feed_entity(entity, options, feed_timestamp) do
+    # At most one of these is expected to be non-empty.
     vp = decode_vehicle(Map.get(entity, :vehicle), options, feed_timestamp)
-    stop_updates = decode_trip_update(Map.get(entity, :trip_update), options)
+    updates = decode_trip_update(Map.get(entity, :trip_update), options)
     alerts = decode_alert(entity)
-    List.flatten([alerts, vp, stop_updates])
+    List.flatten([vp, updates, alerts])
   end
 
-  @spec decode_vehicle(map() | nil, Helpers.Options.t(), integer | nil) :: [any()]
+  @spec decode_vehicle(map() | nil, Helpers.Options.t(), integer | nil) :: [
+          TripDescriptor.t() | VehiclePosition.t()
+        ]
   def decode_vehicle(nil, _opts, _feed_timestamp) do
     []
   end
@@ -104,17 +116,39 @@ defmodule Concentrate.Parser.GTFSRealtime do
     end
   end
 
-  @spec decode_trip_update(map() | nil, Helpers.Options.t()) :: [any()]
+  @doc """
+  Pulls information out of a `TripUpdate` message. Returns a list of these
+  fields: `trip`, `stop_time_update` (repeated), `trip_properties`.
+  """
+  @spec decode_trip_update(map() | nil, Helpers.Options.t()) :: [
+          TripDescriptor.t() | StopTimeUpdate.t() | TripProperties.t()
+        ]
   def decode_trip_update(nil, _options) do
     []
   end
 
   def decode_trip_update(trip_update, options) do
     td = decode_trip_descriptor(trip_update)
-    decode_stop_updates(td, trip_update, options)
+    stop_time_updates = decode_stop_time_updates(td, trip_update, options)
+    trip_properties = decode_trip_properties(td, trip_update, options)
+
+    if stop_time_updates == :drop_trip and trip_properties == :drop_trip do
+      []
+    else
+      List.flatten(
+        Enum.reject(
+          [td, stop_time_updates, trip_properties],
+          &(&1 == :drop_trip)
+        )
+      )
+    end
   end
 
-  defp decode_stop_updates(td, %{stop_time_update: [update | _] = updates} = trip_update, options) do
+  defp decode_stop_time_updates(
+         td,
+         %{stop_time_update: [update | _] = updates} = trip_update,
+         options
+       ) do
     max_time = options.max_time
 
     {arrival_time, _} = time_from_event(Map.get(update, :arrival))
@@ -122,13 +156,13 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
     cond do
       td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) ->
-        []
+        :drop_trip
 
       not Helpers.times_less_than_max?(arrival_time, departure_time, max_time) ->
-        []
+        :drop_trip
 
       true ->
-        stop_updates =
+        stop_time_updates =
           for stu <- updates do
             {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, :arrival))
             {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, :departure))
@@ -144,20 +178,36 @@ defmodule Concentrate.Parser.GTFSRealtime do
             )
           end
 
-        td ++ stop_updates
+        stop_time_updates
     end
   end
 
-  defp decode_stop_updates(td, %{stop_time_update: []}, options) do
+  defp decode_stop_time_updates(td, %{stop_time_update: []}, options) do
     if td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) do
-      []
+      :drop_trip
     else
-      td
+      []
     end
   end
+
+  @spec decode_trip_properties([TripDescriptor.t()], map(), Helpers.Options.t()) ::
+          TripProperties.t() | :drop_trip
+  defp decode_trip_properties(
+         [_] = td,
+         %{trip_properties: trip_properties},
+         options
+       ) do
+    if Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) do
+      TripProperties.new_from_proto(trip_properties)
+    else
+      :drop_trip
+    end
+  end
+
+  defp decode_trip_properties(_, _, _), do: :drop_trip
 
   @spec decode_trip_descriptor(map()) :: [TripDescriptor.t()]
-  defp decode_trip_descriptor(%{trip: trip} = descriptor) do
+  defp decode_trip_descriptor(%{trip: trip} = parent) do
     [
       TripDescriptor.new(
         trip_id: Map.get(trip, :trip_id),
@@ -166,8 +216,8 @@ defmodule Concentrate.Parser.GTFSRealtime do
         start_date: date(Map.get(trip, :start_date)),
         start_time: time(Map.get(trip, :start_time)),
         schedule_relationship: Map.get(trip, :schedule_relationship, :SCHEDULED),
-        vehicle_id: decode_trip_descriptor_vehicle_id(descriptor),
-        timestamp: decode_trip_descriptor_timestamp(descriptor)
+        vehicle_id: decode_trip_descriptor_vehicle_id(parent),
+        timestamp: decode_trip_descriptor_timestamp(parent)
       )
     ]
   end

@@ -11,6 +11,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     FeedUpdate,
     StopTimeUpdate,
     TripDescriptor,
+    TripProperties,
     VehiclePosition
   }
 
@@ -121,10 +122,22 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   def decode_trip_update(trip_update, options) do
     td = decode_trip_descriptor(trip_update)
-    decode_stop_updates(td, trip_update, options)
+    stop_time_updates = decode_stop_time_updates(td, trip_update, options)
+    trip_properties = decode_trip_properties(td, trip_update, options)
+
+    if stop_time_updates == :drop_trip and trip_properties == :drop_trip do
+      []
+    else
+      List.flatten(
+        Enum.reject(
+          [td, stop_time_updates, trip_properties],
+          &(&1 == :drop_trip)
+        )
+      )
+    end
   end
 
-  defp decode_stop_updates(
+  defp decode_stop_time_updates(
          td,
          %{"stop_time_update" => [update | _] = updates} = trip_update,
          options
@@ -136,13 +149,13 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
     cond do
       td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) ->
-        []
+        :drop_trip
 
       not Helpers.times_less_than_max?(arrival_time, departure_time, max_time) ->
-        []
+        :drop_trip
 
       true ->
-        stop_updates =
+        stop_time_updates =
           for stu <- updates do
             {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, "arrival"))
 
@@ -179,17 +192,35 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
             end
           end
 
-        td ++ stop_updates
+        stop_time_updates
     end
   end
 
-  defp decode_stop_updates(td, %{"stop_time_update" => []}, options) do
+  defp decode_stop_time_updates(td, %{"stop_time_update" => []}, options) do
     if td != [] and not Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) do
-      []
+      :drop_trip
     else
-      td
+      []
     end
   end
+
+  defp decode_stop_time_updates(_, _, _), do: :drop_trip
+
+  @spec decode_trip_properties([TripDescriptor.t()], map(), Helpers.Options.t()) ::
+          TripProperties.t() | :drop_trip
+  defp decode_trip_properties(
+         [_] = td,
+         %{"trip_properties" => trip_properties},
+         options
+       ) do
+    if Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) do
+      TripProperties.new_from_json(trip_properties)
+    else
+      :drop_trip
+    end
+  end
+
+  defp decode_trip_properties(_, _, _), do: :drop_trip
 
   for {status, new_status} <- @boarding_status_override do
     defp decode_boarding_status(unquote(status)), do: unquote(new_status)
@@ -246,9 +277,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     end
   end
 
-  defp decode_trip_descriptor(%{"trip" => trip} = descriptor) do
+  defp decode_trip_descriptor(%{"trip" => trip} = parent) do
     vehicle_id =
-      case descriptor do
+      case parent do
         %{"vehicle" => %{"id" => vehicle_id}} -> vehicle_id
         _ -> nil
       end
@@ -262,11 +293,11 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
         start_date: date(Map.get(trip, "start_date")),
         start_time: Map.get(trip, "start_time"),
         schedule_relationship: schedule_relationship(Map.get(trip, "schedule_relationship")),
-        timestamp: Map.get(descriptor, "timestamp"),
+        timestamp: Map.get(parent, "timestamp"),
         revenue: Map.get(trip, "revenue", true),
         vehicle_id: vehicle_id,
         last_trip: Map.get(trip, "last_trip", false),
-        update_type: Map.get(descriptor, "update_type")
+        update_type: Map.get(parent, "update_type")
       )
     ]
   end

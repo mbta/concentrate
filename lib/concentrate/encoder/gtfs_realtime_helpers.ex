@@ -3,14 +3,20 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   Helper functions for encoding GTFS-Realtime files.
   """
   alias Concentrate.Encoder.TripGroup
-  alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor, TripProperties, VehiclePosition}
   import Calendar.ISO, only: [date_to_string: 4]
 
   @doc """
   Given a list of parsed data, returns a list of TripGroups, one for each
   trip ID.
   """
-  @spec group([TripDescriptor.t() | VehiclePosition.t() | StopTimeUpdate.t()]) :: [TripGroup.t()]
+  @spec group([
+          TripDescriptor.t()
+          | VehiclePosition.t()
+          | StopTimeUpdate.t()
+          | TripProperties.t()
+        ]) ::
+          [TripGroup.t()]
   def group(parsed) do
     # we sort by the initial size, which keeps the trip updates in their original ordering
     parsed
@@ -185,6 +191,12 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     Map.update(map, trip_id, default, &add_stop_time_update(&1, stu))
   end
 
+  defp group_by_trip_id(%TripProperties{} = tp, map) do
+    trip_id = TripProperties.trip_id(tp)
+    default = %TripGroup{tp: tp}
+    Map.update(map, trip_id, default, &add_trip_properties(&1, tp))
+  end
+
   defp add_trip_descriptor(trip_group, td) do
     %{trip_group | td: td}
   end
@@ -197,8 +209,12 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
     %{trip_group | stus: [stu | stus]}
   end
 
+  defp add_trip_properties(trip_group, tp) do
+    %{trip_group | tp: tp}
+  end
+
   defp build_trip_update_entity(
-         %TripGroup{td: %TripDescriptor{} = td, vps: vps, stus: stus},
+         %TripGroup{td: %TripDescriptor{} = td, vps: vps, stus: stus, tp: tp},
          stop_time_update_fn,
          enhanced_data_fn
        ) do
@@ -225,6 +241,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
     vehicle = trip_update_vehicle(td, vps)
 
+    trip_properties = trip_update_trip_properties(tp)
+
     stop_time_update =
       case stus do
         [_ | _] -> render_stop_time_updates(stus, stop_time_update_fn)
@@ -242,7 +260,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
                 stop_time_update: stop_time_update,
                 vehicle: vehicle,
                 timestamp: timestamp,
-                update_type: update_type
+                update_type: update_type,
+                trip_properties: trip_properties
               })
           }
         ]
@@ -256,7 +275,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
                 trip: trip,
                 vehicle: vehicle,
                 timestamp: timestamp,
-                update_type: update_type
+                update_type: update_type,
+                trip_properties: trip_properties
               })
           }
         ]
@@ -297,4 +317,10 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
       nil
     end
   end
+
+  defp trip_update_trip_properties(%TripProperties{} = tp) do
+    drop_nil_values(Map.from_struct(tp))
+  end
+
+  defp trip_update_trip_properties(_), do: nil
 end

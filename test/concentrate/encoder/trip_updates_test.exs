@@ -4,7 +4,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
   import Concentrate.TestHelpers
   import Concentrate.Encoder.TripUpdates
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
-  alias Concentrate.{FeedUpdate, StopTimeUpdate, TripDescriptor, VehiclePosition}
+  alias Concentrate.{FeedUpdate, StopTimeUpdate, TripDescriptor, TripProperties, VehiclePosition}
   alias Concentrate.Parser.GTFSRealtime
 
   describe "encode_groups/1" do
@@ -201,6 +201,30 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
                )
              ] ==
                FeedUpdate.updates(decoded)
+    end
+
+    test "trips include trip properties" do
+      initial = [
+        TripDescriptor.new(trip_id: "1"),
+        StopTimeUpdate.new(trip_id: "1", arrival_time: 1),
+        TripProperties.new(trip_id: "1", trip_headsign: "boo", trip_short_name: "SL-2000")
+      ]
+
+      decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
+
+      assert %{
+               entity: [
+                 %{
+                   trip_update: %{
+                     trip_properties: %{
+                       trip_id: "1",
+                       trip_headsign: "boo",
+                       trip_short_name: "SL-2000"
+                     }
+                   }
+                 }
+               ]
+             } = decoded
     end
   end
 end

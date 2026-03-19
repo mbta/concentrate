@@ -1,0 +1,100 @@
+{
+    "header": {
+        "timestamp": 1514142840,
+        "gtfs_realtime_version": "1.0"
+    },
+    "entity": [
+        {
+            "trip_update": {
+                "trip": {
+                    "trip_id": "CR-Sunday-Fall-17-2078",
+                    "start_date": "20171224",
+                    "schedule_relationship": "SCHEDULED",
+                    "route_id": "CR-Greenbush",
+                    "direction_id": 1
+                },
+                "trip_properties": {
+                    "trip_headsign": "Why bother"
+                },
+                "stop_time_update": [
+                    {
+                        "stop_sequence": 10,
+                        "stop_id": "South Station",
+                        "departure": {
+                            "time": 1514146020
+                        }
+                    }
+                ]
+            },
+            "id": "1514142840_CR-Sunday-Fall-17-2078"
+        },
+        {
+            "trip_update": {
+                "trip": {
+                    "trip_id": "CR-Sunday-Fall-17-2309",
+                    "start_date": "20171224",
+                    "schedule_relationship": "SCHEDULED",
+                    "route_id": "CR-Lowell",
+                    "direction_id": 0
+                },
+                "trip_properties": {
+                    "trip_headsign": "LOL"
+                },
+                "stop_time_update": [
+                    {
+                        "stop_sequence": 1,
+                        "stop_id": "North Station",
+                        "departure": {
+                            "time": 1514149200
+                        }
+                    }
+                ]
+            },
+            "id": "1514142840_CR-Sunday-Fall-17-2309"
+        },
+        {
+            "trip_update": {
+                "trip": {
+                    "trip_id": "CR-Sunday-Fall-17-2807",
+                    "start_date": "20171224",
+                    "schedule_relationship": "SCHEDULED",
+                    "route_id": "CR-Providence",
+                    "direction_id": 0
+                },
+                "stop_time_update": [
+                    {
+                        "stop_sequence": 1,
+                        "stop_id": "South Station",
+                        "departure": {
+                            "time": 1514138700
+                        }
+                    },
+                    {
+                        "stop_sequence": 2,
+                        "stop_id": "Back Bay",
+                        "departure": {
+                            "time": 1514139000
+                        },
+                        "boarding_status": "DEPARTED"
+                    }
+                ]
+            },
+            "id": "1514142840_CR-Sunday-Fall-17-2807"
+        },
+        {
+            "trip_update": {
+                "trip": {
+                    "trip_id": "CR-Sunday-Fall-17-2405",
+                    "start_date": "20171224",
+                    "schedule_relationship": "SCHEDULED",
+                    "route_id": "CR-Fitchburg",
+                    "direction_id": 0
+                },
+                "trip_properties": {
+                    "trip_headsign": "Situation normal"
+                }
+            },
+            "id": "1514142840_CR-Sunday-Fall-17-2405"
+        }
+    ]
+}

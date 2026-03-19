@@ -5,7 +5,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
   import Concentrate.Encoder.TripUpdatesEnhanced
   import Concentrate.Encoder.GTFSRealtimeHelpers, only: [group: 1]
   alias Concentrate.Parser.GTFSRealtimeEnhanced
-  alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
+  alias Concentrate.{StopTimeUpdate, TripDescriptor, TripProperties, VehiclePosition}
 
   describe "encode_groups/1" do
     test "decoding and re-encoding TripUpdates_enhanced.json is a no-op" do
@@ -323,6 +323,30 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
                  "assigned_stop_id" => "123"
                }
              } = stu
+    end
+
+    test "trips include trip properties" do
+      parsed = [
+        TripDescriptor.new(trip_id: "1"),
+        StopTimeUpdate.new(trip_id: "1", arrival_time: 1),
+        TripProperties.new(trip_id: "1", trip_headsign: "boo", trip_short_name: "SL-2000")
+      ]
+
+      encoded = Jason.decode!(encode_groups(group(parsed)))
+
+      assert %{
+               "entity" => [
+                 %{
+                   "trip_update" => %{
+                     "trip_properties" => %{
+                       "trip_id" => "1",
+                       "trip_headsign" => "boo",
+                       "trip_short_name" => "SL-2000"
+                     }
+                   }
+                 }
+               ]
+             } = encoded
     end
   end
 end

@@ -49,7 +49,7 @@ defmodule Concentrate.TripDescriptor do
       end
     end
 
-    def do_merge(first, second) do
+    defp do_merge(first, second) do
       %{
         first
         | route_id: first.route_id || second.route_id,
