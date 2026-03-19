@@ -25,9 +25,9 @@ asdf install
 mix deps.get
 
 # add pre-commit hook to verify formatting/tests/types
-ln -s ../../hooks/pre-commit .git/hooks/pre-commit
+ln -s hooks/pre-commit .git/hooks/pre-commit
 
-# make sure everything passes! (slowest to fastest)
+# make sure everything passes! (fastest to slowest)
 mix format --check-formatted
 mix credo
 mix dialyzer
@@ -46,17 +46,17 @@ mix deps.compile
 ### Tests
 [tests]: #tests
 
-To run the tests, first install and setup Colima, Docker, and docker-compose:
+To run the tests, first install and set up [Colima](https://github.com/abiosoft/colima), Docker, and [docker-compose](https://github.com/docker/compose):
 
 ```shell
 brew install docker docker-compose colima
 colima start
-mkdir -p ${DOCKER_CONFIG:-"~/.docker"}/cli-plugins
-ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose ${DOCKER_CONFIG:-"~/.docker"}/cli-plugins/docker-compose
+mkdir -p ${DOCKER_CONFIG:-"$HOME/.docker"}/cli-plugins
+ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose ${DOCKER_CONFIG:-"$HOME/.docker"}/cli-plugins/docker-compose
 ```
 
-Then, start the Compose configuration in a separate window or tab and run the tests: 
-1. `docker compose up` 
+Then start the Compose configuration and run the tests: 
+1. In a separate window or tab: `docker compose up`
 1. `mix test`
 
 ## Docker
