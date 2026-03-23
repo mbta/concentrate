@@ -202,5 +202,36 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
              ] ==
                FeedUpdate.updates(decoded)
     end
+
+    test "stop times with assigned_stop_id are included in stop_time_properties" do
+      initial = [
+        TripDescriptor.new(trip_id: "1"),
+        StopTimeUpdate.new(
+          trip_id: "1",
+          stop_sequence: 1,
+          departure_time: 1,
+          assigned_stop_id: "123",
+          stop_id: "123"
+        )
+      ]
+
+      decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
+
+      %{
+        entity: [
+          %{
+            trip_update: %{
+              stop_time_update: [stu]
+            }
+          }
+        ]
+      } = decoded
+
+      assert %{
+               stop_time_properties: %{
+                 assigned_stop_id: "123"
+               }
+             } = stu
+    end
   end
 end
