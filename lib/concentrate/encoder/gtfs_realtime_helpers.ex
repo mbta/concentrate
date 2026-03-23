@@ -141,6 +141,20 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   def schedule_relationship(relationship), do: relationship
 
   @doc """
+  Renders the `stop_time_properties` field.
+
+  If `assigned_stop_id` is nil, render `stop_time_properties` as nil, otherwise
+  render `assigned_stop_id` as a field of `stop_time_properties`.
+  """
+  def stop_time_properties(nil), do: nil
+
+  def stop_time_properties(assigned_stop_id) do
+    %{
+      assigned_stop_id: assigned_stop_id
+    }
+  end
+
+  @doc """
   Returns true if the group is non-revenue
   """
   def non_revenue?({td, _, _} = _group) do
