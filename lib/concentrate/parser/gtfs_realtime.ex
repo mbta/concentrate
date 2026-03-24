@@ -133,16 +133,6 @@ defmodule Concentrate.Parser.GTFSRealtime do
             {arrival_time, arrival_uncertainty} = time_from_event(Map.get(stu, :arrival))
             {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, :departure))
 
-            {assigned_stop_id} =
-              assigned_stop_id_from_event(Map.get(stu, :stop_time_properties))
-
-            # TEMP: log assigned_trip_id while parsing incoming feed
-            if assigned_stop_id do
-              Logger.info(
-                "event=parse_assigned_stop_id assigned_stop_id=#{assigned_stop_id} trip_id=#{Map.get(trip_update.trip, :trip_id)}"
-              )
-            end
-
             StopTimeUpdate.new(
               trip_id: Map.get(trip_update.trip, :trip_id),
               stop_id: Map.get(stu, :stop_id),
@@ -150,8 +140,7 @@ defmodule Concentrate.Parser.GTFSRealtime do
               schedule_relationship: Map.get(stu, :schedule_relationship, :SCHEDULED),
               arrival_time: arrival_time,
               departure_time: departure_time,
-              uncertainty: arrival_uncertainty || departure_uncertainty,
-              assigned_stop_id: assigned_stop_id
+              uncertainty: arrival_uncertainty || departure_uncertainty
             )
           end
 
@@ -258,9 +247,4 @@ defmodule Concentrate.Parser.GTFSRealtime do
 
   defp time_from_event(%{time: time} = map), do: {time, Map.get(map, :uncertainty, nil)}
   defp time_from_event(_), do: {nil, nil}
-
-  defp assigned_stop_id_from_event(%{assigned_stop_id: assigned_stop_id}),
-    do: {assigned_stop_id}
-
-  defp assigned_stop_id_from_event(_), do: {nil}
 end

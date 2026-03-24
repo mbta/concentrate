@@ -278,22 +278,6 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
 
       assert TripDescriptor.start_time(td) == nil
     end
-
-    test "can parse assigned_stop_id from stop_time_properties" do
-      update = %{
-        trip: %{},
-        stop_time_update: [
-          %{
-            stop_time_properties: %{
-              assigned_stop_id: 1
-            }
-          }
-        ]
-      }
-
-      [_td, stop_update] = decode_trip_update(update, %Options{})
-      assert StopTimeUpdate.assigned_stop_id(stop_update) == 1
-    end
   end
 
   describe "decode_vehicle/2" do
