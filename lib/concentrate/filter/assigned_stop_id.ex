@@ -20,7 +20,7 @@ defmodule Concentrate.Filter.AssignedStopID do
      )}
   end
 
-  def filter(other, _stop_ids), do: {:cont, other}
+  def filter(other, _stop_times), do: {:cont, other}
 
   defp maybe_filter_assigned_stop_id(stu, nil, _, _, _), do: stu
 
@@ -31,8 +31,8 @@ defmodule Concentrate.Filter.AssignedStopID do
         stu
 
       stop_id ->
-        # the scheduled stop id matches the assigned_stop_id field so no need to publish it
-        if stop_id == assigned_stop_id,
+        # the assigned_stop_id field matches the scheduled stop id so no need to publish it
+        if assigned_stop_id == stop_id,
           do: StopTimeUpdate.update_assigned_stop_id(stu, nil),
           else: stu
     end

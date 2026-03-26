@@ -150,7 +150,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
             {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
 
-            {assigned_stop_id} =
+            assigned_stop_id =
               assigned_stop_id_from_event(Map.get(stu, "stop_time_properties"))
 
             # TEMP: log assigned_trip_id while parsing incoming feed
@@ -388,7 +388,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp assigned_stop_id_from_event(%{"assigned_stop_id" => assigned_stop_id}),
-    do: {assigned_stop_id}
+    do: assigned_stop_id
 
-  defp assigned_stop_id_from_event(_), do: {nil}
+  defp assigned_stop_id_from_event(_), do: nil
 end
