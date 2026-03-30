@@ -124,8 +124,6 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     decode_stop_updates(td, trip_update, options)
   end
 
-  # (just for logging, will remove before merging)
-  # credo:disable-for-next-line
   defp decode_stop_updates(
          td,
          %{"stop_time_update" => [update | _] = updates} = trip_update,
@@ -152,13 +150,6 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
             assigned_stop_id =
               assigned_stop_id_from_event(Map.get(stu, "stop_time_properties"))
-
-            # TEMP: log assigned_trip_id while parsing incoming feed
-            if assigned_stop_id do
-              Logger.info(
-                "event=parse_assigned_stop_id assigned_stop_id=#{assigned_stop_id} trip_id=#{Map.get(Map.get(trip_update, "trip"), "trip_id")}"
-              )
-            end
 
             boarding_status = decode_boarding_status(Map.get(stu, "boarding_status"))
 
