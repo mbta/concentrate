@@ -293,5 +293,36 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
       refute Map.get(stu_1, "arrival")
       refute Map.get(stu_3, "passthrough_time")
     end
+
+    test "stop times with assigned_stop_id are included in stop_time_properties" do
+      parsed = [
+        TripDescriptor.new(trip_id: "1"),
+        StopTimeUpdate.new(
+          trip_id: "1",
+          stop_sequence: 1,
+          departure_time: 1,
+          assigned_stop_id: "123",
+          stop_id: "123"
+        )
+      ]
+
+      encoded = Jason.decode!(encode_groups(group(parsed)))
+
+      %{
+        "entity" => [
+          %{
+            "trip_update" => %{
+              "stop_time_update" => [stu]
+            }
+          }
+        ]
+      } = encoded
+
+      assert %{
+               "stop_time_properties" => %{
+                 "assigned_stop_id" => "123"
+               }
+             } = stu
+    end
   end
 end

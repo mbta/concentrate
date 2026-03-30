@@ -20,7 +20,7 @@ defmodule Concentrate.Filter.IncludeStopID do
      )}
   end
 
-  def filter(other, _stop_ids), do: {:cont, other}
+  def filter(other, _stop_times), do: {:cont, other}
 
   defp maybe_add_stop_id(stu, nil, trip_id, stop_sequence, stop_times)
        when is_binary(trip_id) and is_integer(stop_sequence) do

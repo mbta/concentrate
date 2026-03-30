@@ -492,6 +492,22 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       [td] = decode_trip_update(not_specified, Helpers.parse_options([]))
       assert TripDescriptor.last_trip(td) == false
     end
+
+    test "can parse assigned_stop_id from stop_time_properties" do
+      update = %{
+        "trip" => %{},
+        "stop_time_update" => [
+          %{
+            "stop_time_properties" => %{
+              "assigned_stop_id" => 1
+            }
+          }
+        ]
+      }
+
+      [_td, stop_update] = decode_trip_update(update, %Options{})
+      assert StopTimeUpdate.assigned_stop_id(stop_update) == 1
+    end
   end
 
   describe "decode_vehicle/3" do

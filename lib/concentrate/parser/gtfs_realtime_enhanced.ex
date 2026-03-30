@@ -148,6 +148,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
             {departure_time, departure_uncertainty} = time_from_event(Map.get(stu, "departure"))
 
+            assigned_stop_id =
+              assigned_stop_id_from_event(Map.get(stu, "stop_time_properties"))
+
             boarding_status = decode_boarding_status(Map.get(stu, "boarding_status"))
 
             stop_time_update =
@@ -165,7 +168,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
                 passthrough_time: Map.get(stu, "passthrough_time"),
                 uncertainty: arrival_uncertainty || departure_uncertainty,
                 status: boarding_status,
-                platform_id: Map.get(stu, "platform_id")
+                platform_id: Map.get(stu, "platform_id"),
+                assigned_stop_id: assigned_stop_id
               )
 
             if boarding_status == "Cancelled" do
@@ -373,4 +377,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
       activities: Map.get(map, "activities") || []
     )
   end
+
+  defp assigned_stop_id_from_event(%{"assigned_stop_id" => assigned_stop_id}),
+    do: assigned_stop_id
+
+  defp assigned_stop_id_from_event(_), do: nil
 end
