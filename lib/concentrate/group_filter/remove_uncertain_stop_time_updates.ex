@@ -13,6 +13,7 @@ defmodule Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates do
 
   If no uncertainty values are configured, enabling this filter has no effect.
   """
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   @behaviour Concentrate.GroupFilter
@@ -28,19 +29,21 @@ defmodule Concentrate.GroupFilter.RemoveUncertainStopTimeUpdates do
   @uncertainties_by_route Application.compile_env(:concentrate, config_path, %{})
 
   @impl Concentrate.GroupFilter
-  def filter(trip_descriptor, exclusions \\ @uncertainties_by_route)
+  def filter(trip_group, exclusions \\ @uncertainties_by_route)
 
-  def filter(group, exclusions) when exclusions == %{}, do: group
+  def filter(%TripGroup{} = group, exclusions) when exclusions == %{}, do: group
 
-  def filter({nil, _, _} = group, _), do: group
+  def filter(%TripGroup{td: nil} = group, _), do: group
 
-  def filter({trip_descriptor, vehicle_positions, stop_time_updates}, exclusions) do
+  def filter(
+        %TripGroup{td: trip_descriptor, stus: stop_time_updates} = group,
+        exclusions
+      ) do
     route_id = TripDescriptor.route_id(trip_descriptor)
     direction_id = TripDescriptor.direction_id(trip_descriptor)
     route_exclusions = Map.get(exclusions, route_id, nil)
 
-    {trip_descriptor, vehicle_positions,
-     exclude(stop_time_updates, route_exclusions, direction_id)}
+    %{group | stus: exclude(stop_time_updates, route_exclusions, direction_id)}
   end
 
   @spec exclude([StopTimeUpdate.t()], uncertainties() | nil, 0 | 1) :: [StopTimeUpdate.t()]

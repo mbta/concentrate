@@ -3,13 +3,14 @@ defmodule Concentrate.GroupFilter.SkippedDeparturesTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
   import Concentrate.GroupFilter.SkippedDepartures
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.StopTimeUpdate
 
   describe "filter/1" do
     property "the last non-skipped stop has no departure time" do
       check all(updates <- list_of(stop_time_update(), min_length: 5)) do
-        group = {nil, [], updates}
-        {_, _, new_updates} = filter(group)
+        group = %TripGroup{stus: updates}
+        %TripGroup{stus: new_updates} = filter(group)
 
         if StopTimeUpdate.schedule_relationship(Enum.at(updates, -1)) == :SKIPPED do
           last_departure =
@@ -29,10 +30,8 @@ defmodule Concentrate.GroupFilter.SkippedDeparturesTest do
     end
 
     test "keeps stops in the same order" do
-      group = {
-        nil,
-        [],
-        [
+      group = %TripGroup{
+        stus: [
           StopTimeUpdate.new(stop_sequence: 1, departure_time: 1),
           StopTimeUpdate.new(stop_sequence: 2, departure_time: 2),
           StopTimeUpdate.new(stop_sequence: 3, departure_time: 3),
@@ -41,12 +40,12 @@ defmodule Concentrate.GroupFilter.SkippedDeparturesTest do
         ]
       }
 
-      {_, _, new_updates} = filter(group)
+      %TripGroup{stus: new_updates} = filter(group)
       assert Enum.map(new_updates, &StopTimeUpdate.stop_sequence/1) == [1, 2, 3, 4, 5]
     end
 
     test "if no stops are skipped, returns the same data" do
-      group = {nil, [], [StopTimeUpdate.new(departure_time: 9)]}
+      group = %TripGroup{stus: [StopTimeUpdate.new(departure_time: 9)]}
       assert filter(group) == group
     end
   end

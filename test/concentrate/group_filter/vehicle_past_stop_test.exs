@@ -2,6 +2,7 @@ defmodule Concentrate.GroupFilter.VehiclePastStopTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.VehiclePastStop
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   describe "filter/1" do
@@ -14,9 +15,10 @@ defmodule Concentrate.GroupFilter.VehiclePastStopTest do
         StopTimeUpdate.new(trip_id: "trip")
       ]
 
-      expected = Enum.drop(stus, 1)
-      {_, [^vp], actual} = filter({TripDescriptor.new([]), [vp], stus})
-      assert actual == expected
+      group = %TripGroup{td: TripDescriptor.new([]), vps: [vp], stus: stus}
+      expected_stus = Enum.drop(stus, 1)
+      %TripGroup{vps: [^vp], stus: actual_stus} = filter(group)
+      assert actual_stus == expected_stus
     end
 
     test "leaves the stops alone if the vehicle doesn't have stop sequence" do
@@ -27,12 +29,8 @@ defmodule Concentrate.GroupFilter.VehiclePastStopTest do
         StopTimeUpdate.new(stop_sequence: 4)
       ]
 
-      group = {td, [vp], stus}
+      group = %TripGroup{td: td, vps: [vp], stus: stus}
       assert filter(group) == group
-    end
-
-    test "other values are returned as-is" do
-      assert filter(:value) == :value
     end
   end
 end

@@ -16,6 +16,7 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimes do
   If no status values are configured, enabling this filter has no effect.
   """
   @behaviour Concentrate.GroupFilter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor}, warn: false
 
   @impl Concentrate.GroupFilter
@@ -28,23 +29,26 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimes do
                       &String.downcase/1
                     )
 
-  if @on_time_statuses == [] do
-    def filter(trip_group, _), do: trip_group
-  else
-    def filter({trip_descriptor, vehicle_positions, [_ | _] = stop_time_updates}, gtfs_stop_times)
+  if not Enum.empty?(@on_time_statuses) do
+    def filter(
+          %TripGroup{
+            td: trip_descriptor,
+            stus: [_ | _] = stop_time_updates
+          } = group,
+          gtfs_stop_times
+        )
         when not is_nil(trip_descriptor) do
-      {
-        trip_descriptor,
-        vehicle_positions,
+      stus =
         filter_stop_time_updates(
           stop_time_updates,
           TripDescriptor.start_date(trip_descriptor),
           gtfs_stop_times
         )
-      }
+
+      %{group | stus: stus}
     end
 
-    def filter(trip_group, _), do: trip_group
+    def filter(%TripGroup{} = trip_group, _), do: trip_group
 
     defp filter_stop_time_updates(stop_time_updates, nil, _), do: stop_time_updates
 

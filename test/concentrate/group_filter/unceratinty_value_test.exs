@@ -2,6 +2,7 @@ defmodule Concentrate.GroupFilter.UncertaintyValueTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.UncertaintyValue
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.StopTimeUpdate
   alias Concentrate.TripDescriptor
 
@@ -15,7 +16,7 @@ defmodule Concentrate.GroupFilter.UncertaintyValueTest do
         StopTimeUpdate.new(uncertainty: nil)
       ]
 
-      {^td, [], processed_stus} = filter({td, [], stus})
+      %TripGroup{td: ^td, stus: processed_stus} = filter(%TripGroup{td: td, stus: stus})
 
       assert Enum.all?(processed_stus, fn procced_stu ->
                StopTimeUpdate.uncertainty(procced_stu) == 60
@@ -31,7 +32,7 @@ defmodule Concentrate.GroupFilter.UncertaintyValueTest do
         StopTimeUpdate.new(uncertainty: nil)
       ]
 
-      {^td, [], processed_stus} = filter({td, [], stus})
+      %TripGroup{td: ^td, stus: processed_stus} = filter(%TripGroup{td: td, stus: stus})
 
       assert Enum.all?(processed_stus, fn procced_stu ->
                StopTimeUpdate.uncertainty(procced_stu) == 120
@@ -47,7 +48,7 @@ defmodule Concentrate.GroupFilter.UncertaintyValueTest do
         StopTimeUpdate.new(uncertainty: nil)
       ]
 
-      {^td, [], processed_stus} = filter({td, [], stus})
+      %TripGroup{td: ^td, stus: processed_stus} = filter(%TripGroup{td: td, stus: stus})
 
       assert Enum.all?(processed_stus, fn procced_stu ->
                StopTimeUpdate.uncertainty(procced_stu) == 360
@@ -63,7 +64,7 @@ defmodule Concentrate.GroupFilter.UncertaintyValueTest do
         StopTimeUpdate.new(uncertainty: 60)
       ]
 
-      {^td, [], processed_stus} = filter({td, [], stus})
+      %TripGroup{td: ^td, stus: processed_stus} = filter(%TripGroup{td: td, stus: stus})
 
       assert Enum.all?(processed_stus, fn procced_stu ->
                StopTimeUpdate.uncertainty(procced_stu) == 60

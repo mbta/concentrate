@@ -7,9 +7,10 @@ defmodule Concentrate.GroupFilter.SkippedDepartures do
   trip is SKIPPED, the last actual stop has no departure.
   """
   @behaviour Concentrate.GroupFilter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.StopTimeUpdate
 
-  def filter({trip_update, vehicle_positions, stop_time_updates}) do
+  def filter(%TripGroup{stus: stop_time_updates} = group) do
     reverse_updates = Enum.reverse(stop_time_updates)
 
     {skipped, rest} =
@@ -28,6 +29,6 @@ defmodule Concentrate.GroupFilter.SkippedDepartures do
           stop_time_updates
       end
 
-    {trip_update, vehicle_positions, new_updates}
+    %{group | stus: new_updates}
   end
 end

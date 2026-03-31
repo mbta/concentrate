@@ -2,35 +2,33 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   @moduledoc """
   Helper functions for encoding GTFS-Realtime files.
   """
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
   import Calendar.ISO, only: [date_to_string: 4]
 
-  @type trip_group :: {TripDescriptor.t() | nil, [VehiclePosition.t()], [StopTimeUpdate.t()]}
-
   @doc """
-  Given a list of parsed data, returns a list of tuples:
-
-  {TripDescriptor.t() | nil, [VehiclePosition.t()], [StopTimeUpdate.t]}
-
-  The VehiclePositions/StopTimeUpdates will share the same trip ID.
+  Given a list of parsed data, returns a list of TripGroups, one for each
+  trip ID.
   """
-  @spec group([TripDescriptor.t() | VehiclePosition.t() | StopTimeUpdate.t()]) :: [trip_group]
+  @spec group([TripDescriptor.t() | VehiclePosition.t() | StopTimeUpdate.t()]) :: [TripGroup.t()]
   def group(parsed) do
     # we sort by the initial size, which keeps the trip updates in their original ordering
     parsed
     |> Enum.reduce(%{}, &group_by_trip_id/2)
     |> Map.values()
     |> Enum.flat_map(fn
-      {%TripDescriptor{} = td, [], []} ->
+      # Drop groups with no info besides the trip descriptor, unless the trip is
+      # CANCELED.
+      %TripGroup{td: %TripDescriptor{} = td, vps: [], stus: []} = trip_group ->
         if TripDescriptor.schedule_relationship(td) == :CANCELED do
-          [{td, [], []}]
+          [trip_group]
         else
           []
         end
 
-      {td, vps, stus} ->
-        stus = Enum.sort_by(stus, &StopTimeUpdate.stop_sequence/1)
-        [{td, vps, stus}]
+      %TripGroup{stus: stus} = trip_group ->
+        sorted_stus = Enum.sort_by(stus, &StopTimeUpdate.stop_sequence/1)
+        [%{trip_group | stus: sorted_stus}]
     end)
   end
 
@@ -95,6 +93,11 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
   Takes a function to turn a StopTimeUpdate struct into the GTFS-RT version.
   """
+  @spec trip_update_feed_entity(
+          [TripGroup.t()],
+          (StopTimeUpdate.t() -> map() | :skip),
+          (TripDescriptor.t() -> map() | :skip)
+        ) :: [map()]
   def trip_update_feed_entity(groups, stop_time_update_fn, enhanced_data_fn \\ fn _ -> %{} end) do
     Enum.flat_map(groups, &build_trip_update_entity(&1, stop_time_update_fn, enhanced_data_fn))
   end
@@ -157,13 +160,14 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   @doc """
   Returns true if the group is non-revenue
   """
-  def non_revenue?({td, _, _} = _group) do
+  def non_revenue?(%TripGroup{td: td}) do
     td && not td.revenue
   end
 
   defp group_by_trip_id(%TripDescriptor{} = td, map) do
     if trip_id = TripDescriptor.trip_id(td) do
-      Map.update(map, trip_id, {td, [], []}, &add_trip_descriptor(&1, td))
+      default = %TripGroup{td: td}
+      Map.update(map, trip_id, default, &add_trip_descriptor(&1, td))
     else
       map
     end
@@ -171,30 +175,30 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
 
   defp group_by_trip_id(%VehiclePosition{} = vp, map) do
     trip_id = VehiclePosition.trip_id(vp)
-
-    Map.update(map, trip_id, {nil, [vp], []}, &add_vehicle_position(&1, vp))
+    default = %TripGroup{vps: [vp]}
+    Map.update(map, trip_id, default, &add_vehicle_position(&1, vp))
   end
 
   defp group_by_trip_id(%StopTimeUpdate{} = stu, map) do
     trip_id = StopTimeUpdate.trip_id(stu)
-
-    Map.update(map, trip_id, {nil, [], [stu]}, &add_stop_time_update(&1, stu))
+    default = %TripGroup{stus: [stu]}
+    Map.update(map, trip_id, default, &add_stop_time_update(&1, stu))
   end
 
-  defp add_trip_descriptor({_td, vps, stus}, td) do
-    {td, vps, stus}
+  defp add_trip_descriptor(trip_group, td) do
+    %{trip_group | td: td}
   end
 
-  defp add_vehicle_position({td, vps, stus}, vp) do
-    {td, [vp | vps], stus}
+  defp add_vehicle_position(%TripGroup{vps: vps} = trip_group, vp) do
+    %{trip_group | vps: [vp | vps]}
   end
 
-  defp add_stop_time_update({td, vps, stus}, stu) do
-    {td, vps, [stu | stus]}
+  defp add_stop_time_update(%TripGroup{stus: stus} = trip_group, stu) do
+    %{trip_group | stus: [stu | stus]}
   end
 
   defp build_trip_update_entity(
-         {%TripDescriptor{} = td, vps, stus},
+         %TripGroup{td: %TripDescriptor{} = td, vps: vps, stus: stus},
          stop_time_update_fn,
          enhanced_data_fn
        ) do

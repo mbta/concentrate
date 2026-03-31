@@ -3,6 +3,7 @@ defmodule Concentrate.Reporter.VehicleTimeTravel do
   Reports vehicles where the timestamp goes back in time.
   """
   require Logger
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.VehiclePosition
 
   @behaviour Concentrate.Reporter
@@ -18,7 +19,7 @@ defmodule Concentrate.Reporter.VehicleTimeTravel do
     {[], vehicle_timestamps}
   end
 
-  defp log_group({_td, vps, _stus}, acc) do
+  defp log_group(%TripGroup{vps: vps}, acc) do
     Enum.reduce(vps, acc, &log_vehicle/2)
   end
 

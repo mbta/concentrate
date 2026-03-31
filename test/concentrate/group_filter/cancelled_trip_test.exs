@@ -2,6 +2,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.CancelledTrip
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   @module Concentrate.Filter.FakeCancelledTrips
@@ -33,9 +34,9 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           arrival_time: 8
         )
 
-      group = {td, [], [stu]}
+      group = %TripGroup{td: td, stus: [stu]}
 
-      {new_td, [], [new_stu]} =
+      %TripGroup{td: new_td, vps: [], stus: [new_stu]} =
         filter(group, @module, @fake_routes_module, @fake_stop_times_module)
 
       assert TripDescriptor.schedule_relationship(new_td) == :CANCELED
@@ -56,9 +57,9 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           arrival_time: 86_406
         )
 
-      group = {td, [], [stu]}
+      group = %TripGroup{td: td, stus: [stu]}
 
-      {new_td, [], [new_stu]} =
+      %TripGroup{td: new_td, vps: [], stus: [new_stu]} =
         filter(group, @module, @fake_routes_module, @fake_stop_times_module)
 
       assert TripDescriptor.schedule_relationship(new_td) == :CANCELED
@@ -79,8 +80,11 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           status: :CANCELED
         )
 
-      group = {td, [], [stu]}
-      {_td, [], [stu]} = filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+      group = %TripGroup{td: td, stus: [stu]}
+
+      %TripGroup{vps: [], stus: [stu]} =
+        filter(group, @module, @fake_routes_module, @fake_stop_times_module)
+
       assert StopTimeUpdate.schedule_relationship(stu) == :SKIPPED
     end
 
@@ -114,9 +118,9 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
 
       now_fn = fn -> 86_000 end
 
-      group = {td, [], [stu1, stu2]}
+      group = %TripGroup{td: td, stus: [stu1, stu2]}
 
-      {td_actual, [], [stu_actual1, stu_actual2]} =
+      %TripGroup{td: td_actual, vps: [], stus: [stu_actual1, stu_actual2]} =
         filter(
           group,
           @module,
@@ -160,9 +164,9 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
 
       now_fn = fn -> 86_000 end
 
-      group = {td, [], [stu1, stu2]}
+      group = %TripGroup{td: td, stus: [stu1, stu2]}
 
-      {td_actual, [], [stu_actual1, stu_actual2]} =
+      %TripGroup{td: td_actual, vps: [], stus: [stu_actual1, stu_actual2]} =
         filter(
           group,
           @module,
@@ -196,9 +200,9 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
 
       now_fn = fn -> 86_000 end
 
-      group = {td, [], [stu, stu]}
+      group = %TripGroup{td: td, stus: [stu, stu]}
 
-      {td_actual, [], [stu_actual1, stu_actual2]} =
+      %TripGroup{td: td_actual, vps: [], stus: [stu_actual1, stu_actual2]} =
         filter(
           group,
           @module,
@@ -220,9 +224,9 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           start_date: {1970, 1, 2}
         )
 
-      group = {td, [], []}
+      group = %TripGroup{td: td}
 
-      {td_actual, [], []} =
+      %TripGroup{td: td_actual, vps: [], stus: []} =
         filter(group, @module, @fake_routes_module, @fake_stop_times_module)
 
       assert TripDescriptor.schedule_relationship(td_actual) == :SCHEDULED
@@ -237,9 +241,9 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           schedule_relationship: :CANCELED
         )
 
-      group = {td, [], []}
+      group = %TripGroup{td: td}
 
-      {td_actual, [], stus} =
+      %TripGroup{td: td_actual, vps: [], stus: stus} =
         filter(group, @module, @fake_routes_module, @fake_stop_times_module)
 
       assert TripDescriptor.schedule_relationship(td_actual) == :CANCELED
@@ -270,9 +274,9 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           schedule_relationship: :CANCELED
         )
 
-      group = {td, [], []}
+      group = %TripGroup{td: td}
 
-      assert {td_actual, [], []} =
+      assert %TripGroup{td: td_actual, vps: [], stus: []} =
                filter(group, @module, @fake_routes_module, @fake_stop_times_module)
 
       assert TripDescriptor.schedule_relationship(td_actual) == :CANCELED
@@ -294,9 +298,9 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           schedule_relationship: :SKIPPED
         )
 
-      group = {td, [], [stu, stu]}
+      group = %TripGroup{td: td, stus: [stu, stu]}
 
-      {td_actual, [], [stu_actual1, stu_actual2]} =
+      %TripGroup{td: td_actual, vps: [], stus: [stu_actual1, stu_actual2]} =
         filter(group, @module, @fake_routes_module, @fake_stop_times_module)
 
       assert TripDescriptor.schedule_relationship(td_actual) == :SCHEDULED
@@ -326,9 +330,9 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           schedule_relationship: :SCHEDULED
         )
 
-      group = {td, [], [stu1, stu2]}
+      group = %TripGroup{td: td, stus: [stu1, stu2]}
 
-      {td_actual, [], [stu_actual1, stu_actual2]} =
+      %TripGroup{td: td_actual, vps: [], stus: [stu_actual1, stu_actual2]} =
         filter(group, @module, @fake_routes_module, @fake_stop_times_module)
 
       assert TripDescriptor.schedule_relationship(td_actual) == :SCHEDULED
@@ -349,7 +353,7 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           arrival_time: 50
         )
 
-      group = {td, [], [stu]}
+      group = %TripGroup{td: td, stus: [stu]}
       assert filter(group, @module, @fake_routes_module, @fake_stop_times_module) == group
     end
 
@@ -367,12 +371,8 @@ defmodule Concentrate.GroupFilter.CancelledTripTest do
           arrival_time: 87_000
         )
 
-      group = {td, [], [stu]}
+      group = %TripGroup{td: td, stus: [stu]}
       assert filter(group, @module, @fake_routes_module, @fake_stop_times_module) == group
-    end
-
-    test "other values are returned as-is" do
-      assert filter(:value) == :value
     end
   end
 end

@@ -2,6 +2,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpersTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.Encoder.GTFSRealtimeHelpers
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   doctest Concentrate.Encoder.GTFSRealtimeHelpers
@@ -23,8 +24,8 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpersTest do
       ]
 
       expected = [
-        {nil, [vehicle_no_trip], []},
-        {td, [vehicle], [stu, stu2]}
+        %TripGroup{td: nil, vps: [vehicle_no_trip], stus: []},
+        %TripGroup{td: td, vps: [vehicle], stus: [stu, stu2]}
       ]
 
       actual = Enum.sort(group(parsed))
@@ -47,7 +48,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpersTest do
         td
       ]
 
-      expected = [{td, [vehicle], [stu]}]
+      expected = [%TripGroup{td: td, vps: [vehicle], stus: [stu]}]
 
       actual = group(parsed)
       assert actual == expected
@@ -62,7 +63,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpersTest do
 
     test "CANCELED trip updates without a vehicle or stop time are kept" do
       td = TripDescriptor.new(trip_id: "trip", schedule_relationship: :CANCELED)
-      assert [{^td, [], []}] = group([td])
+      assert [%TripGroup{td: ^td, vps: [], stus: []}] = group([td])
     end
   end
 end

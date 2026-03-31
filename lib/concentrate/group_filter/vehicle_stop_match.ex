@@ -8,17 +8,18 @@ defmodule Concentrate.GroupFilter.VehicleStopMatch do
   of the StopTimeUpdate with the same stop sequence (if they share a parent).
   """
   @behaviour Concentrate.GroupFilter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.GTFS.Stops
   alias Concentrate.{StopTimeUpdate, VehiclePosition}
 
   @impl Concentrate.GroupFilter
-  def filter({td, vps, stus}) do
+  def filter(%TripGroup{vps: vps, stus: stus} = group) do
     vps =
       for vp <- vps do
         match_stop_id(vp, stus)
       end
 
-    {td, vps, stus}
+    %{group | vps: vps}
   end
 
   defp match_stop_id(vp, stus) do

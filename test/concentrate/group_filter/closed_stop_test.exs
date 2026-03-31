@@ -2,6 +2,7 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.ClosedStop
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   @trip_update TripDescriptor.new(trip_id: "trip", direction_id: 1, route_id: "route")
@@ -13,7 +14,7 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
   describe "filter/2" do
     test "unknown stop IDs are ignored" do
       stu = StopTimeUpdate.new(stop_id: "unknown", departure_time: @valid_date_time)
-      group = {@trip_update, [], [stu]}
+      group = %TripGroup{td: @trip_update, stus: [stu]}
       assert ^group = filter(group, @module)
     end
 
@@ -26,8 +27,8 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
           departure_time: @valid_date_time
         )
 
-      group = {@trip_update, [], [stu]}
-      assert {_, _, [new_stu]} = filter(group, @module)
+      group = %TripGroup{td: @trip_update, stus: [stu]}
+      assert %TripGroup{stus: [new_stu]} = filter(group, @module)
       assert StopTimeUpdate.schedule_relationship(new_stu) == :SKIPPED
       assert StopTimeUpdate.arrival_time(new_stu) == nil
       assert StopTimeUpdate.departure_time(new_stu) == nil
@@ -48,8 +49,8 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
           departure_time: @valid_date_time
         )
 
-      group = {td, [], [stu]}
-      assert {_, _, [new_stu]} = filter(group, @module)
+      group = %TripGroup{td: td, stus: [stu]}
+      assert %TripGroup{stus: [new_stu]} = filter(group, @module)
       assert StopTimeUpdate.schedule_relationship(new_stu) == :SKIPPED
       assert StopTimeUpdate.arrival_time(new_stu) == nil
       assert StopTimeUpdate.departure_time(new_stu) == nil
@@ -63,7 +64,7 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
           departure_time: @invalid_date_time
         )
 
-      group = {@trip_update, [], [stu]}
+      group = %TripGroup{td: @trip_update, stus: [stu]}
       assert ^group = filter(group, @module)
     end
 
@@ -75,7 +76,7 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
           departure_time: @valid_date_time
         )
 
-      group = {@trip_update, [], [stu]}
+      group = %TripGroup{td: @trip_update, stus: [stu]}
       assert ^group = filter(group, @module)
     end
 
@@ -86,12 +87,16 @@ defmodule Concentrate.GroupFilter.ClosedStopTest do
           stop_id: "route_stop"
         )
 
-      group = {@trip_update, [], [stu]}
+      group = %TripGroup{td: @trip_update, stus: [stu]}
       assert ^group = filter(group)
     end
 
     test "does not modify the group if there's no TripDescriptor" do
-      group = {nil, [VehiclePosition.new(id: "vehicle", latitude: 0, longitude: 0)], []}
+      group = %TripGroup{
+        td: nil,
+        vps: [VehiclePosition.new(id: "vehicle", latitude: 0, longitude: 0)]
+      }
+
       assert ^group = filter(group)
     end
   end

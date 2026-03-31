@@ -1,6 +1,7 @@
 defmodule Concentrate.GroupFilter.ScheduledStopTimesTest do
   @moduledoc false
   use ExUnit.Case, async: true
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.GroupFilter.ScheduledStopTimes
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
@@ -50,41 +51,48 @@ defmodule Concentrate.GroupFilter.ScheduledStopTimesTest do
           departure_time: 1_620_000_001
         )
 
-      assert filter({trip, [], [stu1, stu2, stu3, stu4]}) ==
-               {trip, [], [stu1, new_stu2, new_stu3, stu4]}
+      assert filter(%TripGroup{td: trip, stus: [stu1, stu2, stu3, stu4]}) ==
+               %TripGroup{td: trip, stus: [stu1, new_stu2, new_stu3, stu4]}
     end
 
     test "does not change stop time updates with existing arrival or departure times" do
       trip_group =
-        {TripDescriptor.new(trip_id: "trip1", start_date: nil), [],
-         [
-           StopTimeUpdate.new(
-             trip_id: "trip1",
-             stop_sequence: 10,
-             status: @on_time_status,
-             arrival_time: 1_610_000_123
-           ),
-           StopTimeUpdate.new(
-             trip_id: "trip1",
-             stop_sequence: 10,
-             status: @on_time_status,
-             departure_time: 1_610_000_123
-           )
-         ]}
+        %TripGroup{
+          td: TripDescriptor.new(trip_id: "trip1", start_date: nil),
+          stus: [
+            StopTimeUpdate.new(
+              trip_id: "trip1",
+              stop_sequence: 10,
+              status: @on_time_status,
+              arrival_time: 1_610_000_123
+            ),
+            StopTimeUpdate.new(
+              trip_id: "trip1",
+              stop_sequence: 10,
+              status: @on_time_status,
+              departure_time: 1_610_000_123
+            )
+          ]
+        }
 
       assert filter(trip_group) == trip_group
     end
 
     test "passes through if the trip has no `start_date`" do
       trip_group =
-        {TripDescriptor.new(trip_id: "trip1", start_date: nil), [],
-         [StopTimeUpdate.new(trip_id: "trip1")]}
+        %TripGroup{
+          td: TripDescriptor.new(trip_id: "trip1", start_date: nil),
+          stus: [StopTimeUpdate.new(trip_id: "trip1")]
+        }
 
       assert filter(trip_group) == trip_group
     end
 
     test "passes through if no trip descriptor is available" do
-      trip_group = {nil, [], [StopTimeUpdate.new(trip_id: "trip1")]}
+      trip_group = %TripGroup{
+        td: nil,
+        stus: [StopTimeUpdate.new(trip_id: "trip1")]
+      }
 
       assert filter(trip_group) == trip_group
     end

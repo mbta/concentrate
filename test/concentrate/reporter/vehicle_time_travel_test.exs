@@ -3,6 +3,7 @@ defmodule Concentrate.Reporter.VehicleTimeTravelTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
 
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.Reporter.VehicleTimeTravel
   alias Concentrate.{TripDescriptor, VehiclePosition}
 
@@ -17,8 +18,8 @@ defmodule Concentrate.Reporter.VehicleTimeTravelTest do
           ExUnit.CaptureLog.capture_log(fn -> VehicleTimeTravel.log([group1, group2], state) end)
 
         case {group1, group2} do
-          {{_, [%{id: vehicle_id, last_updated: t1} = vp1], _},
-           {_, [%{id: vehicle_id, last_updated: t2} = vp2], _}}
+          {%TripGroup{vps: [%{id: vehicle_id, last_updated: t1} = vp1]},
+           %TripGroup{vps: [%{id: vehicle_id, last_updated: t2} = vp2]}}
           when t1 > t2 ->
             assert log =~ "event=vehicle_time_travel"
             assert log =~ "vehicle_id=#{vehicle_id}"
@@ -53,7 +54,7 @@ defmodule Concentrate.Reporter.VehicleTimeTravelTest do
         end
 
       stus = []
-      {td, vps, stus}
+      %TripGroup{td: td, vps: vps, stus: stus}
     end
   end
 

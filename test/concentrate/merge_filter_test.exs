@@ -4,7 +4,7 @@ defmodule Concentrate.MergeFilterTest do
   use ExUnitProperties
   import ExUnit.CaptureLog, only: [capture_log: 1]
   import Concentrate.MergeFilter
-  alias Concentrate.Encoder.GTFSRealtimeHelpers
+  alias Concentrate.Encoder.{GTFSRealtimeHelpers, TripGroup}
   alias Concentrate.{FeedUpdate, Merge, StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   describe "handle_subscribe/4" do
@@ -71,7 +71,9 @@ defmodule Concentrate.MergeFilterTest do
       {_, state} = handle_subscribe(:producer, [], from, state)
       {:noreply, [], state} = handle_events([first, second], from, state)
       assert {:noreply, [update], _state} = handle_info(:timeout, state)
-      assert [{_, [%VehiclePosition{}, %VehiclePosition{}], _}] = FeedUpdate.updates(update)
+
+      assert [%TripGroup{vps: [%VehiclePosition{}, %VehiclePosition{}]}] =
+               FeedUpdate.updates(update)
     end
 
     test "can apply partial? updates" do
@@ -98,10 +100,10 @@ defmodule Concentrate.MergeFilterTest do
       assert {:noreply, [full_update], _state} = handle_info(:timeout, state)
 
       assert FeedUpdate.partial?(partial_update)
-      assert [{nil, [^two], []}] = FeedUpdate.updates(partial_update)
+      assert [%TripGroup{vps: [^two]}] = FeedUpdate.updates(partial_update)
 
       refute FeedUpdate.partial?(full_update)
-      assert [{nil, merged, []}] = FeedUpdate.updates(full_update)
+      assert [%TripGroup{vps: merged}] = FeedUpdate.updates(full_update)
       assert [^one, ^two] = Enum.sort_by(merged, &VehiclePosition.id/1)
     end
 
@@ -142,7 +144,10 @@ defmodule Concentrate.MergeFilterTest do
       {:noreply, [partial_update], _state} = handle_events([first, second], from, state)
 
       assert FeedUpdate.partial?(partial_update)
-      assert [{td, [with_trip], []}] = FeedUpdate.updates(partial_update)
+
+      assert [%TripGroup{td: td, vps: [with_trip], stus: []}] =
+               FeedUpdate.updates(partial_update)
+
       assert TripDescriptor.trip_id(td) == "trip"
       assert VehiclePosition.id(with_trip) == "with_trip"
       assert VehiclePosition.latitude(with_trip) == 2
@@ -164,7 +169,7 @@ defmodule Concentrate.MergeFilterTest do
       {_, state} = handle_subscribe(:producer, [], from, state)
       {:noreply, [], state} = handle_events(events, from, state)
       assert {:noreply, [update], _state} = handle_info(:timeout, state)
-      assert FeedUpdate.updates(update) == [{nil, [expected], []}]
+      assert FeedUpdate.updates(update) == [%TripGroup{vps: [expected]}]
     end
 
     test "runs the events through the filter with options" do
@@ -183,15 +188,15 @@ defmodule Concentrate.MergeFilterTest do
       {_, state} = handle_subscribe(:producer, [], from, state)
       {:noreply, [], state} = handle_events(events, from, state)
       assert {:noreply, [update], _state} = handle_info(:timeout, state)
-      assert FeedUpdate.updates(update) == [{nil, [expected], []}]
+      assert FeedUpdate.updates(update) == [%TripGroup{vps: [expected]}]
     end
 
     test "can filter the grouped data" do
       defmodule Filter do
         @moduledoc false
         @behaviour Concentrate.GroupFilter
-        def filter({trip, _vehicles, stop_updates}) do
-          {trip, [], stop_updates}
+        def filter(%TripGroup{td: trip, vps: _vps, stus: stop_updates}) do
+          %TripGroup{td: trip, stus: stop_updates}
         end
       end
 
@@ -208,14 +213,14 @@ defmodule Concentrate.MergeFilterTest do
           ]
         )
 
-      expected = [{trip, [], [stu]}]
+      expected = [%TripGroup{td: trip, stus: [stu]}]
       {:noreply, [], state} = handle_events([data], from, state)
       {:noreply, [update], _state} = handle_info(:timeout, state)
       assert FeedUpdate.updates(update) == expected
     end
 
     test "removes empty results post-filter" do
-      filter = fn {_, _, _} -> {nil, [], []} end
+      filter = fn %TripGroup{} -> %TripGroup{} end
       from = make_from()
       {_, state, _} = init(group_filters: [filter])
       {_, state} = handle_subscribe(:producer, [], from, state)
@@ -272,7 +277,7 @@ defmodule Concentrate.MergeFilterTest do
           ]
         )
 
-      expected = [{trip, [], []}]
+      expected = [%TripGroup{td: trip}]
       {:noreply, [], state} = handle_events([data], from, state)
       {:noreply, [update], _state} = handle_info(:timeout, state)
       assert FeedUpdate.updates(update) == expected

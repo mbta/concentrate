@@ -7,6 +7,6 @@ defmodule Concentrate.GroupFilter do
   the items in a group share a trip ID, and the StopTimeUpdates will be in
   order of their stop_sequence.
   """
-  alias Concentrate.Encoder.GTFSRealtimeHelpers
-  @callback filter(GTFSRealtimeHelpers.trip_group()) :: GTFSRealtimeHelpers.trip_group()
+  alias Concentrate.Encoder.TripGroup
+  @callback filter(TripGroup.t()) :: TripGroup.t()
 end

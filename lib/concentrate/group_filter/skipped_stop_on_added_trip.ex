@@ -3,10 +3,11 @@ defmodule Concentrate.GroupFilter.SkippedStopOnAddedTrip do
   Removes SKIPPED stops from ADDED/UNSCHEDULED trips.
   """
   @behaviour Concentrate.GroupFilter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   @impl Concentrate.GroupFilter
-  def filter({%TripDescriptor{} = td, vps, stus}) do
+  def filter(%TripGroup{td: %TripDescriptor{} = td, stus: stus} = group) do
     stus =
       if TripDescriptor.schedule_relationship(td) in ~w(ADDED UNSCHEDULED)a do
         Enum.reject(
@@ -18,8 +19,8 @@ defmodule Concentrate.GroupFilter.SkippedStopOnAddedTrip do
         stus
       end
 
-    {td, vps, stus}
+    %{group | td: td, stus: stus}
   end
 
-  def filter(other), do: other
+  def filter(%TripGroup{} = other), do: other
 end

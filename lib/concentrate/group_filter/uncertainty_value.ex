@@ -3,20 +3,26 @@ defmodule Concentrate.GroupFilter.UncertaintyValue do
   Populates uncertainty in TripDescriptor based on the update_type value
   """
   @behaviour Concentrate.GroupFilter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   @impl Concentrate.GroupFilter
-  def filter({%TripDescriptor{update_type: update_type} = td, vps, stus})
+  def filter(
+        %TripGroup{
+          td: %TripDescriptor{update_type: update_type},
+          stus: stus
+        } = group
+      )
       when not is_nil(update_type) do
     stus =
       update_type
       |> calculate_uncertainty()
       |> set_uncertainty(stus)
 
-    {td, vps, stus}
+    %{group | stus: stus}
   end
 
-  def filter(other), do: other
+  def filter(%TripGroup{} = other), do: other
 
   defp set_uncertainty(nil, stus), do: stus
 
