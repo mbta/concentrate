@@ -3,6 +3,7 @@ defmodule Concentrate.Reporter.TimeTravelTest do
   use ExUnit.Case
   import ExUnit.CaptureLog
 
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.Reporter.TimeTravel
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
@@ -25,7 +26,7 @@ defmodule Concentrate.Reporter.TimeTravelTest do
         }
       end)
 
-    {td, [], stop_time_updates}
+    %TripGroup{td: td, stus: stop_time_updates}
   end
 
   describe "log" do

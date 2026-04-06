@@ -2,6 +2,7 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import ExUnit.CaptureLog
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.GroupFilter.SuppressStopTimeUpdate
   alias Concentrate.GTFS.Stops
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
@@ -47,9 +48,9 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
 
       log =
         capture_log(fn ->
-          assert {^td, [], [^stu2, ^stu3]} =
+          assert %TripGroup{td: ^td, stus: [^stu2, ^stu3]} =
                    SuppressStopTimeUpdate.filter(
-                     {td, [], stus},
+                     %TripGroup{td: td, stus: stus},
                      FakeStopPredictionStatus,
                      &fake_now/0
                    )
@@ -77,9 +78,9 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
 
       log =
         capture_log(fn ->
-          assert {^td, [], []} =
+          assert %TripGroup{td: ^td, stus: []} =
                    SuppressStopTimeUpdate.filter(
-                     {td, [], stus},
+                     %TripGroup{td: td, stus: stus},
                      FakeStopPredictionStatus,
                      &fake_now/0
                    )
@@ -104,9 +105,9 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
 
       log =
         capture_log(fn ->
-          assert {^td, [], []} =
+          assert %TripGroup{td: ^td, stus: []} =
                    SuppressStopTimeUpdate.filter(
-                     {td, [], stus},
+                     %TripGroup{td: td, stus: stus},
                      FakeStopPredictionStatus,
                      &fake_now/0
                    )
@@ -132,9 +133,9 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
 
       log =
         capture_log(fn ->
-          assert {^td, [], [^stu1, ^stu2]} =
+          assert %TripGroup{td: ^td, stus: [^stu1, ^stu2]} =
                    SuppressStopTimeUpdate.filter(
-                     {td, [], stus},
+                     %TripGroup{td: td, stus: stus},
                      FakeStopPredictionStatus,
                      &fake_now/0
                    )
@@ -159,9 +160,9 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
 
       log =
         capture_log(fn ->
-          assert {^td, [], [^stu1, ^stu2, ^stu3]} =
+          assert %TripGroup{td: ^td, stus: [^stu1, ^stu2, ^stu3]} =
                    SuppressStopTimeUpdate.filter(
-                     {td, [], stus},
+                     %TripGroup{td: td, stus: stus},
                      FakeStopPredictionStatus,
                      &fake_now/0
                    )
@@ -185,9 +186,9 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
 
       log =
         capture_log(fn ->
-          assert {^td, [], [^stu1, ^stu2, ^stu3]} =
+          assert %TripGroup{td: ^td, stus: [^stu1, ^stu2, ^stu3]} =
                    SuppressStopTimeUpdate.filter(
-                     {td, [], stus},
+                     %TripGroup{td: td, stus: stus},
                      FakeStopPredictionStatus,
                      &fake_now/0
                    )
@@ -211,9 +212,9 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
 
       log =
         capture_log(fn ->
-          assert {^td, [], []} =
+          assert %TripGroup{td: ^td, stus: []} =
                    SuppressStopTimeUpdate.filter(
-                     {td, [], stus},
+                     %TripGroup{td: td, stus: stus},
                      FakeStopPredictionStatus,
                      &fake_now_during_suppression_range/0
                    )
@@ -238,9 +239,9 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
 
       log =
         capture_log(fn ->
-          assert {^td, [], [^stu1, ^stu2, ^stu3]} =
+          assert %TripGroup{td: ^td, stus: [^stu1, ^stu2, ^stu3]} =
                    SuppressStopTimeUpdate.filter(
-                     {td, [], stus},
+                     %TripGroup{td: td, stus: stus},
                      FakeStopPredictionStatus,
                      &fake_now/0
                    )

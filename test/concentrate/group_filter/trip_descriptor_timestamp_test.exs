@@ -2,6 +2,7 @@ defmodule Concentrate.GroupFilter.TripDescriptorTimestampTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.TripDescriptorTimestamp
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{TripDescriptor, VehiclePosition}
 
   describe "filter/1" do
@@ -16,8 +17,12 @@ defmodule Concentrate.GroupFilter.TripDescriptorTimestampTest do
 
       td = TripDescriptor.new([])
 
-      assert {%{td | timestamp: VehiclePosition.last_updated(vp)}, [vp], []} ==
-               filter({td, [vp], []})
+      expected = %TripGroup{
+        td: %{td | timestamp: VehiclePosition.last_updated(vp)},
+        vps: [vp]
+      }
+
+      assert filter(%TripGroup{td: td, vps: [vp]}) == expected
     end
 
     test "use VehiclePostition with max timestamp if more than one is present" do
@@ -39,8 +44,12 @@ defmodule Concentrate.GroupFilter.TripDescriptorTimestampTest do
 
       td = TripDescriptor.new([])
 
-      assert {%{td | timestamp: VehiclePosition.last_updated(vp2)}, [vp1, vp2], []} ==
-               filter({td, [vp1, vp2], []})
+      expected = %TripGroup{
+        td: %{td | timestamp: VehiclePosition.last_updated(vp2)},
+        vps: [vp1, vp2]
+      }
+
+      assert filter(%TripGroup{td: td, vps: [vp1, vp2]}) == expected
     end
 
     test "uses timestamp on TripDescriptor if one exists" do
@@ -54,12 +63,9 @@ defmodule Concentrate.GroupFilter.TripDescriptorTimestampTest do
 
       td = TripDescriptor.new(timestamp: 1_514_558_900)
 
-      assert {td, [vp], []} ==
-               filter({td, [vp], []})
-    end
+      expected = %TripGroup{td: td, vps: [vp]}
 
-    test "other values are returned as-is" do
-      assert filter(:value) == :value
+      assert filter(%TripGroup{td: td, vps: [vp]}) == expected
     end
   end
 end

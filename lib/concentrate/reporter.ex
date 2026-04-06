@@ -12,10 +12,10 @@ defmodule Concentrate.Reporter do
   * `log/2`: receives the list of trip groups and the current state;
     returns a keyword list of stats and the new state
   """
-  alias Concentrate.Encoder.GTFSRealtimeHelpers
+  alias Concentrate.Encoder.TripGroup
   @type state :: term
   @type stats :: [{atom, term}]
 
   @callback init() :: state
-  @callback log([GTFSRealtimeHelpers.trip_group()], state) :: {stats, state}
+  @callback log([TripGroup.t()], state) :: {stats, state}
 end

@@ -1,6 +1,7 @@
 defmodule Concentrate.Filter.SkippedStopOnAddedTripTest do
   @moduledoc false
   use ExUnit.Case, async: true
+  alias Concentrate.Encoder.TripGroup
   import Concentrate.GroupFilter.SkippedStopOnAddedTrip
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
@@ -10,25 +11,25 @@ defmodule Concentrate.Filter.SkippedStopOnAddedTripTest do
     test "removes SKIPPED updates from ADDED trips" do
       td = TripDescriptor.new(trip_id: @trip_id, schedule_relationship: :ADDED)
       stu = StopTimeUpdate.new(trip_id: @trip_id, schedule_relationship: :SKIPPED)
-      assert {^td, [], []} = filter({td, [], [stu]})
+      assert %TripGroup{td: ^td, stus: []} = filter(%TripGroup{td: td, stus: [stu]})
     end
 
     test "removes SKIPPED updates from UNSCHEDULED trips" do
       td = TripDescriptor.new(trip_id: @trip_id, schedule_relationship: :UNSCHEDULED)
       stu = StopTimeUpdate.new(trip_id: @trip_id, schedule_relationship: :SKIPPED)
-      assert {^td, [], []} = filter({td, [], [stu]})
+      assert %TripGroup{td: ^td, stus: []} = filter(%TripGroup{td: td, stus: [stu]})
     end
 
     test "keeps SKIPPED updates from normal trips" do
       td = TripDescriptor.new(trip_id: @trip_id)
       stu = StopTimeUpdate.new(trip_id: @trip_id, schedule_relationship: :SKIPPED)
-      assert {^td, [], [^stu]} = filter({td, [], [stu]})
+      assert %TripGroup{td: ^td, stus: [^stu]} = filter(%TripGroup{td: td, stus: [stu]})
     end
 
     test "keeps normal updates from ADDED trips" do
       td = TripDescriptor.new(trip_id: @trip_id, schedule_relationship: :ADDED)
       stu = StopTimeUpdate.new(trip_id: @trip_id)
-      assert {^td, [], [^stu]} = filter({td, [], [stu]})
+      assert %TripGroup{td: ^td, stus: [^stu]} = filter(%TripGroup{td: td, stus: [stu]})
     end
 
     test "keeps stus with passthough_times from ADDED trips" do
@@ -41,7 +42,7 @@ defmodule Concentrate.Filter.SkippedStopOnAddedTripTest do
           passthrough_time: 500
         )
 
-      assert {^td, [], [^stu]} = filter({td, [], [stu]})
+      assert %TripGroup{td: ^td, stus: [^stu]} = filter(%TripGroup{td: td, stus: [stu]})
     end
 
     test "keeps stus with passthough_times from UNSCHEDULED trips" do
@@ -54,11 +55,7 @@ defmodule Concentrate.Filter.SkippedStopOnAddedTripTest do
           passthrough_time: 500
         )
 
-      assert {^td, [], [^stu]} = filter({td, [], [stu]})
-    end
-
-    test "other values are returned as-is" do
-      assert filter(:value) == :value
+      assert %TripGroup{td: ^td, stus: [^stu]} = filter(%TripGroup{td: td, stus: [stu]})
     end
   end
 end

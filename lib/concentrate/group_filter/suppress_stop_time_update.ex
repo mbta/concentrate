@@ -6,6 +6,7 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
   - Via an application-configurable time range
   """
   @behaviour Concentrate.GroupFilter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.GTFS.Stops
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
   require Logger
@@ -22,7 +23,7 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
         now_fn \\ &now/0
       )
 
-  def filter({td, vps, stus}, module, now_fn) do
+  def filter(%TripGroup{td: td, stus: stus} = group, module, now_fn) do
     suppressed_terminals =
       module.terminals_suppressed(TripDescriptor.route_id(td), TripDescriptor.direction_id(td))
 
@@ -40,10 +41,10 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
       |> perform_stop_suppression(td, suppressed_stops)
       |> perform_terminal_suppression_by_time(td, now)
 
-    {td, vps, stus}
+    %{group | td: td, stus: stus}
   end
 
-  def filter(other, _, _), do: other
+  def filter(%TripGroup{} = other, _, _), do: other
 
   defp now do
     DateTime.now(@time_zone)

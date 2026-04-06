@@ -3,6 +3,7 @@ defmodule Concentrate.Reporter.TimeTravel do
   Drops StopTimeUpdates that predict arriving at a later stop before departing an earlier one..
   """
   require Logger
+  alias Concentrate.Encoder.TripGroup
 
   @behaviour Concentrate.Reporter
 
@@ -17,7 +18,7 @@ defmodule Concentrate.Reporter.TimeTravel do
     {[], []}
   end
 
-  defp log_group({_td, _vps, stop_time_updates}) do
+  defp log_group(%TripGroup{stus: stop_time_updates}) do
     time_travel_check(stop_time_updates)
 
     []

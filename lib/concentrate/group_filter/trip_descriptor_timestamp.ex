@@ -3,18 +3,27 @@ defmodule Concentrate.GroupFilter.TripDescriptorTimestamp do
   Populates timestamp in TripDescriptor with corresponding timestamp in VehiclePosition
   """
   @behaviour Concentrate.GroupFilter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{TripDescriptor, VehiclePosition}
 
   @impl Concentrate.GroupFilter
-  def filter({%TripDescriptor{timestamp: nil} = td, [_ | _] = vps, stus}) do
-    timestamp = vps |> Enum.map(fn x -> VehiclePosition.last_updated(x) end) |> Enum.max()
+  def filter(
+        %TripGroup{
+          td: %TripDescriptor{timestamp: nil} = td,
+          vps: [_ | _] = vps
+        } = group
+      ) do
+    timestamp =
+      vps
+      |> Enum.map(fn x -> VehiclePosition.last_updated(x) end)
+      |> Enum.max()
 
-    {TripDescriptor.update_timestamp(td, timestamp), vps, stus}
+    %{group | td: TripDescriptor.update_timestamp(td, timestamp)}
   end
 
-  def filter({%TripDescriptor{route_id: "Green-" <> _}, _, _} = glides_trips) do
+  def filter(%TripGroup{td: %TripDescriptor{route_id: "Green-" <> _}} = glides_trips) do
     glides_trips
   end
 
-  def filter(other), do: other
+  def filter(%TripGroup{} = other), do: other
 end

@@ -3,6 +3,7 @@ defmodule Concentrate.Reporter.StopTimeUpdateLatency do
   Reporter which logs how close the earliest/latest StopTimeUpdates are.
   """
   @behaviour Concentrate.Reporter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.StopTimeUpdate
 
   @impl Concentrate.Reporter
@@ -14,7 +15,7 @@ defmodule Concentrate.Reporter.StopTimeUpdateLatency do
   def log(groups, state) do
     {earliest_time, latest_time} =
       groups
-      |> Enum.flat_map(&elem(&1, 2))
+      |> Enum.flat_map(fn %TripGroup{stus: stus} -> stus end)
       |> Enum.reduce({:infinity, 0}, &timestamp/2)
 
     earliest_time = optional_time(earliest_time, :infinity)

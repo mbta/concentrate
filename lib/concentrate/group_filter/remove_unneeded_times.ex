@@ -2,6 +2,7 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
   @moduledoc """
   Removes arrival times from the first stop on a trip, and the departure time from the last stop on a trip.
   """
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.GTFS.StopTimes
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
   @behaviour Concentrate.GroupFilter
@@ -9,17 +10,20 @@ defmodule Concentrate.GroupFilter.RemoveUnneededTimes do
   @impl Concentrate.GroupFilter
   def filter(trip_group, stop_times \\ StopTimes)
 
-  def filter({%TripDescriptor{} = td, vps, stus} = group, stop_times) do
+  def filter(
+        %TripGroup{td: %TripDescriptor{} = td, stus: stus} = group,
+        stop_times
+      ) do
     if TripDescriptor.schedule_relationship(td) == :SCHEDULED do
       trip_id = TripDescriptor.trip_id(td)
       stus = ensure_all_correct_times(stus, stop_times, trip_id)
-      {td, vps, stus}
+      %{group | stus: stus}
     else
       group
     end
   end
 
-  def filter(other, _module), do: other
+  def filter(%TripGroup{} = other, _module), do: other
 
   defp ensure_all_correct_times([_ | _] = stus, stop_times, trip_id) do
     [last | rest] = Enum.reverse(stus)

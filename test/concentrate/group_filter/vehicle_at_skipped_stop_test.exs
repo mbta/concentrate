@@ -2,6 +2,7 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStopTest do
   @moduledoc false
   use ExUnit.Case, async: true
   import Concentrate.GroupFilter.VehicleAtSkippedStop
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   describe "filter/1" do
@@ -25,8 +26,8 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStopTest do
         StopTimeUpdate.new(stop_id: "4", stop_sequence: 5)
       ]
 
-      group = {td, [vp], stus}
-      {^td, [new_vp], ^stus} = filter(group)
+      group = %TripGroup{td: td, vps: [vp], stus: stus}
+      %TripGroup{td: ^td, vps: [new_vp], stus: ^stus} = filter(group)
       assert VehiclePosition.stop_sequence(new_vp) == 4
       assert VehiclePosition.stop_id(new_vp) == "4"
       assert VehiclePosition.status(new_vp) == :IN_TRANSIT_TO
@@ -49,8 +50,8 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStopTest do
         StopTimeUpdate.new(stop_id: "2", stop_sequence: 2, schedule_relationship: :SKIPPED)
       ]
 
-      group = {td, [vp], stus}
-      {^td, [new_vp], ^stus} = filter(group)
+      group = %TripGroup{td: td, vps: [vp], stus: stus}
+      %TripGroup{td: ^td, vps: [new_vp], stus: ^stus} = filter(group)
       assert VehiclePosition.stop_sequence(new_vp) == nil
       assert VehiclePosition.stop_id(new_vp) == nil
       assert VehiclePosition.status(new_vp) == :IN_TRANSIT_TO
@@ -72,7 +73,7 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStopTest do
         StopTimeUpdate.new(stop_id: "1", stop_sequence: 1)
       ]
 
-      group = {td, [vp], stus}
+      group = %TripGroup{td: td, vps: [vp], stus: stus}
       assert filter(group) == group
     end
 
@@ -92,7 +93,7 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStopTest do
         StopTimeUpdate.new(stop_id: "1", stop_sequence: 1)
       ]
 
-      group = {td, [vp], stus}
+      group = %TripGroup{td: td, vps: [vp], stus: stus}
       assert filter(group) == group
     end
 
@@ -109,7 +110,7 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStopTest do
         StopTimeUpdate.new(stop_id: "1", stop_sequence: 1)
       ]
 
-      group = {td, [vp], stus}
+      group = %TripGroup{td: td, vps: [vp], stus: stus}
       assert filter(group) == group
     end
   end

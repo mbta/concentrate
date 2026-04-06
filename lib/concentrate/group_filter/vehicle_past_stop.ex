@@ -3,10 +3,11 @@ defmodule Concentrate.GroupFilter.VehiclePastStop do
   Removes stop times if there's a vehicle on the trip that's already left the stop.
   """
   @behaviour Concentrate.GroupFilter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor, VehiclePosition}
 
   @impl Concentrate.GroupFilter
-  def filter({%TripDescriptor{} = td, [vp], stus}) do
+  def filter(%TripGroup{td: %TripDescriptor{}, vps: [vp], stus: stus} = group) do
     stop_sequence = VehiclePosition.stop_sequence(vp)
 
     stus =
@@ -16,8 +17,8 @@ defmodule Concentrate.GroupFilter.VehiclePastStop do
         stus
       end
 
-    {td, [vp], stus}
+    %{group | stus: stus}
   end
 
-  def filter(other), do: other
+  def filter(%TripGroup{} = other), do: other
 end

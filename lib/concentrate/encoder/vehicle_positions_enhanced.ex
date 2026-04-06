@@ -3,6 +3,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
   Encodes a list of parsed data into a VehiclePositions_enhanced.json file.
   """
   @behaviour Concentrate.Encoder
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{TripDescriptor, VehiclePosition}
   alias VehiclePosition.Consist, as: VehiclePositionConsist
   import Concentrate.Encoder.GTFSRealtimeHelpers
@@ -26,7 +27,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
 
   def build_entity(_, enhanced_data \\ fn _ -> %{} end)
 
-  def build_entity({%TripDescriptor{} = td, vps, _stus}, enhanced_data_fn) do
+  def build_entity(%TripGroup{td: %TripDescriptor{} = td, vps: vps}, enhanced_data_fn) do
     trip =
       td
       |> trip_descriptor()
@@ -42,7 +43,7 @@ defmodule Concentrate.Encoder.VehiclePositionsEnhanced do
     end
   end
 
-  def build_entity({nil, vps, _stus}, _enhanced_data_fn) do
+  def build_entity(%TripGroup{td: nil, vps: vps}, _enhanced_data_fn) do
     # vehicles without a trip
     for vp <- vps,
         trip_id = VehiclePosition.trip_id(vp),

@@ -3,17 +3,18 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStop do
   Updates a VehiclePosition to not have a stop_id at a SKIPPED stop.
   """
   @behaviour Concentrate.GroupFilter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, VehiclePosition}
 
   @impl Concentrate.GroupFilter
-  def filter({td, vps, stus}) do
+  def filter(%TripGroup{vps: vps, stus: stus} = group) do
     vps =
       for vp <- vps do
         stop_id = VehiclePosition.stop_id(vp)
         move_stop_id(stop_id, vp, stus)
       end
 
-    {td, vps, stus}
+    %{group | vps: vps}
   end
 
   defp move_stop_id(nil, vp, _), do: vp

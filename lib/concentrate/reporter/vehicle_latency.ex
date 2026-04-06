@@ -3,6 +3,7 @@ defmodule Concentrate.Reporter.VehicleLatency do
   Reporter which logs how recently the latest vehicle was updated.
   """
   @behaviour Concentrate.Reporter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.VehiclePosition
 
   @impl Concentrate.Reporter
@@ -16,8 +17,7 @@ defmodule Concentrate.Reporter.VehicleLatency do
 
     latenesses =
       groups
-      # get the vehicle positions
-      |> Enum.flat_map(&elem(&1, 1))
+      |> Enum.flat_map(fn %TripGroup{vps: vps} -> vps end)
       |> Enum.flat_map(&timestamp(&1, now))
 
     latest =

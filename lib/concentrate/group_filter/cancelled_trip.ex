@@ -3,6 +3,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   Cancels TripUpdates and and skips StopTimeUpdates for cancelled trips.
   """
   @behaviour Concentrate.GroupFilter
+  alias Concentrate.Encoder.TripGroup
   alias Concentrate.Filter.Alert.CancelledTrips
   alias Concentrate.GTFS.{Routes, StopTimes}
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
@@ -19,7 +20,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
       )
 
   def filter(
-        {%TripDescriptor{} = td, _vps, stop_time_updates} = group,
+        %TripGroup{td: %TripDescriptor{} = td, stus: stop_time_updates} = group,
         module,
         routes_module,
         gtfs_stop_times,
@@ -57,7 +58,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
     end
   end
 
-  def filter(other, _module, _trips_module, _gtfs_stop_times, _now_fn), do: other
+  def filter(%TripGroup{} = other, _module, _trips_module, _gtfs_stop_times, _now_fn), do: other
 
   defp maybe_time([stu | _]) do
     StopTimeUpdate.time(stu)
@@ -91,11 +92,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
 
   defp bus_block_waiver?(_, _, _, _, _), do: false
 
-  defp cancel_group({td, vps, nil}, gtfs_stop_times) do
-    cancel_group({td, vps, []}, gtfs_stop_times)
-  end
-
-  defp cancel_group({td, vps, []}, gtfs_stop_times) do
+  defp cancel_group(%TripGroup{td: td, stus: []} = group, gtfs_stop_times) do
     td = TripDescriptor.cancel(td)
     trip_id = TripDescriptor.trip_id(td)
 
@@ -118,13 +115,13 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
           []
       end
 
-    {td, vps, stus}
+    %{group | td: td, stus: stus}
   end
 
-  defp cancel_group({td, vps, stus}, _) do
+  defp cancel_group(%TripGroup{td: td, stus: stus} = group, _) do
     td = TripDescriptor.cancel(td)
     stus = Enum.map(stus, &StopTimeUpdate.skip/1)
-    {td, vps, stus}
+    %{group | td: td, stus: stus}
   end
 
   defp now do
