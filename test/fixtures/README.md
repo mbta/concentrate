@@ -8,8 +8,8 @@ files, there are matching equivalent human-readable source files.
 
 
 ## Protobuf
-`*.pb` files contain wire-format (binary-encoded) [protobuf][protobuf] data. The
-corresponding `*.txtpb` files encode the same data in the human-readable
+`.pb` files contain wire-format (binary-encoded) [protobuf][protobuf] data. The
+corresponding `.txtpb` files encode the same data in the human-readable
 [protobuf text format][txtpb-spec].
 
 Files in either format may be automatically derived from the other with
