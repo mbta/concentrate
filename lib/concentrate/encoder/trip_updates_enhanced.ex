@@ -9,6 +9,12 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
 
   @impl Concentrate.Encoder
   def encode_groups(groups, opts \\ []) when is_list(groups) do
+    for group <- groups do
+      if group.tp do
+        Logger.info("#{__MODULE__} encode_groups: group with #{inspect({group.td, group.tp})}")
+      end
+    end
+
     message = %{
       header: feed_header(opts),
       entity: trip_update_feed_entity(groups, &build_stop_time_update/1, &enhanced_data/1)

@@ -5,10 +5,27 @@ defmodule Concentrate.Encoder.TripUpdates do
   @behaviour Concentrate.Encoder
   alias Concentrate.StopTimeUpdate
   import Concentrate.Encoder.GTFSRealtimeHelpers
+  require Logger
 
   @impl Concentrate.Encoder
   def encode_groups(groups, opts \\ []) when is_list(groups) do
+    for group <- groups do
+      if group.tp do
+        Logger.info(
+          "#{__MODULE__} encode_groups before revenue check: group with #{inspect({group.td, group.tp})}"
+        )
+      end
+    end
+
     groups = Enum.reject(groups, &non_revenue?/1)
+
+    for group <- groups do
+      if group.tp do
+        Logger.info(
+          "#{__MODULE__} encode_groups after revenue check: group with #{inspect({group.td, group.tp})}"
+        )
+      end
+    end
 
     message = %{
       header: feed_header(opts),
