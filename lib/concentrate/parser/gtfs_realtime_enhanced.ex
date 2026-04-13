@@ -209,13 +209,13 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   @spec decode_trip_properties([TripDescriptor.t()], map(), Helpers.Options.t()) ::
           TripProperties.t() | :drop_trip
   defp decode_trip_properties(
-         [_] = td,
+         [td],
          %{"trip_properties" => trip_properties},
          options
        )
        when trip_properties != nil do
-    if Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) do
-      TripProperties.new_from_json(trip_properties)
+    if Helpers.valid_route_id?(options, TripDescriptor.route_id(td)) do
+      TripProperties.new_from_json(trip_properties, TripDescriptor.trip_id(td))
     else
       :drop_trip
     end

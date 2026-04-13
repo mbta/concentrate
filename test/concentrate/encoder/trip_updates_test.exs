@@ -207,7 +207,7 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
       initial = [
         TripDescriptor.new(trip_id: "1"),
         StopTimeUpdate.new(trip_id: "1", arrival_time: 1),
-        TripProperties.new(trip_id: "1", trip_headsign: "boo", trip_short_name: "SL-2000")
+        TripProperties.new(source_trip_id: "1", trip_headsign: "boo", trip_short_name: "SL-2000")
       ]
 
       decoded = :gtfs_realtime_proto.decode_msg(encode_groups(group(initial)), :FeedMessage, [])
@@ -216,8 +216,8 @@ defmodule Concentrate.Encoder.TripUpdatesTest do
                entity: [
                  %{
                    trip_update: %{
+                     trip: %{trip_id: "1"},
                      trip_properties: %{
-                       trip_id: "1",
                        trip_headsign: "boo",
                        trip_short_name: "SL-2000"
                      }

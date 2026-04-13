@@ -329,7 +329,7 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
       parsed = [
         TripDescriptor.new(trip_id: "1"),
         StopTimeUpdate.new(trip_id: "1", arrival_time: 1),
-        TripProperties.new(trip_id: "1", trip_headsign: "boo", trip_short_name: "SL-2000")
+        TripProperties.new(source_trip_id: "1", trip_headsign: "boo", trip_short_name: "SL-2000")
       ]
 
       encoded = Jason.decode!(encode_groups(group(parsed)))
@@ -338,8 +338,8 @@ defmodule Concentrate.Encoder.TripUpdatesEnhancedTest do
                "entity" => [
                  %{
                    "trip_update" => %{
+                     "trip" => %{"trip_id" => "1"},
                      "trip_properties" => %{
-                       "trip_id" => "1",
                        "trip_headsign" => "boo",
                        "trip_short_name" => "SL-2000"
                      }

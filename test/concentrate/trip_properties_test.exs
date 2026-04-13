@@ -4,10 +4,22 @@ defmodule Concentrate.TripPropertiesTest do
   alias Concentrate.Mergeable
   alias Concentrate.TripProperties
 
-  describe "new_from_proto/1" do
+  describe "new_from_proto/2" do
+    test "sets source trip_id" do
+      proto = %{trip_id: "newfangled"}
+      actual = TripProperties.new_from_proto(proto, "oldskool")
+
+      expected = %TripProperties{
+        source_trip_id: "oldskool",
+        new_trip_id: "newfangled"
+      }
+
+      assert actual == expected
+    end
+
     test "gets field values from proto" do
       proto = %{
-        trip_id: "trip",
+        trip_id: "clone",
         start_date: "19991231",
         start_time: "12:34:56",
         shape_id: "wiggles",
@@ -15,10 +27,11 @@ defmodule Concentrate.TripPropertiesTest do
         trip_short_name: "SL-2000"
       }
 
-      actual = TripProperties.new_from_proto(proto)
+      actual = TripProperties.new_from_proto(proto, "orig")
 
       expected = %TripProperties{
-        trip_id: "trip",
+        source_trip_id: "orig",
+        new_trip_id: "clone",
         start_date: "19991231",
         start_time: "12:34:56",
         shape_id: "wiggles",
@@ -36,10 +49,11 @@ defmodule Concentrate.TripPropertiesTest do
         trip_headsign: "boo"
       }
 
-      actual = TripProperties.new_from_proto(proto)
+      actual = TripProperties.new_from_proto(proto, nil)
 
       expected = %TripProperties{
-        trip_id: "trip",
+        source_trip_id: nil,
+        new_trip_id: "trip",
         start_date: nil,
         start_time: "12:34:56",
         shape_id: nil,
@@ -51,10 +65,22 @@ defmodule Concentrate.TripPropertiesTest do
     end
   end
 
-  describe "new_from_json/1" do
+  describe "new_from_json/2" do
+    test "sets source trip_id" do
+      json = %{"trip_id" => "newfangled"}
+      actual = TripProperties.new_from_json(json, "oldskool")
+
+      expected = %TripProperties{
+        source_trip_id: "oldskool",
+        new_trip_id: "newfangled"
+      }
+
+      assert actual == expected
+    end
+
     test "gets field values from json" do
       json = %{
-        "trip_id" => "trip",
+        "trip_id" => "clone",
         "start_date" => "19991231",
         "start_time" => "12:34:56",
         "shape_id" => "wiggles",
@@ -62,10 +88,11 @@ defmodule Concentrate.TripPropertiesTest do
         "trip_short_name" => "SL-2000"
       }
 
-      actual = TripProperties.new_from_json(json)
+      actual = TripProperties.new_from_json(json, "orig")
 
       expected = %TripProperties{
-        trip_id: "trip",
+        source_trip_id: "orig",
+        new_trip_id: "clone",
         start_date: "19991231",
         start_time: "12:34:56",
         shape_id: "wiggles",
@@ -83,10 +110,11 @@ defmodule Concentrate.TripPropertiesTest do
         "trip_headsign" => "boo"
       }
 
-      actual = TripProperties.new_from_json(json)
+      actual = TripProperties.new_from_json(json, nil)
 
       expected = %TripProperties{
-        trip_id: "trip",
+        source_trip_id: nil,
+        new_trip_id: "trip",
         start_date: nil,
         start_time: "12:34:56",
         shape_id: nil,
@@ -102,20 +130,20 @@ defmodule Concentrate.TripPropertiesTest do
     test "merge/2 takes non-nil values" do
       first =
         TripProperties.new(
-          trip_id: "trip",
+          source_trip_id: "trip",
           shape_id: "wiggles",
           trip_short_name: "SL-2000"
         )
 
       second =
         TripProperties.new(
-          trip_id: "trip",
+          source_trip_id: "trip",
           trip_headsign: "boo"
         )
 
       expected =
         TripProperties.new(
-          trip_id: "trip",
+          source_trip_id: "trip",
           shape_id: "wiggles",
           trip_headsign: "boo",
           trip_short_name: "SL-2000"
@@ -128,7 +156,7 @@ defmodule Concentrate.TripPropertiesTest do
     test "merge/2 prefers the later start date" do
       late_date =
         TripProperties.new(
-          trip_id: "trip",
+          source_trip_id: "trip",
           start_date: "19990801",
           start_time: "09:12:34",
           trip_headsign: "red"
@@ -136,7 +164,7 @@ defmodule Concentrate.TripPropertiesTest do
 
       early_date =
         TripProperties.new(
-          trip_id: "trip",
+          source_trip_id: "trip",
           start_date: "19990321",
           start_time: "12:34:56",
           trip_headsign: "green"
@@ -149,7 +177,7 @@ defmodule Concentrate.TripPropertiesTest do
     test "merge/2 prefers the later start time (on the same date)" do
       late_time =
         TripProperties.new(
-          trip_id: "trip",
+          source_trip_id: "trip",
           start_date: "19990321",
           start_time: "12:34:56",
           trip_headsign: "red"
@@ -157,7 +185,7 @@ defmodule Concentrate.TripPropertiesTest do
 
       early_time =
         TripProperties.new(
-          trip_id: "trip",
+          source_trip_id: "trip",
           start_date: "19990321",
           start_time: "09:12:34",
           trip_headsign: "green"

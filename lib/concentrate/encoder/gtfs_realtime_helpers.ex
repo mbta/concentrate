@@ -192,7 +192,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   end
 
   defp group_by_trip_id(%TripProperties{} = tp, map) do
-    trip_id = TripProperties.trip_id(tp)
+    trip_id = TripProperties.source_trip_id(tp)
     default = %TripGroup{tp: tp}
     Map.update(map, trip_id, default, &add_trip_properties(&1, tp))
   end
@@ -319,7 +319,10 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   end
 
   defp trip_update_trip_properties(%TripProperties{} = tp) do
-    drop_nil_values(Map.from_struct(tp))
+    Map.from_struct(tp)
+    |> Map.put(:trip_id, tp.new_trip_id)
+    |> Map.drop([:new_trip_id, :source_trip_id])
+    |> drop_nil_values()
   end
 
   defp trip_update_trip_properties(_), do: nil

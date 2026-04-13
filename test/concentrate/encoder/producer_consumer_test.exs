@@ -17,7 +17,7 @@ defmodule Concentrate.Encoder.ProducerConsumerTest do
             group([
               TripDescriptor.new(trip_id: "trip"),
               StopTimeUpdate.new(trip_id: "trip", departure_time: 1),
-              TripProperties.new(trip_id: "trip", trip_headsign: "boo")
+              TripProperties.new(source_trip_id: "trip", trip_headsign: "boo")
             ])
         )
 

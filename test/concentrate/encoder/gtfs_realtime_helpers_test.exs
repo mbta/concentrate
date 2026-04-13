@@ -14,7 +14,7 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpersTest do
       stu_1 = StopTimeUpdate.new(trip_id: "trip-A", stop_sequence: 1)
       stu_2 = StopTimeUpdate.new(trip_id: "trip-A", stop_sequence: 2)
       stu_3 = StopTimeUpdate.new(trip_id: "trip-B", stop_sequence: 1)
-      tp = TripProperties.new(trip_id: "trip-B", trip_headsign: "boop")
+      tp = TripProperties.new(source_trip_id: "trip-B", trip_headsign: "boop")
       vehicle = VehiclePosition.new(trip_id: "trip-A", latitude: 1, longitude: 1)
       vehicle_no_trip = VehiclePosition.update(vehicle, trip_id: nil)
 
