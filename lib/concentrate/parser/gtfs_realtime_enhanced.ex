@@ -212,7 +212,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
          [_] = td,
          %{"trip_properties" => trip_properties},
          options
-       ) do
+       )
+       when trip_properties != nil do
     if Helpers.valid_route_id?(options, TripDescriptor.route_id(List.first(td))) do
       TripProperties.new_from_json(trip_properties)
     else

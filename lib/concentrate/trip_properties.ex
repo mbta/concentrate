@@ -28,6 +28,8 @@ defmodule Concentrate.TripProperties do
     )
   end
 
+  def new_from_proto(_), do: nil
+
   @doc """
   Creates a new struct instance by pulling each field's value from the
   same-named field in a JSON map. Missing fields get `nil`.
@@ -41,6 +43,8 @@ defmodule Concentrate.TripProperties do
       )
     )
   end
+
+  def new_from_json(_), do: nil
 
   defimpl Concentrate.Mergeable do
     def key(%{trip_id: trip_id}), do: trip_id
