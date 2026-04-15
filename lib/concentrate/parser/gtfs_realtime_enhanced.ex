@@ -215,10 +215,6 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
        )
        when trip_properties != nil do
     if Helpers.valid_route_id?(options, TripDescriptor.route_id(td)) do
-      Logger.info(
-        "#{__MODULE__} decode_trip_properties (trip #{td.trip_id}): #{inspect(trip_properties)}"
-      )
-
       TripProperties.new_from_json(trip_properties, TripDescriptor.trip_id(td))
     else
       :drop_trip

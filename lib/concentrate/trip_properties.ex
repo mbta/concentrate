@@ -4,7 +4,6 @@ defmodule Concentrate.TripProperties do
   mirrors a subset of the TripProperties message in gtfs-realtime.proto.
   """
   import Concentrate.StructHelpers
-  require Logger
 
   defstruct_accessors([
     # The trip_id associated with these updated properties. In GTFS-RT, this
@@ -31,8 +30,6 @@ defmodule Concentrate.TripProperties do
   """
   def new_from_proto(%{} = proto, trip_id) do
     # Pull each field's value from the same-named field in the proto.
-    Logger.info("#{__MODULE__} new_from_proto: #{inspect(proto)}, #{inspect(trip_id)}")
-
     new(
       [{:source_trip_id, trip_id}, {:new_trip_id, proto[:trip_id]}] ++
         Enum.map(
@@ -52,8 +49,6 @@ defmodule Concentrate.TripProperties do
   """
   def new_from_json(%{} = json, trip_id) do
     # Pull each field's value from the same-named field in the proto.
-    Logger.info("#{__MODULE__} new_from_json: #{inspect(json)}, #{inspect(trip_id)}")
-
     new(
       [{:source_trip_id, trip_id}, {:new_trip_id, json["trip_id"]}] ++
         Enum.map(
@@ -66,16 +61,11 @@ defmodule Concentrate.TripProperties do
   def new_from_json(_, _), do: nil
 
   defimpl Concentrate.Mergeable do
-    def key(%{source_trip_id: trip_id} = item) do
-      Logger.info("#{__MODULE__} Mergeable key: #{inspect(item)}")
-      trip_id
-    end
+    def key(%{source_trip_id: trip_id}), do: trip_id
 
     def related_keys(_), do: []
 
     def merge(first, second) do
-      Logger.info("#{__MODULE__} merge: #{inspect(first)}; #{inspect(second)}")
-
       if {first.start_date, first.start_time} > {second.start_date, second.start_time} do
         do_merge(first, second)
       else

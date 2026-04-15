@@ -4,7 +4,6 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   """
   alias Concentrate.Encoder.TripGroup
   alias Concentrate.{StopTimeUpdate, TripDescriptor, TripProperties, VehiclePosition}
-  require Logger
   import Calendar.ISO, only: [date_to_string: 4]
 
   @doc """
@@ -320,19 +319,10 @@ defmodule Concentrate.Encoder.GTFSRealtimeHelpers do
   end
 
   defp trip_update_trip_properties(%TripProperties{} = tp) do
-    Logger.info("#{__MODULE__} trip_update_trip_properties: #{inspect(tp)}")
-
-    ret =
-      Map.from_struct(tp)
-      |> Map.put(:trip_id, tp.new_trip_id)
-      |> Map.drop([:new_trip_id, :source_trip_id])
-      |> drop_nil_values()
-
-    if ret != nil and ret != %{} do
-      Logger.info("#{__MODULE__} trip_update_trip_properties after pipeline: #{inspect(ret)}")
-    end
-
-    ret
+    Map.from_struct(tp)
+    |> Map.put(:trip_id, tp.new_trip_id)
+    |> Map.drop([:new_trip_id, :source_trip_id])
+    |> drop_nil_values()
   end
 
   defp trip_update_trip_properties(_), do: nil
