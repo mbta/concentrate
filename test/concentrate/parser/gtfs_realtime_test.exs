@@ -4,7 +4,16 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
   import ExUnit.CaptureLog
   import Concentrate.TestHelpers
   import Concentrate.Parser.GTFSRealtime
-  alias Concentrate.{Alert, FeedUpdate, StopTimeUpdate, TripDescriptor, VehiclePosition}
+
+  alias Concentrate.{
+    Alert,
+    FeedUpdate,
+    StopTimeUpdate,
+    TripDescriptor,
+    TripProperties,
+    VehiclePosition
+  }
+
   alias Concentrate.Parser.Helpers.Options
 
   describe "parse/1" do
@@ -20,15 +29,24 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       end
     end
 
-    test "parsing a tripupdates.pb file returns only StopTimeUpdate or TripDescriptor structs" do
+    test "parsing a tripupdates.pb file returns only StopTimeUpdate, TripProperties, or TripDescriptor structs" do
       binary = File.read!(fixture_path("tripupdates.pb"))
       parsed = parse(binary, [])
       assert [_ | _] = updates = FeedUpdate.updates(parsed)
       refute FeedUpdate.partial?(parsed)
 
       for update <- updates do
-        assert update.__struct__ in [StopTimeUpdate, TripDescriptor]
+        assert update.__struct__ in [StopTimeUpdate, TripProperties, TripDescriptor]
       end
+    end
+
+    test "parsing a tripupdates.pb file with TripProperties fields returns some TripProperties structs" do
+      binary = File.read!(fixture_path("tripupdates_with_tripproperties.pb"))
+      parsed = parse(binary, [])
+      assert [_ | _] = updates = FeedUpdate.updates(parsed)
+      refute FeedUpdate.partial?(parsed)
+
+      assert Enum.any?(updates, &(&1.__struct__ == TripProperties))
     end
 
     test "parsing an alerts.pb returns only alerts" do
@@ -150,7 +168,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       assert [] = decode_trip_update(update, %Options{routes: {:ok, ["keeping"]}})
     end
 
-    test "includes trip/stop update if we're keeping the route" do
+    test "includes trip and stop update if we're keeping the route" do
       update = %{
         trip: %{route_id: "keeping"},
         stop_time_update: [
@@ -160,10 +178,26 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         ]
       }
 
-      assert [_, _] = decode_trip_update(update, %Options{routes: {:ok, ["keeping"]}})
+      assert [%TripDescriptor{}, %StopTimeUpdate{}] =
+               decode_trip_update(update, %Options{routes: {:ok, ["keeping"]}})
     end
 
-    test "does not include trip or stop update if we're not excluding the route" do
+    test "includes trip, stop update, and trip properties if we're keeping the route" do
+      update = %{
+        trip: %{route_id: "keeping"},
+        stop_time_update: [
+          %{
+            departure: %{time: 1}
+          }
+        ],
+        trip_properties: %{shape_id: "foo", trip_short_name: "bar"}
+      }
+
+      assert [%TripDescriptor{}, %StopTimeUpdate{}, %TripProperties{}] =
+               decode_trip_update(update, %Options{routes: {:ok, ["keeping"]}})
+    end
+
+    test "does not include trip or stop update if we're excluding the route" do
       update = %{
         trip: %{route_id: "ignored"},
         stop_time_update: [
@@ -176,7 +210,7 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       assert [] = decode_trip_update(update, %Options{excluded_routes: {:ok, ["ignored"]}})
     end
 
-    test "includes trip or stop update if we're not excluding the route" do
+    test "includes trip and stop update if we're not excluding the route" do
       update = %{
         trip: %{route_id: "keeping"},
         stop_time_update: [
@@ -186,10 +220,26 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         ]
       }
 
-      assert [_, _] = decode_trip_update(update, %Options{excluded_routes: {:ok, ["ignored"]}})
+      assert [%TripDescriptor{}, %StopTimeUpdate{}] =
+               decode_trip_update(update, %Options{excluded_routes: {:ok, ["ignored"]}})
     end
 
-    test "only includes trip/stop update if it's under max_time" do
+    test "includes trip, stop update, and trip properties if we're not excluding the route" do
+      update = %{
+        trip: %{route_id: "keeping"},
+        stop_time_update: [
+          %{
+            departure: %{time: 1}
+          }
+        ],
+        trip_properties: %{shape_id: "foo", trip_short_name: "bar"}
+      }
+
+      assert [%TripDescriptor{}, %StopTimeUpdate{}, %TripProperties{}] =
+               decode_trip_update(update, %Options{excluded_routes: {:ok, ["ignored"]}})
+    end
+
+    test "only includes trip and stop update if it's under max_time" do
       update = %{
         trip: %{},
         stop_time_update: [
@@ -200,7 +250,9 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       }
 
       assert [] = decode_trip_update(update, %Options{max_time: 1})
-      assert [_, _] = decode_trip_update(update, %Options{max_time: 2})
+
+      assert [%TripDescriptor{}, %StopTimeUpdate{}] =
+               decode_trip_update(update, %Options{max_time: 2})
     end
 
     test "keeps the whole trip even if later updates are later than the time" do
@@ -216,16 +268,28 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
         ]
       }
 
-      assert [_, _, _] = decode_trip_update(update, %Options{max_time: 1})
+      assert [%TripDescriptor{}, %StopTimeUpdate{}, %StopTimeUpdate{}] =
+               decode_trip_update(update, %Options{max_time: 1})
     end
 
-    test "keeps the trip even without stop time updates" do
+    test "keeps the trip even without stop time updates or trip properties" do
       update = %{
         trip: %{},
         stop_time_update: []
       }
 
-      assert [_] = decode_trip_update(update, %Options{})
+      assert [%TripDescriptor{}] = decode_trip_update(update, %Options{})
+    end
+
+    test "keeps the trip and trip properties even without stop time updates" do
+      update = %{
+        trip: %{},
+        stop_time_update: [],
+        trip_properties: %{}
+      }
+
+      assert [%TripDescriptor{}, %TripProperties{}] =
+               decode_trip_update(update, %Options{})
     end
 
     test "ignores the trip when we're excluding the route even without stop time updates" do
@@ -291,14 +355,15 @@ defmodule Concentrate.Parser.GTFSRealtimeTest do
       assert [] = decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}}, 0)
     end
 
-    test "includes trip/vehicle if we're keeping the route" do
+    test "includes trip and vehicle if we're keeping the route" do
       position = %{
         trip: %{route_id: "keeping"},
         vehicle: %{},
         position: %{latitude: 1, longitude: 1}
       }
 
-      assert [_, _] = decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}}, 0)
+      assert [%TripDescriptor{}, %VehiclePosition{}] =
+               decode_vehicle(position, %Options{routes: {:ok, ["keeping"]}}, 0)
     end
 
     test "includes timestamp if available" do
