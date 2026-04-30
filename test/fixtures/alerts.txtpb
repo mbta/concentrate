@@ -1,7 +1,7 @@
 # alerts.txtpb
 # This file contains a single text-format transit_realtime.FeedMessage message.
-# Generated on 2026-04-08 from alerts.pb, which was originally sampled from real
-# data in our logs in December 2017.
+# Generated on 2026-04-08 from alerts.pb, which was originally sampled from
+# production data in December 2017.
 header {
   gtfs_realtime_version: "1.0"
   timestamp: 1514034019

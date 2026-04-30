@@ -1,0 +1,151 @@
+# tripupdates_with_tripproperties.txtpb
+# This file contains a single text-format transit_realtime.FeedMessage message.
+# It is the source from which tripupdates_with_tripproperties.pb is generated.
+header {
+  gtfs_realtime_version: "2.0"
+  incrementality: FULL_DATASET
+  timestamp: 1513622773
+}
+entity {
+  id: "1513622773_ADDED-1873"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "ADDED-1873"
+      start_date: "20171218"
+      schedule_relationship: ADDED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    trip_properties {
+      trip_headsign: "Why bother"
+    }
+    vehicle {
+      id: "10034"
+      label: "3877-3709"
+    }
+    stop_time_update {
+      stop_sequence: 540
+      arrival {
+        time: 1513622831
+      }
+      departure {
+        time: 1513622831
+      }
+      stop_id: "70167"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 550
+      arrival {
+        time: 1513622932
+      }
+      departure {
+        time: 1513622932
+      }
+      stop_id: "70165"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 560
+      arrival {
+        time: 1513623041
+      }
+      departure {
+        time: 1513623041
+      }
+      stop_id: "70163"
+      schedule_relationship: SCHEDULED
+    }
+  }
+}
+entity {
+  id: "1513622773_34659400"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34659400"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-E"
+      direction_id: 0
+    }
+    vehicle {
+      id: "10052"
+      label: "3890"
+    }
+    stop_time_update {
+      stop_sequence: 660
+      arrival {
+        time: 1513622832
+      }
+      departure {
+        time: 1513622832
+      }
+      stop_id: "70255"
+      schedule_relationship: SCHEDULED
+    }
+  }
+}
+entity {
+  id: "1513622773_34658756"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34658756"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-D"
+      direction_id: 0
+    }
+    trip_properties {
+      trip_headsign: "Situation normal"
+    }
+    vehicle {
+      id: "10162"
+      label: "3860-3645"
+    }
+  }
+}
+entity {
+  id: "1513622773_34657654"
+  is_deleted: false
+  trip_update {
+    trip {
+      trip_id: "34657654"
+      start_date: "20171218"
+      schedule_relationship: SCHEDULED
+      route_id: "Green-C"
+      direction_id: 0
+    }
+    trip_properties {
+      trip_headsign: "Wheeeee!"
+    }
+    vehicle {
+      id: "10201"
+      label: "3819-3614"
+    }
+    stop_time_update {
+      stop_sequence: 320
+      arrival {
+        time: 1513622872
+      }
+      departure {
+        time: 1513622872
+      }
+      stop_id: "70211"
+      schedule_relationship: SCHEDULED
+    }
+    stop_time_update {
+      stop_sequence: 330
+      arrival {
+        time: 1513622959
+      }
+      departure {
+        time: 1513622959
+      }
+      stop_id: "70213"
+      schedule_relationship: SCHEDULED
+    }
+  }
+}

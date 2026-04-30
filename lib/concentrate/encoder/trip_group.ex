@@ -6,11 +6,13 @@ defmodule Concentrate.Encoder.TripGroup do
 
   defstruct td: nil,
             vps: [],
-            stus: []
+            stus: [],
+            tp: nil
 
   @type t :: %__MODULE__{
           td: Concentrate.TripDescriptor.t() | nil,
           vps: [Concentrate.VehiclePosition.t()],
-          stus: [Concentrate.StopTimeUpdate.t()]
+          stus: [Concentrate.StopTimeUpdate.t()],
+          tp: Concentrate.TripProperties.t() | nil
         }
 end

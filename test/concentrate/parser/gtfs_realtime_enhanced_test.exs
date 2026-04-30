@@ -13,11 +13,12 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     Parser.Helpers.Options,
     StopTimeUpdate,
     TripDescriptor,
+    TripProperties,
     VehiclePosition
   }
 
   describe "parse/1" do
-    test "parsing a TripDescriptor enhanced JSON file returns only StopTimeUpdate or TripDescriptor structs" do
+    test "parsing a TripUpdates enhanced JSON file returns only StopTimeUpdate, TripProperties, or TripDescriptor structs" do
       binary = File.read!(fixture_path("TripUpdates_enhanced.json"))
       parsed = parse(binary, [])
       assert 1_514_142_840 = FeedUpdate.timestamp(parsed)
@@ -25,8 +26,17 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert [_ | _] = updates = FeedUpdate.updates(parsed)
 
       for update <- updates do
-        assert update.__struct__ in [StopTimeUpdate, TripDescriptor]
+        assert update.__struct__ in [StopTimeUpdate, TripProperties, TripDescriptor]
       end
+    end
+
+    test "parsing a TripUpdates enhanced JSON file with TripProperties fields returns some TripProperties structs" do
+      binary = File.read!(fixture_path("TripUpdates_enhanced_with_tripproperties.json"))
+      parsed = parse(binary, [])
+      refute FeedUpdate.partial?(parsed)
+      assert [_ | _] = updates = FeedUpdate.updates(parsed)
+
+      assert Enum.any?(updates, &(&1.__struct__ == TripProperties))
     end
 
     test "parsing an alerts_enhanced.json file returns only alerts" do
@@ -178,7 +188,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
     end
   end
 
-  describe "decode_trip_update/1" do
+  describe "decode_trip_update/2" do
     test "can handle boarding status information" do
       update = %{
         "trip" => %{},
@@ -253,6 +263,25 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert StopTimeUpdate.platform_id(stop_update) == "platform"
     end
 
+    test "includes trip properties if present" do
+      update = %{
+        "trip" => %{},
+        "stop_time_update" => [%{}],
+        "trip_properties" => %{
+          "shape_id" => "foo",
+          "trip_short_name" => "bar",
+          "trip_headsign" => "wug"
+        }
+      }
+
+      [%TripDescriptor{}, %StopTimeUpdate{}, %TripProperties{} = tp] =
+        decode_trip_update(update, %Options{})
+
+      assert TripProperties.shape_id(tp) == "foo"
+      assert TripProperties.trip_short_name(tp) == "bar"
+      assert TripProperties.trip_headsign(tp) == "wug"
+    end
+
     test "treats a missing schedule relationship as SCHEDULED" do
       update = %{
         "trip" => %{},
@@ -266,7 +295,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       assert StopTimeUpdate.schedule_relationship(stu) == :SCHEDULED
     end
 
-    test "only includes trip/stop update if it's under max_time" do
+    test "only includes trip and stop update if it's under max_time" do
       update = %{
         "trip" => %{},
         "stop_time_update" => [
@@ -277,7 +306,9 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
       }
 
       assert [] = decode_trip_update(update, %Options{max_time: 1})
-      assert [_, _] = decode_trip_update(update, %Options{max_time: 2})
+
+      assert [%TripDescriptor{}, %StopTimeUpdate{}] =
+               decode_trip_update(update, %Options{max_time: 2})
     end
 
     test "keeps the whole trip even if later updates are later than the time" do
@@ -293,7 +324,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhancedTest do
         ]
       }
 
-      assert [_, _, _] = decode_trip_update(update, %Options{max_time: 1})
+      assert [%TripDescriptor{}, %StopTimeUpdate{}, %StopTimeUpdate{}] =
+               decode_trip_update(update, %Options{max_time: 1})
     end
 
     test "drops the TripDescriptor if the route is ignored" do
