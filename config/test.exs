@@ -23,3 +23,9 @@ config :concentrate, :group_filters, [
 ]
 
 config :concentrate, :sink_s3, ex_aws: Concentrate.TestExAws
+
+config :concentrate,
+  screenplay_stops_config: [
+    url: "http://127.0.0.1/api/suppressed-predictions/suppression_data",
+    api_key: "screenplay_api_key_for_testing"
+  ]
