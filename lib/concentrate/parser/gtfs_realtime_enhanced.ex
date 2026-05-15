@@ -91,6 +91,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
 
   defp decode_entities(json, _) do
     Logger.error("event=malformed_feed feed=#{inspect(json)}")
+    []
   end
 
   @spec decode_feed_entity(map(), Helpers.Options.t(), integer | nil) :: [any()]
