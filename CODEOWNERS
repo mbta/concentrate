@@ -1,1 +1,2 @@
 * @mbta/transit-data
+src/gtfs-realtime.proto @mbta/tid-lamp @mbta/transit-data
