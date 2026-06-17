@@ -1,5 +1,7 @@
 name: Deploy to ECS
 
+permissions: {}
+
 on:
   schedule:
     - cron: "0 5 * * *"
@@ -14,7 +16,7 @@ on:
 
 jobs:
   call-workflow:
-    uses: mbta/workflows/.github/workflows/deploy-ecs.yml@v5
+    uses: mbta/workflows/.github/workflows/deploy-ecs.yml@ead2d40fcc0c546bd6f099a6d8fcd9f9950eab03 # v5
     with:
       app-name: concentrate
       environment: ${{ github.event.inputs.environment || 'dev' }}

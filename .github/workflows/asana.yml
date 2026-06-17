@@ -1,4 +1,7 @@
 name: Asana integration for GitHub PRs
+
+permissions: {}
+
 on:
   workflow_dispatch:
   pull_request:
@@ -8,7 +11,7 @@ on:
 
 jobs:
   call-workflow:
-    uses: mbta/workflows/.github/workflows/asana.yml@main
+    uses: mbta/workflows/.github/workflows/asana.yml@ead2d40fcc0c546bd6f099a6d8fcd9f9950eab03 # main
     with:
       development-section: "In Development"
       review-section: "Pending Review"

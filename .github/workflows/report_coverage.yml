@@ -7,47 +7,62 @@ on:
     types:
       - completed
 
-permissions:
-  pull-requests: write
+concurrency:
+  group: report-coverage-${{ github.event.workflow_run.id }}
+  cancel-in-progress: true
+
+permissions: {}
 
 jobs:
   report-coverage:
+    name: Report coverage
+    permissions:
+      pull-requests: write # to post coverage comments
+      contents: read # for checkout
+      actions: read # to list and download artifacts via github-script
     if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
-    - run: mkdir -p ${{ runner.temp }}/coverage
-    - run: echo Fetching artifacts for ${{ github.event.workflow_run.id }}, event name ${{ github.event_name }}, triggered by ${{ github.event.workflow_run.event }}
+    - run: mkdir -p "$RUNNER_TEMP/coverage"
+    - run: echo Fetching artifacts for ${GITHUB_EVENT_WORKFLOW_RUN_ID}, event name ${GITHUB_EVENT_NAME}, triggered by ${GITHUB_EVENT_WORKFLOW_RUN_EVENT}
+      env:
+        GITHUB_EVENT_WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+        GITHUB_EVENT_WORKFLOW_RUN_EVENT: ${{ github.event.workflow_run.event }}
     - name: Download artifact
-      uses: actions/github-script@v3.1.0
+      uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+      env:
+        RUNNER_TEMP: ${{ runner.temp }}
       with:
         script: |
-          var artifacts = await github.actions.listWorkflowRunArtifacts({
+          var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            run_id: ${{github.event.workflow_run.id }},
+            run_id: context.payload.workflow_run.id,
           });
           var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
             return artifact.name == "elixir-lcov"
           })[0];
-          var download = await github.actions.downloadArtifact({
+          var download = await github.rest.actions.downloadArtifact({
             owner: context.repo.owner,
             repo: context.repo.repo,
             artifact_id: matchArtifact.id,
             archive_format: 'zip',
           });
           var fs = require('fs');
-          fs.writeFileSync('${{ runner.temp }}/coverage/elixir-lcov.zip', Buffer.from(download.data));
-    - working-directory: ${{ runner.temp }}/coverage
+          fs.writeFileSync(`${process.env.RUNNER_TEMP}/coverage/elixir-lcov.zip`, Buffer.from(download.data));
+    - id: extract-pr-info
+      working-directory: ${{ runner.temp }}/coverage
       run: |
         unzip elixir-lcov.zip
-        echo "PR_SHA=$(cat PR_SHA)" >> $GITHUB_ENV
-        echo "PR_NUMBER=$(cat PR_NUMBER)" >> $GITHUB_ENV
-    - uses: actions/checkout@v2 # UNTRUSTED CODE - do not run scripts from it
+        echo "PR_SHA=$(cat PR_SHA)" >> $GITHUB_OUTPUT
+        echo "PR_NUMBER=$(cat PR_NUMBER)" >> $GITHUB_OUTPUT
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3 - UNTRUSTED CODE - do not run scripts from it
       with:
-        ref: ${{ env.PR_SHA }}
+        ref: ${{ steps.extract-pr-info.outputs.PR_SHA }}
+        persist-credentials: false
     - name: Upload coverage artifact and post comment
-      uses: mbta/github-actions-report-lcov@v1
+      uses: mbta/github-actions-report-lcov@9116c86aa5f59c26775d3b84c79ec5b2312301e5 # v1.4.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         coverage-files: ${{ runner.temp }}/coverage/lcov*.info
