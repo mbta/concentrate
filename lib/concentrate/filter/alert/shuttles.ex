@@ -39,9 +39,13 @@ defmodule Concentrate.Filter.Alert.Shuttles do
           direction_id :: 0 | 1,
           :calendar.date() | integer
         ) :: :start | :stop | :through | nil
-  def stop_shuttling_on_route(route_id, stop_id, _direction_id, date_or_timestamp)
+  def stop_shuttling_on_route(route_id, stop_id, direction_id, date_or_timestamp)
       when is_binary(route_id) and is_binary(stop_id) do
-    case TimeTable.date_overlaps(@table, {:route_stop, route_id, stop_id}, date_or_timestamp) do
+    case TimeTable.date_overlaps(
+           @table,
+           {:route_stop, route_id, stop_id, direction_id},
+           date_or_timestamp
+         ) do
       [atom | _] -> atom
       [] -> nil
     end
@@ -81,9 +85,10 @@ defmodule Concentrate.Filter.Alert.Shuttles do
 
     route_stops =
       if is_binary(stop_id) and is_binary(route_id) do
-        [
-          {{:route_stop, route_id, stop_id}, shuttle_type(InformedEntity.activities(entity))}
-        ]
+        for direction_id <- direction_ids(InformedEntity.direction_id(entity)) do
+          {{:route_stop, route_id, stop_id, direction_id},
+           shuttle_type(InformedEntity.activities(entity))}
+        end
       else
         []
       end

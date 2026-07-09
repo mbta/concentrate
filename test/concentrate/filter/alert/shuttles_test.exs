@@ -90,6 +90,13 @@ defmodule Concentrate.Filter.Alert.ShuttlesTest do
             ),
             InformedEntity.new(
               route_type: 2,
+              direction_id: 0,
+              route_id: "route",
+              stop_id: "start_unidirectional",
+              activities: ["BOARD", "RIDE"]
+            ),
+            InformedEntity.new(
+              route_type: 2,
               route_id: "route",
               stop_id: "stop",
               activities: ["RIDE", "EXIT"]
@@ -103,6 +110,9 @@ defmodule Concentrate.Filter.Alert.ShuttlesTest do
       assert stop_shuttling_on_route("route", "through", 0, 21) == nil
       assert stop_shuttling_on_route("route", "through", 0, {1970, 1, 1}) == :through
       assert stop_shuttling_on_route("route", "start", 0, 5) == :start
+      assert stop_shuttling_on_route("route", "start", 1, 5) == :start
+      assert stop_shuttling_on_route("route", "start_unidirectional", 0, 5) == :start
+      assert stop_shuttling_on_route("route", "start_unidirectional", 1, 5) == nil
       assert stop_shuttling_on_route("route", "stop", 0, 5) == :stop
     end
   end
