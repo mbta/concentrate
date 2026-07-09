@@ -21,7 +21,7 @@ defmodule Concentrate.GroupFilter.Shuttle do
     stus =
       if is_tuple(date) and is_binary(route_id) and
            module.trip_shuttling?(trip_id, route_id, direction_id, date) do
-        shuttle_updates(route_id, stus, module)
+        shuttle_updates(route_id, direction_id, stus, module)
       else
         stus
       end
@@ -31,27 +31,27 @@ defmodule Concentrate.GroupFilter.Shuttle do
 
   def filter(%TripGroup{} = other, _module), do: other
 
-  defp shuttle_updates(route_id, stus, module) do
+  defp shuttle_updates(route_id, direction_id, stus, module) do
     initial_state = {false, false}
 
     stus
-    |> Enum.flat_map_reduce(initial_state, &shuttle_stop(route_id, module, &1, &2))
+    |> Enum.flat_map_reduce(initial_state, &shuttle_stop(route_id, direction_id, module, &1, &2))
     |> elem(0)
   end
 
-  defp shuttle_stop(route_id, shuttle_module, stop_time_updates, state)
+  defp shuttle_stop(route_id, direction_id, shuttle_module, stop_time_updates, state)
 
-  defp shuttle_stop(_route_id, _module, stu, {true, true} = state) do
+  defp shuttle_stop(_route_id, _direction_id, _module, stu, {true, true} = state) do
     {[StopTimeUpdate.skip(stu)], state}
   end
 
-  defp shuttle_stop(route_id, module, stu, {has_started?, has_shuttled?} = state) do
+  defp shuttle_stop(route_id, direction_id, module, stu, {has_started?, has_shuttled?} = state) do
     time = StopTimeUpdate.time(stu)
 
     if is_integer(time) do
       stop_id = StopTimeUpdate.stop_id(stu)
 
-      case module.stop_shuttling_on_route(route_id, stop_id, time) do
+      case module.stop_shuttling_on_route(route_id, stop_id, direction_id, time) do
         nil ->
           drop_arrival_time_if_after_shuttle(stu, has_shuttled?)
 

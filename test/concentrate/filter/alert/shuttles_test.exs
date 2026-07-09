@@ -69,7 +69,7 @@ defmodule Concentrate.Filter.Alert.ShuttlesTest do
     end
   end
 
-  describe "stop_shuttling_on_route?/1" do
+  describe "stop_shuttling_on_route/4" do
     setup :supervised
 
     test "returns a atom indicating whether the route is shuttling a particular stop" do
@@ -99,11 +99,11 @@ defmodule Concentrate.Filter.Alert.ShuttlesTest do
 
       handle_events([[alert]], :from, :state)
 
-      assert stop_shuttling_on_route("route", "through", 5) == :through
-      assert stop_shuttling_on_route("route", "through", 21) == nil
-      assert stop_shuttling_on_route("route", "through", {1970, 1, 1}) == :through
-      assert stop_shuttling_on_route("route", "start", 5) == :start
-      assert stop_shuttling_on_route("route", "stop", 5) == :stop
+      assert stop_shuttling_on_route("route", "through", 0, 5) == :through
+      assert stop_shuttling_on_route("route", "through", 0, 21) == nil
+      assert stop_shuttling_on_route("route", "through", 0, {1970, 1, 1}) == :through
+      assert stop_shuttling_on_route("route", "start", 0, 5) == :start
+      assert stop_shuttling_on_route("route", "stop", 0, 5) == :stop
     end
   end
 
@@ -112,8 +112,8 @@ defmodule Concentrate.Filter.Alert.ShuttlesTest do
       refute trip_shuttling?("trip", "route", 0, 0)
     end
 
-    test "stop_shuttling_on_route/3 returns nil" do
-      assert stop_shuttling_on_route("route", "stop", 0) == nil
+    test "stop_shuttling_on_route/4 returns nil" do
+      assert stop_shuttling_on_route("route", "stop", 0, 0) == nil
     end
   end
 

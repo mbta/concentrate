@@ -7,6 +7,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
 
   @trip_id "trip"
   @route_id "route"
+  @direction_id 0
   @valid_date {1970, 1, 1}
   @valid_date_time 8
 
@@ -28,6 +29,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
         TripDescriptor.new(
           trip_id: @trip_id,
           route_id: @route_id,
+          direction_id: @direction_id,
           start_date: @valid_date
         )
 
@@ -59,6 +61,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -112,6 +115,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -149,6 +153,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -187,6 +192,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -210,6 +216,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -230,7 +237,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: "single_direction",
-              direction_id: 0,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -274,7 +281,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: "other_trip",
               route_id: @route_id,
-              direction_id: 0,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -296,6 +303,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -349,6 +357,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -389,6 +398,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -417,7 +427,12 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
     test "updates on non-shuttle trips are not modified" do
       group =
         %TripGroup{
-          td: TripDescriptor.new(trip_id: "other_trip", start_date: @valid_date),
+          td:
+            TripDescriptor.new(
+              trip_id: "other_trip",
+              direction_id: @direction_id,
+              start_date: @valid_date
+            ),
           stus: [
             StopTimeUpdate.new(
               trip_id: "other_trip",
