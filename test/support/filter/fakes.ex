@@ -111,6 +111,7 @@ defmodule Concentrate.Filter.FakeShuttles do
   def stop_shuttling_on_route("route", "shuttle_1", _direction_id, 8), do: :through
   def stop_shuttling_on_route("route", "shuttle_2", _direction_id, 8), do: :through
   def stop_shuttling_on_route("route", "shuttle_start", _direction_id, 8), do: :start
+  def stop_shuttling_on_route("route", "shuttle_start_unidirectional", 1, 8), do: :start
   def stop_shuttling_on_route("route", "shuttle_stop", _direction_id, 8), do: :stop
   def stop_shuttling_on_route("single_direction", "shuttle_1", 0, 8), do: :through
   def stop_shuttling_on_route(_, _, _, dt) when is_integer(dt), do: nil
