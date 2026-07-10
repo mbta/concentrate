@@ -32,7 +32,7 @@ defmodule Concentrate.GroupFilter.Shuttle do
   def filter(%TripGroup{} = other, _module), do: other
 
   defp shuttle_updates(route_id, direction_id, stus, module) do
-    initial_state = {false, false}
+    initial_state = {_has_started? = false, _has_shuttled? = false}
 
     stus
     |> Enum.flat_map_reduce(initial_state, &shuttle_stop(route_id, direction_id, module, &1, &2))
