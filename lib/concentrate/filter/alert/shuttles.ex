@@ -85,9 +85,10 @@ defmodule Concentrate.Filter.Alert.Shuttles do
 
     route_stops =
       if is_binary(stop_id) and is_binary(route_id) do
+        shuttle_type = shuttle_type(InformedEntity.activities(entity))
+
         for direction_id <- direction_ids(InformedEntity.direction_id(entity)) do
-          {{:route_stop, route_id, stop_id, direction_id},
-           shuttle_type(InformedEntity.activities(entity))}
+          {{:route_stop, route_id, stop_id, direction_id}, shuttle_type}
         end
       else
         []
