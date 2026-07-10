@@ -7,6 +7,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
 
   @trip_id "trip"
   @route_id "route"
+  @direction_id 0
   @valid_date {1970, 1, 1}
   @valid_date_time 8
 
@@ -28,6 +29,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
         TripDescriptor.new(
           trip_id: @trip_id,
           route_id: @route_id,
+          direction_id: @direction_id,
           start_date: @valid_date
         )
 
@@ -59,6 +61,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -112,6 +115,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -149,6 +153,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -187,6 +192,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -210,6 +216,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -230,7 +237,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: "single_direction",
-              direction_id: 0,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -274,7 +281,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: "other_trip",
               route_id: @route_id,
-              direction_id: 0,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -296,6 +303,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -349,6 +357,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -389,6 +398,7 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             TripDescriptor.new(
               trip_id: @trip_id,
               route_id: @route_id,
+              direction_id: @direction_id,
               start_date: {1970, 1, 1}
             ),
           stus: [
@@ -414,10 +424,57 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
       assert StopTimeUpdate.departure_time(stop)
     end
 
+    test "start of a shuttle in one direction doesn't affect STUs in the opposite direction" do
+      group =
+        %TripGroup{
+          td:
+            TripDescriptor.new(
+              trip_id: @trip_id,
+              route_id: @route_id,
+              direction_id: @direction_id,
+              start_date: {1970, 1, 1}
+            ),
+          stus: [
+            StopTimeUpdate.new(
+              trip_id: @trip_id,
+              stop_id: "shuttle_start_unidirectional",
+              departure_time: @valid_date_time
+            ),
+            StopTimeUpdate.new(
+              trip_id: @trip_id,
+              stop_id: "after_shuttle",
+              arrival_time: @valid_date_time,
+              departure_time: @valid_date_time
+            ),
+            StopTimeUpdate.new(
+              trip_id: @trip_id,
+              stop_id: "after_shuttle_2",
+              arrival_time: @valid_date_time
+            )
+          ]
+        }
+
+      %TripGroup{stus: reduced} = filter(group, @module)
+
+      assert [start_unidirectional, after_shuttle, after_shuttle_2] = reduced
+      assert StopTimeUpdate.schedule_relationship(start_unidirectional) == :SCHEDULED
+      assert StopTimeUpdate.departure_time(start_unidirectional)
+      assert StopTimeUpdate.schedule_relationship(after_shuttle) == :SCHEDULED
+      assert StopTimeUpdate.arrival_time(after_shuttle)
+      assert StopTimeUpdate.departure_time(after_shuttle)
+      assert StopTimeUpdate.schedule_relationship(after_shuttle_2) == :SCHEDULED
+      assert StopTimeUpdate.arrival_time(after_shuttle_2)
+    end
+
     test "updates on non-shuttle trips are not modified" do
       group =
         %TripGroup{
-          td: TripDescriptor.new(trip_id: "other_trip", start_date: @valid_date),
+          td:
+            TripDescriptor.new(
+              trip_id: "other_trip",
+              direction_id: @direction_id,
+              start_date: @valid_date
+            ),
           stus: [
             StopTimeUpdate.new(
               trip_id: "other_trip",

@@ -32,10 +32,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.asdf
-          key: ${{ runner.os }}-asdf-v2-${{ hashFiles('.tool-versions') }}
+          key: ${{ runner.os }}-asdf-v4-${{ hashFiles('.tool-versions') }}
         id: asdf-cache
       # only run `asdf install` if we didn't hit the cache
-      - uses: asdf-vm/actions/install@v1
+      - uses: asdf-vm/actions/install@v4
         if: steps.asdf-cache.outputs.cache-hit != 'true'
       # if we did hit the cache, set up the environment
       - name: Setup ASDF environment
