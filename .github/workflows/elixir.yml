@@ -41,10 +41,10 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.asdf
-          key: ${{ runner.os }}-asdf-v2-${{ hashFiles('.tool-versions') }}
+          key: ${{ runner.os }}-asdf-v4-${{ hashFiles('.tool-versions') }}
         id: asdf-cache
       # only run `asdf install` if we didn't hit the cache
-      - uses: asdf-vm/actions/install@707e84f3ee349548310aeabdad0dd3bfcb9b69fa # v1.1.0
+      - uses: asdf-vm/actions/install@v4
         if: steps.asdf-cache.outputs.cache-hit != 'true'
       # if we did hit the cache, set up the environment
       - name: Setup and Reshim ASDF
