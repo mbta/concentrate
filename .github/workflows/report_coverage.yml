@@ -1,6 +1,6 @@
 name: Report coverage
 
-on:
+on: # zizmor: ignore[dangerous-triggers] 
   workflow_run:
     workflows:
       - Elixir CI
