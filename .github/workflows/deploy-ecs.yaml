@@ -16,6 +16,9 @@ on:
 
 jobs:
   call-workflow:
+    permissions:
+      id-token: write
+      contents: read
     uses: mbta/workflows/.github/workflows/deploy-ecs.yml@c76e5ccd9556fbea52bc41548f7ceed5985ad775 # v5.1.0
     with:
       app-name: concentrate
