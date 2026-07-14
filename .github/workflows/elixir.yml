@@ -54,8 +54,6 @@ jobs:
           echo "$HOME/.asdf/bin" >> $GITHUB_PATH
           echo "$HOME/.asdf/shims" >> $GITHUB_PATH
           $HOME/.asdf/bin/asdf reshim
-      - name: Fix ASDF permissions
-        run: chmod +x ~/.asdf/bin/asdf
         if: steps.asdf-cache.outputs.cache-hit == 'true'
       - name: Restore dependencies cache
         id: deps-cache
