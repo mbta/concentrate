@@ -1,6 +1,7 @@
 name: Docker
 
-permissions: {}
+permissions:
+  contents: read
 
 on: [push]
 
