@@ -190,11 +190,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
                 assigned_stop_id: assigned_stop_id
               )
 
-            if boarding_status == "Cancelled" do
-              StopTimeUpdate.skip(stop_time_update)
-            else
-              stop_time_update
-            end
+            skip_if_cancelled(stop_time_update, boarding_status)
           end
 
         stop_time_updates
@@ -210,6 +206,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp decode_stop_time_updates(_, _, _), do: :drop_trip
+
+  defp skip_if_cancelled(stop_time_update, boarding_status)
+  defp skip_if_cancelled(stop_time_update, "Cancelled"), do: StopTimeUpdate.skip(stop_time_update)
+  defp skip_if_cancelled(stop_time_update, _), do: stop_time_update
 
   @spec decode_trip_properties([TripDescriptor.t()], map(), Helpers.Options.t()) ::
           TripProperties.t() | :drop_trip
