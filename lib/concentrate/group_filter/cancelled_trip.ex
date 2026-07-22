@@ -8,8 +8,6 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   alias Concentrate.GTFS.{Routes, StopTimes}
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
-  require Logger
-
   @impl Concentrate.GroupFilter
   def filter(
         trip_group,

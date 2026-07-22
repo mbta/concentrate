@@ -4,7 +4,6 @@ defmodule Concentrate.Producer.HTTPoison do
   """
   use GenStage
   alias Concentrate.Producer.HTTPoison.StateMachine, as: SM
-  require Logger
   @start_link_opts [:name]
 
   defmodule State do
