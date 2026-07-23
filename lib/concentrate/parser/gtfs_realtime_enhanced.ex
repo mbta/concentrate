@@ -236,7 +236,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     status
   end
 
-  @spec decode_vehicle(map(), Helpers.Options.t(), integer | nil) :: [any()]
+  @spec decode_vehicle(map(), Helpers.Options.t(), non_neg_integer | nil) ::
+          [TripDescriptor.t() | VehiclePosition.t()]
   def decode_vehicle(vp, options, feed_timestamp) do
     position = Map.get(vp, "position", %{})
     vehicle = Map.get(vp, "vehicle", %{})
