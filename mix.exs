@@ -71,6 +71,7 @@ defmodule Concentrate.MixProject do
       {:gen_stage, "~> 1.0"},
       {:gpb, "~> 4.7", only: :dev, runtime: false, only: :dev},
       {:httpoison, "~> 1.0"},
+      {:hackney, "~> 1.23.0"},
       {:emqtt_failover, "~> 0.3"},
       {:cowlib, "2.16.1", override: true},
       {:jason, "~> 1.0"},
