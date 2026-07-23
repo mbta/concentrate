@@ -10,7 +10,6 @@ defmodule Concentrate.Filter do
     * `{:cont, new_item}`
     * `:skip`
   """
-  require Logger
 
   @type data :: term
   @type return :: {:cont, data} | :skip

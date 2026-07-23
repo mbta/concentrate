@@ -23,7 +23,7 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
         now_fn \\ &now/0
       )
 
-  def filter(%TripGroup{td: td, stus: stus} = group, module, now_fn) do
+  def filter(%TripGroup{td: td, stus: stus} = group, module, now_fn) when not is_nil(td) do
     suppressed_terminals =
       module.terminals_suppressed(TripDescriptor.route_id(td), TripDescriptor.direction_id(td))
 

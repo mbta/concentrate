@@ -34,8 +34,10 @@ defmodule Concentrate.GroupFilter.VehicleAtSkippedStop do
   end
 
   defp update_vehicle_to_next_non_skipped_update(vp, stus) do
+    non_skipped = Enum.find(stus, &(StopTimeUpdate.schedule_relationship(&1) != :SKIPPED))
+
     {stop_sequence, stop_id} =
-      if non_skipped = Enum.find(stus, &(StopTimeUpdate.schedule_relationship(&1) != :SKIPPED)) do
+      if non_skipped do
         {
           StopTimeUpdate.stop_sequence(non_skipped),
           StopTimeUpdate.stop_id(non_skipped)

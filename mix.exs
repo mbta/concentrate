@@ -12,6 +12,7 @@ defmodule Concentrate.MixProject do
       dialyzer: [
         plt_add_deps: :transitive,
         flags: [
+          :no_opaque,
           :unmatched_returns,
           :underspecs,
           :unknown
@@ -60,7 +61,7 @@ defmodule Concentrate.MixProject do
     [
       {:benchee, "~> 1.0", runtime: false, only: :dev},
       {:bypass, "~> 2.1", only: :test},
-      {:credo, "~> 1.0", runtime: false, only: :dev},
+      {:credo, "~> 1.7.19", runtime: false, only: :dev},
       {:csv, "~> 2.1"},
       {:dialyxir, "~> 1.0", runtime: false, only: :dev},
       {:ehmon, git: "https://github.com/mbta/ehmon.git", branch: "master", only: ~w(test prod)a},

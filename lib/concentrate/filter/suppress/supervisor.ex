@@ -7,8 +7,6 @@ defmodule Concentrate.Filter.Suppress.Supervisor do
   """
   @one_day 86_400_000
 
-  require Logger
-
   def start_link(config) do
     if config[:url] do
       Supervisor.start_link(

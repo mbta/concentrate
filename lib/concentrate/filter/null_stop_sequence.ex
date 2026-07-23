@@ -5,7 +5,6 @@ defmodule Concentrate.Filter.NullStopSequence do
   """
   @behaviour Concentrate.Filter
   alias Concentrate.StopTimeUpdate
-  require Logger
 
   @impl Concentrate.Filter
   def filter(%StopTimeUpdate{} = stu) do
