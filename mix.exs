@@ -73,7 +73,7 @@ defmodule Concentrate.MixProject do
       {:httpoison, "~> 1.0"},
       {:hackney, "~> 1.23.0"},
       {:emqtt_failover, "~> 0.3"},
-      {:cowlib, "2.16.1", override: true},
+      {:cowlib, "2.18.0", override: true},
       {:jason, "~> 1.0"},
       {:stream_data, "~> 1.1", only: :test},
       {:tzdata, "~> 1.1.1"},
