@@ -69,7 +69,7 @@ defmodule Concentrate.MixProject do
       {:ex_aws_s3, "~> 2.3"},
       {:lcov_ex, "~> 0.3.2", only: :test, runtime: false},
       {:gen_stage, "~> 1.0"},
-      {:gpb, "~> 4.7", only: :dev, runtime: false, only: :dev},
+      {:gpb, "~> 5.0", only: :dev, runtime: false, only: :dev},
       {:httpoison, "~> 1.0"},
       {:emqtt_failover, "~> 0.3"},
       {:cowlib, "2.16.1", override: true},
