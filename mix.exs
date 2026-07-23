@@ -77,7 +77,7 @@ defmodule Concentrate.MixProject do
       {:jason, "~> 1.0"},
       {:stream_data, "~> 1.1", only: :test},
       {:tzdata, "~> 1.1.1"},
-      {:sentry, "~> 8.0"}
+      {:sentry, "~> 13.3"}
     ]
   end
 end
