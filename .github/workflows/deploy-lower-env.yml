@@ -1,4 +1,4 @@
-name: Deploy to ECS
+name: Deploy to lower environment (dev etc)
 
 permissions: {}
 
@@ -14,8 +14,21 @@ on:
   push:
     branches: master
 
+concurrency:
+  group: deploy-${{ inputs.environment }}
+  cancel-in-progress: true
+
 jobs:
+  check-env:
+    name: Fail if production environment
+    if: ${{ inputs.environment == 'prod' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Failing intentionally. Please use the 'Deploy to production' workflow."
+          exit 1
   call-workflow:
+    if: ${{ inputs.environment != 'prod' }}
     permissions:
       id-token: write # Needed to access ECR and ECS
       contents: read # Needed to access commit details and other repository info
