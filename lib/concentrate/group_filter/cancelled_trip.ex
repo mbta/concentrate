@@ -5,7 +5,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   @behaviour Concentrate.GroupFilter
   alias Concentrate.Encoder.TripGroup
   alias Concentrate.Filter.Alert.CancelledTrips
-  alias Concentrate.GTFS.{Routes, StopTimes}
+  alias Concentrate.GTFS.{Routes, StopTimes, Trips}
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
   require Logger
@@ -16,6 +16,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
         module \\ CancelledTrips,
         routes_module \\ Routes,
         gtfs_stop_times \\ StopTimes,
+        trips_module \\ Trips,
         now_fn \\ &now/0
       )
 
@@ -24,6 +25,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
         module,
         routes_module,
         gtfs_stop_times,
+        trips_module,
         now_fn
       ) do
     trip_id = TripDescriptor.trip_id(td)
@@ -42,6 +44,7 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
         now_fn,
         routes_module.route_type(route_id)
       ) ->
+        group = remap_school_trip(trips_module, group)
         cancel_group(group, gtfs_stop_times)
 
       is_nil(time) ->
@@ -58,7 +61,15 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
     end
   end
 
-  def filter(%TripGroup{} = other, _module, _trips_module, _gtfs_stop_times, _now_fn), do: other
+  def filter(
+        %TripGroup{} = other,
+        _module,
+        _trips_module,
+        _gtfs_stop_times,
+        _trips_module,
+        _now_fn
+      ),
+      do: other
 
   defp maybe_time([stu | _]) do
     StopTimeUpdate.time(stu)
@@ -91,6 +102,18 @@ defmodule Concentrate.GroupFilter.CancelledTrip do
   end
 
   defp bus_block_waiver?(_, _, _, _, _), do: false
+
+  defp remap_school_trip(trips_module, %TripGroup{td: td} = tg) do
+    trip_id = TripDescriptor.trip_id(td)
+
+    if not trips_module.exists?(trip_id) do
+      do_remap_school_trip(trips_module, trip_id)
+    else
+    end
+  end
+
+  defp do_remap_school_trip(trips_module, %TripGroup{td: td} = group) do
+  end
 
   defp cancel_group(%TripGroup{td: td, stus: []} = group, gtfs_stop_times) do
     td = TripDescriptor.cancel(td)

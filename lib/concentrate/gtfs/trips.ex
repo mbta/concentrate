@@ -23,6 +23,10 @@ defmodule Concentrate.GTFS.Trips do
     ArgumentError -> nil
   end
 
+  def exists?(trip_id) do
+    :ets.member(@table, trip_id)
+  end
+
   def init(opts) do
     @table = :ets.new(@table, [:named_table, :public, :duplicate_bag])
     {:consumer, %{}, opts}
