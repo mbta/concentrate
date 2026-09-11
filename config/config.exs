@@ -78,7 +78,7 @@ config :concentrate,
     Concentrate.GroupFilter.UncertaintyValue,
     {Concentrate.GroupFilter.SuppressStopTimeUpdate, terminal_suppression_by_time: %{}},
     {Concentrate.GroupFilter.PropogateDownstreamDelays,
-     first_stop_delaying_statuses: ["Delayed"], downstream_status: "Delayed"}
+     matching_statuses: ["Delayed"], downstream_status: "Delayed"}
   ],
   source_reporters: [
     Concentrate.SourceReporter.Basic,

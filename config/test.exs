@@ -21,7 +21,7 @@ config :concentrate, :group_filters, [
      }
    }},
   {Concentrate.GroupFilter.PropogateDownstreamDelays,
-   first_stop_delaying_statuses: ["Delayed"], downstream_status: "Delayed"}
+   matching_statuses: ["Delayed"], downstream_status: "Delayed"}
 ]
 
 config :concentrate, :sink_s3, ex_aws: Concentrate.TestExAws
