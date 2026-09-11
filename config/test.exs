@@ -19,7 +19,9 @@ config :concentrate, :group_filters, [
        6 => {~T[04:00:00], ~T[07:30:00]},
        7 => {~T[04:00:00], ~T[07:30:00]}
      }
-   }}
+   }},
+  {Concentrate.GroupFilter.PropogateDownstreamDelays,
+   matching_statuses: ["Delayed"], downstream_status: "Delayed"}
 ]
 
 config :concentrate, :sink_s3, ex_aws: Concentrate.TestExAws
