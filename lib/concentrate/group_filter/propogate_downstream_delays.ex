@@ -7,6 +7,7 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelays do
   alias Concentrate.Encoder.TripGroup
   alias Concentrate.GTFS.{Routes, StopTimes}
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
+
   @behaviour Concentrate.GroupFilter
 
   @first_stop_delaying_statuses Enum.map(
@@ -32,8 +33,8 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelays do
       ) do
     route_id = TripDescriptor.route_id(td)
 
-    if !(routes_module.route_type(route_id) == 2 &&
-           TripDescriptor.schedule_relationship(td) == :SCHEDULED) do
+    if routes_module.route_type(route_id) != 2 ||
+         TripDescriptor.schedule_relationship(td) != :SCHEDULED do
       group
     else
       trip_id = TripDescriptor.trip_id(td)
@@ -49,14 +50,15 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelays do
   end
 
   defp propogate_delayed_status(trip_id, trip_date, stus, stop_time_module, now) do
-    [first_stu | _rest_stus] = stus
-
     scheduled_stop_times =
       stop_time_module.stops_for_trip_with_arrival_departure(trip_id, trip_date)
 
-    if first_stop_delayed?(first_stu, scheduled_stop_times) do
+    first_status_only_stu = first_status_only_stu(stus)
+
+    if first_status_only_stu != nil do
       add_missing_delayed_stus(
         trip_id,
+        first_status_only_stu.stop_sequence,
         stus,
         scheduled_stop_times,
         now
@@ -66,18 +68,18 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelays do
     end
   end
 
-  defp add_missing_delayed_stus(trip_id, stus, scheduled_stop_times, now) do
+  defp add_missing_delayed_stus(trip_id, first_stop_sequence, stus, scheduled_stop_times, now) do
     stop_sequence_to_stu = Map.new(stus, &{&1.stop_sequence, &1})
 
     Enum.flat_map(scheduled_stop_times, fn scheduled_stop_time ->
-      {stop_sequence, stop_id, arrival, _departure} = scheduled_stop_time
+      {stop_sequence, stop_id, _arrival, departure} = scheduled_stop_time
       existing_stu = Map.get(stop_sequence_to_stu, stop_sequence)
 
       cond do
         existing_stu != nil ->
           [existing_stu]
 
-        !is_nil(arrival) && now > arrival ->
+        !is_nil(departure) && now > departure && stop_sequence > first_stop_sequence ->
           [
             StopTimeUpdate.new(
               trip_id: trip_id,
@@ -93,16 +95,12 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelays do
     end)
   end
 
-  @spec first_stop_delayed?(
-          StopTimeUpdate.t(),
-          list({integer(), String.t(), integer(), integer()})
-        ) :: boolean()
-  defp first_stop_delayed?(first_stu, [
-         {stop_sequence, _stop_id, _arrival, _departure} = _first_stop_time | _rest
-       ]) do
-    first_stu.stop_sequence == stop_sequence &&
-      String.downcase(first_stu.status) in @first_stop_delaying_statuses
+  @spec first_status_only_stu([StopTimeUpdate.t()]) :: StopTimeUpdate.t() | nil
+  defp first_status_only_stu(stus) do
+    Enum.find(stus, fn stu ->
+      String.downcase(stu.status) in @first_stop_delaying_statuses &&
+        stu.arrival_time == nil &&
+        stu.departure_time == nil
+    end)
   end
-
-  defp first_stop_delayed?(_first_stu, _scheduled_stop_times), do: false
 end
