@@ -56,7 +56,7 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelays do
 
     if first_stop_delayed?(first_stu, scheduled_stop_times) do
       add_missing_delayed_stus(
-        TripDescriptor.trip_id(first_stu.td),
+        trip_id,
         stus,
         scheduled_stop_times,
         now
