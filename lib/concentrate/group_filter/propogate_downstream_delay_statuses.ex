@@ -8,6 +8,8 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelayStatuses do
   alias Concentrate.GTFS.{Routes, StopTimes}
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
+  require Logger
+
   @behaviour Concentrate.GroupFilter
 
   @matching_statuses Enum.map(
@@ -80,6 +82,10 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelayStatuses do
           [existing_stu]
 
         !is_nil(departure) && now > departure && stop_sequence > first_stop_sequence ->
+          Logger.info(
+            "#{__MODULE__} delayed_stu_added trip_id=#{trip_id} stop_sequence=#{stop_sequence} stop_id=#{stop_id}"
+          )
+
           [
             StopTimeUpdate.new(
               trip_id: trip_id,
