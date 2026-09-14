@@ -77,7 +77,7 @@ config :concentrate,
     Concentrate.GroupFilter.TripDescriptorTimestamp,
     Concentrate.GroupFilter.UncertaintyValue,
     {Concentrate.GroupFilter.SuppressStopTimeUpdate, terminal_suppression_by_time: %{}},
-    {Concentrate.GroupFilter.PropogateDownstreamDelayStatuses,
+    {Concentrate.GroupFilter.PropagateDownstreamDelayStatuses,
      matching_statuses: ["Delayed"], downstream_status: "Delayed"}
   ],
   source_reporters: [

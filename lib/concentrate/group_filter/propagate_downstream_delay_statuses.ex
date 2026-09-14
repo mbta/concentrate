@@ -1,4 +1,4 @@
-defmodule Concentrate.GroupFilter.PropogateDownstreamDelayStatuses do
+defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
   @moduledoc """
   If the first stop of a CR trip has a delaying status, generate StopTimeUpdates
   for any following stop on the trip has an arrival time in the past and doesn't
@@ -42,7 +42,7 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelayStatuses do
       trip_id = TripDescriptor.trip_id(td)
       trip_date = TripDescriptor.start_date(td)
 
-      stus = propogate_delayed_status(trip_id, trip_date, stus, stop_time_module, now_fn.())
+      stus = propagate_delayed_status(trip_id, trip_date, stus, stop_time_module, now_fn.())
       %{group | stus: stus}
     end
   end
@@ -51,7 +51,7 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelayStatuses do
     System.system_time(:second)
   end
 
-  defp propogate_delayed_status(trip_id, trip_date, stus, stop_time_module, now) do
+  defp propagate_delayed_status(trip_id, trip_date, stus, stop_time_module, now) do
     scheduled_stop_times =
       stop_time_module.stops_for_trip_with_arrival_departure(trip_id, trip_date)
 
