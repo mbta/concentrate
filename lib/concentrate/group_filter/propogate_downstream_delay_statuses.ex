@@ -1,4 +1,4 @@
-defmodule Concentrate.GroupFilter.PropogateDownstreamDelays do
+defmodule Concentrate.GroupFilter.PropogateDownstreamDelayStatuses do
   @moduledoc """
   If the first stop of a CR trip has a delaying status, generate StopTimeUpdates
   for any following stop on the trip has an arrival time in the past and doesn't

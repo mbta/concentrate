@@ -1,8 +1,8 @@
-defmodule Concentrate.GroupFilter.PropogateDownstreamDelaysTest do
+defmodule Concentrate.GroupFilter.PropogateDownstreamDelayStatusesTest do
   use ExUnit.Case, async: true
 
   alias Concentrate.Encoder.TripGroup
-  alias Concentrate.GroupFilter.PropogateDownstreamDelays
+  alias Concentrate.GroupFilter.PropogateDownstreamDelayStatuses
   alias Concentrate.GTFS.{FakeRoutes, StopTimes}
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
 
@@ -30,7 +30,7 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelaysTest do
 
       group = %TripGroup{td: td, stus: [stu]}
 
-      assert group == PropogateDownstreamDelays.filter(group)
+      assert group == PropogateDownstreamDelayStatuses.filter(group)
     end
 
     test "doesn't propogate delays if the route is not commuter rail" do
@@ -48,7 +48,7 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelaysTest do
 
       now_fn = fn -> 88_000 end
 
-      assert group == PropogateDownstreamDelays.filter(group, StopTimes, FakeRoutes, now_fn)
+      assert group == PropogateDownstreamDelayStatuses.filter(group, StopTimes, FakeRoutes, now_fn)
     end
 
     test "doesn't propogate delays if the first stop time status isn't in delaying status list" do
@@ -66,7 +66,7 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelaysTest do
 
       now_fn = fn -> 88_000 end
 
-      assert group == PropogateDownstreamDelays.filter(group, FakeStopTimes, FakeRoutes, now_fn)
+      assert group == PropogateDownstreamDelayStatuses.filter(group, FakeStopTimes, FakeRoutes, now_fn)
     end
 
     test "doesn't propagate delays for stops before the first delayed stop" do
@@ -101,7 +101,7 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelaysTest do
                    stop_sequence: 30
                  )
                ]
-             } == PropogateDownstreamDelays.filter(group, FakeStopTimes, FakeRoutes, now_fn)
+             } == PropogateDownstreamDelayStatuses.filter(group, FakeStopTimes, FakeRoutes, now_fn)
     end
 
     test "adds stop time updates only when they don't already exist" do
@@ -146,7 +146,7 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelaysTest do
                    stop_sequence: 30
                  )
                ]
-             } == PropogateDownstreamDelays.filter(group, FakeStopTimes, FakeRoutes, now_fn)
+             } == PropogateDownstreamDelayStatuses.filter(group, FakeStopTimes, FakeRoutes, now_fn)
     end
 
     test "adds stop time updates only for scheduled departures in the past" do
@@ -181,7 +181,7 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelaysTest do
                    stop_sequence: 20
                  )
                ]
-             } == PropogateDownstreamDelays.filter(group, FakeStopTimes, FakeRoutes, now_fn)
+             } == PropogateDownstreamDelayStatuses.filter(group, FakeStopTimes, FakeRoutes, now_fn)
     end
   end
 end

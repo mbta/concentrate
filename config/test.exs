@@ -20,7 +20,7 @@ config :concentrate, :group_filters, [
        7 => {~T[04:00:00], ~T[07:30:00]}
      }
    }},
-  {Concentrate.GroupFilter.PropogateDownstreamDelays,
+  {Concentrate.GroupFilter.PropogateDownstreamDelayStatuses,
    matching_statuses: ["Delayed"], downstream_status: "Delayed"}
 ]
 
