@@ -22,15 +22,19 @@ defmodule Concentrate.GroupFilter.PropogateDownstreamDelayStatusesTest do
       td =
         TripDescriptor.new(
           trip_id: "trip",
+          route_id: "CR_1",
           start_date: {2026, 1, 1},
           schedule_relationship: :CANCELED
         )
 
-      stu = StopTimeUpdate.new(trip_id: "trip", status: :CANCELED)
+      stu = StopTimeUpdate.new(trip_id: "trip", status: "Delayed")
 
       group = %TripGroup{td: td, stus: [stu]}
 
-      assert group == PropogateDownstreamDelayStatuses.filter(group)
+      now_fn = fn -> 88_000 end
+
+      assert group ==
+               PropogateDownstreamDelayStatuses.filter(group, FakeStopTimes, FakeRoutes, now_fn)
     end
 
     test "doesn't propogate delays if the route is not commuter rail" do
