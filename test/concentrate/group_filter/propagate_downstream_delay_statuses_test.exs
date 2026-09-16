@@ -108,7 +108,7 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatusesTest do
                PropagateDownstreamDelayStatuses.filter(group, FakeStopTimes, FakeRoutes, now_fn)
     end
 
-     test "doesn't propagate delays if trip descriptor missing start date" do
+    test "doesn't propagate delays if trip descriptor missing start date" do
       td =
         TripDescriptor.new(
           trip_id: "trip",
