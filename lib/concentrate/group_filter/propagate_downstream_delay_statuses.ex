@@ -57,7 +57,7 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
 
     first_status_only_stu = first_status_only_stu(stus)
 
-    if first_status_only_stu != nil do
+    if first_status_only_stu != nil && is_list(scheduled_stop_times) do
       add_missing_delayed_stus(
         trip_id,
         first_status_only_stu.stop_sequence,
