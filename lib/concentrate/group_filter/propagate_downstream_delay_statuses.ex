@@ -33,16 +33,18 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
         routes_module \\ Routes,
         now_fn \\ &now/0
       ) do
+    trip_id = TripDescriptor.trip_id(td)
     route_id = TripDescriptor.route_id(td)
+    trip_date = TripDescriptor.start_date(td)
+
+    if is_nil(trip_date) do
+      Logger.info("#{__MODULE__} trip_date is nil for trip_id=#{trip_id}")
+    end
 
     if routes_module.route_type(route_id) != 2 ||
-         TripDescriptor.schedule_relationship(td) != :SCHEDULED do
+         TripDescriptor.schedule_relationship(td) != :SCHEDULED || !is_tuple(trip_date) do
       group
     else
-      Logger.info("#{__MODULE__} processing trip_id=#{inspect(TripDescriptor.trip_id(td))} inspected=#{inspect(td)}")
-      trip_id = TripDescriptor.trip_id(td)
-      trip_date = TripDescriptor.start_date(td)
-
       stus = propagate_delayed_status(trip_id, trip_date, stus, stop_time_module, now_fn.())
       %{group | stus: stus}
     end

@@ -108,6 +108,30 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatusesTest do
                PropagateDownstreamDelayStatuses.filter(group, FakeStopTimes, FakeRoutes, now_fn)
     end
 
+     test "doesn't propagate delays if trip descriptor missing start date" do
+      td =
+        TripDescriptor.new(
+          trip_id: "trip",
+          route_id: "CR_1",
+          start_date: nil,
+          schedule_relationship: :SCHEDULED
+        )
+
+      stu_1 =
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          status: "Delayed",
+          stop_sequence: 10
+        )
+
+      group = %TripGroup{td: td, stus: [stu_1]}
+
+      now_fn = fn -> 88_000 end
+
+      assert group ==
+               PropagateDownstreamDelayStatuses.filter(group, FakeStopTimes, FakeRoutes, now_fn)
+    end
+
     test "doesn't propagate delays if scheduled stop times are unknown" do
       td =
         TripDescriptor.new(
