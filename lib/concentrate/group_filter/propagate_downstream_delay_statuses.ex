@@ -39,6 +39,7 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
          TripDescriptor.schedule_relationship(td) != :SCHEDULED do
       group
     else
+      Logger.info("#{__MODULE__} processing trip_id=#{inspect(TripDescriptor.trip_id(td))} inspected=#{inspect(td)}")
       trip_id = TripDescriptor.trip_id(td)
       trip_date = TripDescriptor.start_date(td)
 
