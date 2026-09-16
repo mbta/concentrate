@@ -104,9 +104,11 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
   @spec first_status_only_stu([StopTimeUpdate.t()]) :: StopTimeUpdate.t() | nil
   defp first_status_only_stu(stus) do
     Enum.find(stus, fn stu ->
-      String.downcase(stu.status) in @matching_statuses &&
-        stu.arrival_time == nil &&
-        stu.departure_time == nil
+      stu.arrival_time == nil &&
+        stu.departure_time == nil &&
+        stu.status != nil &&
+        String.downcase(stu.status) in @matching_statuses
+
     end)
   end
 end
