@@ -108,7 +108,6 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
         stu.departure_time == nil &&
         stu.status != nil &&
         String.downcase(stu.status) in @matching_statuses
-
     end)
   end
 end

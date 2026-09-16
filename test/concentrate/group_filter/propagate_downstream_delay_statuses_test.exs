@@ -75,7 +75,7 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatusesTest do
                PropagateDownstreamDelayStatuses.filter(group, FakeStopTimes, FakeRoutes, now_fn)
     end
 
-    test "doesn't propagate delays if the first stop time status is nil" do
+    test "doesn't propagate delays if the first stop time status has an arrival or departure" do
       td =
         TripDescriptor.new(
           trip_id: "trip",
@@ -84,9 +84,23 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatusesTest do
           schedule_relationship: :SCHEDULED
         )
 
-      stu_1 = StopTimeUpdate.new(trip_id: "trip", status: nil, stop_sequence: 10)
+      stu_1 =
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          status: "Delayed",
+          arrival_time: 86_000,
+          stop_sequence: 10
+        )
 
-      group = %TripGroup{td: td, stus: [stu_1]}
+      stu_2 =
+        StopTimeUpdate.new(
+          trip_id: "trip",
+          status: "Delayed",
+          departure_time: 87_000,
+          stop_sequence: 20
+        )
+
+      group = %TripGroup{td: td, stus: [stu_1, stu_2]}
 
       now_fn = fn -> 88_000 end
 
