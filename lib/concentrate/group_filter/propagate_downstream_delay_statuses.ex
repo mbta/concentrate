@@ -38,7 +38,7 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
     trip_date = TripDescriptor.start_date(td)
 
     if is_nil(trip_date) do
-      Logger.info("#{__MODULE__} trip_date is nil for trip_id=#{trip_id}")
+      Logger.info("#{__MODULE__} trip_date is nil for trip_id=#{trip_id} trip_route_id=#{route_id} trip_descriptor=#{inspect(td)}")
     end
 
     if routes_module.route_type(route_id) != 2 ||
@@ -94,7 +94,8 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
               trip_id: trip_id,
               stop_sequence: stop_sequence,
               stop_id: stop_id,
-              status: @downstream_status
+              status: @downstream_status,
+              schedule_relationship: nil
             )
           ]
 
