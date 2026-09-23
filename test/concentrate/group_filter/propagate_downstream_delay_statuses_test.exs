@@ -75,7 +75,7 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatusesTest do
                PropagateDownstreamDelayStatuses.filter(group, FakeStopTimes, FakeRoutes, now_fn)
     end
 
-    test "doesn't propagate delays if the first stop time status has an arrival or departure" do
+    test "propagates delays if the first stop time status has an arrival or departure" do
       td =
         TripDescriptor.new(
           trip_id: "trip",
@@ -104,7 +104,19 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatusesTest do
 
       now_fn = fn -> 88_000 end
 
-      assert group ==
+      assert %{
+               group
+               | stus: [
+                   stu_1,
+                   stu_2,
+                   StopTimeUpdate.new(
+                     trip_id: "trip",
+                     status: "Delayed",
+                     stop_id: "stop3",
+                     stop_sequence: 30
+                   )
+                 ]
+             } ==
                PropagateDownstreamDelayStatuses.filter(group, FakeStopTimes, FakeRoutes, now_fn)
     end
 

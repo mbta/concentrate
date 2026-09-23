@@ -37,10 +37,6 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
     route_id = TripDescriptor.route_id(td)
     trip_date = TripDescriptor.start_date(td)
 
-    if is_nil(trip_date) do
-      Logger.info("#{__MODULE__} trip_date is nil for trip_id=#{trip_id} trip_route_id=#{route_id} trip_descriptor=#{inspect(td)}")
-    end
-
     if routes_module.route_type(route_id) != 2 ||
          TripDescriptor.schedule_relationship(td) != :SCHEDULED || !is_tuple(trip_date) do
       group
@@ -58,12 +54,12 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
     scheduled_stop_times =
       stop_time_module.stops_for_trip_with_arrival_departure(trip_id, trip_date)
 
-    first_status_only_stu = first_status_only_stu(stus)
+    first_matching_status_stu = first_matching_status_stu(stus)
 
-    if first_status_only_stu != nil && is_list(scheduled_stop_times) do
+    if first_matching_status_stu != nil && is_list(scheduled_stop_times) do
       add_missing_delayed_stus(
         trip_id,
-        first_status_only_stu.stop_sequence,
+        first_matching_status_stu.stop_sequence,
         stus,
         scheduled_stop_times,
         now
@@ -95,7 +91,7 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
               stop_sequence: stop_sequence,
               stop_id: stop_id,
               status: @downstream_status,
-              schedule_relationship: nil
+              schedule_relationship: :SCHEDULED
             )
           ]
 
@@ -105,12 +101,10 @@ defmodule Concentrate.GroupFilter.PropagateDownstreamDelayStatuses do
     end)
   end
 
-  @spec first_status_only_stu([StopTimeUpdate.t()]) :: StopTimeUpdate.t() | nil
-  defp first_status_only_stu(stus) do
+  @spec first_matching_status_stu([StopTimeUpdate.t()]) :: StopTimeUpdate.t() | nil
+  defp first_matching_status_stu(stus) do
     Enum.find(stus, fn stu ->
-      stu.arrival_time == nil &&
-        stu.departure_time == nil &&
-        stu.status != nil &&
+      stu.status != nil &&
         String.downcase(stu.status) in @matching_statuses
     end)
   end
