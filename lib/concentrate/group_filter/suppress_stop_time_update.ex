@@ -99,7 +99,7 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
   end
 
   defp stop_id_suppressed?(_suppressed_stops, nil) do
-    false
+    true
   end
 
   defp stop_id_suppressed?(suppressed_stops, stop_id) do
