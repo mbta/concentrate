@@ -98,6 +98,10 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdate do
     unsuppressed_stus
   end
 
+  defp stop_id_suppressed?(_suppressed_stops, nil) do
+    false
+  end
+
   defp stop_id_suppressed?(suppressed_stops, stop_id) do
     case Stops.parent_station_id(stop_id) do
       "place-jfk" -> MapSet.member?(suppressed_stops, stop_id)
