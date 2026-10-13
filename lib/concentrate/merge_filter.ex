@@ -188,16 +188,22 @@ defmodule Concentrate.MergeFilter do
   defp flat_mapper(fun) do
     fn value ->
       case fun.(value) do
-        %TripGroup{td: %TripDescriptor{} = td, vps: [], stus: []} ->
-          flat_map_empty_trip_update(td)
-
-        %TripGroup{td: nil} ->
-          []
-
-        %TripGroup{} = other ->
-          [other]
+        result when is_list(result) -> Enum.flat_map(result, &do_flat_map_trip_group/1)
+        %TripGroup{} = group -> do_flat_map_trip_group(group)
       end
     end
+  end
+
+  defp do_flat_map_trip_group(%TripGroup{td: %TripDescriptor{} = td, vps: [], stus: []}) do
+    flat_map_empty_trip_update(td)
+  end
+
+  defp do_flat_map_trip_group(%TripGroup{td: nil}) do
+    []
+  end
+
+  defp do_flat_map_trip_group(%TripGroup{} = other) do
+    [other]
   end
 
   defp flat_map_empty_trip_update(td) do
