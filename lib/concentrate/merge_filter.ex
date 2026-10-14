@@ -187,10 +187,7 @@ defmodule Concentrate.MergeFilter do
 
   defp flat_mapper(fun) do
     fn value ->
-      case fun.(value) do
-        result when is_list(result) -> Enum.flat_map(result, &do_flat_map_trip_group/1)
-        %TripGroup{} = group -> do_flat_map_trip_group(group)
-      end
+      value |> fun.() |> List.wrap() |> Enum.flat_map(&do_flat_map_trip_group/1)
     end
   end
 
