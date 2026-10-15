@@ -23,21 +23,13 @@ defmodule Concentrate.GTFS.SplitTrips do
   end
 
   def handle_events(events, _from, state) do
-    trip_ids =
+    inserts =
       for event <- events,
           {"trips.txt", trip_body} <- event,
-          {:ok, row} <- String.split(trip_body, "\n") |> CSV.decode(headers: true) do
-        copy(row["trip_id"])
+          {:ok, row} <- String.split(trip_body, "\n") |> CSV.decode(headers: true),
+          [multi_trip_id, _suffix] <- [String.split(row["trip_id"], "_", parts: 2)] do
+        {copy(multi_trip_id), copy(row["trip_id"])}
       end
-
-    inserts =
-      trip_ids
-      |> Enum.flat_map(fn trip_id ->
-        case String.split(trip_id, "_", parts: 2) do
-          [multi_trip_id, _suffix] -> [{multi_trip_id, trip_id}]
-          _ -> []
-        end
-      end)
 
     _ =
       if inserts == [] do
