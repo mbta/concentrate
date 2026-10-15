@@ -65,18 +65,18 @@ defmodule Concentrate.MixProject do
       {:csv, "~> 2.1"},
       {:dialyxir, "~> 1.0", runtime: false, only: :dev},
       {:ehmon, git: "https://github.com/mbta/ehmon.git", branch: "master", only: ~w(test prod)a},
-      {:ex_aws, "~> 2.4"},
+      {:ex_aws, "~> 2.7"},
       {:ex_aws_s3, "~> 2.3"},
       {:lcov_ex, "~> 0.3.2", only: :test, runtime: false},
       {:gen_stage, "~> 1.0"},
       {:gpb, "~> 4.7", only: :dev, runtime: false, only: :dev},
-      {:httpoison, "~> 1.0"},
-      {:hackney, "~> 1.23.0"},
+      {:httpoison, "~> 3.0"},
+      {:hackney, "~> 4.0"},
       {:emqtt_failover, "~> 0.3"},
       {:cowlib, "2.16.1", override: true},
       {:jason, "~> 1.0"},
       {:stream_data, "~> 1.1", only: :test},
-      {:tzdata, "~> 1.1.1"},
+      {:tzdata, "~> 1.1.5"},
       {:sentry, "~> 13.5"}
     ]
   end
