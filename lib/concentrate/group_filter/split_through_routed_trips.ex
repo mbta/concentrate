@@ -23,9 +23,12 @@ defmodule Concentrate.GroupFilter.SplitThroughRoutedTrips do
       ) do
     trip_id = TripDescriptor.trip_id(td)
 
-    case split_trips.trip_ids(trip_id) do
-      [_ | _] = trip_ids -> Enum.map(trip_ids, &make_split_trip(group, &1, stop_times, trips))
-      nil -> group
+    # if this is an existing trip_id, don't split it
+    with nil <- trips.route_id(trip_id),
+         [_ | _] = trip_ids <- split_trips.trip_ids(trip_id) do
+      Enum.map(trip_ids, &make_split_trip(group, &1, stop_times, trips))
+    else
+      _ -> group
     end
   end
 
