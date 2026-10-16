@@ -76,7 +76,7 @@ defmodule Concentrate.MixProject do
       {:cowlib, "2.16.1", override: true},
       {:jason, "~> 1.0"},
       {:stream_data, "~> 1.1", only: :test},
-      {:tzdata, "~> 1.1.1"},
+      {:tzdata, "~> 1.2.2"},
       {:sentry, "~> 13.5"}
     ]
   end
