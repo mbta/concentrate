@@ -40,6 +40,6 @@
   "statistex": {:hex, :statistex, "1.1.0", "7fec1eb2f580a0d2c1a05ed27396a084ab064a40cfc84246dbfb0c72a5c761e5", [:mix], [], "hexpm", "f5950ea26ad43246ba2cce54324ac394a4e7408fdcf98b8e230f503a0cba9cf5"},
   "stream_data": {:hex, :stream_data, "1.3.0", "bde37905530aff386dea1ddd86ecbf00e6642dc074ceffc10b7d4e41dfd6aac9", [:mix], [], "hexpm", "3cc552e286e817dca43c98044c706eec9318083a1480c52ae2688b08e2936e3c"},
   "telemetry": {:hex, :telemetry, "1.4.2", "a0cb522801dffb1c49fe6e30561badffc7b6d0e180db1300df759faa22062855", [:rebar3], [], "hexpm", "928f6495066506077862c0d1646609eed891a4326bee3126ba54b60af61febb1"},
-  "tzdata": {:hex, :tzdata, "1.1.4", "989e0855df5ee8c40eb929ad971bedd7a51e2c223f051fd95cc2d2cf56a60c19", [:mix], [{:hackney, "~> 1.17", [hex: :hackney, repo: "hexpm", optional: false]}], "hexpm", "ab48888699de8ff4a255522fd858abe81bac2e64690a375e6cb590112cf4a24e"},
+  "tzdata": {:hex, :tzdata, "1.2.2", "0e9a50d84e0734038e2e37ed027a7dc5962597b79a7ead9d5f9bce7365aedc02", [:mix], [{:hackney, "~> 1.17 or ~> 4.0", [hex: :hackney, repo: "hexpm", optional: true]}], "hexpm", "4a2435eb3614711b220a9f9f9b56204d14518c6a84e94278cc8b697ca62221a7"},
   "unicode_util_compat": {:hex, :unicode_util_compat, "0.7.1", "a48703a25c170eedadca83b11e88985af08d35f37c6f664d6dcfb106a97782fc", [:rebar3], [], "hexpm", "b3a917854ce3ae233619744ad1e0102e05673136776fb2fa76234f3e03b23642"},
 }
