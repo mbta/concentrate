@@ -10,7 +10,7 @@ defmodule Concentrate.MixProject do
       deps: deps(),
       test_coverage: [tool: LcovEx, output: "coverage", ignore_paths: ~w(test/ src/)],
       dialyzer: [
-        plt_add_deps: :transitive,
+        plt_add_deps: :app_tree,
         flags: [
           :no_opaque,
           :unmatched_returns,
