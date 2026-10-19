@@ -66,7 +66,6 @@ defmodule Concentrate.MixProject do
       {:dialyxir, "~> 1.0", runtime: false, only: :dev},
       {:ehmon, git: "https://github.com/mbta/ehmon.git", branch: "master", only: ~w(test prod)a},
       {:ex_aws, "~> 2.7"},
-      {:ex_aws, "~> 2.7"},
       {:ex_aws_s3, "~> 2.3"},
       {:lcov_ex, "~> 0.3.2", only: :test, runtime: false},
       {:gen_stage, "~> 1.0"},
