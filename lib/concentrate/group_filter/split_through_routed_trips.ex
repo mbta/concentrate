@@ -39,7 +39,7 @@ defmodule Concentrate.GroupFilter.SplitThroughRoutedTrips do
          trips
        ) do
     stop_seqs =
-      stop_times.stops_for_trip(trip_id) |> Enum.map(&elem(&1, 0))
+      stop_times.stops_for_trip(trip_id) |> MapSet.new(&elem(&1, 0))
 
     route_id = trips.route_id(trip_id)
     direction_id = trips.direction_id(trip_id)
@@ -53,11 +53,11 @@ defmodule Concentrate.GroupFilter.SplitThroughRoutedTrips do
           |> TripDescriptor.update_direction_id(direction_id),
         vps:
           vps
-          |> Enum.filter(&(VehiclePosition.stop_sequence(&1) in stop_seqs))
+          |> Enum.filter(&MapSet.member?(stop_seqs, VehiclePosition.stop_sequence(&1)))
           |> Enum.map(&VehiclePosition.update_trip_id(&1, trip_id)),
         stus:
           stus
-          |> Enum.filter(&(StopTimeUpdate.stop_sequence(&1) in stop_seqs))
+          |> Enum.filter(&MapSet.member?(stop_seqs, StopTimeUpdate.stop_sequence(&1)))
           |> Enum.map(&StopTimeUpdate.update_trip_id(&1, trip_id))
     }
   end
