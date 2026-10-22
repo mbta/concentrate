@@ -22,6 +22,13 @@ defmodule Concentrate.GTFS.FakeRoutes do
   def route_type(_), do: nil
 end
 
+defmodule Concentrate.GTFS.FakeSplitTrips do
+  @moduledoc "Fake implementation of GTFS.SplitTrips"
+
+  def trip_ids("trip"), do: ["trip_1", "trip_2", "trip_3"]
+  def trip_ids(_), do: nil
+end
+
 defmodule Concentrate.GTFS.FakeStopTimes do
   @moduledoc "Fake implementation of GTFS.StopTimes"
   def stops_for_trip("unknown"), do: :unknown

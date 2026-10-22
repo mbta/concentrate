@@ -70,13 +70,13 @@ defmodule Concentrate.MixProject do
       {:lcov_ex, "~> 0.3.2", only: :test, runtime: false},
       {:gen_stage, "~> 1.0"},
       {:gpb, "~> 4.7", only: :dev, runtime: false, only: :dev},
-      {:httpoison, "~> 1.0"},
+      {:httpoison, "~> 2.3"},
       {:hackney, "~> 1.23.0"},
       {:emqtt_failover, "~> 0.3"},
       {:cowlib, "2.16.1", override: true},
       {:jason, "~> 1.0"},
       {:stream_data, "~> 1.1", only: :test},
-      {:tzdata, "~> 1.1.1"},
+      {:tzdata, "~> 1.2.2"},
       {:sentry, "~> 13.5"}
     ]
   end

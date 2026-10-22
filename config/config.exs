@@ -62,6 +62,7 @@ config :concentrate,
     Concentrate.Filter.UnscheduledScheduledStop
   ],
   group_filters: [
+    Concentrate.GroupFilter.SplitThroughRoutedTrips,
     {
       Concentrate.GroupFilter.ScheduledStopTimes,
       # https://github.com/mbta/commuter_rail_boarding/blob/79a493f/config/config.exs#L34-L63
