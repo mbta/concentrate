@@ -16,15 +16,8 @@ defmodule Concentrate.Producer.HTTPoisonTest do
   end
 
   setup_all do
-    {:ok, _} = Application.ensure_all_started(:hackney)
-
-    {:ok, _} =
-      start_supervised(%{
-        id: :hackney_pool,
-        start: {:hackney_pool, :start_link, [:http_producer_pool, []]},
-        type: :worker,
-        restart: :permanent
-      })
+    {:ok, _} = Application.ensure_all_started(:req)
+    {:ok, _} = start_supervised(hd(Concentrate.Supervisor.pool()))
 
     :ok
   end
@@ -57,7 +50,7 @@ defmodule Concentrate.Producer.HTTPoisonTest do
     test "does not send more demand than requested" do
       machine = StateMachine.init("url", parser: &[&1])
       state = %Concentrate.Producer.HTTPoison.State{machine: machine, demand: 1}
-      response = %HTTPoison.Response{status_code: 200, body: "body"}
+      response = %{status_code: 200, body: "body", headers: []}
       assert {:noreply, [_], state, :hibernate} = handle_info({:http_response, response}, state)
 
       assert {:noreply, [], state} =
@@ -81,7 +74,6 @@ defmodule Concentrate.Producer.HTTPoisonTest do
   describe "bypass" do
     setup do
       Application.ensure_all_started(:bypass)
-      Application.ensure_all_started(:httpoison)
       bypass = Bypass.open()
       {:ok, bypass: bypass}
     end
@@ -156,7 +148,10 @@ defmodule Concentrate.Producer.HTTPoisonTest do
       end)
 
       {:ok, producer} =
-        start_producer(bypass, fetch_after: 50, get_opts: [timeout: 100, recv_timeout: 100])
+        start_producer(bypass,
+          fetch_after: 50,
+          get_opts: [finch: [pool_timeout: 100], receive_timeout: 100]
+        )
 
       assert take_events(producer, 1) == [["reconnect"]]
     end
