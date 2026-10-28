@@ -8,9 +8,6 @@ config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
 config :ex_aws, json_codec: Jason, http_client: ExAws.Request.Req
 
-# restrict outgoing SSL connections to TLS 1.2
-config :ssl, protocol_version: :"tlsv1.2"
-
 config :concentrate,
   time_zone: "America/New_York",
   boarding_status_override: %{
