@@ -8,7 +8,7 @@ config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
 config :ex_aws, json_codec: Jason, http_client: ExAws.Request.Req
 
-# per https://github.com/edgurgel/httpoison/issues/130, set the SSL version to pick a better default
+# restrict outgoing SSL connections to TLS 1.2
 config :ssl, protocol_version: :"tlsv1.2"
 
 config :concentrate,
@@ -111,9 +111,9 @@ config :concentrate,
   ],
   scheme_producers: %{
     # old behavior for test URLs
-    nil => Concentrate.Producer.HTTPoison,
-    "https" => Concentrate.Producer.HTTPoison,
-    "http" => Concentrate.Producer.HTTPoison,
+    nil => Concentrate.Producer.HTTP,
+    "https" => Concentrate.Producer.HTTP,
+    "http" => Concentrate.Producer.HTTP,
     "mqtt" => Concentrate.Producer.Mqtt,
     "mqtts" => Concentrate.Producer.Mqtt,
     "mqtt+ssl" => Concentrate.Producer.Mqtt
