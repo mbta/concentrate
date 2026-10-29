@@ -7,7 +7,7 @@ defmodule Concentrate do
   def start(_type, _args) do
     "CONCENTRATE_JSON"
     |> System.get_env()
-    |> parse_json_configuration
+    |> parse_json_configuration()
     |> Enum.each(&update_configuration/1)
 
     Concentrate.Supervisor.start_link()

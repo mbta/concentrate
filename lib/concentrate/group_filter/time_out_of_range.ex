@@ -20,10 +20,6 @@ defmodule Concentrate.GroupFilter.TimeOutOfRange do
     %{group | stus: stus}
   end
 
-  def filter(%TripGroup{} = other, _now_fn) do
-    other
-  end
-
   defp now do
     System.system_time(:second)
   end

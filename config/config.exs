@@ -6,10 +6,7 @@ config :logger, level: :info
 
 config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
-config :ex_aws, json_codec: Jason
-
-# per https://github.com/edgurgel/httpoison/issues/130, set the SSL version to pick a better default
-config :ssl, protocol_version: :"tlsv1.2"
+config :ex_aws, json_codec: Jason, http_client: ExAws.Request.Req
 
 config :concentrate,
   time_zone: "America/New_York",
@@ -60,6 +57,7 @@ config :concentrate,
     Concentrate.Filter.UnscheduledScheduledStop
   ],
   group_filters: [
+    Concentrate.GroupFilter.SplitThroughRoutedTrips,
     {
       Concentrate.GroupFilter.ScheduledStopTimes,
       # https://github.com/mbta/commuter_rail_boarding/blob/79a493f/config/config.exs#L34-L63
@@ -110,9 +108,9 @@ config :concentrate,
   ],
   scheme_producers: %{
     # old behavior for test URLs
-    nil => Concentrate.Producer.HTTPoison,
-    "https" => Concentrate.Producer.HTTPoison,
-    "http" => Concentrate.Producer.HTTPoison,
+    nil => Concentrate.Producer.HTTP,
+    "https" => Concentrate.Producer.HTTP,
+    "http" => Concentrate.Producer.HTTP,
     "mqtt" => Concentrate.Producer.Mqtt,
     "mqtts" => Concentrate.Producer.Mqtt,
     "mqtt+ssl" => Concentrate.Producer.Mqtt

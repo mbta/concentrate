@@ -89,6 +89,11 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     end
   end
 
+  defp decode_entities(json, _) do
+    Logger.error("event=malformed_feed feed=#{inspect(json)}")
+    []
+  end
+
   @spec decode_feed_entity(map(), Helpers.Options.t(), integer | nil) :: [any()]
   defp decode_feed_entity(%{"trip_update" => %{} = trip_update}, options, _feed_timestamp) do
     decode_trip_update(trip_update, options)
@@ -185,11 +190,7 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
                 assigned_stop_id: assigned_stop_id
               )
 
-            if boarding_status == "Cancelled" do
-              StopTimeUpdate.skip(stop_time_update)
-            else
-              stop_time_update
-            end
+            skip_if_cancelled(stop_time_update, boarding_status)
           end
 
         stop_time_updates
@@ -205,6 +206,10 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
   end
 
   defp decode_stop_time_updates(_, _, _), do: :drop_trip
+
+  defp skip_if_cancelled(stop_time_update, boarding_status)
+  defp skip_if_cancelled(stop_time_update, "Cancelled"), do: StopTimeUpdate.skip(stop_time_update)
+  defp skip_if_cancelled(stop_time_update, _), do: stop_time_update
 
   @spec decode_trip_properties([TripDescriptor.t()], map(), Helpers.Options.t()) ::
           TripProperties.t() | :drop_trip
@@ -231,7 +236,8 @@ defmodule Concentrate.Parser.GTFSRealtimeEnhanced do
     status
   end
 
-  @spec decode_vehicle(map(), Helpers.Options.t(), integer | nil) :: [any()]
+  @spec decode_vehicle(map(), Helpers.Options.t(), non_neg_integer | nil) ::
+          [TripDescriptor.t() | VehiclePosition.t()]
   def decode_vehicle(vp, options, feed_timestamp) do
     position = Map.get(vp, "position", %{})
     vehicle = Map.get(vp, "vehicle", %{})

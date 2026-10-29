@@ -209,7 +209,7 @@ defmodule Concentrate.Encoder.VehiclePositionsTest do
   defp round_trip(data) do
     # return the result of decoding the encoded data
     data
-    |> group
+    |> group()
     |> encode_groups()
     |> GTFSRealtime.parse([])
     |> FeedUpdate.updates()

@@ -1,6 +1,6 @@
-ARG ELIXIR_VERSION=1.17.1
-ARG ERLANG_VERSION=27.0
-ARG ALPINE_VERSION=3.20.0
+ARG ELIXIR_VERSION=1.20.2
+ARG ERLANG_VERSION=29.0.3
+ARG ALPINE_VERSION=3.21.7
 FROM hexpm/elixir:$ELIXIR_VERSION-erlang-$ERLANG_VERSION-alpine-$ALPINE_VERSION AS builder
 
 WORKDIR /root
@@ -17,7 +17,7 @@ ENV MIX_ENV=prod
 ADD mix.* /root/
 ADD config /root/config
 
-RUN mix do deps.get --only prod, deps.compile
+RUN mix do deps.get --only prod, deps.compile, sentry.package_source_code
 
 ADD lib /root/lib
 ADD src /root/src

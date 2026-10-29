@@ -38,7 +38,7 @@ defmodule Concentrate.Filter.Alert.ClosedStops do
       end
 
     _ =
-      unless inserts == [] do
+      if inserts != [] do
         TimeTable.update(@table, inserts)
 
         Logger.info(fn ->

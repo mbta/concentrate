@@ -3,7 +3,6 @@ defmodule Concentrate.Producer.Mqtt do
   GenStage Producer which fulfills demand by receiving events from an MQTT broker.
   """
   use GenStage
-  require Logger
   alias EmqttFailover.Connection
   @start_link_opts [:name]
 

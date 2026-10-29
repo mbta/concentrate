@@ -5,7 +5,6 @@ defmodule Concentrate.Parser.GTFSRealtime do
   """
   @behaviour Concentrate.Parser
   alias Concentrate.Parser.Helpers
-  require Logger
 
   alias Concentrate.{
     Alert,

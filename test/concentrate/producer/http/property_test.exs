@@ -1,14 +1,13 @@
-defmodule Concentrate.Producer.HTTPoison.PropertyTest do
+defmodule Concentrate.Producer.HTTP.PropertyTest do
   @moduledoc false
   use ExUnit.Case, async: true
   use ExUnitProperties
 
   setup_all do
-    {:ok, _} = Application.ensure_all_started(:hackney)
     {:ok, _} = Application.ensure_all_started(:bypass)
-    {:ok, _} = Application.ensure_all_started(:httpoison)
+    {:ok, _} = Application.ensure_all_started(:req)
 
-    {:ok, _} = :hackney_pool.start_link(:http_producer_pool, [])
+    {:ok, _} = start_supervised(hd(Concentrate.Supervisor.pool()))
 
     :ok
   end
@@ -21,9 +20,7 @@ defmodule Concentrate.Producer.HTTPoison.PropertyTest do
       {bypass, url} = url_for_bodies(bodies)
 
       {:ok, producer} =
-        start_supervised(
-          {Concentrate.Producer.HTTPoison, {url, parser: &parser/1, fetch_after: 1}}
-        )
+        start_supervised({Concentrate.Producer.HTTP, {url, parser: &parser/1, fetch_after: 1}})
 
       expected_body_count = expected_count(bodies)
 
@@ -44,7 +41,7 @@ defmodule Concentrate.Producer.HTTPoison.PropertyTest do
 
       {:ok, producer} =
         start_supervised(
-          {Concentrate.Producer.HTTPoison,
+          {Concentrate.Producer.HTTP,
            {url,
             fallback_url: fallback_url,
             content_warning_timeout: 10,
@@ -129,7 +126,7 @@ defmodule Concentrate.Producer.HTTPoison.PropertyTest do
           false
       end
 
-    :ok = stop_supervised(Concentrate.Producer.HTTPoison)
+    :ok = stop_supervised(Concentrate.Producer.HTTP)
     passed?
   end
 end

@@ -32,7 +32,7 @@ defmodule Concentrate.Sink.S3 do
 
     state.bucket
     |> S3.put_object(full_filename, body, opts)
-    |> @ex_aws.request!
+    |> @ex_aws.request!()
 
     _ =
       Logger.info(fn ->

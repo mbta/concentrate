@@ -2,6 +2,7 @@ import Config
 
 is_prod? = config_env() == :prod
 is_release? = not is_nil(System.get_env("RELEASE_MODE"))
+is_test? = config_env() == :test
 
 if is_prod? and is_release? do
   sentry_env = System.get_env("SENTRY_ENV")
@@ -23,8 +24,10 @@ if is_prod? and is_release? do
   end
 end
 
-config :concentrate,
-  screenplay_stops_config: [
-    url: "#{System.get_env("SCREENPLAY_API_URL")}/api/suppressed-predictions/suppression_data",
-    api_key: System.get_env("SCREENPLAY_API_KEY")
-  ]
+if not is_test? do
+  config :concentrate,
+    screenplay_stops_config: [
+      url: "#{System.get_env("SCREENPLAY_API_URL")}/api/suppressed-predictions/suppression_data",
+      api_key: System.get_env("SCREENPLAY_API_KEY")
+    ]
+end
