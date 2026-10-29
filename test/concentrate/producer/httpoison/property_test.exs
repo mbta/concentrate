@@ -4,11 +4,10 @@ defmodule Concentrate.Producer.HTTPoison.PropertyTest do
   use ExUnitProperties
 
   setup_all do
-    {:ok, _} = Application.ensure_all_started(:hackney)
     {:ok, _} = Application.ensure_all_started(:bypass)
-    {:ok, _} = Application.ensure_all_started(:httpoison)
+    {:ok, _} = Application.ensure_all_started(:req)
 
-    {:ok, _} = :hackney_pool.start_link(:http_producer_pool, [])
+    {:ok, _} = start_supervised(hd(Concentrate.Supervisor.pool()))
 
     :ok
   end

@@ -6,7 +6,7 @@ config :logger, level: :info
 
 config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
-config :ex_aws, json_codec: Jason
+config :ex_aws, json_codec: Jason, http_client: ExAws.Request.Req
 
 # per https://github.com/edgurgel/httpoison/issues/130, set the SSL version to pick a better default
 config :ssl, protocol_version: :"tlsv1.2"
