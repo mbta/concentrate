@@ -1,4 +1,4 @@
-defmodule Concentrate.Producer.HTTPoison.StateMachine do
+defmodule Concentrate.Producer.HTTP.StateMachine do
   @moduledoc """
   State machine to manage the incoming/outgoing messages for making recurring HTTP requests.
 
@@ -6,7 +6,7 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
   * `fetch_after`: number of milliseconds between fetches
   * `content_warning_timeout`: number of milliseconds after which to log an error that the file is out of date
   * `fallback_url`: (optional) URL to use once the `content_warning_timeout` is hit.
-  * `get_opts`: (optional) values to pass as options to HTTPoison
+  * `get_opts`: (optional) values to pass as options to `Req.get/2`
   """
   require Logger
   alias Concentrate.Producer.FileTap
@@ -14,11 +14,15 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
   @default_fetch_after 5_000
   @default_content_warning_timeout 600_000
 
+  # Redirects, retries, and gzip decoding are handled by this state machine, so
+  # turn off Req's versions of them. `raw: true` also keeps Req from decoding
+  # JSON bodies, since the parsers expect the raw binary.
+  @req_opts [redirect: false, retry: false, raw: true]
+
   defstruct url: "",
             get_opts: [
-              timeout: @default_timeout,
-              recv_timeout: @default_timeout,
-              hackney: [pool: :http_producer_pool]
+              receive_timeout: @default_timeout,
+              finch: [name: Concentrate.Finch, pool_timeout: @default_timeout]
             ],
             headers: %{"accept-encoding" => "gzip"},
             fetch_after: @default_fetch_after,
@@ -115,13 +119,26 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
   end
 
   defp handle_message(machine, {:fetch, url}) do
-    message =
-      case HTTPoison.get(url, machine.headers, machine.get_opts) do
-        {:ok, %HTTPoison.Response{} = response} ->
-          {:http_response, response}
+    opts =
+      @req_opts
+      |> Keyword.put(:headers, machine.headers)
+      |> Keyword.merge(machine.get_opts)
 
-        {:error, %HTTPoison.Error{reason: reason}} ->
+    message =
+      case Req.get(default_scheme(url), opts) do
+        {:ok, %Req.Response{} = response} ->
+          {:http_response,
+           %{
+             status_code: response.status,
+             headers: Req.get_headers_list(response),
+             body: response.body
+           }}
+
+        {:error, %{reason: reason}} ->
           {:http_error, reason}
+
+        {:error, exception} ->
+          {:http_error, exception}
       end
 
     {machine, [], [{message, 0}]}
@@ -222,6 +239,14 @@ defmodule Concentrate.Producer.HTTPoison.StateMachine do
       end)
 
     {machine, [], []}
+  end
+
+  # hackney treated a URL without a scheme as HTTP; Finch requires one
+  defp default_scheme(url) do
+    case URI.parse(url) do
+      %URI{scheme: nil} -> "http://" <> url
+      _ -> url
+    end
   end
 
   def decode_body(headers, body) do
