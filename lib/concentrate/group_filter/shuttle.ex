@@ -59,7 +59,7 @@ defmodule Concentrate.GroupFilter.Shuttle do
           {[StopTimeUpdate.skip(stu)], {has_started?, true}}
 
         :start ->
-          {[StopTimeUpdate.update_departure_time(stu, nil)], {true, true}}
+          {[StopTimeUpdate.update_departure_time(stu, nil)], {true, false}}
 
         :stop ->
           {[StopTimeUpdate.update_arrival_time(stu, nil)], {false, false}}
