@@ -8,7 +8,12 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        type: environment
+        type: choice
+        options:
+          - dev
+          - dev-blue
+          - dev-green
+          - prod
         required: true
         default: dev
   push:
