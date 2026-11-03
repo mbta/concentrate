@@ -16,8 +16,7 @@ if is_prod? and is_release? do
       tags: %{
         env: sentry_env
       },
-      included_environments: [sentry_env],
-      client: Sentry.HackneyClient
+      included_environments: [sentry_env]
 
     config :logger, Sentry.LoggerBackend,
       level: :error,
