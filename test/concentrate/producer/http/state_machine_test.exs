@@ -1,12 +1,11 @@
-defmodule Concentrate.Producer.HTTPoison.StateMachineTest do
+defmodule Concentrate.Producer.HTTP.StateMachineTest do
   @moduledoc false
   use ExUnit.Case
-  import Concentrate.Producer.HTTPoison.StateMachine
+  import Concentrate.Producer.HTTP.StateMachine
   import ExUnit.CaptureLog
 
   setup_all do
     Application.ensure_all_started(:bypass)
-    Application.ensure_all_started(:httpoison)
     :ok
   end
 
@@ -307,6 +306,6 @@ defmodule Concentrate.Producer.HTTPoison.StateMachineTest do
     code = Keyword.get(opts, :code, 200)
     body = Keyword.get(opts, :body, "")
     headers = Keyword.get(opts, :headers, [])
-    %HTTPoison.Response{status_code: code, body: body, headers: headers}
+    %{status_code: code, body: body, headers: headers}
   end
 end

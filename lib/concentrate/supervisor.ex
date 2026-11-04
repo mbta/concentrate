@@ -33,7 +33,15 @@ defmodule Concentrate.Supervisor do
 
   def pool do
     [
-      :hackney_pool.child_spec(:http_producer_pool, timeout: 30_000, max_connections: 100)
+      {Finch,
+       name: Concentrate.Finch,
+       pools: %{
+         default: [
+           size: 100,
+           conn_max_idle_time: 30_000,
+           conn_opts: [transport_opts: [timeout: 15_000]]
+         ]
+       }}
     ]
   end
 
