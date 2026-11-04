@@ -33,14 +33,19 @@ defmodule Concentrate.GroupFilter.Shuttle do
 
   # There are three cases to consider:
   # 1. The disruption includes the first STU.
-  #    In this case, we skip all STUs until the end of the disruption.
-  #    The last STU within the disruption will have its arrival time dropped but its departure time will be kept.
-  #    STUs after the disruption will be left unchanged.
+  #    In this case, we skip all STUs until the end of the disruption. The last
+  #    STU within the disruption will have its arrival time dropped but its
+  #    departure time will be kept. STUs after the disruption will be left
+  #    unchanged.
   # 2. The disruption starts somewhere later in the route.
-  #    In this case, the first STU within the disruption will have its departure time dropped but its arrival time will be kept.
-  #    All STUs after the start of the disruption are skipped, including ones after the end of the disruption.
-  # 3. The disruption only affects a single STU. This is the case when the disruption only affects one branch, only intersecting the other branch at a single station.
-  #    In this case, the STUs, including the one affected by the disruption, will be unchanged.
+  #    In this case, the first STU within the disruption will have its
+  #    departure time dropped but its arrival time will be kept. All STUs after
+  #    the start of the disruption are skipped, including ones after the end of
+  #    the disruption.
+  # 3. The disruption only affects a single STU.
+  #    This is the case when the disruption only affects one branch, only
+  #    intersecting the other branch at a single station. In this case, the
+  #    STUs, including the one affected by the disruption, will be unchanged.
   defp shuttle_updates(route_id, direction_id, stus, module) do
     stus
     |> Stream.map(&with_shuttling_status(&1, route_id, direction_id, module))
@@ -51,25 +56,29 @@ defmodule Concentrate.GroupFilter.Shuttle do
       [{stu, _}, {_, _}], :after_shuttle ->
         {StopTimeUpdate.skip(stu), :after_shuttle}
 
-      # if the following stop is not disrupted, then this stop is only disrupted on a different branch
-      [{stu, :start}, {_, status}], :first_stu  when status in [nil, :end_of_trip] ->
+      # if the following stop is not disrupted, then this stop is only
+      # disrupted on a different branch
+      [{stu, :start}, {_, status}], :first_stu when status in [nil, :end_of_trip] ->
         {stu, :regular_service}
 
       [{stu, :start}, {_, status}], state when status in [nil, :end_of_trip] ->
         {stu, state}
 
-      # the start of a disruption, followed by another disrupted stop, indicates that this disruption applies to this trip
+      # the start of a disruption, followed by another disrupted stop,
+      # indicates that this disruption applies to this trip
       [{stu, :start}, {_, _}], _ ->
         {StopTimeUpdate.update_departure_time(stu, nil), :after_shuttle}
 
-      # if the following stop is not disrupted, then this stop is only disrupted on a different branch
+      # if the following stop is not disrupted, then this stop is only
+      # disrupted on a different branch
       [{stu, :through}, {_, nil}], :first_stu ->
         {stu, :regular_service}
 
       [{stu, :through}, {_, nil}], state ->
         {stu, state}
 
-      # if the first STU is in the middle of a disruption, skip STUs within the disruption, but allow STUs after the disruption to remain as they are
+      # if the first STU is in the middle of a disruption, skip STUs within the
+      # disruption, but allow STUs after the disruption to remain as they are
       [{stu, :through}, {_, _}], state when state in [:first_stu, :initial_shuttle] ->
         {StopTimeUpdate.skip(stu), :initial_shuttle}
 
@@ -77,7 +86,8 @@ defmodule Concentrate.GroupFilter.Shuttle do
       [{stu, :stop}, {_, _}], state when state in [:first_stu, :initial_shuttle] ->
         {StopTimeUpdate.update_arrival_time(stu, nil), :regular_service}
 
-      # if the previous stop was not disrupted, then this stop is only disrupted on a different branch
+      # if the previous stop was not disrupted, then this stop is only
+      # disrupted on a different branch
       [{stu, :stop}, {_, _}], state ->
         {stu, state}
 
