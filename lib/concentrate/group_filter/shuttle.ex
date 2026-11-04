@@ -45,17 +45,17 @@ defmodule Concentrate.GroupFilter.Shuttle do
     stus
     |> Stream.map(&with_shuttling_status(&1, route_id, direction_id, module))
     # look at the current stop and the following stop to determine whether the disruption actually affects this trip
-    |> Stream.chunk_every(2, 1, [{nil, nil}])
+    |> Stream.chunk_every(2, 1, [{nil, :end_of_trip}])
     |> Enum.map_reduce(:first_stu, fn
       # after a shuttle on the route, all future STUs are skipped
       [{stu, _}, {_, _}], :after_shuttle ->
         {StopTimeUpdate.skip(stu), :after_shuttle}
 
       # if the following stop is not disrupted, then this stop is only disrupted on a different branch
-      [{stu, :start}, {_, nil}], :first_stu ->
+      [{stu, :start}, {_, status}], :first_stu  when status in [nil, :end_of_trip] ->
         {stu, :regular_service}
 
-      [{stu, :start}, {_, nil}], state ->
+      [{stu, :start}, {_, status}], state when status in [nil, :end_of_trip] ->
         {stu, state}
 
       # the start of a disruption, followed by another disrupted stop, indicates that this disruption applies to this trip

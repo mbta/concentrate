@@ -79,6 +79,12 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             ),
             StopTimeUpdate.new(
               trip_id: @trip_id,
+              stop_id: "shuttle_start",
+              arrival_time: @valid_date_time,
+              departure_time: @valid_date_time
+            ),
+            StopTimeUpdate.new(
+              trip_id: @trip_id,
               stop_id: "shuttle_1",
               arrival_time: @valid_date_time,
               departure_time: @valid_date_time
@@ -86,6 +92,12 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             StopTimeUpdate.new(
               trip_id: @trip_id,
               stop_id: "shuttle_2",
+              arrival_time: @valid_date_time,
+              departure_time: @valid_date_time
+            ),
+            StopTimeUpdate.new(
+              trip_id: @trip_id,
+              stop_id: "shuttle_end",
               arrival_time: @valid_date_time,
               departure_time: @valid_date_time
             ),
@@ -99,12 +111,14 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
 
       %TripGroup{stus: reduced} = filter(group, @module)
 
-      assert [before_before, before, one, two, after_shuttle] = reduced
+      assert [before_before, before, start, one, two, stop, after_shuttle] = reduced
       assert StopTimeUpdate.schedule_relationship(before_before) == :SCHEDULED
       assert StopTimeUpdate.arrival_time(before_before)
       assert StopTimeUpdate.schedule_relationship(before) == :SCHEDULED
+      assert StopTimeUpdate.arrival_time(start)
       assert StopTimeUpdate.schedule_relationship(one) == :SKIPPED
       assert StopTimeUpdate.schedule_relationship(two) == :SKIPPED
+      assert StopTimeUpdate.schedule_relationship(stop) == :SKIPPED
       assert StopTimeUpdate.schedule_relationship(after_shuttle) == :SKIPPED
     end
 
@@ -126,6 +140,11 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
             ),
             StopTimeUpdate.new(
               trip_id: @trip_id,
+              stop_id: "shuttle_stop",
+              departure_time: @valid_date_time
+            ),
+            StopTimeUpdate.new(
+              trip_id: @trip_id,
               stop_id: "after_shuttle",
               arrival_time: @valid_date_time,
               departure_time: @valid_date_time
@@ -139,10 +158,11 @@ defmodule Concentrate.GroupFilter.ShuttleTest do
         }
 
       %TripGroup{stus: reduced} = filter(group, @module)
-      assert [one, after_shuttle, after_after_shuttle] = reduced
+      assert [one, stop, after_shuttle, after_after_shuttle] = reduced
       assert StopTimeUpdate.schedule_relationship(one) == :SKIPPED
+      assert StopTimeUpdate.schedule_relationship(stop) == :SCHEDULED
+      assert StopTimeUpdate.arrival_time(stop) == nil
       assert StopTimeUpdate.schedule_relationship(after_shuttle) == :SCHEDULED
-      assert StopTimeUpdate.arrival_time(after_shuttle) == nil
       assert StopTimeUpdate.schedule_relationship(after_after_shuttle) == :SCHEDULED
     end
 
