@@ -31,51 +31,84 @@ defmodule Concentrate.GroupFilter.Shuttle do
 
   def filter(%TripGroup{} = other, _module), do: other
 
+  # There are three cases to consider:
+  # 1. The disruption includes the first STU.
+  #    In this case, we skip all STUs until the end of the disruption. The last
+  #    STU within the disruption will have its arrival time dropped but its
+  #    departure time will be kept. STUs after the disruption will be left
+  #    unchanged.
+  # 2. The disruption starts somewhere later in the route.
+  #    In this case, the first STU within the disruption will have its
+  #    departure time dropped but its arrival time will be kept. All STUs after
+  #    the start of the disruption are skipped, including ones after the end of
+  #    the disruption.
+  # 3. The disruption only affects a single STU.
+  #    This is the case when the disruption only affects one branch, only
+  #    intersecting the other branch at a single station. In this case, the
+  #    STUs, including the one affected by the disruption, will be unchanged.
   defp shuttle_updates(route_id, direction_id, stus, module) do
-    initial_state = {_has_started? = false, _has_shuttled? = false}
-
     stus
-    |> Enum.flat_map_reduce(initial_state, &shuttle_stop(route_id, direction_id, module, &1, &2))
+    |> Stream.map(&with_shuttling_status(&1, route_id, direction_id, module))
+    # look at the current stop and the following stop to determine whether the disruption actually affects this trip
+    |> Stream.chunk_every(2, 1, [{nil, :end_of_trip}])
+    |> Enum.map_reduce(:first_stu, fn
+      # after a shuttle on the route, all future STUs are skipped
+      [{stu, _}, {_, _}], :after_shuttle ->
+        {StopTimeUpdate.skip(stu), :after_shuttle}
+
+      # if the following stop is not disrupted, then this stop is only
+      # disrupted on a different branch
+      [{stu, :start}, {_, status}], :first_stu when status in [nil, :end_of_trip] ->
+        {stu, :regular_service}
+
+      [{stu, :start}, {_, status}], state when status in [nil, :end_of_trip] ->
+        {stu, state}
+
+      # the start of a disruption, followed by another disrupted stop,
+      # indicates that this disruption applies to this trip
+      [{stu, :start}, {_, _}], _ ->
+        {StopTimeUpdate.update_departure_time(stu, nil), :after_shuttle}
+
+      # if the following stop is not disrupted, then this stop is only
+      # disrupted on a different branch
+      [{stu, :through}, {_, nil}], :first_stu ->
+        {stu, :regular_service}
+
+      [{stu, :through}, {_, nil}], state ->
+        {stu, state}
+
+      # if the first STU is in the middle of a disruption, skip STUs within the
+      # disruption, but allow STUs after the disruption to remain as they are
+      [{stu, :through}, {_, _}], state when state in [:first_stu, :initial_shuttle] ->
+        {StopTimeUpdate.skip(stu), :initial_shuttle}
+
+      # at the end of a disruption, drop the arrival time
+      [{stu, :stop}, {_, _}], state when state in [:first_stu, :initial_shuttle] ->
+        {StopTimeUpdate.update_arrival_time(stu, nil), :regular_service}
+
+      # if the previous stop was not disrupted, then this stop is only
+      # disrupted on a different branch
+      [{stu, :stop}, {_, _}], state ->
+        {stu, state}
+
+      # if this stop is not disrupted by a shuttle, leave it as it is
+      [{stu, _}, {_, _}], :first_stu ->
+        {stu, :regular_service}
+
+      [{stu, _}, {_, _}], state ->
+        {stu, state}
+    end)
     |> elem(0)
   end
 
-  defp shuttle_stop(route_id, direction_id, shuttle_module, stop_time_updates, state)
-
-  defp shuttle_stop(_route_id, _direction_id, _module, stu, {true, true} = state) do
-    {[StopTimeUpdate.skip(stu)], state}
-  end
-
-  defp shuttle_stop(route_id, direction_id, module, stu, {has_started?, has_shuttled?} = state) do
+  defp with_shuttling_status(stu, route_id, direction_id, module) do
     time = StopTimeUpdate.time(stu)
 
     if is_integer(time) do
       stop_id = StopTimeUpdate.stop_id(stu)
-
-      case module.stop_shuttling_on_route(route_id, stop_id, direction_id, time) do
-        nil ->
-          drop_arrival_time_if_after_shuttle(stu, has_shuttled?)
-
-        :through ->
-          {[StopTimeUpdate.skip(stu)], {has_started?, true}}
-
-        :start ->
-          {[StopTimeUpdate.update_departure_time(stu, nil)], {true, true}}
-
-        :stop ->
-          {[StopTimeUpdate.update_arrival_time(stu, nil)], {false, false}}
-      end
+      {stu, module.stop_shuttling_on_route(route_id, stop_id, direction_id, time)}
     else
-      {[stu], state}
+      {stu, :stu_skipped}
     end
-  end
-
-  defp drop_arrival_time_if_after_shuttle(stu, has_shuttled?)
-
-  defp drop_arrival_time_if_after_shuttle(stu, true) do
-    {[StopTimeUpdate.update_arrival_time(stu, nil)], {true, false}}
-  end
-
-  defp drop_arrival_time_if_after_shuttle(stu, has_shuttled?) do
-    {[stu], {true, has_shuttled?}}
   end
 end
