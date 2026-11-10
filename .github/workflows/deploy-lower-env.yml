@@ -1,5 +1,5 @@
 name: Deploy to lower environment (dev etc)
-run-name: Deploy ${{ github.ref_name }} to ${{ inputs.environment || 'dev' }} (${{ github.event_name }})
+run-name: Deploy to ${{ inputs.environment || 'dev' }} (${{ github.event_name }})
 
 permissions: {}
 
@@ -9,7 +9,12 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        type: environment
+        type: choice
+        options:
+          - dev
+          - dev-blue
+          - dev-green
+          - prod
         required: true
         default: dev
   push:
