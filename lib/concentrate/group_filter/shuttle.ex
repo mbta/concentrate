@@ -68,6 +68,21 @@ defmodule Concentrate.GroupFilter.Shuttle do
         }
   defp do_stu_updates(stu, stu_status, next_stu_status, state)
 
+  # Summary of effects of STU status and state on the resulting STU:
+  #
+  # STU status | next STU status   | state                 | Result
+  # -----------|-------------------|-----------------------|--------
+  # any        | any               | :after_shuttle        | Skip STU
+  # :start     | nil, :end_of_trip | any                   | unchanged (shuttle on other branch)
+  # :start     | else              | any                   | Drop departure time
+  # :through   | nil, :start       | nil, :initial_shuttle | Drop arrival time (shuttle continues on other branch)
+  # :through   | else              | nil, :initial_shuttle | Skip STU
+  # :through   | nil, :start       | :regular_service      | unchanged (shuttle on intersecting line)
+  # :through   | else              | :regular_service      | Drop departure time (shuttle continuing from other branch)
+  # :stop      | any               | nil, :initial_shuttle | Drop arrival time
+  # :stop      | any               | :regular_service      | unchanged (shuttle on other branch)
+  # else       | any               | any                   | unchanged (not shuttled)
+
   # after a shuttle on the route, all future STUs are skipped
   defp do_stu_updates(stu, _, _, :after_shuttle), do: {StopTimeUpdate.skip(stu), :after_shuttle}
 
@@ -84,15 +99,26 @@ defmodule Concentrate.GroupFilter.Shuttle do
   end
 
   defp do_stu_updates(stu, :through, next_stu_status, state) do
-    cond do
-      # if the following stop is not disrupted, then this stop is only
-      # disrupted on a different branch
-      is_nil(next_stu_status) -> {stu, state || :regular_service}
-      # if the first STU is in the middle of a disruption, skip STUs within the
-      # disruption, but allow STUs after the disruption to remain as they are
-      state in [nil, :initial_shuttle] -> {StopTimeUpdate.skip(stu), :initial_shuttle}
-      # if this stop is not disrupted by a shuttle, leave it as it is
-      true -> {stu, state || :regular_service}
+    if state in [nil, :initial_shuttle] do
+      if next_stu_status in [nil, :start] do
+        # If the following stop isn't part of the disruption, the shuttle
+        # continues on an other branch; effectively a `:stop` on this branch
+        {StopTimeUpdate.update_arrival_time(stu, nil), :regular_service}
+      else
+        # In the middle of a disruption, skip STU
+        {StopTimeUpdate.skip(stu), :initial_shuttle}
+      end
+    else
+      # state == :regular_service
+      if next_stu_status in [nil, :start] do
+        # regular service before and after this stop, the disruption is only
+        # passing through. Leave this STU unchanged
+        {stu, :regular_service}
+      else
+        # if the previous stop isn't part of the disruption, the shuttle
+        # continues from the other branch; effectively a `:start` on this branch
+        {StopTimeUpdate.update_departure_time(stu, nil), :after_shuttle}
+      end
     end
   end
 
