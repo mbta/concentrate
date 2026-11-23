@@ -9,6 +9,9 @@ end
 
 defmodule Concentrate.GTFS.FakeRoutes do
   @moduledoc "Fake implementation of GTFS.Routes"
+
+  def route_type("CR" <> _), do: 2
+
   def route_type(route_id) when is_binary(route_id) do
     case Integer.parse(route_id) do
       :error -> nil
@@ -17,6 +20,13 @@ defmodule Concentrate.GTFS.FakeRoutes do
   end
 
   def route_type(_), do: nil
+end
+
+defmodule Concentrate.GTFS.FakeSplitTrips do
+  @moduledoc "Fake implementation of GTFS.SplitTrips"
+
+  def trip_ids("trip"), do: ["trip_1", "trip_2", "trip_3"]
+  def trip_ids(_), do: nil
 end
 
 defmodule Concentrate.GTFS.FakeStopTimes do
@@ -108,10 +118,11 @@ defmodule Concentrate.Filter.FakeShuttles do
   def trip_shuttling?("trip", "single_direction", 0, {1970, 1, 1}), do: true
   def trip_shuttling?(_trip_id, _route_id, _direction_id, {_, _, _}), do: false
 
-  def stop_shuttling_on_route("route", "shuttle_1", 8), do: :through
-  def stop_shuttling_on_route("route", "shuttle_2", 8), do: :through
-  def stop_shuttling_on_route("route", "shuttle_start", 8), do: :start
-  def stop_shuttling_on_route("route", "shuttle_stop", 8), do: :stop
-  def stop_shuttling_on_route("single_direction", "shuttle_1", 8), do: :through
-  def stop_shuttling_on_route(_, _, dt) when is_integer(dt), do: nil
+  def stop_shuttling_on_route("route", "shuttle_1", _direction_id, 8), do: :through
+  def stop_shuttling_on_route("route", "shuttle_2", _direction_id, 8), do: :through
+  def stop_shuttling_on_route("route", "shuttle_start", _direction_id, 8), do: :start
+  def stop_shuttling_on_route("route", "shuttle_start_unidirectional", 1, 8), do: :start
+  def stop_shuttling_on_route("route", "shuttle_stop", _direction_id, 8), do: :stop
+  def stop_shuttling_on_route("single_direction", "shuttle_1", 0, 8), do: :through
+  def stop_shuttling_on_route(_, _, _, dt) when is_integer(dt), do: nil
 end

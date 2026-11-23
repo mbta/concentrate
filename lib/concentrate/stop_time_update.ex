@@ -42,8 +42,6 @@ defmodule Concentrate.StopTimeUpdate do
   end
 
   defimpl Concentrate.Mergeable do
-    require Logger
-
     def key(%{trip_id: trip_id, stop_sequence: stop_sequence}), do: {trip_id, stop_sequence}
 
     def related_keys(_), do: []

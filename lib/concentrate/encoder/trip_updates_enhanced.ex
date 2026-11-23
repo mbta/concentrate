@@ -3,7 +3,6 @@ defmodule Concentrate.Encoder.TripUpdatesEnhanced do
   Encodes a list of parsed data into an enhanced.pb file.
   """
   @behaviour Concentrate.Encoder
-  require Logger
   alias Concentrate.{StopTimeUpdate, TripDescriptor}
   import Concentrate.Encoder.GTFSRealtimeHelpers
 

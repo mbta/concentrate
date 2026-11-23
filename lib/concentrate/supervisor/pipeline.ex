@@ -139,11 +139,9 @@ defmodule Concentrate.Supervisor.Pipeline do
           end
 
         opts =
-          Keyword.replace_lazy(opts, :selector, fn selector ->
-            case selector do
-              {mod, fun, args} -> &apply(mod, fun, [&1 | args])
-              fun when is_function(fun, 1) -> fun
-            end
+          Keyword.replace_lazy(opts, :selector, fn
+            {mod, fun, args} -> &apply(mod, fun, [&1 | args])
+            fun when is_function(fun, 1) -> fun
           end)
 
         child_spec(

@@ -21,7 +21,7 @@ defmodule Concentrate.Encoder.VehiclePositions do
 
   def feed_entity(list) do
     list
-    |> group
+    |> group()
     |> Enum.flat_map(&build_entity/1)
   end
 

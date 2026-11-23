@@ -19,7 +19,15 @@ config :concentrate, :group_filters, [
        6 => {~T[04:00:00], ~T[07:30:00]},
        7 => {~T[04:00:00], ~T[07:30:00]}
      }
-   }}
+   }},
+  {Concentrate.GroupFilter.PropagateDownstreamDelayStatuses,
+   matching_statuses: ["Delayed"], downstream_status: "Delayed"}
 ]
 
 config :concentrate, :sink_s3, ex_aws: Concentrate.TestExAws
+
+config :concentrate,
+  screenplay_stops_config: [
+    url: "http://127.0.0.1/api/suppressed-predictions/suppression_data",
+    api_key: "screenplay_api_key_for_testing"
+  ]

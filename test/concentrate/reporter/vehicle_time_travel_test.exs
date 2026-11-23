@@ -61,12 +61,12 @@ defmodule Concentrate.Reporter.VehicleTimeTravelTest do
   def trip_id do
     ["trip_a", "trip_b"]
     |> Enum.map(&constant/1)
-    |> one_of
+    |> one_of()
   end
 
   def vehicle_id do
     ["v1", "v2"]
     |> Enum.map(&constant/1)
-    |> one_of
+    |> one_of()
   end
 end

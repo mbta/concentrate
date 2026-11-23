@@ -63,6 +63,23 @@ defmodule Concentrate.GroupFilter.SuppressStopTimeUpdateTest do
       refute log =~ "stop_id=70053"
     end
 
+    test "handles nil stop_id" do
+      td = TripDescriptor.new(route_id: "Red", direction_id: 0, update_type: "mid_trip")
+
+      stu = StopTimeUpdate.new(stop_id: nil)
+
+      stus = [
+        stu
+      ]
+
+      assert %TripGroup{td: ^td, stus: []} =
+               SuppressStopTimeUpdate.filter(
+                 %TripGroup{td: td, stus: stus},
+                 FakeStopPredictionStatus,
+                 &fake_now/0
+               )
+    end
+
     test "removes all stop_time_updates for terminal suppression when update_type is 'at_terminal'" do
       td = TripDescriptor.new(route_id: "Red", direction_id: 0, update_type: "at_terminal")
 

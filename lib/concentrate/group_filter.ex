@@ -8,5 +8,5 @@ defmodule Concentrate.GroupFilter do
   order of their stop_sequence.
   """
   alias Concentrate.Encoder.TripGroup
-  @callback filter(TripGroup.t()) :: TripGroup.t()
+  @callback filter(TripGroup.t()) :: TripGroup.t() | [TripGroup.t()]
 end
